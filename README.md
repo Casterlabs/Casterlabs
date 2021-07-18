@@ -23,7 +23,7 @@ $ npm install
 $ npm run electron-dev
 
 # Package the app
-$ npm run electron-pack
+$ npm run electron-package
 ```
 
 ### Using GitHub templates
