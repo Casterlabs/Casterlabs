@@ -14,16 +14,22 @@ const isDev = !app.isPackaged;
 
 const baseDir = isDev ? path.join(process.cwd(), "static") : path.join(__dirname, "__sapper__/export");
 
-function createWindow() {
+function createUpdaterWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 1024,
-        height: 768,
-        webPreferences: {
-            nodeIntegration: true
-        },
+        width: 500,
+        height: 320,
         icon: path.join(baseDir, "logo-512.png"),
-        show: false
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            webSecurity: false
+        },
+        transparent: false,
+        resizable: false,
+        show: false,
+        frame: false
     });
 
     if (isDev) {
@@ -52,7 +58,7 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+app.on("ready", createUpdaterWindow);
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
@@ -67,6 +73,6 @@ app.on("activate", () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
-        createWindow();
+        createUpdaterWindow();
     }
 });

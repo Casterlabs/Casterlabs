@@ -1,50 +1,86 @@
 <script>
-	import successkid from 'images/successkid.jpg';
+	import LoadingSpinner from "../components/loading-spinner.svelte";
+	import RandomStreamer from "../components/random-streamer.svelte";
 </script>
 
 <style>
-	h1, figure, p {
-		text-align: center;
-		margin: 0 auto;
+	.casterlabs-banner {
+		position: absolute;
+		top: 7px;
+		left: 5px;
 	}
 
-	h1 {
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
+	.welcome {
+		position: absolute;
+		top: 100px;
+		left: 12px;
 	}
 
-	figure {
-		margin: 0 0 1em 0;
+	.welcome h1 {
+		font-size: 1.5em;
+		margin-bottom: 0;
 	}
 
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
+	.loading {
+		position: absolute;
+		bottom: 12px;
+		left: 12px;
+		width: 275px;
+		height: 100px;
 	}
 
-	p {
-		margin: 1em auto;
+	.loading-spinner {
+		position: absolute;
+		bottom: 3px;
+		left: 0;
+		width: 35px;
+		height: 35px;
 	}
 
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
+	.loading-status {
+		color: #dbdbdb;
+		font-size: .9em;
+		position: absolute;
+		bottom: 0;
+		left: 40px;
+		height: 40px;
+	}
+
+	.random-streamer {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		width: 250px;
 	}
 </style>
 
-<svelte:head>
-	<title>Electron + Sapper App (Rollup)</title>
-</svelte:head>
+<div class="random-streamer">
+	<RandomStreamer />
+</div>
 
-<h1>Great success!</h1>
+<div>
+	<img class="casterlabs-banner" alt="Casterlabs" src="banner-white.png" />
+</div>
 
-<figure>
-	<img alt="Success Kid" src="{successkid}">
-	<figcaption>Have fun with Sapper!</figcaption>
-</figure>
+<div class="loading">
+	<div class="loading-spinner">
+		<LoadingSpinner />
+	</div>
+	<div class="loading-status">
+		<span id="status-line-1">
+			Downloading updated app file
+		</span>
+		<br />
+		<span id="status-line-2">
+			5% (2.1MB / 32.6MB)
+		</span>
+	</div>
+</div>
 
-<p><strong>Try editing this file (src/routes/index.svelte) to test live reloading.</strong></p>
+<div class="welcome">
+	<h1>Welcome to Casterlabs</h1>
+	<span>
+		The free stream widgets service.
+	</span>
+</div>

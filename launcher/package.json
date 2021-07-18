@@ -1,13 +1,11 @@
 {
   "name": "electron-sapper-rollup-template",
   "version": "1.0.0",
-  "description": "A template project to get you started with using Sapper and Electron together.",
   "main": "main.js",
-  "author": "e3ndr",
-  "license": "MIT",
+  "author": "Casterlabs <support@casterlabs.co>",
   "build": {
     "icon": "static/logo-512.png",
-    "productName": "Electron + Sapper App (Rollup)",
+    "productName": "Casterlabs Caffeinated",
     "files": [
       "__sapper__/export/**/*",
       "main.js"
