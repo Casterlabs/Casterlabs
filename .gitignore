@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+/src/node_modules/@sapper/
+
+# Lock files
+package-lock.json
+yarn.lock
+
+# Svelte Directory
+/__sapper__/
+
+# Electron Package Directory
+dist
+
+# macOS
+.DS_Store
