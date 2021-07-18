@@ -1,6 +1,7 @@
 # Dependencies
-node_modules/
+/node_modules/
 /src/node_modules/@sapper/
+!/src/node_modules/images/
 
 # Lock files
 package-lock.json
