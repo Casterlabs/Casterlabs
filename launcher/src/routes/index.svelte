@@ -35,6 +35,7 @@
 		left: 0;
 		width: 35px;
 		height: 35px;
+		-webkit-app-region: no-drag !important;
 	}
 
 	.loading-status {
@@ -64,18 +65,6 @@
 </div>
 
 <div class="loading">
-	<script>
-		function setStatus(line1, line2 = "&nbsp;") {
-			document.querySelector("#status-line-1").innerHTML = line1;
-			document.querySelector("#status-line-2").innerHTML = line2;
-		}
-
-		function checkForUpdates() {
-			currentWindow.emit("check-for-updates", {});
-		}
-
-		setTimeout(checkForUpdates, 2000);
-	</script>
 	<div class="loading-spinner">
 		<LoadingSpinner />
 	</div>
@@ -88,6 +77,32 @@
 			&nbsp;
 		</span>
 	</div>
+	<script>
+		function setStatus(line1, line2 = "&nbsp;") {
+			document.querySelector("#status-line-1").innerHTML = line1;
+			document.querySelector("#status-line-2").innerHTML = line2;
+		}
+
+		function checkForUpdates() {
+			currentWindow.emit("check-for-updates", {});
+		}
+
+		setTimeout(checkForUpdates, 2500);
+
+		{
+			let clickCount = 0;
+
+			document
+				.querySelector(".loading-spinner")
+				.addEventListener("click", () => {
+					clickCount++;
+
+					if (clickCount >= 3) {
+						currentWindow.emit("reset-and-restart", {});
+					}
+				});
+		}
+	</script>
 </div>
 
 <div class="welcome">

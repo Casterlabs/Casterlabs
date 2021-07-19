@@ -6,6 +6,10 @@
         height: 100%;
     }
 
+    * {
+        -webkit-app-region: no-drag !important;
+    }
+
     .lds-ring div {
         box-sizing: border-box;
         display: block;

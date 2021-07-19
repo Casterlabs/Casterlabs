@@ -12,7 +12,7 @@ const serve = require("electron-serve");
 const loadURL = serve({ directory: "__sapper__/export" });
 
 // Setup some globals
-const LAUNCHER_VERSION = 4;
+const LAUNCHER_VERSION = 5;
 
 global.PACKAGED = app.isPackaged;
 const isDev = !PACKAGED;
@@ -49,10 +49,10 @@ function sleep(millis) {
 }
 
 function updateAsarExists() {
-    const file = path.join(app.getPath("appData"), "update/app.asar");
+    const appFile = path.join(directory, file);
 
     try {
-        return fs.existsSync(file);
+        return fs.existsSync(appFile);
     } catch (e) {
         console.error(e);
         return false;
@@ -75,16 +75,23 @@ async function checkForUpdates() {
             channel = launcher["STABLE"];
         }
 
+        const outOfDate = currentProtocolVersion < channel.protocol_version;
+
         if (channel.web_url) {
             mainWindow.loadURL(channel.web_url);
-        } else if ((currentProtocolVersion < channel.protocol_version) || !updateAsarExists()) {
+        } else if (outOfDate || !updateAsarExists()) {
             setStatus("Downloading update");
             downloadUpdate(channel.asar_url, channel.deps_url);
+
+            if (outOfDate) {
+                console.log("Downloading update (Out of date)");
+            } else {
+                console.log("Downloading update (File missing)");
+            }
         } else {
             setStatus("You're up-to-date! 😄");
-            await sleep(1500);
-            setStatus();
-            await sleep(1000);
+            await sleep(2000);
+            loadUpdatedFile();
         }
     } catch (e) {
         let left = 15;
@@ -105,7 +112,7 @@ async function checkForUpdates() {
 }
 
 async function downloadUpdate(url, deps) {
-    console.log(`Downloading update from ${url} to ${directory}${file}`);
+    console.log(`Downloading update from ${url} to ${path.join(directory, file)}`);
 
     try {
         fs.unlinkSync(directory);
@@ -124,7 +131,7 @@ async function downloadUpdate(url, deps) {
     });
 
     if (deps) {
-        console.log(`Downloading dependencies from ${deps} to ${directory} /deps.zip`);
+        console.log(`Downloading dependencies from ${deps} to ${path.join(directory, "deps.zip")}`);
 
         await electronDl.download(mainWindow, deps, {
             directory: directory,
@@ -145,33 +152,42 @@ async function downloadUpdate(url, deps) {
         });
 
         unzipper.on("extract", () => {
+            setStatus();
             loadUpdatedFile();
         });
 
         setStatus("Extracting dependencies");
 
-        console.log(`Unzipping dependencies from ${directory}deps.zip to ${directory}`);
+        console.log(`Unzipping dependencies from ${path.join(directory, "deps.zip")} to ${directory}`);
 
         unzipper.extract({
             path: directory,
             restrict: false
         });
     } else {
+        setStatus();
         loadUpdatedFile();
     }
 }
 
 function loadUpdatedFile() {
-    setStatus();
-
     console.info("Thanks for using CaffeinatedLauncher! *bows*");
 
     try {
         // Load the main.js.
-        require(path.join(directory, "app.asar/createWindow.js"));
+        const createCaffeinatedWindow = require(path.join(directory, file, "/createWindow.js"));
 
-        mainWindow.close();
-        mainWindow = null;
+        const caffeinatedWindow = createCaffeinatedWindow(path.join(directory, file));
+
+        // Caffeinated has now taken over, so we can kill the updater window.
+        caffeinatedWindow.once("ready-to-show", () => {
+            // Reopen the devtools.
+            if (mainWindow.webContents.isDevToolsOpened()) {
+                caffeinatedWindow.webContents.openDevTools();
+            }
+
+            mainWindow.close();
+        });
     } catch (e) {
         setStatus("An error occurred.", "Exiting in 5 seconds.");
         console.error(e);
@@ -209,7 +225,7 @@ function createUpdaterWindow() {
     }
 
     // Emitted when the window is closed.
-    mainWindow.on("closed", function () {
+    mainWindow.on("closed", () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
@@ -218,10 +234,18 @@ function createUpdaterWindow() {
 
     mainWindow.once("check-for-updates", checkForUpdates);
 
+    mainWindow.once("reset-and-restart", () => {
+        store.set("protocol_version", -1);
+        store.set("launcher_version", -1);
+        app.relaunch();
+        app.exit();
+    });
+
     // Emitted when the window is ready to be shown
     // This helps in showing the window gracefully.
     mainWindow.once("ready-to-show", () => {
         mainWindow.show();
+        mainWindow.center();
     });
 }
 
