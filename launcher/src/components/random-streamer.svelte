@@ -32,7 +32,7 @@
         </a>
     </div>
     <script>
-        window.addEventListener("load", () => {
+        function showRandomStreamer() {
             const streamers = [
                 {
                     name: "Glitch3dPenguin",
@@ -81,19 +81,25 @@
             const streamerPlatform = streamerLink.querySelector("img");
             const streamerImage = container.querySelector(".portrait");
 
-            streamerName.innerText = chosenStreamer.name;
+            if (!streamerName.innerText) {
+                streamerName.innerText = chosenStreamer.name;
 
-            streamerPlatform.src = chosenStreamer.platformIcon;
-            streamerPlatform.alt = chosenStreamer.platform;
+                streamerPlatform.src = chosenStreamer.platformIcon;
+                streamerPlatform.alt = chosenStreamer.platform;
 
-            streamerImage.src = chosenStreamer.image;
-            streamerImage.alt = chosenStreamer.name;
+                streamerImage.src = chosenStreamer.image;
+                streamerImage.alt = chosenStreamer.name;
 
-            streamerLink.addEventListener("click", () => {
-                openLink(chosenStreamer.link);
-            });
+                streamerLink.addEventListener("click", () => {
+                    openLink(chosenStreamer.link);
+                });
 
-            container.style.opacity = 1;
-        });
+                container.style.opacity = 1;
+            }
+        }
+
+        showRandomStreamer();
+
+        setTimeout(showRandomStreamer, 500); // I HATE THIS.
     </script>
 </div>
