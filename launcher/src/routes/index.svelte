@@ -64,16 +64,28 @@
 </div>
 
 <div class="loading">
+	<script>
+		function setStatus(line1, line2 = "&nbsp;") {
+			document.querySelector("#status-line-1").innerHTML = line1;
+			document.querySelector("#status-line-2").innerHTML = line2;
+		}
+
+		function checkForUpdates() {
+			currentWindow.emit("check-for-updates", {});
+		}
+
+		setTimeout(checkForUpdates, 2000);
+	</script>
 	<div class="loading-spinner">
 		<LoadingSpinner />
 	</div>
 	<div class="loading-status">
 		<span id="status-line-1">
-			Downloading updated app file
+			&nbsp;
 		</span>
 		<br />
 		<span id="status-line-2">
-			5% (2.1MB / 32.6MB)
+			&nbsp;
 		</span>
 	</div>
 </div>

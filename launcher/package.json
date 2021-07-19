@@ -1,5 +1,5 @@
 {
-  "name": "electron-sapper-rollup-template",
+  "name": "Caffeinated",
   "version": "1.0.0",
   "main": "main.js",
   "author": "Casterlabs <support@casterlabs.co>",
@@ -17,7 +17,11 @@
     "electron-package": "sapper export && electron-builder"
   },
   "dependencies": {
-    "electron-serve": "^1.0.0"
+    "decompress-zip": "^0.3.3",
+    "electron-dl": "^3.2.1",
+    "electron-serve": "^1.0.0",
+    "electron-store": "^8.0.0",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "compression": "^1.7.1",

@@ -13,8 +13,9 @@
 		<title>Casterlabs Caffeinated</title>
 
 		<script>
-			const { app } = require("electron").remote;
-			const { shell } = require("electron");
+			const { shell, remote } = require("electron");
+			const { app } = remote;
+			const currentWindow = remote.getCurrentWindow();
 
 			window.addEventListener("load", () => {
 				const closeButton = document.querySelector("#close-button a");
