@@ -4,12 +4,45 @@
   "main": "main.js",
   "author": "Casterlabs <support@casterlabs.co>",
   "build": {
-    "icon": "static/logo-512.png",
+    "icon": "assets/app_icon.icns",
     "productName": "Casterlabs Caffeinated",
     "files": [
       "__sapper__/export/**/*",
       "main.js"
-    ]
+    ],
+    "appId": "casterlabs.caffeinated",
+    "artifactName": "Caffeinated-${os}.${ext}",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "icon": "assets/app_icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    }
   },
   "scripts": {
     "electron-dev-start": "wait-on http://localhost:3000 && electron .",
