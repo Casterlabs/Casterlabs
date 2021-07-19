@@ -78,12 +78,14 @@
 		</span>
 	</div>
 	<script>
-		function setStatus(line1, line2 = "&nbsp;") {
+		function setStatus(line1, line2) {
+			console.debug(`Status lines:`, line1, line2);
 			document.querySelector("#status-line-1").innerHTML = line1;
 			document.querySelector("#status-line-2").innerHTML = line2;
 		}
 
 		function checkForUpdates() {
+			console.debug("Signaling check-for-updates");
 			currentWindow.emit("check-for-updates", {});
 		}
 
@@ -98,6 +100,7 @@
 					clickCount++;
 
 					if (clickCount >= 3) {
+						console.debug("Signaling reset-and-restart");
 						currentWindow.emit("reset-and-restart", {});
 					}
 				});

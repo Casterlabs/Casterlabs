@@ -66,6 +66,8 @@
 
             const chosenStreamer = streamers[Math.floor(Math.random() * streamers.length)];
 
+            console.debug(`${chosenStreamer.name}! I choose you!`, chosenStreamer);
+
             const container = document.querySelector(".random-streamer-container");
             const streamerLink = container.querySelector(".streamer-link a");
             const streamerName = streamerLink.querySelector("span");
