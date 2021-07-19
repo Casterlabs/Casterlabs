@@ -180,11 +180,13 @@ function loadUpdatedFile() {
         const caffeinatedWindow = createCaffeinatedWindow(path.join(directory, file));
 
         // Caffeinated has now taken over, so we can kill the updater window.
-        caffeinatedWindow.once("ready-to-show", () => {
+        caffeinatedWindow.once("ready-to-show", async () => {
             // Reopen the devtools.
             if (mainWindow.webContents.isDevToolsOpened()) {
                 caffeinatedWindow.webContents.openDevTools();
             }
+
+            await sleep(2000);
 
             mainWindow.close();
         });
