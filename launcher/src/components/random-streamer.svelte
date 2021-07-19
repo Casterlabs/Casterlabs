@@ -61,6 +61,13 @@
                     link: "https://caff.tv/FallenWolf",
                     platform: "Caffeine",
                     platformIcon: "/platforms/caffeine.png"
+                },
+                {
+                    name: "PigStand",
+                    image: "/streamers/PigStand.png",
+                    link: "https://caff.tv/PigStand",
+                    platform: "Caffeine",
+                    platformIcon: "/platforms/caffeine.png"
                 }
             ];
 
