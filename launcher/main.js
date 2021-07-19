@@ -248,6 +248,10 @@ function createUpdaterWindow() {
     mainWindow.once("ready-to-show", () => {
         mainWindow.show();
         mainWindow.center();
+
+        if (isDev) {
+            mainWindow.webContents.openDevTools();
+        }
     });
 }
 
