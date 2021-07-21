@@ -1,13 +1,11 @@
 {
-  "name": "electron-sapper-rollup-template",
+  "name": "Caffeinated",
   "version": "1.0.0",
-  "description": "A template project to get you started with using Sapper and Electron together.",
   "main": "main.js",
-  "author": "e3ndr",
-  "license": "MIT",
+  "author": "Casterlabs <support@casterlabs.co>",
   "build": {
     "icon": "static/logo-512.png",
-    "productName": "Electron + Sapper App (Rollup)",
+    "productName": "Caffeinated Dummy Build",
     "files": [
       "__sapper__/export/**/*",
       "main.js"
@@ -19,7 +17,8 @@
     "electron-package": "sapper export && electron-builder"
   },
   "dependencies": {
-    "electron-serve": "^1.0.0"
+    "electron-serve": "^1.0.0",
+    "electron-window-state": "^5.0.3"
   },
   "devDependencies": {
     "compression": "^1.7.1",

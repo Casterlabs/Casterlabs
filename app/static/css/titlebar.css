@@ -1,0 +1,56 @@
+.title-bar {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: var(--title-bar-height);
+    -webkit-app-region: drag;
+    background-color: #e2e2e2;
+    z-index: 100;
+}
+
+.bulma-dark-mode .title-bar {
+    background-color: #272727;
+}
+
+.title-bar .title-bar-title {
+    position: absolute;
+    left: 30px;
+    top: 2px;
+    text-align: left;
+    right: 105px;
+    user-select: none;
+}
+
+.title-bar .title-bar-title img {
+    width: 20px;
+    position: absolute;
+    top: 2px;
+    left: -25px;
+    -webkit-app-region: no-drag;
+}
+
+.title-bar .current-page {
+    font-weight: normal !important;
+}
+
+.title-bar .title-actions {
+    position: absolute;
+    right: 5px;
+    width: 100px;
+    text-align: right;
+    height: var(--title-bar-height);
+}
+
+.title-bar .title-action {
+    color: inherit !important;
+    -webkit-app-region: no-drag;
+}
+
+.title-bar .title-action svg {
+    height: 20px;
+    margin-top: 5px;
+}
+
+.title-bar .title-action:hover {
+    color: #7a7a7a !important;
+}

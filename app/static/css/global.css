@@ -1,0 +1,65 @@
+:root {
+	--title-bar-height: 30px;
+	--background-color: white;
+
+	/* This is set elsewhere */
+	--side-bar-bar-width: 0;
+}
+
+.bulma-dark-mode:root {
+	--background-color: #121212;
+}
+
+html {
+	overflow: hidden;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.sapper-container {
+	position: absolute;
+	top: var(--title-bar-height);
+	bottom: 0;
+	left: var(--side-bar-bar-width);
+	right: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#side-bar {
+	position: absolute;
+	top: var(--title-bar-height);
+	bottom: 0;
+	left: 0;
+	width: var(--side-bar-bar-width);
+}
+
+/* Color changes */
+
+html {
+	background-color: var(--background-color) !important;
+}
+
+/* Helpers */
+
+.no-select {
+	user-select: none;
+}
+
+.dark-show {
+	display: none;
+}
+
+.light-show {
+	display: unset;
+}
+
+.bulma-dark-mode .dark-show {
+	display: unset !important;
+}
+
+.bulma-dark-mode .light-show {
+	display: none !important;
+}
