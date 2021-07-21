@@ -186,7 +186,7 @@ function loadUpdatedFile() {
                 caffeinatedWindow.webContents.openDevTools();
             }
 
-            await sleep(2000);
+            await sleep(1000);
 
             mainWindow.close();
         });
