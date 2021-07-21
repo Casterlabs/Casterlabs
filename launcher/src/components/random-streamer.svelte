@@ -33,46 +33,6 @@
     </div>
     <script>
         function showRandomStreamer() {
-            const streamers = [
-                {
-                    name: "Glitch3dPenguin",
-                    image: "/streamers/Glitch3dPenguin.png",
-                    link: "https://caff.tv/Glitch3dPenguin",
-                    platform: "Caffeine",
-                    platformIcon: "/platforms/caffeine.png"
-                },
-                {
-                    name: "DivideAConquer",
-                    image: "/streamers/DivideAConquer.png",
-                    link: "https://caff.tv/DivideAConquer",
-                    platform: "Caffeine",
-                    platformIcon: "/platforms/caffeine.png"
-                },
-                {
-                    name: "GeenoTV",
-                    image: "/streamers/GeenoTV.png",
-                    link: "https://caff.tv/GeenoTV",
-                    platform: "Caffeine",
-                    platformIcon: "/platforms/caffeine.png"
-                },
-                {
-                    name: "FallenWolf",
-                    image: "/streamers/FallenWolf.png",
-                    link: "https://caff.tv/FallenWolf",
-                    platform: "Caffeine",
-                    platformIcon: "/platforms/caffeine.png"
-                },
-                {
-                    name: "PigStand",
-                    image: "/streamers/PigStand.png",
-                    link: "https://caff.tv/PigStand",
-                    platform: "Caffeine",
-                    platformIcon: "/platforms/caffeine.png"
-                }
-            ];
-
-            const chosenStreamer = streamers[Math.floor(Math.random() * streamers.length)];
-
             console.debug(`${chosenStreamer.name}! I choose you!`, chosenStreamer);
 
             const container = document.querySelector(".random-streamer-container");
@@ -81,25 +41,22 @@
             const streamerPlatform = streamerLink.querySelector("img");
             const streamerImage = container.querySelector(".portrait");
 
-            if (!streamerName.innerText) {
-                streamerName.innerText = chosenStreamer.name;
+            streamerName.innerText = chosenStreamer.name;
 
-                streamerPlatform.src = chosenStreamer.platformIcon;
-                streamerPlatform.alt = chosenStreamer.platform;
+            streamerPlatform.src = chosenStreamer.platformIcon;
+            streamerPlatform.alt = chosenStreamer.platform;
 
-                streamerImage.src = chosenStreamer.image;
-                streamerImage.alt = chosenStreamer.name;
+            streamerImage.src = chosenStreamer.image;
+            streamerImage.alt = chosenStreamer.name;
 
-                streamerLink.addEventListener("click", () => {
-                    openLink(chosenStreamer.link);
-                });
+            streamerLink.addEventListener("click", () => {
+                openLink(chosenStreamer.link);
+            });
 
-                container.style.opacity = 1;
-            }
+            container.style.opacity = 1;
         }
 
         showRandomStreamer();
-
         setTimeout(showRandomStreamer, 500); // I HATE THIS.
     </script>
 </div>

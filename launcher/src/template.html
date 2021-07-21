@@ -17,6 +17,46 @@
 			const { app } = remote;
 			const currentWindow = remote.getCurrentWindow();
 
+			const streamers = [
+				{
+					name: "Glitch3dPenguin",
+					image: "/streamers/Glitch3dPenguin.png",
+					link: "https://caff.tv/Glitch3dPenguin",
+					platform: "Caffeine",
+					platformIcon: "/platforms/caffeine.png"
+				},
+				{
+					name: "DivideAConquer",
+					image: "/streamers/DivideAConquer.png",
+					link: "https://caff.tv/DivideAConquer",
+					platform: "Caffeine",
+					platformIcon: "/platforms/caffeine.png"
+				},
+				{
+					name: "GeenoTV",
+					image: "/streamers/GeenoTV.png",
+					link: "https://caff.tv/GeenoTV",
+					platform: "Caffeine",
+					platformIcon: "/platforms/caffeine.png"
+				},
+				{
+					name: "FallenWolf",
+					image: "/streamers/FallenWolf.png",
+					link: "https://caff.tv/FallenWolf",
+					platform: "Caffeine",
+					platformIcon: "/platforms/caffeine.png"
+				},
+				{
+					name: "PigStand",
+					image: "/streamers/PigStand.png",
+					link: "https://caff.tv/PigStand",
+					platform: "Caffeine",
+					platformIcon: "/platforms/caffeine.png"
+				}
+			];
+
+			const chosenStreamer = streamers[Math.floor(Math.random() * streamers.length)];
+
 			window.addEventListener("load", () => {
 				const closeButton = document.querySelector("#close-button a");
 
