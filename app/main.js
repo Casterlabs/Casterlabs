@@ -2,6 +2,8 @@ const { app } = require("electron");
 
 const createWindow = require("./createWindow.js");
 
+let mainWindow = null;
+
 // Disable web cache.
 app.commandLine.appendSwitch("disable-http-cache");
 
@@ -9,7 +11,7 @@ app.commandLine.appendSwitch("disable-http-cache");
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    createWindow(__dirname);
+    mainWindow = createWindow(__dirname);
 });
 
 // Quit when all windows are closed.
