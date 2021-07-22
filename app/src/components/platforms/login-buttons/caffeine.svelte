@@ -8,7 +8,7 @@
 
 <div class="no-select login-button">
     <a class="button" href="/login/caffeine" style="overflow: hidden; background-color: #0000FF;">
-        <img src="https://assets.casterlabs.co/caffeine/logo.png" style="height: 2.5em; position: absolute; left: 5px;">
+        <img src="https://assets.casterlabs.co/caffeine/logo.png" alt="Caffeine Logo" style="height: 2.5em; position: absolute; left: 5px;">
         <span style="position: absolute; left: 3em; z-index: 2;">
             Login with Caffeine
         </span>

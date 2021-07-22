@@ -81,7 +81,7 @@
         </SettingsContainer>
     </div>
 
-    <a id="next-page-button" class="button" href="/welcome/step3">
+    <a id="next-page-button" class="button" href="/login">
         Next <i data-feather="arrow-right"></i>
     </a>
 </div>

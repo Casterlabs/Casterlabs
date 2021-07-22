@@ -7,8 +7,8 @@
 </style>
 
 <div class="no-select login-button">
-    <a class="button" style="overflow: hidden; background-color: #7d2bf9;">
-        <img src="https://assets.casterlabs.co/twitch/logo.png" style="height: 1.5em; position: absolute; left: 14px; top: 7.5px;">
+    <a class="button" href="/login/twitch" style="overflow: hidden; background-color: #7d2bf9;">
+        <img src="https://assets.casterlabs.co/twitch/logo.png" alt="Twitch Logo" style="height: 1.5em; position: absolute; left: 14px; top: 7.5px;" />
         <span style="position: absolute; left: 3em; z-index: 2;">
             Login with Twitch
         </span>
