@@ -22,7 +22,7 @@ function createWindow(appDir) {
     });
 
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    let mainWindow = new BrowserWindow({
         minWidth: MIN_WIDTH,
         minHeight: MIN_HEIGHT,
         width: mainWindowState.width,
