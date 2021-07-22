@@ -6,8 +6,15 @@
 <PageAttributes />
 <HideSideBar />
 
-<h1 class="title">
-	test :^)
-</h1>
+<div class="has-text-centered no-select">
+	<br />
+	<br />
+	<h1 class="title">
+		test page :^)
+	</h1>
+	<br />
 
-<a href="welcome/step1">step1</a>
+	<a href="/welcome/step1">welcome/step1</a>
+	<br />
+	<a href="/settings">settings</a>
+</div>
