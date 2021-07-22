@@ -48,6 +48,10 @@ html {
 	user-select: none;
 }
 
+.allow-select {
+	user-select: auto;
+}
+
 .dark-show {
 	display: none;
 }
