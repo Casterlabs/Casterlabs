@@ -1,21 +1,79 @@
+import { appStore } from "./caffeinated.mjs";
 
-function isDarkMode() {
-    const htmlElement = document.querySelector("html");
+/* -------- */
+/* Theme    */
+/* -------- */
 
-    return htmlElement.classList.contains("bulma-dark-mode");
+function getTheme() {
+    return appStore.get("appearance.theme");
 }
 
-function setDarkMode(enabled = !isDarkMode()) {
+function setTheme(theme) {
     const htmlElement = document.querySelector("html");
 
-    if (enabled && !htmlElement.classList.contains("bulma-dark-mode")) {
-        htmlElement.classList.add("bulma-dark-mode");
-    } else {
-        htmlElement.classList.remove("bulma-dark-mode");
+    switch (theme) {
+        case "light": {
+            htmlElement.classList.remove("bulma-dark-mode");
+            appStore.set("appearance.theme", "light");
+            return;
+        }
+
+        case "dark":
+        default: {
+            htmlElement.classList.add("bulma-dark-mode");
+            appStore.set("appearance.theme", "dark");
+            return;
+        }
     }
 }
 
+/* -------- */
+/* Logo     */
+/* -------- */
+
+function getLogo() {
+    return appStore.get("appearance.logo");
+}
+
+function setLogo(logo) {
+    if (![
+        "casterlabs",
+        "pride",
+        "moonlabs"
+    ].includes(logo)) {
+        logo = "casterlabs";
+    }
+
+    appStore.set("appearance.logo", logo);
+
+    const appPath = app.getAppPath();
+
+    currentWindow.setIcon(`${appPath}/__sapper__/export/logo/${logo}.png`);
+
+    updateLogoImages();
+}
+
+// Updates all images with the class app-logo
+function updateLogoImages() {
+    const logo = getLogo();
+
+    for (const img of document.querySelectorAll("img.app-logo")) {
+        img.src = `/logo/${logo}.png`;
+    }
+}
+
+
+// Init
+setTheme(getTheme());
+setLogo(getLogo());
+
+
 export {
-    isDarkMode,
-    setDarkMode
+    getTheme,
+    setTheme,
+
+    getLogo,
+    setLogo,
+    updateLogoImages,
+
 };

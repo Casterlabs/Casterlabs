@@ -38,6 +38,7 @@
                 <select id="appearance-icon">
                     <option value="casterlabs">Casterlabs</option>
                     <option value="pride">Pride</option>
+                    <option value="moonlabs">Moonlabs</option>
                 </select>
             </div>
         </label>
@@ -59,16 +60,14 @@
 
 
     <script type="module">
-        import { setDarkMode } from "./js/ui.mjs";
-
-        const appearanceZoom = document.querySelector("#accessibility-zoom");
-        const appearanceZoomReset = document.querySelector("#accessibility-zoom-reset");
-        const appearanceTheme = document.querySelector("#appearance-theme");
-
+        import { getTheme, setTheme, getLogo, setLogo } from "./js/ui.mjs";
 
         /* -------- */
         /* Zoom     */
         /* -------- */
+        const appearanceZoom = document.querySelector("#accessibility-zoom");
+        const appearanceZoomReset = document.querySelector("#accessibility-zoom-reset");
+
         let zoomValue = webFrame.getZoomLevel();
 
         function checkZoomReset() {
@@ -105,22 +104,24 @@
         /* -------- */
         /* Theme    */
         /* -------- */
+        const appearanceTheme = document.querySelector("#appearance-theme");
+
+        appearanceTheme.value = getTheme();
+
         appearanceTheme.addEventListener("change", () => {
-            switch (appearanceTheme.value) {
-                case "dark": {
-                    setDarkMode(true);
-                    break;
-                }
+            setTheme(appearanceTheme.value);
+        });
 
-                case "light": {
-                    setDarkMode(false);
-                    break;
-                }
 
-                case "system": {
-                    break;
-                }
-            }
+        /* -------- */
+        /* Logo     */
+        /* -------- */
+        const appearanceIcon = document.querySelector("#appearance-icon");
+
+        appearanceIcon.value = getLogo();
+
+        appearanceIcon.addEventListener("change", () => {
+            setLogo(appearanceIcon.value);
         });
     </script>
 </div>

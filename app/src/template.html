@@ -4,7 +4,6 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-		<link rel="icon" type="image/png" href="/logo/casterlabs.png" />
 		<title>Casterlabs Caffeinated</title>
 
 		%sapper.base%
@@ -60,6 +59,9 @@
 				feather.replace();
 			});
 		</script>
+		<script type="module" src="./js/keybinds.mjs"></script>
+		<script type="module" src="./js/caffeinated.mjs"></script>
+		<script type="module" src="./js/status-integration/discord.mjs"></script>
 		<script type="module" src="./js/ui.mjs"></script>
 
 		<!-- Sapper creates a <script> tag containing `src/client.js`
