@@ -59,7 +59,7 @@
 
 
     <script type="module">
-        import { setDarkMode } from "./js/ui.js";
+        import { setDarkMode } from "./js/ui.mjs";
 
         const appearanceZoom = document.querySelector("#accessibility-zoom");
         const appearanceZoomReset = document.querySelector("#accessibility-zoom-reset");
