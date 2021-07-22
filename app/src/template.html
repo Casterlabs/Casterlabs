@@ -90,37 +90,43 @@
 		<link rel="stylesheet" href="css/scrollbar.css" />
 		<link rel="stylesheet" href="css/sidebar.css" />
 
+		<div class="body-container">
+			<!-- Titlebar -->
+			<section class="title-bar">
+				<div class="title-bar-title">
+					<img class="version-hover" src="logo-192.png" />
+					<span class="current-page title is-6">
+						Caffeinated
+					</span>
+				</div>
+				<div class="title-actions">
+					<span class="title is-6">
+						<a class="minimize title-action" title="Minimize">
+							<i data-feather="minus"></i>
+						</a><a class="maximize title-action" title="Maximize">
+							<i data-feather="maximize"></i>
+						</a><a class="close title-action" title="Close">
+							<i data-feather="x"></i>
+						</a>
+					</span>
+				</div>
+			</section>
 
-		<!-- Titlebar -->
-		<div class="title-bar">
-			<div class="title-bar-title">
-				<img class="version-hover" src="logo-192.png" />
-				<span class="current-page title is-6">
-					Caffeinated
-				</span>
-			</div>
-			<div class="title-actions">
-				<span class="title is-6">
-					<a class="minimize title-action" title="Minimize">
-						<i data-feather="minus"></i>
-					</a><a class="maximize title-action" title="Maximize">
-						<i data-feather="maximize"></i>
-					</a><a class="close title-action" title="Close">
-						<i data-feather="x"></i>
-					</a>
-				</span>
-			</div>
-		</div>
+			<section id="notifications">
+			</section>
 
-		<div id="side-bar">
+			<section id="body-content">
+				<div id="side-bar">
 
-		</div>
+				</div>
 
-		<section class="sapper-container">
-			<!-- The application will be rendered inside this element,
+				<div class="sapper-container">
+					<!-- The application will be rendered inside this element,
 	 		 because `src/client.js` references it -->
-			<div id="sapper">%sapper.html%</div>
-		</section>
+					<div id="sapper">%sapper.html%</div>
+				</div>
+			</section>
+		</div>
 	</body>
 
 </html>
