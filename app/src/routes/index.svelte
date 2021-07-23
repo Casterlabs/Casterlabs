@@ -17,4 +17,8 @@
 	<a href="/welcome/step1">welcome/step1</a>
 	<br />
 	<a href="/settings">settings</a>
+
+	<br />
+	<br />
+	<a href="https://casterlabs.co" rel="external">casterlabs</a>
 </div>
