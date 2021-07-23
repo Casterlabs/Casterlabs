@@ -3,17 +3,14 @@ new MutationObserver(() => {
     for (const anchor of document.querySelectorAll("a")) {
 
         // Intercept all rel="external" anchors and add a click listener.
-        if (
-            (anchor.getAttribute("rel") == "external") &&
-            !anchor.getAttribute("intercepted")
-        ) {
-
+        if (anchor.getAttribute("rel") == "external") {
             // On click we prevent the navigation and openLink with the href.
-            anchor.setAttribute("intercepted", true);
-            anchor.addEventListener("click", (e) => {
-                e.preventDefault();
+            // We use the onclick function rather than 
+            // addEventListener("click", ...) because it helps prevent duplicates.
+            anchor.onclick = () => {
                 openLink(anchor.href);
-            });
+                return false;
+            };
         }
     }
 }).observe(document.body, {
