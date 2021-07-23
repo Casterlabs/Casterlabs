@@ -1,0 +1,78 @@
+import EventHandler from "./util/eventhandler.mjs";
+
+const eventHandler = new EventHandler();
+
+const Koi = {
+
+    // Add the event handler
+    addEventListener: eventHandler.on, // Deprecated
+    on: eventHandler.on,
+    once: eventHandler.once,
+    removeListener: eventHandler.removeListener,
+    broadcast: eventHandler.broadcast,
+
+    upvote(messageId) {
+        this.broadcast(`x_koi_upvotechat`, {
+            messageId: messageId
+        });
+    },
+
+    deleteMessage(messageId) {
+        this.broadcast(`x_koi_deletechat`, {
+            messageId: messageId
+        });
+    },
+
+    sendMessage(message, platform) {
+        if (message.startsWith("/caffeinated")) {
+            this.broadcast("x_caffeinated_command", { text: message });
+        } else {
+            if (platform !== "CAFFEINE") {
+                // Newlines only work on Caffeine.
+                message = message.replace(/\n/gm, " ");
+            }
+
+            // Cut to length.
+            message = message.substring(0, this.getMaxLength(platform));
+
+            this.broadcast("x_koi_sendchat", {
+                message: message,
+                platform: platform,
+                chatter: "CLIENT" // chatter
+            });
+        }
+    },
+
+    getMaxLength(platform) {
+        switch (platform) {
+            case "CAFFEINE":
+                return 80;
+
+            case "TWITCH":
+                return 500;
+
+            case "TROVO":
+                return 300;
+
+            case "GLIMESH":
+                return 255;
+
+            case "BRIME":
+                return 300;
+
+            default:
+                return 100; // ?
+        }
+    },
+
+    test(eventType) {
+        this.broadcast("x_koi_test", {
+            eventType: eventType
+        });
+    }
+
+};
+
+Object.freeze(Koi);
+
+export default Koi;

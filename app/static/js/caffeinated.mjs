@@ -70,8 +70,7 @@ const appStore = new Store({
                 enabled: true,
                 icon: "casterlabs-logo"
             }
-        },
-        server_domain: "https://api.casterlabs.co"
+        }
     },
     name: "app",
     cwd: storePath
