@@ -5,10 +5,20 @@
 
     // Settings Content
     import SettingsContainer from "../components/settings/settings-container.svelte";
+    import AccountSettings from "../components/settings/account-settings.svelte";
     import AppearanceSettings from "../components/settings/appearance-settings.svelte";
     import StatusIntegrationSettings from "../components/settings/status-integration-settings.svelte";
 
     const settingsContainerContents = [
+        {
+            name: "User Settings",
+            type: "section"
+        },
+        {
+            name: "Accounts",
+            id: "accounts",
+            type: "category"
+        },
         {
             name: "App Settings",
             type: "section"
@@ -68,6 +78,9 @@
 
     <div class="settings-body">
         <SettingsContainer categories="{settingsContainerContents}">
+            <section class="hidden" data-id="accounts">
+                <AccountSettings />
+            </section>
             <section class="hidden" data-id="appearance">
                 <AppearanceSettings />
             </section>
