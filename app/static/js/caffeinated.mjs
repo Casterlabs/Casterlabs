@@ -45,6 +45,11 @@ const SUPPORTED_PLATFORMS = ["CAFFEINE", "TWITCH", "TROVO", "GLIMESH", "BRIME"];
     console.log("\n\n");
 }
 
+// Misc UI stuff.
+window.addEventListener("load", () => {
+    document.querySelector(".app-logo").title = VERSION;
+});
+
 // Initialize Stores
 const storePath = path.join(app.getPath("userData"), "config");
 
