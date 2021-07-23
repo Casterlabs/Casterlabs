@@ -67,3 +67,7 @@ html {
 .bulma-dark-mode .light-show {
 	display: none !important;
 }
+
+.fade-on-hover:hover {
+	color: #7a7a7a !important;
+}
