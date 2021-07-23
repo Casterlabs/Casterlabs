@@ -100,14 +100,33 @@
 				</div>
 				<div class="title-actions">
 					<span class="title is-6">
-						<a class="minimize title-action" title="Minimize">
+						<a class="minimize title-action">
 							<i data-feather="minus"></i>
-						</a><a class="maximize title-action" title="Maximize">
+						</a><a class="maximize title-action">
 							<i data-feather="maximize"></i>
-						</a><a class="close title-action" title="Close">
+						</a><a class="close title-action">
 							<i data-feather="x"></i>
 						</a>
 					</span>
+					<script>
+						document
+							.querySelector(".minimize")
+							.addEventListener("click", () => {
+								currentWindow.minimize();
+							});
+
+						document
+							.querySelector(".maximize")
+							.addEventListener("click", () => {
+								currentWindow.isMaximized() ? currentWindow.unmaximize() : currentWindow.maximize();
+							});
+
+						document
+							.querySelector(".close")
+							.addEventListener("click", () => {
+								app.exit();
+							});
+					</script>
 				</div>
 			</section>
 
