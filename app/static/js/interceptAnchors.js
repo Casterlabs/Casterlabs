@@ -4,6 +4,7 @@ new MutationObserver(() => {
 
         // Intercept all rel="external" anchors and add a click listener.
         if (anchor.getAttribute("rel") == "external") {
+
             // On click we prevent the navigation and openLink with the href.
             // We use the onclick function rather than 
             // addEventListener("click", ...) because it helps prevent duplicates.
