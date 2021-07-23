@@ -17,6 +17,8 @@
 	<a href="/welcome/step1">welcome/step1</a>
 	<br />
 	<a href="/settings">settings</a>
+	<br />
+	<a href="/login">login</a>
 
 	<br />
 	<br />
