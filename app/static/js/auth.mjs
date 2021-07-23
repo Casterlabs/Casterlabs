@@ -162,7 +162,7 @@ const Auth = {
                     if (response.data) {
                         const token = response.data.refreshToken;
 
-                        fetch(`https://${CAFFEINATED.store.get("server_domain")}/v2/natsukashii/create?platform=BRIME&token=${token}`)
+                        fetch(`https://api.casterlabs.co/v2/natsukashii/create?platform=BRIME&token=${token}`)
                             .then((nResult) => nResult.json())
                             .then((nResponse) => {
                                 if (nResponse.data) {
@@ -186,12 +186,14 @@ const Auth = {
             const auth = new AuthCallback(type);
 
             // 15min timeout
-            auth.awaitAuthMessage((15 * 1000) * 60).then((clToken) => {
-                resolve(clToken);
-            }).catch((reason) => {
-                console.error("Could not await for token: ", reason);
-                reject(reason);
-            });
+            auth.awaitAuthMessage((15 * 60) * 1000)
+                .then((clToken) => {
+                    resolve(clToken);
+                })
+                .catch((reason) => {
+                    console.error("Could not await for token: ", reason);
+                    reject(reason);
+                });
 
             openLink(link + auth.getStateString());
         });
