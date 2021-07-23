@@ -1,16 +1,42 @@
 <style>
-    .login-button .button {
+    .button {
         width: 200px;
         margin-top: 1px;
-        color: #dbdbdb !important;
+        overflow: hidden;
+        color: #dbdbdb;
+        transition: .5s;
+        background-color: #0d1524;
+    }
+
+    .button:hover {
+        transition: .5s;
+        background-color: #0c1322;
+    }
+
+    .button span {
+        z-index: 2;
+    }
+
+    .platform-logo {
+        position: absolute;
+        top: 8px;
+        left: 11px;
+        width: 23px;
+    }
+
+    .platform-logo svg {
+        width: 100%;
+        height: 100%;
     }
 </style>
 
 <div class="no-select login-button">
-    <a class="button" href="/login/glimesh" style="overflow: hidden; background-color: #0e1726;">
-        <img src="https://assets.casterlabs.co/glimesh/logo.png" alt="Glimesh Logo" style="height: 1.65em; position: absolute; left: 11px;">
-        <span style="position: absolute; left: 3em; z-index: 2;">
-            Login with Glimesh
+    <a class="button has-text-centered" href="/login/glimesh">
+        <div class="platform-logo">
+            <img src="/img/platforms/glimesh/icon.svg" alt="Glimesh Logo" />
+        </div>
+        <span>
+            Glimesh
         </span>
     </a>
 </div>

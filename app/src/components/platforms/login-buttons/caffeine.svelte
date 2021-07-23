@@ -1,16 +1,43 @@
 <style>
-    .login-button .button {
+    .button {
         width: 200px;
         margin-top: 1px;
-        color: #dbdbdb !important;
+        overflow: hidden;
+        color: #dbdbdb;
+        transition: .5s;
+        background-color: #0000FF;
+    }
+
+    .button:hover {
+        transition: .5s;
+        background-color: #0000cc;
+    }
+
+
+    .button span {
+        z-index: 2;
+    }
+
+    .platform-logo {
+        position: absolute;
+        top: 7px;
+        left: 10px;
+        width: 24px;
+    }
+
+    .platform-logo svg {
+        width: 100%;
+        height: 100%;
     }
 </style>
 
 <div class="no-select login-button">
-    <a class="button" href="/login/caffeine" style="overflow: hidden; background-color: #0000FF;">
-        <img src="https://assets.casterlabs.co/caffeine/logo.png" alt="Caffeine Logo" style="height: 2.5em; position: absolute; left: 5px;">
-        <span style="position: absolute; left: 3em; z-index: 2;">
-            Login with Caffeine
+    <a class="button has-text-centered" href="/login/caffeine">
+        <div class="platform-logo">
+            <img src="/img/platforms/caffeine/icon.svg" alt="Caffeine Logo" />
+        </div>
+        <span>
+            Caffeine
         </span>
     </a>
 </div>

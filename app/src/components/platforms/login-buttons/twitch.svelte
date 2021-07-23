@@ -1,16 +1,42 @@
 <style>
-    .login-button .button {
+    .button {
         width: 200px;
         margin-top: 1px;
-        color: #dbdbdb !important;
+        overflow: hidden;
+        color: #dbdbdb;
+        transition: .5s;
+        background-color: #8838ff;
+    }
+
+    .button:hover {
+        transition: .5s;
+        background-color: #7b24ff;
+    }
+
+    .button span {
+        z-index: 2;
+    }
+
+    .platform-logo {
+        position: absolute;
+        top: 10px;
+        left: 14px;
+        width: 19px;
+    }
+
+    .platform-logo svg {
+        width: 100%;
+        height: 100%;
     }
 </style>
 
 <div class="no-select login-button">
-    <a class="button" href="/login/twitch" style="overflow: hidden; background-color: #7d2bf9;">
-        <img src="https://assets.casterlabs.co/twitch/logo.png" alt="Twitch Logo" style="height: 1.5em; position: absolute; left: 14px; top: 7.5px;" />
-        <span style="position: absolute; left: 3em; z-index: 2;">
-            Login with Twitch
+    <a class="button has-text-centered" href="/login/twitch">
+        <div class="platform-logo">
+            <img src="/img/platforms/twitch/icon.svg" alt="Twitch Logo" />
+        </div>
+        <span>
+            Twitch
         </span>
     </a>
 </div>

@@ -1,16 +1,42 @@
 <style>
-    .login-button .button {
+    .button {
         width: 200px;
         margin-top: 1px;
-        color: #dbdbdb !important;
+        overflow: hidden;
+        color: #dbdbdb;
+        transition: .5s;
+        background-color: #149b53;
+    }
+
+    .button:hover {
+        transition: .5s;
+        background-color: #118849;
+    }
+
+    .button span {
+        z-index: 2;
+    }
+
+    .platform-logo {
+        position: absolute;
+        top: 8px;
+        left: 11px;
+        width: 23px;
+    }
+
+    .platform-logo svg {
+        width: 100%;
+        height: 100%;
     }
 </style>
 
 <div class="no-select login-button">
-    <a class="button" href="/login/trovo" style="overflow: hidden; background-color: #088942;">
-        <img src="https://assets.casterlabs.co/trovo/logo.png" alt="Trovo Logo" style="height: 2em; position: absolute; left: 8px; top: 4px;">
-        <span style="position: absolute; left: 3em; z-index: 2;">
-            Login with Trovo
+    <a class="button has-text-centered" href="/login/trovo">
+        <div class="platform-logo">
+            <img src="/img/platforms/trovo/icon.svg" alt="Trovo Logo" />
+        </div>
+        <span>
+            Trovo
         </span>
     </a>
 </div>
