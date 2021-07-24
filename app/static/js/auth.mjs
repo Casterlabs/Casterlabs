@@ -1,7 +1,7 @@
 import Koi from "./koi.mjs";
 import { KinokoV1 } from "./util/kinoko.mjs";
 import KoiConn from "./util/koiconn.mjs";
-import { generateUnsafePassword, getRandomItemInArray } from "./util/misc.mjs";
+import { generateUnsafePassword, getRandomItemInArray, prettifyString } from "./util/misc.mjs";
 import { authStore } from "./caffeinated.mjs";
 import Router from "./router.mjs";
 
@@ -68,6 +68,62 @@ class AuthCallback {
         return this.id;
     }
 
+}
+
+// Append the user's platform if required.
+function transformUserData(userData) {
+    if (Auth.countSignedInPlatforms() > 1) {
+        const platformPretty = prettifyString(userData.platform);
+
+        userData.displayname = `${userData.displayname} (${platformPretty})`;
+    }
+}
+
+// ^
+function transformEvent(event) {
+    switch (event.event_type) {
+        case "CATCHUP": {
+            for (const cEvent of event.events) {
+                transformEvent(cEvent);
+            }
+            break;
+        }
+
+        case "FOLLOW": {
+            transformUserData(event.sender);
+            break;
+        }
+
+        case "RAID": {
+            transformUserData(event.host);
+            break;
+        }
+
+        case "SUBSCRIPTION": {
+            transformUserData(event.subscriber);
+            break;
+        }
+
+        case "VIEWER_LIST": {
+            for (const viewer of event.viewers) {
+                transformUserData(viewer);
+            }
+            break;
+        }
+
+        case "VIEWER_JOIN":
+        case "VIEWER_LEAVE": {
+            transformUserData(event.viewer);
+            break;
+        }
+
+        case "CHAT":
+        case "DONATION":
+        case "CHANNEL_POINTS": {
+            transformUserData(event.sender);
+            break;
+        }
+    }
 }
 
 Koi.on("x_koi_upvotechat", (e) => {
@@ -215,6 +271,8 @@ const Auth = {
                         event.id = `${platform}:${event.id}`;
                     }
 
+                    transformEvent(event);
+
                     if (event.event_type == "USER_UPDATE") {
                         loggedIn = true;
                         Koi.broadcast("account_signin", event.streamer);
@@ -259,6 +317,18 @@ const Auth = {
                     userData: koiconn.userData,
                     streamData: koiconn.streamData
                 };
+            }
+        }
+
+        return platforms;
+    },
+
+    countSignedInPlatforms() {
+        let platforms = 0;
+
+        for (const [platform, koiconn] of Object.entries(koiconns)) {
+            if (koiconn) {
+                platforms++;
             }
         }
 

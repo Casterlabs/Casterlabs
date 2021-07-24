@@ -38,9 +38,34 @@ function getRandomItemInArray(arr) {
     return arr[rnd];
 }
 
+function sleep(millis) {
+    return new Promise((resolve) => setTimeout(resolve, millis));
+}
+
+function prettifyString(str) {
+    let splitStr = str.split("_");
+
+    if (splitStr.length == 0) {
+        return splitStr[0].charAt(0).toUpperCase() + splitStr[0].substring(1);
+    } else {
+        for (let i = 0; i < splitStr.length; i++) {
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+        }
+
+        return splitStr.join(" ");
+    }
+}
+
+function putInClipboard(copy) {
+    navigator.clipboard.writeText(copy);
+}
+
 export {
     generateUUID,
     generateUnsafePassword,
     generateUnsafeUniquePassword,
-    getRandomItemInArray
+    getRandomItemInArray,
+    sleep,
+    prettifyString,
+    putInClipboard
 };

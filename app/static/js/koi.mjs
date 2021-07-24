@@ -53,7 +53,7 @@ const Koi = {
 
             this.broadcast("x_koi_sendchat", {
                 message: message,
-                platform: platform,
+                platform: platform.toUpperCase(),
                 chatter: "CLIENT" // chatter
             });
         }
