@@ -18,7 +18,7 @@
 	<br />
 	<a href="/settings">settings</a>
 	<br />
-	<a href="/login">login</a>
+	<a href="/signin">login</a>
 
 	<br />
 	<br />

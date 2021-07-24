@@ -5,14 +5,13 @@
         overflow: hidden;
         color: #dbdbdb;
         transition: .5s;
-        background-color: #0000FF;
+        background-color: #0d1524;
     }
 
     .button:hover {
         transition: .5s;
-        background-color: #0000cc;
+        background-color: #0c1322;
     }
-
 
     .button span {
         z-index: 2;
@@ -20,9 +19,9 @@
 
     .platform-logo {
         position: absolute;
-        top: 7px;
-        left: 10px;
-        width: 24px;
+        top: 8px;
+        left: 11px;
+        width: 23px;
     }
 
     .platform-logo svg {
@@ -31,13 +30,13 @@
     }
 </style>
 
-<div class="no-select login-button">
-    <a class="button has-text-centered" href="/login/caffeine">
+<div class="no-select signin-button">
+    <a class="button has-text-centered" href="/signin/glimesh">
         <div class="platform-logo">
-            <img src="/img/platforms/caffeine/icon.svg" alt="Caffeine Logo" />
+            <img src="/img/platforms/glimesh/icon.svg" alt="Glimesh Logo" />
         </div>
         <span>
-            Caffeine
+            Glimesh
         </span>
     </a>
 </div>

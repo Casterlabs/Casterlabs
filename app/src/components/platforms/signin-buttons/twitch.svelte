@@ -5,12 +5,12 @@
         overflow: hidden;
         color: #dbdbdb;
         transition: .5s;
-        background-color: #0d1524;
+        background-color: #8838ff;
     }
 
     .button:hover {
         transition: .5s;
-        background-color: #0c1322;
+        background-color: #7b24ff;
     }
 
     .button span {
@@ -19,9 +19,9 @@
 
     .platform-logo {
         position: absolute;
-        top: 8px;
-        left: 11px;
-        width: 23px;
+        top: 10px;
+        left: 14px;
+        width: 19px;
     }
 
     .platform-logo svg {
@@ -30,13 +30,13 @@
     }
 </style>
 
-<div class="no-select login-button">
-    <a class="button has-text-centered" href="/login/glimesh">
+<div class="no-select signin-button">
+    <a class="button has-text-centered" href="/signin/twitch">
         <div class="platform-logo">
-            <img src="/img/platforms/glimesh/icon.svg" alt="Glimesh Logo" />
+            <img src="/img/platforms/twitch/icon.svg" alt="Twitch Logo" />
         </div>
         <span>
-            Glimesh
+            Twitch
         </span>
     </a>
 </div>

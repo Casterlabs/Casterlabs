@@ -1,9 +1,5 @@
 
-let previousPage = null;
-
 function clickNav(name) {
-    previousPage = name;
-
     const navigation = document.querySelector(`#router-navigate-${name}`);
 
     navigation.click();
@@ -11,23 +7,12 @@ function clickNav(name) {
 
 const Router = {
 
-    navigateLogin() {
-        clickNav("login");
+    navigateSignin() {
+        clickNav("signin");
     },
 
     navigateHome() {
         clickNav("home");
-    },
-
-    navigateBackOrHome() {
-        if (
-            (previousPage == "login") ||
-            (history.length == 1)
-        ) {
-            this.navigateHome();
-        } else {
-            history.back();
-        }
     }
 
 };

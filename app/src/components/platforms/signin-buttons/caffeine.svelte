@@ -5,13 +5,14 @@
         overflow: hidden;
         color: #dbdbdb;
         transition: .5s;
-        background-color: #149b53;
+        background-color: #0000FF;
     }
 
     .button:hover {
         transition: .5s;
-        background-color: #118849;
+        background-color: #0000cc;
     }
+
 
     .button span {
         z-index: 2;
@@ -19,9 +20,9 @@
 
     .platform-logo {
         position: absolute;
-        top: 8px;
-        left: 11px;
-        width: 23px;
+        top: 7px;
+        left: 10px;
+        width: 24px;
     }
 
     .platform-logo svg {
@@ -31,12 +32,12 @@
 </style>
 
 <div class="no-select login-button">
-    <a class="button has-text-centered" href="/login/trovo">
+    <a class="button has-text-centered" href="/signin/caffeine">
         <div class="platform-logo">
-            <img src="/img/platforms/trovo/icon.svg" alt="Trovo Logo" />
+            <img src="/img/platforms/caffeine/icon.svg" alt="Caffeine Logo" />
         </div>
         <span>
-            Trovo
+            Caffeine
         </span>
     </a>
 </div>

@@ -154,66 +154,76 @@ const Auth = {
     /* ------------ */
 
     addUserAuth(platform, token) {
-        platform = platform.toUpperCase();
+        return new Promise((resolve, reject) => {
+            platform = platform.toUpperCase();
 
-        if (this.getSupportedPlatforms().includes(platform)) {
-            authStore.set(platform, token);
-
-            const conn = new KoiConn();
-            let loggedIn = false;
-
-            function reconnect() {
-                loggedIn = false;
-
-                // Check to make sure we aren't
-                // intending for it to be closed.
-                if (koiconns[platform]) {
-                    conn.connect(token);
+            if (this.getSupportedPlatforms().includes(platform)) {
+                // ¯\_(ツ)_/¯
+                if (this.getSignedInPlatforms()[platform]) {
+                    this.signOutUser(platform);
                 }
-            }
 
-            conn.on("close", reconnect);
+                authStore.set(platform, token);
 
-            conn.on("error", (event) => {
-                const error = event.error;
+                const conn = new KoiConn();
+                let loggedIn = false;
 
-                switch (error) {
-                    // case "PUPPET_AUTH_INVALID": {
-                    //     break;
-                    // }
+                function reconnect() {
+                    loggedIn = false;
 
-                    case "USER_AUTH_INVALID": {
-                        loggedIn = false;
-                        this.signOutUser(platform);
-                        Koi.broadcast("account_signout", {
-                            platform: platform
-                        });
-
-                        if (!this.isSignedIn()) {
-                            Koi.broadcast("no_account", {});
-                        }
-                        break;
+                    // Check to make sure we aren't
+                    // intending for it to be closed.
+                    if (koiconns[platform]) {
+                        conn.connect(token);
                     }
                 }
-            });
 
-            conn.on("event", (event) => {
-                if (event.id) {
-                    event.id = `${platform}:${event.id}`;
-                }
+                conn.on("close", reconnect);
 
-                if (event.event_type == "USER_UPDATE") {
-                    loggedIn = true;
-                    Koi.broadcast("account_signin", event.streamer);
-                }
+                conn.on("error", (event) => {
+                    const error = event.error;
 
-                Koi.broadcast(event.event_type, event);
-            });
+                    switch (error) {
+                        // case "PUPPET_AUTH_INVALID": {
+                        //     break;
+                        // }
 
-            koiconns[platform] = conn;
+                        case "USER_AUTH_INVALID": {
+                            loggedIn = false;
+                            this.signOutUser(platform);
+                            Koi.broadcast("account_signout", {
+                                platform: platform
+                            });
 
-            reconnect();
-        }
+                            if (!this.isSignedIn()) {
+                                Koi.broadcast("no_account", {});
+                            }
+
+                            reject();
+                            break;
+                        }
+                    }
+                });
+
+                conn.on("event", (event) => {
+                    if (event.id) {
+                        event.id = `${platform}:${event.id}`;
+                    }
+
+                    if (event.event_type == "USER_UPDATE") {
+                        loggedIn = true;
+                        Koi.broadcast("account_signin", event.streamer);
+                        resolve();
+                    }
+
+                    Koi.broadcast(event.event_type, event);
+                });
+
+                koiconns[platform] = conn;
+
+                reconnect();
+            }
+        });
     },
 
     signOutUser(platform) {
@@ -377,21 +387,21 @@ const Auth = {
 
 Object.freeze(Auth);
 
-// Add listeners for forcing navigation to the login screen when logged out.
+// Add listeners for forcing navigation to the signin screen when logged out.
 {
     let signedOutEntirely = true;
 
     Koi.on("no_account", () => {
-        console.debug("[Auth]", "User has not signed into an account yet, sending them to the login screen.");
+        console.debug("[Auth]", "User has not signed into an account yet, sending them to the signin screen.");
         signedOutEntirely = true;
-        Router.navigateLogin();
+        Router.navigateSignin();
     });
 
     Koi.on("account_signin", () => {
         if (signedOutEntirely) {
-            console.debug("[Auth]", "User is now logged in, sending them to HomeORBack.");
+            console.debug("[Auth]", "User is now logged in, sending them to Home.");
             signedOutEntirely = false;
-            Router.navigateBackOrHome();
+            Router.navigateHome();
         }
     });
 }

@@ -5,12 +5,16 @@
         overflow: hidden;
         color: #dbdbdb;
         transition: .5s;
-        background: linear-gradient(45deg, #8439af 15%, #fc3537 65%);
+        background-color: #149b53;
     }
 
     .button:hover {
         transition: .5s;
-        background: linear-gradient(45deg, #7a34a2 15%, #fc2226 65%);
+        background-color: #118849;
+    }
+
+    .button span {
+        z-index: 2;
     }
 
     .platform-logo {
@@ -27,12 +31,12 @@
 </style>
 
 <div class="no-select login-button">
-    <a class="button has-text-centered" href="/login/brime">
+    <a class="button has-text-centered" href="/signin/trovo">
         <div class="platform-logo">
-            <img src="/img/platforms/brime/icon.svg" alt="Brime Logo" />
+            <img src="/img/platforms/trovo/icon.svg" alt="Trovo Logo" />
         </div>
         <span>
-            Brime
+            Trovo
         </span>
     </a>
 </div>

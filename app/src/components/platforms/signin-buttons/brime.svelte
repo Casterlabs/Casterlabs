@@ -5,23 +5,19 @@
         overflow: hidden;
         color: #dbdbdb;
         transition: .5s;
-        background-color: #8838ff;
+        background: linear-gradient(45deg, #8439af 15%, #fc3537 65%);
     }
 
     .button:hover {
         transition: .5s;
-        background-color: #7b24ff;
-    }
-
-    .button span {
-        z-index: 2;
+        background: linear-gradient(45deg, #7a34a2 15%, #fc2226 65%);
     }
 
     .platform-logo {
         position: absolute;
-        top: 10px;
-        left: 14px;
-        width: 19px;
+        top: 8px;
+        left: 11px;
+        width: 23px;
     }
 
     .platform-logo svg {
@@ -30,13 +26,13 @@
     }
 </style>
 
-<div class="no-select login-button">
-    <a class="button has-text-centered" href="/login/twitch">
+<div class="no-select signin-button">
+    <a class="button has-text-centered" href="/signin/brime">
         <div class="platform-logo">
-            <img src="/img/platforms/twitch/icon.svg" alt="Twitch Logo" />
+            <img src="/img/platforms/brime/icon.svg" alt="Brime Logo" />
         </div>
         <span>
-            Twitch
+            Brime
         </span>
     </a>
 </div>
