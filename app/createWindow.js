@@ -88,11 +88,13 @@ function createWindow(appDir) {
     ];
 
     app.on("browser-window-focus", () => {
-        for (const intercept of reloadKeybinds) {
-            globalShortcut.register(intercept, () => {
-                console.debug("[Framework]", intercept, "was blocked.");
-                // reloadPage();
-            });
+        if (!isDev) {
+            for (const intercept of reloadKeybinds) {
+                globalShortcut.register(intercept, () => {
+                    console.debug("[Framework]", intercept, "was blocked.");
+                    // reloadPage();
+                });
+            }
         }
 
         globalShortcut.register("Alt+F5", () => {
