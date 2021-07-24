@@ -70,20 +70,16 @@
     <div class="platform-logo">
         <img src="/img/platforms/{platform}/icon.svg" alt="{platformName} Logo" />
     </div>
-    <a class="open-channel">
+    <a class="open-channel" rel="external">
         {platformName}
     </a>
-    <span class="tag allow-select">
+    <span class="tag allow-select streamer-name">
         casterlabs
     </span>
-    <a class="tag is-success signin-button">
+    <a href="/login/{platform}" class="tag is-success signin-button">
         Link
     </a>
     <a class="tag is-danger signout-button">
         Unlink
     </a>
-
-    <script>
-        document.querySelector("#account-caffeine").classList.add("linked"); // Visual test.
-    </script>
 </div>

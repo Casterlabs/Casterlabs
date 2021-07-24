@@ -33,8 +33,14 @@ function generateUnsafeUniquePassword(len = 32) {
     return generateUUID().replace(/-/g, "") + generateUnsafePassword(len);
 }
 
+function getRandomItemInArray(arr) {
+    const rnd = Math.floor(Math.random() * arr.length);
+    return arr[rnd];
+}
+
 export {
     generateUUID,
     generateUnsafePassword,
-    generateUnsafeUniquePassword
+    generateUnsafeUniquePassword,
+    getRandomItemInArray
 };

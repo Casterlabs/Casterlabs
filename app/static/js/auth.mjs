@@ -1,6 +1,9 @@
 import Koi from "./koi.mjs";
 import { KinokoV1 } from "./util/kinoko.mjs";
-import { generateUnsafePassword } from "./util/util.mjs";
+import KoiConn from "./util/koiconn.mjs";
+import { generateUnsafePassword, getRandomItemInArray } from "./util/misc.mjs";
+import { authStore } from "./caffeinated.mjs";
+import Router from "./router.mjs";
 
 class AuthCallback {
 
@@ -64,23 +67,50 @@ class AuthCallback {
 }
 
 Koi.on("x_koi_upvotechat", (e) => {
-    const { messageId } = e;
+    const splitMessageId = e.messageId.split(":"); // Split by colon
+    const platform = splitMessageId.shift(); // Remove the first element, that will be the platform.
+    const messageId = splitMessageId.join(":"); // Join it back together
 
+    const koiconn = koiconns[platform];
+
+    if (koiconn) {
+        koiconn.upvoteMessage(messageId);
+    }
 });
 
 Koi.on("x_koi_deletechat", (e) => {
-    const { messageId } = e;
+    const splitMessageId = e.messageId.split(":"); // Split by colon
+    const platform = splitMessageId.shift(); // Remove the first element, that will be the platform.
+    const messageId = splitMessageId.join(":"); // Join it back together
 
+    const koiconn = koiconns[platform];
+
+    if (koiconn) {
+        koiconn.deleteMessage(messageId);
+    }
 });
 
 Koi.on("x_koi_sendchat", (e) => {
     const { message, platform, chatter } = e;
 
+    const koiconn = koiconns[platform];
+
+    if (koiconn) {
+        koiconn.sendMessage(message, chatter);
+    }
 });
 
 Koi.on("x_koi_test", (e) => {
     const { eventType } = e;
 
+    // This code basically randomizes which platform the test
+    // will be requested from, just to keep everything fresh.
+    const signedIn = Object.keys(Auth.getSignedInPlatforms());
+    const randomPlatform = getRandomItemInArray(signedIn);
+
+    const koiconn = koiconns[randomPlatform];
+
+    koiconn.test(eventType);
 });
 
 const OAUTH_LINKS = {
@@ -115,7 +145,134 @@ const OAUTH_LINKS = {
     }
 };
 
+let koiconns = {};
+
 const Auth = {
+
+    /* ------------ */
+    /* User Auth    */
+    /* ------------ */
+
+    addUserAuth(platform, token) {
+        platform = platform.toUpperCase();
+
+        if (this.getSupportedPlatforms().includes(platform)) {
+            authStore.set(platform, token);
+
+            const conn = new KoiConn();
+            let loggedIn = false;
+
+            function reconnect() {
+                loggedIn = false;
+
+                // Check to make sure we aren't
+                // intending for it to be closed.
+                if (koiconns[platform]) {
+                    conn.connect(token);
+                }
+            }
+
+            conn.on("close", reconnect);
+
+            conn.on("error", (event) => {
+                const error = event.error;
+
+                switch (error) {
+                    // case "PUPPET_AUTH_INVALID": {
+                    //     break;
+                    // }
+
+                    case "USER_AUTH_INVALID": {
+                        loggedIn = false;
+                        this.signOutUser(platform);
+                        Koi.broadcast("account_signout", {
+                            platform: platform
+                        });
+
+                        if (!this.isSignedIn()) {
+                            Koi.broadcast("no_account", {});
+                        }
+                        break;
+                    }
+                }
+            });
+
+            conn.on("event", (event) => {
+                if (event.id) {
+                    event.id = `${platform}:${event.id}`;
+                }
+
+                if (event.event_type == "USER_UPDATE") {
+                    loggedIn = true;
+                    Koi.broadcast("account_signin", event.streamer);
+                }
+
+                Koi.broadcast(event.event_type, event);
+            });
+
+            koiconns[platform] = conn;
+
+            reconnect();
+        }
+    },
+
+    signOutUser(platform) {
+        const conn = koiconns[platform];
+
+        if (conn) {
+            authStore.set(platform, null);
+            koiconns[platform] = null;
+            conn.close();
+
+            if (!this.isSignedIn()) {
+                Koi.broadcast("no_account", {});
+            }
+        }
+    },
+
+    getSignedInPlatforms() {
+        const platforms = {};
+
+        for (const [platform, koiconn] of Object.entries(koiconns)) {
+            if (koiconn) {
+                platforms[platform] = {
+                    viewerList: koiconn.viewerList,
+                    userData: koiconn.userData,
+                    streamData: koiconn.streamData
+                };
+            }
+        }
+
+        return platforms;
+    },
+
+    isSignedIn() {
+        for (const koiconn of Object.values(koiconns)) {
+            if (koiconn) {
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+    /* ------------ */
+    /* Misc         */
+    /* ------------ */
+
+    getSupportedPlatforms() {
+        return [
+            "CAFFEINE",
+            "TWITCH",
+            "TROVO",
+            "GLIMESH",
+            "BRIME"
+        ];
+    },
+
+    /* ------------ */
+    /* Signins      */
+    /* ------------ */
 
     signinCaffeine(username, password, mfa) {
         return new Promise((resolve, reject) => {
@@ -198,7 +355,7 @@ const Auth = {
 
     signinOAuth(platform) {
         return new Promise((resolve, reject) => {
-            const { type, link } = OAUTH_LINKS[platform];
+            const { type, link } = OAUTH_LINKS[platform.toLowerCase()];
 
             const auth = new AuthCallback(type);
 
@@ -214,14 +371,47 @@ const Auth = {
 
             openLink(link + auth.getStateString());
         });
-    },
-
-    signout(platform) {
-
     }
 
 };
 
 Object.freeze(Auth);
+
+// Add listeners for forcing navigation to the login screen when logged out.
+{
+    let signedOutEntirely = true;
+
+    Koi.on("no_account", () => {
+        console.debug("[Auth]", "User has not signed into an account yet, sending them to the login screen.");
+        signedOutEntirely = true;
+        Router.navigateLogin();
+    });
+
+    Koi.on("account_signin", () => {
+        if (signedOutEntirely) {
+            console.debug("[Auth]", "User is now logged in, sending them to HomeORBack.");
+            signedOutEntirely = false;
+            Router.navigateBackOrHome();
+        }
+    });
+}
+
+// Check for accounts, otherwise broadcast that we're not signed in.
+{
+    let attemptedSignIn = false;
+
+    for (const [platform, token] of Object.entries(authStore.store)) {
+        if (typeof token == "string") {
+            attemptedSignIn = true;
+            Auth.addUserAuth(platform, token);
+        } else {
+            authStore.set(platform, null);
+        }
+    }
+
+    if (!attemptedSignIn) {
+        Koi.broadcast("no_account", {});
+    }
+}
 
 export default Auth;

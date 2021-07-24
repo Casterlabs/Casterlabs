@@ -56,7 +56,7 @@ const storePath = path.join(app.getPath("userData"), "config");
 const store_AuthDefaults = {};
 // Populate.
 for (const supportedPlatform of SUPPORTED_PLATFORMS) {
-    store_AuthDefaults[supportedPlatform] = [];
+    store_AuthDefaults[supportedPlatform] = null;
 }
 
 const appStore = new Store({

@@ -67,6 +67,15 @@
 		<script type="module" src="./js/status-integration/discord.mjs"></script>
 		<script type="module" src="./js/ui.mjs"></script>
 
+		<!-- DEBUG SCRIPT -->
+		<script type="module">
+			import Auth from "./js/auth.mjs";
+			import Koi from "./js/koi.mjs";
+
+			window.Auth = Auth;
+			window.Koi = Koi;
+		</script>
+
 		<!-- Sapper creates a <script> tag containing `src/client.js`
 	     and anything else it needs to hydrate the app and
 	     initialise the router -->
@@ -90,6 +99,11 @@
 		<link rel="stylesheet" href="css/titlebar.css" />
 		<link rel="stylesheet" href="css/scrollbar.css" />
 		<link rel="stylesheet" href="css/sidebar.css" />
+
+		<div id="router" class="hidden">
+			<a id="router-navigate-login" href="/login"></a>
+			<a id="router-navigate-home" href="/home"></a>
+		</div>
 
 		<div class="body-container">
 			<!-- Titlebar -->

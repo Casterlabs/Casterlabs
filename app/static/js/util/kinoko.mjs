@@ -1,4 +1,4 @@
-import EventHandler from "./eventhandler.mjs";
+import { EventHandler } from "./eventhandler.mjs";
 
 function KinokoV1() {
     const eventHandler = new EventHandler();

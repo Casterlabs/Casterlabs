@@ -47,7 +47,7 @@ function EventHandler() {
                 if (wildCardCallbacks) {
                     Object.values(wildCardCallbacks).forEach((callback) => {
                         try {
-                            callback(type, Object.assign({}, data));
+                            callback(type.toLowerCase(), Object.assign({}, data));
                         } catch (e) {
                             console.error("A listener produced an exception: ");
                             console.error(e);
@@ -104,6 +104,8 @@ function SingleEventHandler() {
         }
     };
 }
+
+// export default EventHandler;
 
 export {
     EventHandler,

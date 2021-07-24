@@ -1,6 +1,22 @@
-import EventHandler from "./util/eventhandler.mjs";
+import { EventHandler } from "./util/eventhandler.mjs";
 
 const eventHandler = new EventHandler();
+
+// eventHandler.on("*", (type, data) => {
+//     console.debug("[Koi]", `(${type})`, data);
+// });
+
+eventHandler.on("account_signin", (data) => {
+    console.debug("[Koi]", `(account_signin)`, data.platform);
+});
+
+eventHandler.on("account_signout", (data) => {
+    console.debug("[Koi]", `(account_signout)`, data.platform);
+});
+
+eventHandler.on("no_account", () => {
+    console.debug("[Koi]", `(no_account)`, "No account.");
+});
 
 const Koi = {
 
