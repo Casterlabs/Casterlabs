@@ -26,6 +26,10 @@
 
 			window.Auth = Auth;
 			window.Koi = Koi;
+
+			Koi.on("chat", (event) => {
+				console.log("[Chat]", `${event.sender.displayname}: ${event.message}`)
+			})
 		</script>
 
 		<!-- Sapper creates a <script> tag containing `src/client.js`
