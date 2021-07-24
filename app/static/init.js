@@ -49,3 +49,13 @@ function openLink(link) {
 window.addEventListener("load", () => {
     feather.replace();
 });
+
+function getUrlVars() {
+    const vars = {};
+
+    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+        vars[key] = value;
+    });
+
+    return vars;
+}

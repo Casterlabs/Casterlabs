@@ -76,7 +76,7 @@
     <span class="tag allow-select streamer-name">
         casterlabs
     </span>
-    <a href="/signin/{platform}" class="tag is-success signin-button">
+    <a href="/signin/{platform}?homeGoBack=1" class="tag is-success signin-button">
         Link
     </a>
     <a class="tag is-danger signout-button">

@@ -78,7 +78,9 @@
 
         Koi.on("account_signin", onAccountSignin);
 
-        Koi.on("account_signout", (platform) => {
+        Koi.on("account_signout", (data) => {
+            const platform = data.platform;
+
             const box = accountsContainer.querySelector(`#account-${platform.toLowerCase()}`);
             const streamerName = box.querySelector(".streamer-name");
             const openChannel = box.querySelector(".open-channel");

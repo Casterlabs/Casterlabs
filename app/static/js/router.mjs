@@ -12,7 +12,17 @@ const Router = {
     },
 
     navigateHome() {
-        clickNav("home");
+        if (getUrlVars().homeGoBack) {
+            history.back();
+        } else {
+            clickNav("home");
+        }
+    },
+
+    tryHomeGoBack() {
+        if (getUrlVars().homeGoBack) {
+            history.back();
+        }
     }
 
 };

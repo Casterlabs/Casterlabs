@@ -5,6 +5,8 @@ import { generateUnsafePassword, getRandomItemInArray } from "./util/misc.mjs";
 import { authStore } from "./caffeinated.mjs";
 import Router from "./router.mjs";
 
+const BRIME_CLIENT_ID = "605fadfe563212359ce4eb8b";
+
 class AuthCallback {
 
     constructor(type = "unknown") {
@@ -233,6 +235,10 @@ const Auth = {
             authStore.set(platform, null);
             koiconns[platform] = null;
             conn.close();
+
+            Koi.broadcast("account_signout", {
+                platform: platform
+            });
 
             if (!this.isSignedIn()) {
                 Koi.broadcast("no_account", {});
