@@ -98,5 +98,6 @@
             }
         }
 
+        Auth.cancelOAuthSignin();
     </script>
 </div>

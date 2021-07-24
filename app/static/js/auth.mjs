@@ -11,25 +11,24 @@ class AuthCallback {
 
     constructor(type = "unknown") {
         this.id = `auth_redirect:${generateUnsafePassword(128)}:${type}`;
+        this.cancelled = false;
     }
 
-    disconnect() {
-        if (this.kinoko) {
-            this.kinoko.disconnect();
-        }
-
-        this.kinoko = new KinokoV1();
+    cancel() {
+        this.cancelled = true;
+        this.kinoko?.disconnect();
+        this.kinoko = null;
     }
 
     awaitAuthMessage(timeout = -1) {
         return new Promise((resolve, reject) => {
-            this.disconnect();
+            this.kinoko = new KinokoV1();
 
             let fufilled = false;
             const id = (timeout > 0) ? setTimeout(() => {
                 if (!fufilled) {
                     fufilled = true;
-                    this.disconnect();
+                    this.cancel();
                     reject("TOKEN_TIMEOUT");
                 }
             }, timeout) : -1;
@@ -37,17 +36,20 @@ class AuthCallback {
             this.kinoko.connect(this.id, "parent");
 
             this.kinoko.on("close", () => {
-                if (!fufilled) {
+                if (!fufilled && !this.cancelled) {
                     reject("CONNECTION_CLOSED");
                 }
 
                 clearTimeout(id);
             });
 
-            this.kinoko.on("message", (message) => {
+            this.kinoko.on("message", (data) => {
+                const message = data.message;
+
                 fufilled = true;
 
-                this.disconnect();
+                this.kinoko.disconnect();
+                this.kinoko = null;
 
                 if (message === "NONE") {
                     reject("NO_TOKEN_PROVIDED");
@@ -148,6 +150,7 @@ const OAUTH_LINKS = {
 };
 
 let koiconns = {};
+let oauthCallback = null;
 
 const Auth = {
 
@@ -191,6 +194,8 @@ const Auth = {
                         // }
 
                         case "USER_AUTH_INVALID": {
+                            reject();
+
                             loggedIn = false;
                             this.signOutUser(platform);
                             Koi.broadcast("account_signout", {
@@ -200,8 +205,6 @@ const Auth = {
                             if (!this.isSignedIn()) {
                                 Koi.broadcast("no_account", {});
                             }
-
-                            reject();
                             break;
                         }
                     }
@@ -370,13 +373,15 @@ const Auth = {
     },
 
     signinOAuth(platform) {
+        oauthCallback?.cancel();
+
         return new Promise((resolve, reject) => {
             const { type, link } = OAUTH_LINKS[platform.toLowerCase()];
 
-            const auth = new AuthCallback(type);
+            oauthCallback = new AuthCallback(type);
 
             // 15min timeout
-            auth.awaitAuthMessage((15 * 60) * 1000)
+            oauthCallback.awaitAuthMessage((15 * 60) * 1000)
                 .then((clToken) => {
                     resolve(clToken);
                 })
@@ -385,8 +390,12 @@ const Auth = {
                     reject(reason);
                 });
 
-            openLink(link + auth.getStateString());
+            openLink(link + oauthCallback.getStateString());
         });
+    },
+
+    cancelOAuthSignin() {
+        oauthCallback?.cancel();
     }
 
 };

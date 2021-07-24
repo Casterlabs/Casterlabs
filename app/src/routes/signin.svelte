@@ -51,4 +51,8 @@
             applies to you.
         </span>
     </div>
+    <script type="module">
+        import Auth from "./js/auth.mjs";
+        Auth.cancelOAuthSignin();
+    </script>
 </div>
