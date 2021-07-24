@@ -239,7 +239,9 @@ const Auth = {
                     }
                 }
 
-                conn.on("close", reconnect);
+                conn.on("close", () => {
+                    setTimeout(reconnect, 5000);
+                });
 
                 conn.on("error", (event) => {
                     const error = event.error;

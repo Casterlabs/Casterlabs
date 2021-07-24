@@ -69,7 +69,7 @@ class KoiConn {
                 // let userAuthReached = false;
 
                 this.ws.onerror = () => {
-                    setTimeout(() => this.connect(token), 1000);
+                    setTimeout(() => this.connect(token), 5000);
                 }
 
                 this.ws.onopen = () => {
