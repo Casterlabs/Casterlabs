@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, globalShortcut } = require("electron");
 const path = require("path");
 const windowStateKeeper = require("electron-window-state");
 
@@ -12,6 +12,18 @@ const isDev = !app.isPackaged;
 const MIN_WIDTH = 800;
 const MIN_HEIGHT = 600;
 
+let mainWindow;
+
+function reloadPage() {
+    if (isDev) {
+        // Load the local sapper server when in dev environment.
+        mainWindow.loadURL("http://localhost:3000/");
+    } else {
+        // Use electron-serve to serve the sapper export.
+        loadURL(mainWindow);
+    }
+}
+
 function createWindow(appDir) {
     const baseDir = isDev ? path.join(appDir, "static") : path.join(appDir, "__sapper__/export");
 
@@ -22,7 +34,7 @@ function createWindow(appDir) {
     });
 
     // Create the browser window.
-    let mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         minWidth: MIN_WIDTH,
         minHeight: MIN_HEIGHT,
         width: mainWindowState.width,
@@ -42,13 +54,7 @@ function createWindow(appDir) {
         }
     });
 
-    if (isDev) {
-        // Load the local sapper server when in dev environment.
-        mainWindow.loadURL("http://localhost:3000/");
-    } else {
-        // Use electron-serve to serve the sapper export.
-        loadURL(mainWindow);
-    }
+    reloadPage();
 
     // Emitted when the window is closed.
     mainWindow.on("closed", function () {
@@ -65,6 +71,42 @@ function createWindow(appDir) {
     });
 
     return mainWindow;
+}
+
+
+// Intercept CTRL+R or F5.
+{
+    const reloadKeybinds = [
+        "CommandOrControl+Shift+R",
+        "CommandOrControl+R",
+        "F5"
+    ];
+
+    const autoUnregister = [
+        ...reloadKeybinds,
+        "Alt+F5"
+    ];
+
+    app.on("browser-window-focus", () => {
+        for (const intercept of reloadKeybinds) {
+            globalShortcut.register(intercept, () => {
+                console.debug("[Framework]", intercept, "was blocked.");
+                // reloadPage();
+            });
+        }
+
+        globalShortcut.register("Alt+F5", () => {
+            console.debug("[Framework]", "Alt+F5 was pressed, relaunching client.");
+            app.relaunch();
+            app.exit(0);
+        });
+    });
+
+    app.on("browser-window-blur", () => {
+        for (const intercept of autoUnregister) {
+            globalShortcut.unregister(intercept);
+        }
+    });
 }
 
 module.exports = createWindow;
