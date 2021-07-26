@@ -5,7 +5,7 @@
 	--background-color: white;
 
 	/* This is set elsewhere */
-	--side-bar-bar-width: 0;
+	--side-bar-width: 0;
 }
 
 .bulma-dark-mode:root {
@@ -20,22 +20,23 @@ html {
 	display: none !important;
 }
 
-.sapper-container {
-	position: absolute;
-	top: var(--title-bar-height);
-	bottom: 0;
-	left: var(--side-bar-bar-width);
-	right: 0;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-
 #side-bar {
 	position: absolute;
 	top: var(--title-bar-height);
 	bottom: 0;
 	left: 0;
-	width: var(--side-bar-bar-width);
+	width: var(--side-bar-width);
+	display: none;
+}
+
+.sapper-container {
+	position: absolute;
+	top: var(--title-bar-height);
+	bottom: 0;
+	left: var(--side-bar-width);
+	right: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 /* Color changes */

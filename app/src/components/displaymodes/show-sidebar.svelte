@@ -1,11 +1,11 @@
 <svelte:head>
     <style>
         :root {
-            --side-bar-bar-width: 150px;
+            --side-bar-width: 150px !important;
         }
 
         #side-bar {
-            display: block;
+            display: block !important;
         }
     </style>
 </svelte:head>

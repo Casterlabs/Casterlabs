@@ -1,10 +1,10 @@
 <script>
 	import PageAttributes from "../components/page-attributes.svelte";
-	import HideSideBar from "../components/displaymodes/hide-sidebar.svelte";
+	import ShowSideBar from "../components/displaymodes/show-sidebar.svelte";
 </script>
 
 <PageAttributes />
-<HideSideBar />
+<ShowSideBar />
 
 <div class="has-text-centered">
 	<br />
