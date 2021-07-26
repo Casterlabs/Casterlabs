@@ -1,7 +1,7 @@
 <svelte:head>
     <style>
         :root {
-            --side-bar-width: 150px !important;
+            --side-bar-width: 160px !important;
         }
 
         #side-bar {
