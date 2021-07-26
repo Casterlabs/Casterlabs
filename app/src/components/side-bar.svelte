@@ -1,50 +1,21 @@
 <script>
-    import ToggleableDropdown from "./toggleable-dropdown.svelte";
+
 </script>
 
 <style>
     .sidebar-container {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        overflow: hidden;
-    }
-
-    .sidebar {
-        position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
+        margin-top: 15px;
         overflow-y: auto;
     }
 
-    :global(.dropdown-content) {
-        background-color: transparent !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        padding: 0;
-    }
-
-    :global(.dropdown-trigger>.button) {
-        padding-left: 7.5px;
-        padding-right: 7.5px;
-        background-color: transparent !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        padding: 0;
-        border-color: transparent !important;
-        border-width: 0 !important;
-    }
-
-
-    :global(.dropdown-trigger>.button:hover) {
-        background-color: rgba(100, 100, 100, .05) !important;
-    }
-
     .sidebar-section {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .sidebar-section>.title {
         margin-bottom: 0 !important;
     }
 
@@ -52,18 +23,21 @@
         margin-top: 15px;
     }
 
+    .sidebar-section>.title,
     .sidebar-category-button {
-        padding-left: 7.5px;
-        padding-right: 7.5px;
+        font-size: 1.15em !important;
+    }
+
+    .sidebar-category-button {
         color: unset !important;
         width: 100%;
-        margin-right: 10px;
         border-radius: 4px;
         display: block;
     }
 
-    .sidebar-category-button span {
-        margin-left: 10px;
+    :not(.sidebar-section)>.sidebar-category-button {
+        padding-left: 10px;
+        padding-right: 10px;
     }
 
     .sidebar-category-button:hover {
@@ -75,25 +49,47 @@
     }
 </style>
 
-<div class="sidebar-container">
-    <div class="sidebar has-text-left">
+<div class="sidebar-container has-text-left">
 
-        <div class="dropdown-container">
-            <ToggleableDropdown>
-                <div class="sidebar-section" slot="dropdown-name">
-                    <span class="title is-size-6">
-                        Widgets
-                    </span>
-                </div>
-                <div slot="dropdown-content">
-                    <a class="sidebar-category-button is-size-6">
-                        <span>
-                            Donation Widget
-                        </span>
-                    </a>
-                </div>
-            </ToggleableDropdown>
-        </div>
+    <!-- Misc -->
+    <div>
+        <a class="sidebar-category-button">
+            Chat
+        </a>
 
+        <a class="sidebar-category-button">
+            Analytics
+        </a>
+
+        <a class="sidebar-category-button">
+            Widgets
+        </a>
     </div>
+
+    <!-- Channel -->
+    <div class="sidebar-section">
+        <h1 class="title">
+            Channel
+        </h1>
+
+        <a class="sidebar-category-button">
+            Custom Emotes
+        </a>
+
+        <a class="sidebar-category-button">
+            Hyoki
+        </a>
+    </div>
+
+    <!-- Other -->
+    <div class="sidebar-section">
+        <h1 class="title">
+            Other
+        </h1>
+
+        <a class="sidebar-category-button" href="/settings">
+            Settings
+        </a>
+    </div>
+
 </div>
