@@ -6,7 +6,7 @@
 <PageAttributes />
 <HideSideBar />
 
-<div class="has-text-centered no-select">
+<div class="has-text-centered">
     <br />
     <br />
     <br />

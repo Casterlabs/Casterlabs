@@ -63,7 +63,7 @@
     }
 </style>
 
-<div class="welcome-contents no-select">
+<div class="welcome-contents">
     <div class="welcome-title has-text-centered">
         <h1 class="title is-4">
             Let's customize Caffeinated.
