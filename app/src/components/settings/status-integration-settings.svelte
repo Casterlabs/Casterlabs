@@ -11,6 +11,7 @@
     </div>
     <br />
     <div>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label>
             Status Icon
             <br />

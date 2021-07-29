@@ -70,6 +70,7 @@
     <div class="platform-logo">
         <img src="/img/platforms/{platform}/icon.svg" alt="{platformName} Logo" />
     </div>
+    <!-- svelte-ignore a11y-missing-attribute -->
     <a class="open-channel" rel="external">
         {platformName}
     </a>
@@ -79,6 +80,7 @@
     <a href="/signin/{platform}?homeGoBack=1" class="tag is-success signin-button">
         Link
     </a>
+    <!-- svelte-ignore a11y-missing-attribute -->
     <a class="tag is-danger signout-button">
         Unlink
     </a>
