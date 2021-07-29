@@ -58,7 +58,7 @@ function updateLogoImages() {
     const logo = getLogo();
 
     for (const img of document.querySelectorAll("img.app-logo")) {
-        img.src = `/logo/${logo}.png`;
+        img.src = `/logo/${logo}.svg`;
     }
 }
 
