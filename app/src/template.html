@@ -21,15 +21,13 @@
 
 		<!-- DEBUG SCRIPT -->
 		<script type="module">
+			import * as Caffeinated from "./js/caffeinated.mjs";
 			import Auth from "./js/auth.mjs";
 			import Koi from "./js/koi.mjs";
 
+			window.Caffeinated = Caffeinated;
 			window.Auth = Auth;
 			window.Koi = Koi;
-
-			Koi.on("chat", (event) => {
-				console.log("[Chat]", `${event.sender.displayname}: ${event.message}`)
-			})
 		</script>
 
 		<!-- Sapper creates a <script> tag containing `src/client.js`

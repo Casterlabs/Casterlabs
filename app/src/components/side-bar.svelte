@@ -53,7 +53,7 @@
 
     <!-- Misc -->
     <div>
-        <a class="sidebar-category-button">
+        <a class="sidebar-category-button" href="/pages/stream-chat">
             Chat
         </a>
 
@@ -77,7 +77,7 @@
         </a>
 
         <a class="sidebar-category-button">
-            Hyoki
+            Shako
         </a>
     </div>
 

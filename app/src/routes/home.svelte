@@ -18,6 +18,8 @@
 	<br />
 	<a href="/settings">settings</a>
 	<br />
+	<a href="/pages/stream-chat">pages/stream-chat</a>
+	<br />
 	<a href="/signin">login</a>
 
 	<br />

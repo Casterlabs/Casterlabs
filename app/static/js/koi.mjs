@@ -6,6 +6,8 @@ const eventHandler = new EventHandler();
 //     console.debug("[Koi]", `(${type})`, data);
 // });
 
+let history = [];
+
 eventHandler.on("account_signin", (data) => {
     console.debug("[Koi]", `(account_signin)`, data.platform);
 });
@@ -18,6 +20,21 @@ eventHandler.on("no_account", () => {
     console.debug("[Koi]", `(no_account)`, "No account.");
 });
 
+eventHandler.on("*", (type, event) => {
+    if ([
+        "CHAT",
+        "DONATION",
+        "META",
+        "CLEARCHAT",
+        "CHANNEL_POINTS",
+        "FOLLOW",
+        "SUBSCRIPTION",
+    ].includes(type.toUpperCase())) {
+        Object.freeze(event);
+        history.push(event);
+    }
+});
+
 const Koi = {
 
     // Add the event handler
@@ -26,6 +43,14 @@ const Koi = {
     once: eventHandler.once,
     removeListener: eventHandler.removeListener,
     broadcast: eventHandler.broadcast,
+
+    get history() {
+        return history;
+    },
+
+    get viewerList() {
+        return [];
+    },
 
     upvote(messageId) {
         this.broadcast(`x_koi_upvotechat`, {

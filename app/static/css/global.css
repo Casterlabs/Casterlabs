@@ -39,6 +39,10 @@ html {
 	overflow-y: auto;
 }
 
+#sapper {
+	min-height: 100%;
+}
+
 /* Color changes */
 
 html {

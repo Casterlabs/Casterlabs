@@ -1,7 +1,7 @@
 import Koi from "./koi.mjs";
 import { KinokoV1 } from "./util/kinoko.mjs";
 import KoiConn from "./util/koiconn.mjs";
-import { generateUnsafePassword, getRandomItemInArray, prettifyString } from "./util/misc.mjs";
+import { generateUnsafePassword, getRandomItemInArray } from "./util/misc.mjs";
 import { authStore } from "./caffeinated.mjs";
 import Router from "./router.mjs";
 
@@ -70,9 +70,14 @@ class AuthCallback {
 
 }
 
+function prettifyString(str) {
+    return str.substring(0, 1).toUpperCase() +
+        str.substring(1).toLowerCase();
+}
+
 // Append the user's platform if required.
 function transformUserData(userData) {
-    if (Auth.countSignedInPlatforms() > 1) {
+    if ((Auth.countSignedInPlatforms() > 1) && (userData.platform != "CASTERLABS_SYSTEM")) {
         const platformPretty = prettifyString(userData.platform);
 
         userData.displayname = `${userData.displayname} (${platformPretty})`;

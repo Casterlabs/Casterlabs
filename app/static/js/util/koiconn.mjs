@@ -116,9 +116,15 @@ class KoiConn {
                         const event = json.event;
                         const type = event.event_type;
 
-                        if ((type === "DONATION") && (event.sender.platform === "CASTERLABS_SYSTEM")) {
+                        if (type === "CATCHUP") {
+                            for (const catchupEvent of event.events) {
+                                catchupEvent.is_catchup = true;
+                                this.broadcast("event", catchupEvent);
+                            }
+                            return;
+                        } else if ((type === "DONATION") && (event.sender.platform === "CASTERLABS_SYSTEM")) {
                             const streamerPlatform = event.streamer.platform; // TODO MOVE AWAY FROM THIS
-                            event.isTest = true;
+                            event.is_test = true;
 
                             event.donations.forEach((donation) => {
                                 // TODO keep this up-to-date with new platforms.
@@ -144,11 +150,11 @@ class KoiConn {
                                 event.emotes["Party100"] = "https://d3aqoihi2n8ty8.cloudfront.net/actions/party/light/animated/100/4.gif";
                             }
                         } else if ((type === "FOLLOW") && (event.follower.platform === "CASTERLABS_SYSTEM")) {
-                            event.isTest = true;
+                            event.is_test = true;
                         } else if ((type === "CHAT") && (event.sender.platform === "CASTERLABS_SYSTEM")) {
-                            event.isTest = true;
+                            event.is_test = true;
                         } else if ((type === "SUBSCRIPTION") && event.subscriber && (event.subscriber.platform === "CASTERLABS_SYSTEM")) {
-                            event.isTest = true;
+                            event.is_test = true;
                         }
 
                         // if ((type === "USER_UPDATE") && !userAuthReached) {
