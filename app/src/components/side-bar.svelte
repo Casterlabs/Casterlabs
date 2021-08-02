@@ -51,23 +51,25 @@
 
 <div class="sidebar-container has-text-left">
 
-    <!-- Misc -->
-    <div>
+    <!-- Your Stream -->
+    <div class="sidebar-section">
+        <h1 class="title">
+            Your Stream
+        </h1>
+
         <a class="sidebar-category-button" href="/pages/stream-chat">
             Chat
         </a>
-
-        <a class="sidebar-category-button">
+        <a class="sidebar-category-button hidden">
             Analytics
         </a>
-
-        <a class="sidebar-category-button">
+        <a class="sidebar-category-button" href="/pages/widget-manager">
             Widgets
         </a>
     </div>
 
     <!-- Channel -->
-    <div class="sidebar-section">
+    <div class="sidebar-section hidden">
         <h1 class="title">
             Channel
         </h1>
@@ -75,7 +77,6 @@
         <a class="sidebar-category-button">
             Custom Emotes
         </a>
-
         <a class="sidebar-category-button">
             Shako
         </a>

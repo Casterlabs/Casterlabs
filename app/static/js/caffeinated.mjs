@@ -1,17 +1,20 @@
 const Store = require("electron-store");
 const path = require("path");
 
-
 const PROTOCOLVERSION = 95;
 const VERSION = "1.2-beta5";
 const SUPPORTED_PLATFORMS = ["CAFFEINE", "TWITCH", "TROVO", "GLIMESH", "BRIME"];
+const isDev = !app.isPackaged;
 const Device = {
     name: require("computer-name")(),
     id: require("node-machine-id").machineIdSync()
 };
 
-// Globalize PROTOCOLVERSION, VERSION, SUPPORTED_PLATFORMS. and COMPUTER_NAME
+// Globalize the above vars.
 {
+    Object.freeze(SUPPORTED_PLATFORMS);
+    Object.freeze(Device);
+
     Object.defineProperty(window, "PROTOCOLVERSION", {
         value: PROTOCOLVERSION,
         writable: false,
@@ -24,6 +27,11 @@ const Device = {
     });
     Object.defineProperty(window, "SUPPORTED_PLATFORMS", {
         value: SUPPORTED_PLATFORMS,
+        writable: false,
+        configurable: false
+    });
+    Object.defineProperty(window, "isDev", {
+        value: isDev,
         writable: false,
         configurable: false
     });

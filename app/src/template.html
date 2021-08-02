@@ -24,10 +24,12 @@
 			import * as Caffeinated from "./js/caffeinated.mjs";
 			import Auth from "./js/auth.mjs";
 			import Koi from "./js/koi.mjs";
+			import * as Modules from "./js/modules/modules.mjs";
 
 			window.Caffeinated = Caffeinated;
 			window.Auth = Auth;
 			window.Koi = Koi;
+			window.Modules = Modules;
 		</script>
 
 		<!-- Sapper creates a <script> tag containing `src/client.js`
@@ -47,6 +49,8 @@
 
 	<body>
 		<!-- Svelte does not preserve element order in <head> -->
+		<script type="module" src="./postInit.mjs"></script>
+
 		<link rel="stylesheet" href="css/bulma.min.css" />
 		<link rel="stylesheet" href="css/bulma-prefers-dark.min.css" />
 		<link rel="stylesheet" href="css/global.css" />
@@ -115,6 +119,8 @@
 				</div>
 			</section>
 		</div>
+
+		<div id="sandbox-frames" class="hidden"></div>
 	</body>
 
 </html>
