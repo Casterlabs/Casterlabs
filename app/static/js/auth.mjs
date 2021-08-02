@@ -280,7 +280,7 @@ const Auth = {
 
                     transformEvent(event);
 
-                    if (event.event_type == "USER_UPDATE") {
+                    if ((event.event_type == "USER_UPDATE") && !loggedIn) {
                         loggedIn = true;
                         Koi.broadcast("account_signin", event.streamer);
                         resolve();
