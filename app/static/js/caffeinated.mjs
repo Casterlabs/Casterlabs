@@ -1,26 +1,35 @@
 const Store = require("electron-store");
 const path = require("path");
 
+
 const PROTOCOLVERSION = 95;
 const VERSION = "1.2-beta5";
 const SUPPORTED_PLATFORMS = ["CAFFEINE", "TWITCH", "TROVO", "GLIMESH", "BRIME"];
+const Device = {
+    name: require("computer-name")(),
+    id: require("node-machine-id").machineIdSync()
+};
 
-// Globalize PROTOCOLVERSION, VERSION, and SUPPORTED_PLATFORMS
+// Globalize PROTOCOLVERSION, VERSION, SUPPORTED_PLATFORMS. and COMPUTER_NAME
 {
     Object.defineProperty(window, "PROTOCOLVERSION", {
         value: PROTOCOLVERSION,
         writable: false,
         configurable: false
     });
-
     Object.defineProperty(window, "VERSION", {
         value: VERSION,
         writable: false,
         configurable: false
     });
-
     Object.defineProperty(window, "SUPPORTED_PLATFORMS", {
         value: SUPPORTED_PLATFORMS,
+        writable: false,
+        configurable: false
+    });
+    Object.freeze(Device);
+    Object.defineProperty(window, "Device", {
+        value: Device,
         writable: false,
         configurable: false
     });
@@ -43,6 +52,7 @@ const SUPPORTED_PLATFORMS = ["CAFFEINE", "TWITCH", "TROVO", "GLIMESH", "BRIME"];
     `);
     console.log(`%c\nCaution, here be dragons!\nIf someone tells you to paste code here, they might be trying to steal important data from you.\n`, "font - size: 18px;");
     console.log("\n\n");
+    console.debug("[Framework]", "Device Identity", Device);
 }
 
 // Misc UI stuff.

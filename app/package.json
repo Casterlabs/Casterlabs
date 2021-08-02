@@ -18,10 +18,13 @@
     "electron-package": "sapper export && electron-builder"
   },
   "dependencies": {
+    "computer-name": "^0.1.0",
     "discord-rpc": "^4.0.1",
     "electron-serve": "^1.0.0",
     "electron-store": "^6.0.1",
-    "electron-window-state": "^5.0.3"
+    "electron-window-state": "^5.0.3",
+    "node-machine-id": "^1.1.12",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "compression": "^1.7.1",
