@@ -88,6 +88,14 @@ const appStore = new Store({
                 enabled: true,
                 icon: "casterlabs-logo"
             }
+        },
+        music_integration: {
+            pretzel_rocks: {
+                enabled: false
+            },
+            spotify: {
+                token: null
+            }
         }
     },
     name: "app",

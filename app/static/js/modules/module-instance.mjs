@@ -2,6 +2,7 @@ import { EventHandler } from "../util/eventhandler.mjs";
 import GlobalKoi from "../koi.mjs";
 import Auth from "../auth.mjs";
 import { moduleStore } from "../caffeinated.mjs";
+import MusicIntegration from "../music-integration/music.mjs";
 
 function InstanceKoi() {
     const eventHandler = new EventHandler();
@@ -21,6 +22,10 @@ function InstanceKoi() {
 
         get viewerList() {
             return GlobalKoi.viewerList;
+        },
+
+        getCurrentMusicPlayback() {
+            return MusicIntegration.getCurrentPlayback();
         },
 
         upvote(messageId) {
