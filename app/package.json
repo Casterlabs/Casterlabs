@@ -8,7 +8,7 @@
     "productName": "Caffeinated Dummy Build",
     "files": [
       "__sapper__/export/**/*",
-      "defaultModules/**/*",
+      "../defaultModules/**/*",
       "main.js",
       "createWindow.js"
     ]
