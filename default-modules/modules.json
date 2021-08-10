@@ -7,66 +7,8 @@
         {
             "namespace": "casterlabs_chat_widget",
             "category": "widget",
-            "location": "widgets/chat.js",
-            "settings": {
-                "font": {
-                    "label": "generic.font",
-                    "type": "font",
-                    "defaultValue": "Poppins"
-                },
-                "font_size": {
-                    "label": "generic.font.size",
-                    "type": "number",
-                    "defaultValue": 16
-                },
-                "text_color": {
-                    "label": "generic.text.color",
-                    "type": "color",
-                    "defaultValue": "#FFFFFF"
-                },
-                "show_donations": {
-                    "label": "caffeinated.chat.show_donations",
-                    "type": "checkbox",
-                    "defaultValue": true
-                },
-                "chat_direction": {
-                    "label": "caffeinated.chat.chat_direction",
-                    "type": "select",
-                    "defaultValue": "down",
-                    "options": {
-                        "down": "caffeinated.chat.chat_direction.down",
-                        "up": "caffeinated.chat.chat_direction.up"
-                    }
-                },
-                "chat_animation": {
-                    "label": "caffeinated.chat.chat_animation",
-                    "type": "select",
-                    "defaultValue": "none",
-                    "options": {
-                        "none": "caffeinated.chat.chat_animation.none",
-                        "disappearing": "caffeinated.chat.chat_animation.disappearing",
-                        "slide": "caffeinated.chat.chat_animation.slide",
-                        "slide_disappearing": "caffeinated.chat.chat_animation.slide_disappearing"
-                    }
-                },
-                "text_align": {
-                    "label": "caffeinated.chat.text_align",
-                    "type": "select",
-                    "defaultValue": "left",
-                    "options": {
-                        "left": "caffeinated.chat.text_align.left",
-                        "right": "caffeinated.chat.text_align.right"
-                    }
-                }
-            }
+            "location": "widgets/chat"
         }
     ],
-    "static": [
-        {
-            "namespace": "casterlabs_test",
-            "id": "test",
-            "name": "Test",
-            "location": "test.js"
-        }
-    ]
+    "static": []
 }
