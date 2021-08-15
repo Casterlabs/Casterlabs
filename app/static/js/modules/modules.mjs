@@ -9,8 +9,10 @@ let staticModules = {};
 
 let loadedRepos = {};
 
-function createModule(baseUrl, isStatic, moduleDeclaration, name, id) {
-    const { namespace, location, settings } = moduleDeclaration;
+async function createModule(baseUrl, isStatic, moduleDeclaration, name, id) {
+    const { namespace, location } = moduleDeclaration;
+    const widgetBaseUrl = `${baseUrl}/${location}`;
+    const { scripts, settings } = await (await fetch(`${widgetBaseUrl}/module.json`)).json();
     const fullId = `${namespace}:${id}`;
 
     if (staticModules[fullId] || dynamicModules[fullId]) {
@@ -29,7 +31,17 @@ function createModule(baseUrl, isStatic, moduleDeclaration, name, id) {
             }
         }
 
-        const instance = new ModuleInstance(namespace, id, name, `${baseUrl}/${location}`, storedSettings, defaultSettings);
+        let scriptLocations = [];
+
+        for (const script of scripts) {
+            if (script.startsWith("./")) {
+                scriptLocations.push(`${widgetBaseUrl}/${script.substring(2)}`);
+            } else {
+                scriptLocations.push(script);
+            }
+        }
+
+        const instance = new ModuleInstance(namespace, id, name, scriptLocations, storedSettings, defaultSettings);
 
         instance.destroyHandlers.push(() => {
             if (isStatic) {
@@ -69,8 +81,8 @@ async function registerRepo(baseUrl) {
             }
         }
 
-        for (const staticModule of modulesManifest.static) {
-            const instance = createModule(baseUrl, true, staticModule, staticModule.name, staticModule.id);
+        for (const declaration of modulesManifest.static) {
+            const instance = await createModule(baseUrl, true, declaration, declaration.name, declaration.id);
             _staticModules.push(instance);
         }
 
@@ -96,8 +108,8 @@ class DynamicModuleHolder {
         return this.#declaration.namespace;
     }
 
-    create(name, id = generateUUID()) {
-        const instance = createModule(this.#baseUrl, false, this.#declaration, name, id);
+    async create(name, id = generateUUID()) {
+        const instance = await createModule(this.#baseUrl, false, this.#declaration, name, id);
 
         this.#runningModules[id] = instance;
 

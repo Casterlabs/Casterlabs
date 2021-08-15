@@ -1,5 +1,7 @@
 {
-    "script": "widget.js",
+    "scripts": [
+        "./widget.js#module"
+    ],
     "settings": [
         {
             "name": "chat_direction",

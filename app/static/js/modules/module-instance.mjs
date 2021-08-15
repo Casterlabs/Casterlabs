@@ -118,7 +118,7 @@ class ModuleInstance {
 
     destroyHandlers = [];
 
-    constructor(namespace, id, name, scriptLocation, settings, defaultSettings) {
+    constructor(namespace, id, name, scriptLocations, settings, defaultSettings) {
         this.#namespace = namespace;
         this.#id = id;
         this.#name = name;
@@ -201,19 +201,34 @@ class ModuleInstance {
                     configurable: false
                 });
 
-                const moduleScriptElement = contentDocument.createElement("script");
+                // Load scripts
+                let scriptPromises = [];
 
-                moduleScriptElement.src = scriptLocation;
-                moduleScriptElement.setAttribute("type", "module");
-                contentDocument.body.appendChild(moduleScriptElement);
+                for (const scriptLocation of scriptLocations) {
+                    scriptPromises.push(new Promise((resolve) => {
+                        const moduleScriptElement = contentDocument.createElement("script");
 
-                moduleScriptElement.addEventListener("load", () => {
-                    this.#instanceModule.broadcast("init", {
-                        namespace: this.#namespace,
-                        id: this.#id,
-                        name: this.#name
+                        // https://example.com/script.js#module
+                        if (scriptLocation.endsWith("#module")) {
+                            moduleScriptElement.setAttribute("type", "module");
+                        }
+
+                        moduleScriptElement.src = scriptLocation;
+                        contentDocument.body.appendChild(moduleScriptElement);
+
+                        moduleScriptElement.addEventListener("load", resolve);
+                    }));
+                }
+
+                Promise
+                    .all(scriptPromises)
+                    .then(() => {
+                        this.#instanceModule.broadcast("init", {
+                            namespace: this.#namespace,
+                            id: this.#id,
+                            name: this.#name
+                        });
                     });
-                });
             });
 
             this.#frameElement.src = `/sandbox.html?name=${this.getFullId()}`;
