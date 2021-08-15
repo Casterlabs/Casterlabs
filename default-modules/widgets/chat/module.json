@@ -2,6 +2,7 @@
     "scripts": [
         "./widget.js#module"
     ],
+    "icon": "message-square",
     "settings": [
         {
             "name": "chat_direction",

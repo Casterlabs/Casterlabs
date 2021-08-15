@@ -20,6 +20,10 @@ html {
 	display: none !important;
 }
 
+.visible {
+	display: block !important;
+}
+
 #side-bar {
 	position: absolute;
 	top: var(--title-bar-height);

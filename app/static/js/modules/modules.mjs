@@ -108,6 +108,10 @@ class DynamicModuleHolder {
         return this.#declaration.namespace;
     }
 
+    get declaration() {
+        return this.#declaration;
+    }
+
     async create(name, id = generateUUID()) {
         const instance = await createModule(this.#baseUrl, false, this.#declaration, name, id);
 
