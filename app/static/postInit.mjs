@@ -28,7 +28,7 @@ Modules.registerRepo(
 
             if (holder) {
                 holder
-                    .create(moduleData.name)
+                    .create(moduleData.name, moduleId)
                     .then(() => {
                         // I'm a comedy master. - Lcyx
                         console.debug("[postInit.js]", getRandomItemInArray([
