@@ -16,7 +16,9 @@
         other: []
     };
 
-    async function rerenderDisplay() {
+    let widgets = [];
+
+    async function renderCreationDisplay() {
         let _widgetCategories = {
             alerts: [],
             labels: [],
@@ -35,16 +37,34 @@
             ).push({
                 name: declaration.label,
                 create: () => {
-                    dynamicHolder.create("test widget");
+                    dynamicHolder.create("New Widget");
                 }
             });
         }
 
+        // This forces svelte to rerender.
         widgetCategories = _widgetCategories;
     }
 
+    function renderWidgetTiles() {
+        const staticModules = Object.values(Modules.getStaticModules());
+        const dynamicModules = Object.values(Modules.getDynamicModules());
+
+        widgets = [
+            ...staticModules,
+            ...dynamicModules
+        ];
+    }
+
+    async function render() {
+        await renderCreationDisplay();
+        renderWidgetTiles();
+
+        feather.replace();
+    }
+
     onMount(async () => {
-        await rerenderDisplay();
+        await render();
     });
 </script>
 
@@ -84,117 +104,143 @@
         justify-content: left;
         border: none;
     }
+
+    #all-widgets {
+        padding: 1em;
+    }
+
+    .widget-tile {
+        display: inline-block;
+        width: 150px;
+        height: 150px;
+        margin: .5em;
+    }
+
+    :global(.widget-tile svg) {
+        margin-top: .75em;
+        margin-bottom: .75em;
+        width: 4em;
+        height: 4em;
+    }
+
+    .widget-tile p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 </style>
 
 <PageAttributes allowNavigateBackwards="true" />
 <ShowSideBar />
 
 <div class="has-text-centered">
-    <div>
-        <!-- All widgets -->
-        <div>
-            <br />
+    <!-- All widgets -->
+    <div id="all-widgets">
+        {#each widgets as widget}
+        <a class="button widget-tile" href="/pages/edit-widget?widget={widget.getFullId()}">
+            <i data-feather="{widget.moduleDeclaration.icon}" aria-hidden="true"></i>
+            <p>
+                {widget.name}
+            </p>
+        </a>
+        <script>
+            feather.replace();
+        </script>
+        {/each}
+    </div>
 
-            // Widgets here :^)
-        </div>
+    <div id="widget-creation-dropdown">
+        <div class="dropdown is-left is-up">
+            <div class="dropdown-trigger">
+                <button class="button" aria-haspopup="true" aria-controls="widget-creation-dropdown-content">
+                    <span class="icon is-small">
+                        <i data-feather="plus" aria-hidden="true"></i>
+                    </span>
+                </button>
+            </div>
+            <div class="dropdown-menu" id="widget-creation-dropdown-content" role="menu">
+                <div class="dropdown-content">
 
-        <div id="widget-creation-dropdown">
-            <div class="dropdown is-left is-up">
-                <div class="dropdown-trigger">
-                    <button class="button" aria-haspopup="true" aria-controls="widget-creation-dropdown-content">
-                        <span class="icon is-small">
-                            <i data-feather="plus" aria-hidden="true"></i>
-                        </span>
-                    </button>
-                </div>
-                <div class="dropdown-menu" id="widget-creation-dropdown-content" role="menu">
-                    <div class="dropdown-content">
-
-                        <!-- "Alerts" Dropdown -->
-                        <div class="dropdown-item">
-                            <CreationDropdownCategory name="Alerts" icon="bell">
-                                {#each widgetCategories.alerts as item}
-                                <div class="dropdown-item">
-                                    <button class="button ghost-button" on:click="{item.create}" style="width: 11rem;">
-                                        {item.name}
-                                    </button>
-                                </div>
-                                {/each}
-                            </CreationDropdownCategory>
-                        </div>
-
-                        <hr class="dropdown-divider">
-
-                        <!-- "Labels" Dropdown -->
-                        <div class="dropdown-item">
-                            <CreationDropdownCategory name="Labels" icon="type">
-                                {#each widgetCategories.labels as item}
-                                <div class="dropdown-item">
-                                    <button class="button ghost-button" on:click="{item.create}" style="width: 11rem;">
-                                        {item.name}
-                                    </button>
-                                </div>
-                                {/each}
-                            </CreationDropdownCategory>
-                        </div>
-
-                        <hr class="dropdown-divider">
-
-                        <!-- "Interaction" Dropdown -->
-                        <div class="dropdown-item">
-                            <CreationDropdownCategory name="Interaction" icon="message-circle">
-                                {#each widgetCategories.interaction as item}
-                                <div class="dropdown-item">
-                                    <button class="button ghost-button" on:click="{item.create}" style="width: 11rem;">
-                                        {item.name}
-                                    </button>
-                                </div>
-                                {/each}
-                            </CreationDropdownCategory>
-                        </div>
-
-                        <hr class="dropdown-divider">
-
-                        <!-- "Goals" Dropdown -->
-                        <div class="dropdown-item">
-                            <CreationDropdownCategory name="Goals" icon="bar-chart">
-                                {#each widgetCategories.goals as item}
-                                <div class="dropdown-item">
-                                    <button class="button ghost-button" on:click="{item.create}" style="width: 11rem;">
-                                        {item.name}
-                                    </button>
-                                </div>
-                                {/each}
-                            </CreationDropdownCategory>
-                        </div>
-
-                        {#if widgetCategories.other.length > 0}
-                        <hr class="dropdown-divider">
-
-                        <!-- "Other" Dropdown -->
-                        <div class="dropdown-item">
-                            <CreationDropdownCategory name="Other" icon="droplet">
-                                {#each widgetCategories.other as item}
-                                <div class="dropdown-item">
-                                    <button class="button ghost-button" on:click="{item.create}" style="width: 11rem;">
-                                        {item.name}
-                                    </button>
-                                </div>
-                                {/each}
-                            </CreationDropdownCategory>
-                        </div>
-                        <script>
-                            feather.replace();
-                        </script>
-                        {/if}
-
+                    <!-- "Alerts" Dropdown -->
+                    <div class="dropdown-item">
+                        <CreationDropdownCategory name="Alerts" icon="bell">
+                            {#each widgetCategories.alerts as item}
+                            <div class="dropdown-item">
+                                <button class="button ghost-button" on:click="{item.create}" style="width: 11rem;">
+                                    {item.name}
+                                </button>
+                            </div>
+                            {/each}
+                        </CreationDropdownCategory>
                     </div>
+
+                    <hr class="dropdown-divider">
+
+                    <!-- "Labels" Dropdown -->
+                    <div class="dropdown-item">
+                        <CreationDropdownCategory name="Labels" icon="type">
+                            {#each widgetCategories.labels as item}
+                            <div class="dropdown-item">
+                                <button class="button ghost-button" on:click="{item.create}" style="width: 11rem;">
+                                    {item.name}
+                                </button>
+                            </div>
+                            {/each}
+                        </CreationDropdownCategory>
+                    </div>
+
+                    <hr class="dropdown-divider">
+
+                    <!-- "Interaction" Dropdown -->
+                    <div class="dropdown-item">
+                        <CreationDropdownCategory name="Interaction" icon="message-circle">
+                            {#each widgetCategories.interaction as item}
+                            <div class="dropdown-item">
+                                <button class="button ghost-button" on:click="{item.create}" style="width: 11rem;">
+                                    {item.name}
+                                </button>
+                            </div>
+                            {/each}
+                        </CreationDropdownCategory>
+                    </div>
+
+                    <hr class="dropdown-divider">
+
+                    <!-- "Goals" Dropdown -->
+                    <div class="dropdown-item">
+                        <CreationDropdownCategory name="Goals" icon="bar-chart">
+                            {#each widgetCategories.goals as item}
+                            <div class="dropdown-item">
+                                <button class="button ghost-button" on:click="{item.create}" style="width: 11rem;">
+                                    {item.name}
+                                </button>
+                            </div>
+                            {/each}
+                        </CreationDropdownCategory>
+                    </div>
+
+                    {#if widgetCategories.other.length > 0}
+                    <hr class="dropdown-divider">
+
+                    <!-- "Other" Dropdown -->
+                    <div class="dropdown-item">
+                        <CreationDropdownCategory name="Other" icon="droplet">
+                            {#each widgetCategories.other as item}
+                            <div class="dropdown-item">
+                                <button class="button ghost-button" on:click="{item.create}" style="width: 11rem;">
+                                    {item.name}
+                                </button>
+                            </div>
+                            {/each}
+                        </CreationDropdownCategory>
+                    </div>
+                    <script>
+                        feather.replace();
+                    </script>
+                    {/if}
+
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        feather.replace();
-    </script>
 </div>
