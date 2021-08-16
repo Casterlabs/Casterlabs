@@ -247,8 +247,19 @@ class ModuleInstance {
         this.#instanceModule.broadcast("settings_update", this.#settings);
     }
 
+    get name() {
+        return this.#name;
+    }
+
+    set name(newValue) {
+        this.#name = newValue;
+        this.save();
+    }
+
     save() {
         moduleStore.set(`${this.#namespace}.${this.#id}.settings`, this.#settings);
+        moduleStore.set(`${this.#namespace}.${this.#id}.name`, this.#name);
+        console.debug(`[ModuleInstance (${this.getFullId()})]`, "Saved", moduleStore.get(`${this.#namespace}.${this.#id}`));
     }
 
     getFullId() {
