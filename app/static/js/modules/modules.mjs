@@ -21,12 +21,17 @@ async function createModule(baseUrl, isStatic, moduleDeclaration, name, id) {
         let storedSettings = moduleStore.get(`${namespace}.${id}.settings`) ?? {};
         let defaultSettings = {};
 
-        if (settings) {
-            for (const [key, meta] of Object.entries(settings)) {
-                defaultSettings[key] = meta.defaultValue;
+        if (Array.isArray(settings)) {
+            for (const section of settings) {
+                for (const item of section.items) {
+                    const itemName = `${section.name}.${item.name}`;
+                    const defaultValue = item.defaultValue;
 
-                if (!storedSettings.hasOwnProperty(key)) {
-                    storedSettings[key] = meta.defaultValue;
+                    defaultSettings[itemName] = defaultValue;
+
+                    if (!storedSettings.hasOwnProperty(itemName)) {
+                        storedSettings[itemName] = defaultValue;
+                    }
                 }
             }
         }
@@ -56,6 +61,8 @@ async function createModule(baseUrl, isStatic, moduleDeclaration, name, id) {
         } else {
             dynamicModules[fullId] = instance;
         }
+
+        instance.save();
 
         return instance;
     }
