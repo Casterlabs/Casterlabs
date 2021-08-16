@@ -116,14 +116,19 @@ class ModuleInstance {
     #settings = {};
     #defaultSettings = {};
 
+    #moduleDeclaration = {};
+    #isStatic = false;
+
     destroyHandlers = [];
 
-    constructor(namespace, id, name, scriptLocations, settings, defaultSettings) {
+    constructor(namespace, id, name, scriptLocations, settings, defaultSettings, moduleDeclaration, isStatic) {
         this.#namespace = namespace;
         this.#id = id;
         this.#name = name;
         this.#settings = settings;
         this.#defaultSettings = defaultSettings;
+        this.#moduleDeclaration = moduleDeclaration;
+        this.#isStatic = isStatic;
 
         // Setup `Koi`
         {
@@ -256,6 +261,14 @@ class ModuleInstance {
         this.save();
     }
 
+    get moduleDeclaration() {
+        return this.#moduleDeclaration;
+    }
+
+    get isStatic() {
+        return this.#isStatic;
+    }
+
     save() {
         moduleStore.set(`${this.#namespace}.${this.#id}.settings`, this.#settings);
         moduleStore.set(`${this.#namespace}.${this.#id}.name`, this.#name);
@@ -274,6 +287,9 @@ class ModuleInstance {
         }
 
         this.#frameElement.remove();
+
+        moduleStore.delete(`${this.#namespace}.${this.#id}`);
+        console.debug(`[ModuleInstance (${this.getFullId()})]`, "Destroyed.");
     }
 
 }

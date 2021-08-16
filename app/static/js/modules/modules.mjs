@@ -10,9 +10,8 @@ let staticModules = {};
 let loadedRepos = {};
 
 async function createModule(baseUrl, isStatic, moduleDeclaration, name, id) {
-    const { namespace, location } = moduleDeclaration;
+    const { namespace, location, scripts, settings } = moduleDeclaration;
     const widgetBaseUrl = `${baseUrl}/${location}`;
-    const { scripts, settings } = await (await fetch(`${widgetBaseUrl}/module.json`)).json();
     const fullId = `${namespace}:${id}`;
 
     if (staticModules[fullId] || dynamicModules[fullId]) {
@@ -46,7 +45,7 @@ async function createModule(baseUrl, isStatic, moduleDeclaration, name, id) {
             }
         }
 
-        const instance = new ModuleInstance(namespace, id, name, scriptLocations, storedSettings, defaultSettings);
+        const instance = new ModuleInstance(namespace, id, name, scriptLocations, storedSettings, defaultSettings, moduleDeclaration, isStatic);
 
         instance.destroyHandlers.push(() => {
             if (isStatic) {
@@ -81,7 +80,14 @@ async function registerRepo(baseUrl) {
             if (dynamicModuleHolders[declaration.namespace]) {
                 throw `Dynamic module holder of namespace "${declaration.namespace}" is already registered.`
             } else {
-                const holder = new DynamicModuleHolder(declaration, baseUrl);
+                const moduleDeclaration = await (await fetch(`${baseUrl}/${declaration.location}/module.json`)).json();
+
+                const fullDeclaration = {
+                    ...declaration,
+                    ...moduleDeclaration
+                };
+
+                const holder = new DynamicModuleHolder(fullDeclaration, baseUrl);
 
                 _dynamicModuleHolders.push(holder);
                 dynamicModuleHolders[holder.namespace] = holder;
@@ -89,7 +95,14 @@ async function registerRepo(baseUrl) {
         }
 
         for (const declaration of modulesManifest.static) {
-            const instance = await createModule(baseUrl, true, declaration, declaration.name, declaration.id);
+            const moduleDeclaration = await (await fetch(`${baseUrl}/${declaration.location}/module.json`)).json();
+
+            const fullDeclaration = {
+                ...declaration,
+                ...moduleDeclaration
+            };
+
+            const instance = await createModule(baseUrl, true, fullDeclaration, declaration.name, declaration.id);
             _staticModules.push(instance);
         }
 
