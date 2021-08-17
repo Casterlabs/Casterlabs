@@ -137,7 +137,7 @@
     <!-- All widgets -->
     <div id="all-widgets">
         {#each widgets as widget}
-        <a class="button widget-tile" href="/pages/edit-widget?widget={widget.getFullId()}">
+        <a class="button widget-tile" href="/pages/edit-widget?widget={widget.getFullId()}" title="{widget.name}">
             <i data-feather="{widget.moduleDeclaration.icon}" aria-hidden="true"></i>
             <p>
                 {widget.name}
