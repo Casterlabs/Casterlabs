@@ -130,7 +130,7 @@
     }
 </style>
 
-<PageAttributes allowNavigateBackwards="true" />
+<PageAttributes allowNavigateBackwards="true" title="Widget Manager" />
 <ShowSideBar />
 
 <div class="has-text-centered">
