@@ -60,6 +60,33 @@ function putInClipboard(copy) {
     navigator.clipboard.writeText(copy);
 }
 
+function getObjProperty(obj, path) {
+    return path
+        .split(".")
+        .reduce((prev, curr) => {
+            return prev && prev[curr]
+        }, obj);
+}
+
+function setObjProperty(obj, path, value) {
+    const pathParts = path.split(".");
+    const finalProperty = pathParts.pop();
+    let currentNest = obj;
+
+    for (const pathPart of pathParts) {
+        const nextNest = currentNest[pathPart];
+
+        if (nextNest === undefined) {
+            currentNest[pathPart] = {};
+            currentNest = currentNest[pathPart];
+        } else {
+            currentNest = nextNest;
+        }
+    }
+
+    currentNest[finalProperty] = value;
+}
+
 export {
     generateUUID,
     generateUnsafePassword,
@@ -67,5 +94,7 @@ export {
     getRandomItemInArray,
     sleep,
     prettifyString,
-    putInClipboard
+    putInClipboard,
+    getObjProperty,
+    setObjProperty
 };

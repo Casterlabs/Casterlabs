@@ -1,6 +1,6 @@
 import ModuleInstance from "./module-instance.mjs";
 import { moduleStore } from "../caffeinated.mjs";
-import { generateUUID } from "../util/misc.mjs";
+import { generateUUID, getObjProperty, setObjProperty } from "../util/misc.mjs";
 
 let dynamicModuleHolders = {};
 let dynamicModules = {};
@@ -26,10 +26,10 @@ async function createModule(baseUrl, isStatic, moduleDeclaration, name, id) {
                     const itemName = `${section.name}.${item.name}`;
                     const defaultValue = item.defaultValue;
 
-                    defaultSettings[itemName] = defaultValue;
+                    setObjProperty(defaultSettings, itemName, defaultValue);
 
-                    if (!storedSettings.hasOwnProperty(itemName)) {
-                        storedSettings[itemName] = defaultValue;
+                    if (getObjProperty(storedSettings, itemName) === undefined) {
+                        setObjProperty(storedSettings, itemName, defaultValue);
                     }
                 }
             }
