@@ -89,6 +89,10 @@ const appStore = new Store({
                 icon: "casterlabs-logo"
             }
         },
+        obs_integration: {
+            address: "localhost:4444",
+            password: ""
+        },
         music_integration: {
             pretzel_rocks: {
                 enabled: false

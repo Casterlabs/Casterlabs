@@ -25,6 +25,7 @@
     "electron-store": "^6.0.1",
     "electron-window-state": "^5.0.3",
     "node-machine-id": "^1.1.12",
+    "obs-websocket-js": "^4.0.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
