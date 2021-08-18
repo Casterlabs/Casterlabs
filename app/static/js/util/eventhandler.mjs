@@ -39,7 +39,7 @@ function EventHandler() {
             delete listeners[type][callbackId];
         },
 
-        broadcast(type, data) {
+        broadcast(type, data, clone = true) {
             // Broadcast under a wildcard.
             {
                 const wildCardCallbacks = listeners["*"];
@@ -47,7 +47,11 @@ function EventHandler() {
                 if (wildCardCallbacks) {
                     Object.values(wildCardCallbacks).forEach((callback) => {
                         try {
-                            callback(type.toLowerCase(), Object.assign({}, data));
+                            if (clone) {
+                                callback(type.toLowerCase(), Object.assign({}, data));
+                            } else {
+                                callback(type.toLowerCase(), data);
+                            }
                         } catch (e) {
                             console.error("A listener produced an exception: ");
                             console.error(e);
@@ -63,7 +67,11 @@ function EventHandler() {
                 if (callbacks) {
                     Object.values(callbacks).forEach((callback) => {
                         try {
-                            callback(Object.assign({}, data));
+                            if (clone) {
+                                callback(type.toLowerCase(), Object.assign({}, data));
+                            } else {
+                                callback(type.toLowerCase(), data);
+                            }
                         } catch (e) {
                             console.error("A listener produced an exception: ");
                             console.error(e);
