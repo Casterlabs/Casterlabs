@@ -279,7 +279,7 @@ class ModuleInstance {
         return `${this.#namespace}:${this.#id}`;
     }
 
-    destroy() {
+    unload() {
         for (const des of this.destroyHandlers) {
             try {
                 des();
@@ -287,6 +287,12 @@ class ModuleInstance {
         }
 
         this.#frameElement.remove();
+
+        console.debug(`[ModuleInstance (${this.getFullId()})]`, "Unloaded.");
+    }
+
+    destroy() {
+        this.unload();
 
         moduleStore.delete(`${this.#namespace}.${this.#id}`);
         console.debug(`[ModuleInstance (${this.getFullId()})]`, "Destroyed.");
