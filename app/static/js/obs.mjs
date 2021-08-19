@@ -237,7 +237,9 @@ websocket.on("SourceRenamed", (data) => {
 
 // Debug
 eventHandler.on("*", (type, data) => {
-    console.debug("[OBS]", `${type}:`, data);
+    if (!["disconnected"].includes(type)) {
+        console.debug("[OBS]", `${type}:`, data);
+    }
 });
 
 export default {
