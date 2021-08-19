@@ -1,7 +1,7 @@
 import { appStore } from "../../caffeinated.mjs";
 import { MusicIntegration, MusicTrack, MusicStates } from "../music-util.mjs";
 
-const REFRESH_PROXY_URL = "https://api.casterlabs.co/v2/natsukashii/spotify";
+const AUTH_PROXY_URL = "https://api.casterlabs.co/v2/natsukashii/spotify";
 
 class SpotifyIntegration extends MusicIntegration {
     spotifyProfile = null;
@@ -29,7 +29,7 @@ class SpotifyIntegration extends MusicIntegration {
     }
 
     async loginOauth(code) {
-        const response = await fetch(`${REFRESH_PROXY_URL}?code=${code}`);
+        const response = await fetch(`${AUTH_PROXY_URL}?code=${code}`);
         const authResult = await response.json();
 
         if (authResult.error) {
@@ -49,7 +49,7 @@ async function pollSpotify() {
     try {
         if (!accessToken) {
             const refreshToken = appStore.get("music_integration.spotify.token");
-            const auth = await (await fetch(`${REFRESH_PROXY_URL}?refresh_token=${refreshToken}`)).json();
+            const auth = await (await fetch(`${AUTH_PROXY_URL}?refresh_token=${refreshToken}`)).json();
 
             if (auth.error) {
                 integrationInstance.setToken(null);
