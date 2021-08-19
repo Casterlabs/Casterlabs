@@ -27,6 +27,7 @@
 			import MusicIntegration from "./js/music-integration/music.mjs";
 			import * as Modules from "./js/modules/modules.mjs";
 			import OBS from "./js/obs.mjs";
+			import * as UI from "./js/ui.mjs";
 
 			window.Caffeinated = Caffeinated;
 			window.Auth = Auth;
@@ -34,6 +35,7 @@
 			window.MusicIntegration = MusicIntegration;
 			window.Modules = Modules;
 			window.obs = OBS;
+			window.UI = UI;
 		</script>
 
 		<!-- Sapper creates a <script> tag containing `src/client.js`
@@ -71,7 +73,7 @@
 			<!-- Titlebar -->
 			<section class="title-bar no-select">
 				<div class=" title-bar-title">
-					<img class="app-logo" src="logo/casterlabs.png" alt="Casterlabs" />
+					<img class="app-logo" src="img/logo/casterlabs.png" alt="Casterlabs" />
 					<span class="current-page title is-6">
 						Caffeinated
 					</span>

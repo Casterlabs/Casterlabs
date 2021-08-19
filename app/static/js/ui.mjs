@@ -48,7 +48,11 @@ function setLogo(logo) {
 
     const appPath = app.getAppPath();
 
-    currentWindow.setIcon(`${appPath}/__sapper__/export/logo/${logo}.png`);
+    if (isDev) {
+        currentWindow.setIcon(`${appPath}/static/img/logo/${logo}.png`);
+    } else {
+        currentWindow.setIcon(`${appPath}/img/logo/${logo}.png`);
+    }
 
     updateLogoImages();
 }
@@ -58,7 +62,7 @@ function updateLogoImages() {
     const logo = getLogo();
 
     for (const img of document.querySelectorAll("img.app-logo")) {
-        img.src = `/logo/${logo}.svg`;
+        img.src = `/img/logo/${logo}.svg`;
     }
 }
 
