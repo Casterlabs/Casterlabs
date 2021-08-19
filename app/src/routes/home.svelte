@@ -21,6 +21,8 @@
 	<a href="/pages/stream-chat">pages/stream-chat</a>
 	<br />
 	<a href="/signin">login</a>
+	<br />
+	<a href="/">index</a>
 
 	<br />
 	<br />
