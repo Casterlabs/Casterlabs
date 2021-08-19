@@ -68,9 +68,9 @@ function EventHandler() {
                     Object.values(callbacks).forEach((callback) => {
                         try {
                             if (clone) {
-                                callback(type.toLowerCase(), Object.assign({}, data));
+                                callback(Object.assign({}, data));
                             } else {
-                                callback(type.toLowerCase(), data);
+                                callback(data);
                             }
                         } catch (e) {
                             console.error("A listener produced an exception: ");
