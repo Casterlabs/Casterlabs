@@ -8,6 +8,16 @@
     import GlimeshButton from "../components/platforms/signin-buttons/glimesh.svelte";
     import BrimeButton from "../components/platforms/signin-buttons/brime.svelte";
 
+    import { goto } from "@sapper/app";
+    import { onMount } from "svelte";
+
+    onMount(() => {
+
+        window.gotoStep1 = function () {
+            goto("/welcome/step1")
+        };
+
+    });
 </script>
 
 <PageAttributes />
