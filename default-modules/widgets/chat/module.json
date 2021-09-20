@@ -5,17 +5,52 @@
     "icon": "message-square",
     "settings": [
         {
-            "name": "chat_direction",
-            "label": "caffeinated.chat.chat_direction",
+            "name": "chat_style",
+            "label": "caffeinated.chat.style",
             "items": [
                 {
                     "name": "chat_direction",
+                    "label": "caffeinated.chat.chat_direction",
                     "type": "select",
                     "defaultValue": "down",
                     "options": {
                         "down": "caffeinated.chat.chat_direction.down",
                         "up": "caffeinated.chat.chat_direction.up"
                     }
+                },
+                {
+                    "name": "font",
+                    "label": "caffeinated.chat.font",
+                    "type": "font",
+                    "defaultValue": "Poppins"
+                },
+                {
+                    "name": "font_size",
+                    "label": "caffeinated.chat.font_size",
+                    "type": "number",
+                    "defaultValue": 16
+                },
+                {
+                    "name": "text_color",
+                    "label": "caffeinated.chat.text_color",
+                    "type": "color",
+                    "defaultValue": "#FFFFFF"
+                },
+                {
+                    "name": "text_align",
+                    "label": "caffeinated.chat.text_align",
+                    "type": "select",
+                    "defaultValue": "left",
+                    "options": {
+                        "left": "caffeinated.chat.text_align.left",
+                        "right": "caffeinated.chat.text_align.right"
+                    }
+                },
+                {
+                    "name": "show_donations",
+                    "label": "caffeinated.chat.show_donations",
+                    "type": "checkbox",
+                    "defaultValue": true
                 }
             ]
         },
@@ -27,77 +62,37 @@
                     "name": "enable_betterbrime",
                     "label": "caffeinated.chat.enable_betterbrime",
                     "type": "checkbox",
-                    "defaultValue": false
+                    "defaultValue": true
+                },
+                {
+                    "name": "enable_betterttv",
+                    "label": "caffeinated.chat.enable_betterttv",
+                    "type": "checkbox",
+                    "defaultValue": true
+                },
+                {
+                    "name": "enable_casterlabsemotes",
+                    "label": "caffeinated.chat.enable_casterlabsemotes",
+                    "type": "checkbox",
+                    "defaultValue": true
                 }
             ]
         },
         {
-            "name": "chat_filtering",
-            "label": "caffeinated.chat.chat_filtering",
+            "name": "moderation",
+            "label": "caffeinated.chat.moderation",
             "items": [
                 {
                     "name": "hide_bots",
                     "label": "caffeinated.chat.hide_bots",
                     "type": "checkbox",
                     "defaultValue": false
-                }
-            ]
-        },
-        {
-            "name": "font",
-            "label": "generic.font",
-            "items": [
+                },
                 {
-                    "name": "font",
-                    "type": "font",
-                    "defaultValue": "Poppins"
-                }
-            ]
-        },
-        {
-            "name": "font_size",
-            "label": "generic.font.size",
-            "items": [
-                {
-                    "name": "font_size",
-                    "type": "number",
-                    "defaultValue": 16
-                }
-            ]
-        },
-        {
-            "label": "generic.text.color",
-            "items": [
-                {
-                    "name": "text_color",
-                    "type": "color",
-                    "defaultValue": "#FFFFFF"
-                }
-            ]
-        },
-        {
-            "name": "text_align",
-            "label": "caffeinated.chat.text_align",
-            "items": [
-                {
-                    "name": "text_align",
-                    "type": "select",
-                    "defaultValue": "left",
-                    "options": {
-                        "left": "caffeinated.chat.text_align.left",
-                        "right": "caffeinated.chat.text_align.right"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "show_donations",
-            "label": "caffeinated.chat.show_donations",
-            "items": [
-                {
-                    "name": "show_donations",
+                    "name": "hide_naughty_language",
+                    "label": "caffeinated.chat.hide_naughty_language",
                     "type": "checkbox",
-                    "defaultValue": true
+                    "defaultValue": false
                 }
             ]
         }

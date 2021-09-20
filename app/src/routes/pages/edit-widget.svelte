@@ -2,12 +2,27 @@
     import PageAttributes from "../../components/page-attributes.svelte";
     import HideSideBar from "../../components/displaymodes/hide-sidebar.svelte";
 
+    import FormElement from "../../components/form/form-element.svelte";
+
     import { onMount } from "svelte";
 
-    let widgetSettings = [];
+    let widget = null;
+
+    let widgetCategories = [];
+    let currentWidgetCategory = null;
+
+    function switchCategory(category) {
+        currentWidgetCategory = category;
+    }
+
 
     onMount(async () => {
+        const widgetId = location.href.split("?widget=")[1];
 
+        widget = Modules.getDynamicModules()[widgetId] || Modules.getStaticModules()[widgetId];
+
+        widgetCategories = widget.moduleDeclaration.settings;
+        currentWidgetCategory = widgetCategories[0];
     });
 </script>
 
@@ -18,48 +33,52 @@
 <PageAttributes allowNavigateBackwards="true" title="Widget Manager" />
 <HideSideBar />
 
-<div class="has-text-left">
-    {#each widgetSettings as widgetCategory}
+{#if widget}
+<div class="has-text-centered">
+    <h1 class="title is-5" style="padding-top: 10px; padding-bottom: 10px;">
+        {widget.name}
+    </h1>
 
-    <!-- 
-    {
-        "name": "chat_direction",
-        "label": "caffeinated.chat.chat_direction",
-        "items": [
-            {
-                "name": "chat_direction",
-                "type": "select",
-                "defaultValue": "down",
-                "options": {
-                    "down": "caffeinated.chat.chat_direction.down",
-                    "up": "caffeinated.chat.chat_direction.up"
-                }
-            }
-        ]
-    }
-    -->
+    <div class="tabs">
+        <ul style="justify-content: center !important;">
+            {#each widgetCategories as widgetCategory}
 
-    <div>
-        {#each widgetCategory.items as widgetSettingsOption}
+            {#if widgetCategory == currentWidgetCategory}
+            <li class="is-active">
+                <a>
+                    {widgetCategory.label}
+                </a>
+            </li>
+            {:else}
+            <li>
+                <a on:click="{switchCategory(widgetCategory)}">
+                    {widgetCategory.label}
+                </a>
+            </li>
+            {/if}
 
-        <!--
-            {
-                "name": "chat_direction",
-                "type": "select",
-                "defaultValue": "down",
-                "options": {
-                    "down": "caffeinated.chat.chat_direction.down",
-                    "up": "caffeinated.chat.chat_direction.up"
-                }
-            }
-        -->
-
-        {/each}
+            {/each}
+        </ul>
     </div>
 
-    <script>
-        feather.replace();
-    </script>
-    {/each}
+    <div class="allow-select has-text-left">
+        {#each currentWidgetCategory.items as widgetSettingsOption}
+        <div class="columns">
+            <div class="column" style="max-width: 260px; min-width: 260px;">
+                <span class="has-text-weight-medium">
+                    {widgetSettingsOption.label}
+                </span>
+            </div>
+            <div class="column">
+                <FormElement module="{widget}" itemDeclaration="{widgetSettingsOption}" />
+            </div>
+        </div>
+        {/each}
+
+        <script>
+            feather.replace();
+        </script>
+    </div>
 
 </div>
+{/if}
