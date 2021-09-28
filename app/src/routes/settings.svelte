@@ -6,6 +6,7 @@
     // Settings Content
     import SettingsContainer from "../components/settings/settings-container.svelte";
     import AccountSettings from "../components/settings/account-settings.svelte";
+    import MusicServicesSettings from "../components/settings/music-services-settings.svelte";
     import AppearanceSettings from "../components/settings/appearance-settings.svelte";
     import StatusIntegrationSettings from "../components/settings/status-integration-settings.svelte";
 
@@ -17,6 +18,11 @@
         {
             name: "Accounts",
             id: "accounts",
+            type: "category"
+        },
+        {
+            name: "Music Services",
+            id: "music_services",
             type: "category"
         },
         {
@@ -80,6 +86,9 @@
         <SettingsContainer categories="{settingsContainerContents}">
             <section class="hidden" data-id="accounts">
                 <AccountSettings />
+            </section>
+            <section class="hidden" data-id="music_services">
+                <MusicServicesSettings />
             </section>
             <section class="hidden" data-id="appearance">
                 <AppearanceSettings />

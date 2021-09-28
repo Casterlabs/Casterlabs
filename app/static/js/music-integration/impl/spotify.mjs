@@ -24,6 +24,7 @@ class SpotifyIntegration extends MusicIntegration {
         } else {
             clearTimeout(taskId);
             taskId = null;
+            this.spotifyProfile = null;
             this.playbackState = MusicStates.INACTIVE;
         }
     }
