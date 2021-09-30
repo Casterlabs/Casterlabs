@@ -87,8 +87,13 @@
         Auth.signinOAuth(platform)
             .then(async (token) => {
                 try {
-                    await Auth.addUserAuth(platform, token);
-                    Router.tryHomeGoBack();
+                    if (platform == "SPOTIFY") {
+                        await MusicIntegration.SPOTIFY.loginOauth(token);
+                        history.back();
+                    } else {
+                        await Auth.addUserAuth(platform, token);
+                        Router.tryHomeGoBack();
+                    }
                 } catch (e) {
                     history.back();
                 }

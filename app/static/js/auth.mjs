@@ -179,13 +179,14 @@ Koi.on("x_koi_test", (e) => {
 });
 
 const OAUTH_LINKS = {
+    // Platforms
     twitch: {
         type: "caffeinated_twitch",
         link: `https://id.twitch.tv/oauth2/authorize` +
             `?client_id=ekv4a842grsldmwrmsuhrw8an1duxt` +
             `&force_verify=true` +
+            `&redirect_uri=${encodeURIComponent("https://casterlabs.co/auth")}` +
             `&response_type=code` +
-            `&redirect_uri=https%3A%2F%2Fcasterlabs.co/auth?type=caffeinated_twitch` +
             `&scope=user:read:email%20chat:read%20chat:edit%20bits:read%20channel:read:subscriptions%20channel_subscriptions%20channel:read:redemptions` +
             `&state=`
     },
@@ -193,8 +194,8 @@ const OAUTH_LINKS = {
         type: "caffeinated_trovo",
         link: `https://open.trovo.live/page/login.html` +
             `?client_id=BGUnwUJUSJS2wf5xJpa2QrJRU4ZVcMgS` +
+            `&redirect_uri=${encodeURIComponent("https://casterlabs.co/auth/trovo")}` +
             `&response_type=token` +
-            `&redirect_uri=https%3A%2F%2Fcasterlabs.co/auth/trovo` +
             `&scope=channel_details_self+chat_send_self+send_to_my_channel+user_details_self+chat_connect` +
             `&state=`
     },
@@ -203,9 +204,29 @@ const OAUTH_LINKS = {
         link: `https://glimesh.tv/oauth/authorize` +
             `?client_id=3c60c5b45bbae0eadfeeb35d1ee0c77e580b31fd42a5fbc8ae965ca7106c5139` +
             `&force_verify=true` +
+            `&redirect_uri=${encodeURIComponent("https://casterlabs.co/auth/glimesh")}` +
             `&response_type=code` +
-            `&redirect_uri=https%3A%2F%2Fcasterlabs.co%2Fauth%2Fglimesh` +
             `&scope=public+email+chat` +
+            `&state=`
+    },
+    brime: {
+        type: "caffeinated_brime",
+        link: `https://auth.brime.tv/authorize` +
+            `?client_id=l87k8wMUeyuotnCp9HFsOzQ4gTi66atj` +
+            `&redirect_uri=${encodeURIComponent("https://casterlabs.co/auth")}` +
+            `&response_type=code` +
+            `&scope=offline_access` +
+            `&state=`
+    },
+
+    // Music
+    spotify: {
+        type: "caffeinated_spotify",
+        link: `https://accounts.spotify.com/en/authorize` +
+            `?client_id=dff9da1136b0453983ff40e3e5e20397` +
+            `&redirect_uri=https:%2F%2Fcasterlabs.co%2Fauth%3Ftype%3Dcaffeinated_spotify` +
+            `&response_type=code` +
+            `&scope=user-read-playback-state` +
             `&state=`
     }
 };

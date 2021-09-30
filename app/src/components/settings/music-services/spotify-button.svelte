@@ -32,8 +32,6 @@
 </style>
 
 <script>
-    // import OAuthSignin from "../../platforms/oauth-signin.svelte";
-
     import { onMount } from "svelte";
 
     let spotify = null;
@@ -44,31 +42,34 @@
     });
 
     setInterval(() => {
-        isLoggedIn = spotify && spotify.isEnabled();
+        isLoggedIn = spotify && spotify.isEnabled() && spotify.spotifyProfile;
     }, 100);
 
-    function trySignin() {
-        if (isLoggedIn) {
-            spotify.setToken(null);
-        } else {
-            // L'Chaim
-        }
+    function signOutSpotify() {
+        spotify.setToken(null);
     }
 </script>
 
 <div class="no-select login-button">
-    <a class="button has-text-centered" on:click="{trySignin}">
+    {#if isLoggedIn}
+    <button class="button has-text-centered" on:click="{signOutSpotify}">
         <div class="platform-logo">
-            <img src="/img/services/spotify/icon.svg" alt="Pretzel Logo" />
+            <img src="/img/services/spotify/icon.svg" alt="Spotify Logo" />
         </div>
         <span>
-            {#if isLoggedIn}
             Spotify ({MusicIntegration.SPOTIFY.spotifyProfile.display_name})
-            {:else}
+        </span>
+    </button>
+    {:else}
+    <a class="button has-text-centered" href="/signin/spotify">
+        <div class="platform-logo">
+            <img src="/img/services/spotify/icon.svg" alt="Spotify Logo" />
+        </div>
+        <span>
             Click to sign-in to Spotify
-            {/if}
         </span>
     </a>
+    {/if}
 
     <script type="module">
 

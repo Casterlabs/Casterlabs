@@ -9,5 +9,5 @@
 <HideSideBar />
 
 <div id="signin-container">
-    <OAuthSignin platform="brime" />
+    <OAuthSignin platform="spotify" />
 </div>
