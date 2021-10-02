@@ -1,34 +1,52 @@
-# electron-sapper-rollup-template
-<div align="center">
-  A template project to get you started with using Sapper and Electron together.
-</div>
+# Casterlabs Caffeinated
+
+<p align="center">
+    <a href="https://github.com/Casterlabs/casterlabs-caffeinated/blob/master/LICENSE">
+        <img src="https://img.shields.io/github/license/Casterlabs/casterlabs-caffeinated" />
+    </a>
+    <a href="https://casterlabs.co">
+        <img src="https://img.shields.io/badge/platforms-linux%20%7C%20windows%20%7C%20macos-lightgrey" />
+    </a>
+    <a href="https://casterlabs.co/discord">
+        <img src="https://img.shields.io/discord/702178064075063427" />
+    </a>
+    <a href="https://casterlabs.co">
+        <img src="https://img.shields.io/website?url=https%3A%2F%2Fcasterlabs.co" />
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/tokei/lines/github/Casterlabs/casterlabs-caffeinated" />
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/badge/Hotel%3F-Trivago-green" />
+    </a>
+</p>
+
+<p align="center">
+    <a href="https://casterlabs.co/">
+      Website
+    </a>
+    <a href="https://casterlabs.co/discord">
+      Discord
+    </a>
+    <a href="https://casterlabs.co/terms-of-service">
+      Terms of Service
+    </a>
+    <a href="https://casterlabs.co/privacy-policy">
+      Privacy Policy
+    </a>
+</p>
+
+<p align="center">
+    <img width="70%" src="https://i.imgur.com/cWDET5z.png" />
+</p>
+
 <br />
-<div align="center">
-  <img alt="Electron and sapper, together." src="https://i.imgur.com/KdbGQjB.png" width="auto" height="506" />
-</div>
 
-
-## Install and use
-
-```bash
-# Clone the repo
-$ git clone https://github.com/e3ndr/electron-sapper-rollup-template.git
-
-$ cd electron-sapper-rollup-template
-
-# Install dependencies
-$ npm install
-
-# Run the app
-$ npm run electron-dev
-
-# Package the app
-$ npm run electron-package
-```
-
-### Using GitHub templates
-Alternatively, you can click "Use this template" at the top of the page to initialize a new repository with this code already commited.
-
-
-## Packages used
-`rollup`, `electron`, `babel` `sapper`, `electron-serve`, `wait-on`, `concurrently`
+## For developers
+Check each individual folder for the different projects:
+- <a href="./app">The app code.</a>
+- <a href="./default-modules">The default widgets bundled in the app.</a>
+- <a href="./launcher">The auto-updater and launcher for the app.</a>
+- <a href="./external">The code for the widget loader and obs dock loader.</a>
+- <a href="./companion">The code for the widget loader and obs dock loader.</a>
+- <a href="./control-deck">The internal plugin that interfaces with the Casterlabs Control Deck via USB.</a>
