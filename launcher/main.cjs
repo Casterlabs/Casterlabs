@@ -9,14 +9,14 @@ const DecompressZip = require("decompress-zip");
 
 // Used in the packaged environment.
 const serve = require("electron-serve");
-const loadURL = serve({ directory: "__sapper__/export" });
+const loadURL = serve({ directory: "build" });
 
 // Setup some globals
 const LAUNCHER_VERSION = 5;
 
 global.PACKAGED = app.isPackaged;
 const isDev = !PACKAGED;
-const baseDir = isDev ? path.join(process.cwd(), "static") : path.join(__dirname, "__sapper__/export");
+const baseDir = isDev ? path.join(process.cwd(), "static") : path.join(__dirname, "build");
 
 const directory = path.join(app.getPath("userData"), "update");
 const file = "app.asar";
@@ -170,33 +170,39 @@ async function downloadUpdate(url, deps) {
     }
 }
 
-function loadUpdatedFile() {
+async function loadUpdatedFile() {
     console.info("Thanks for using CaffeinatedLauncher! *bows*");
 
-    try {
-        // Load the main.js.
-        const createCaffeinatedWindow = require(path.join(directory, file, "/createWindow.js"));
+    async function confirm() {
+        return await mainWindow.webContents.executeJavaScript(`confirm("Do you want to load the app file?")`);
+    }
 
-        const caffeinatedWindow = createCaffeinatedWindow(path.join(directory, file));
+    if (PACKAGED || await confirm()) {
+        try {
+            // Load the main.js.
+            const createCaffeinatedWindow = require(path.join(directory, file, "/createWindow.js"));
 
-        // Caffeinated has now taken over, so we can kill the updater window.
-        caffeinatedWindow.once("ready-to-show", async () => {
-            // Reopen the devtools.
-            if (mainWindow.webContents.isDevToolsOpened()) {
-                caffeinatedWindow.webContents.openDevTools();
-            }
+            const caffeinatedWindow = createCaffeinatedWindow(path.join(directory, file));
 
-            await sleep(1000);
+            // Caffeinated has now taken over, so we can kill the updater window.
+            caffeinatedWindow.once("ready-to-show", async () => {
+                // Reopen the devtools.
+                if (mainWindow.webContents.isDevToolsOpened()) {
+                    caffeinatedWindow.webContents.openDevTools();
+                }
 
-            mainWindow.close();
-        });
-    } catch (e) {
-        setStatus("An error occurred.", "Exiting in 5 seconds.");
-        console.error(e);
+                await sleep(1000);
 
-        sleep(5000).then(() => {
-            app.exit();
-        });
+                mainWindow.close();
+            });
+        } catch (e) {
+            setStatus("An error occurred.", "Exiting in 5 seconds.");
+            console.error(e);
+
+            sleep(5000).then(() => {
+                app.exit();
+            });
+        }
     }
 }
 

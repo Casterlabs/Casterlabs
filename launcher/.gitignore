@@ -1,14 +1,13 @@
 # Dependencies
 /node_modules/
-/src/node_modules/@sapper/
-!/src/node_modules/images/
 
 # Lock files
 package-lock.json
 yarn.lock
 
 # Svelte Directory
-/__sapper__/
+/build
+/.svelte-kit
 
 # Electron Package Directory
 dist
