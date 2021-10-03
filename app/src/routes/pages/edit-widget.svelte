@@ -36,6 +36,7 @@
         </h1>
 
         <div class="tabs">
+            <!-- svelte-ignore a11y-missing-attribute -->
             <ul style="justify-content: center !important;">
                 {#each widgetCategories as widgetCategory}
                     {#if widgetCategory == currentWidgetCategory}

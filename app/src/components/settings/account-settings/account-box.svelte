@@ -3,10 +3,24 @@
     export let platformName;
 </script>
 
+<div id="account-{platform}" class="box">
+    <div class="platform-logo">
+        <img src="/img/platforms/{platform}/icon.svg" alt="{platformName} Logo" />
+    </div>
+    <!-- svelte-ignore a11y-missing-attribute -->
+    <a class="open-channel" rel="external">
+        {platformName}
+    </a>
+    <span class="tag allow-select streamer-name"> casterlabs </span>
+    <a href="/signin/{platform}?homeGoBack=1" class="tag is-success signin-button"> Link </a>
+    <!-- svelte-ignore a11y-missing-attribute -->
+    <a class="tag is-danger signout-button"> Unlink </a>
+</div>
+
 <style>
     .box {
         position: relative !important;
-        margin-bottom: .9rem !important;
+        margin-bottom: 0.9rem !important;
     }
 
     .platform-logo {
@@ -65,23 +79,3 @@
         display: inline-block !important;
     }
 </style>
-
-<div id="account-{platform}" class="box">
-    <div class="platform-logo">
-        <img src="/img/platforms/{platform}/icon.svg" alt="{platformName} Logo" />
-    </div>
-    <!-- svelte-ignore a11y-missing-attribute -->
-    <a class="open-channel" rel="external">
-        {platformName}
-    </a>
-    <span class="tag allow-select streamer-name">
-        casterlabs
-    </span>
-    <a href="/signin/{platform}?homeGoBack=1" class="tag is-success signin-button">
-        Link
-    </a>
-    <!-- svelte-ignore a11y-missing-attribute -->
-    <a class="tag is-danger signout-button">
-        Unlink
-    </a>
-</div>

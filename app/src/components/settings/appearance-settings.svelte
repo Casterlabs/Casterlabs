@@ -1,17 +1,6 @@
-<style>
-    #accessibility-zoom-reset {
-        color: inherit;
-    }
-
-    #accessibility-zoom-reset :global(svg) {
-        height: 20px;
-        width: 20px;
-        transform: translateY(7.5px);
-    }
-</style>
-
 <div class="no-select">
     <div>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label>
             Theme
             <br />
@@ -26,6 +15,7 @@
     </div>
     <br />
     <div>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label>
             Icon
             <br />
@@ -46,13 +36,12 @@
             <input id="accessibility-zoom" type="range" min="-2" max="2" step=".01" list="accessibility-zoom-list" />
             <a id="accessibility-zoom-reset" class="hidden fade-on-hover">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rotate-ccw">
-                    <polyline points="1 4 1 10 7 10"></polyline>
-                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                    <polyline points="1 4 1 10 7 10" />
+                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
                 </svg>
             </a>
         </label>
     </div>
-
 
     <script type="module">
         import { getTheme, setTheme, getLogo, setLogo } from "./js/ui.mjs";
@@ -95,7 +84,6 @@
         appearanceZoom.value = zoomValue;
         setTimeout(checkZoomReset, 500); // There seems to be a race on this, so this is the "fix".
 
-
         /* -------- */
         /* Theme    */
         /* -------- */
@@ -106,7 +94,6 @@
         appearanceTheme.addEventListener("change", () => {
             setTheme(appearanceTheme.value);
         });
-
 
         /* -------- */
         /* Logo     */
@@ -120,3 +107,15 @@
         });
     </script>
 </div>
+
+<style>
+    #accessibility-zoom-reset {
+        color: inherit;
+    }
+
+    #accessibility-zoom-reset :global(svg) {
+        height: 20px;
+        width: 20px;
+        transform: translateY(7.5px);
+    }
+</style>

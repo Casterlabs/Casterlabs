@@ -4,27 +4,20 @@
     export let chatEvent = null;
 
     function escapeHtml(unsafe) {
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
+        return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
     let messageHtml = escapeHtml(chatEvent.message);
-    let upvotesHtml = (chatEvent.upvotes == 0) ? "" : chatEvent.upvotes;
+    let upvotesHtml = chatEvent.upvotes == 0 ? "" : chatEvent.upvotes;
 
     for (const [name, image] of Object.entries(chatEvent.emotes)) {
-        messageHtml = messageHtml
-            .split(name)
-            .join(`<img class="inline-image" title="${name}" src="${image}" />`);
+        messageHtml = messageHtml.split(name).join(`<img class="inline-image" title="${name}" src="${image}" />`);
     }
 
     for (const pattern of chatEvent.links) {
-        const link = pattern.includes("://") ? pattern : ("https://" + pattern);
+        const link = pattern.includes("://") ? pattern : "https://" + pattern;
 
-        messageHtml = messageHtml
-            .split(pattern)
-            .join(`<a href="${link}" rel="external">${pattern}</a>`);
+        messageHtml = messageHtml.split(pattern).join(`<a href="${link}" rel="external">${pattern}</a>`);
     }
 
     if (chatEvent.donations) {
@@ -33,8 +26,14 @@
             messageHtml += ` <img class="inline-image" src="${donation.image}" />`;
         }
     }
-
 </script>
+
+<span data-id={chatEvent.id} data-sender={chatEvent.sender.UPID}>
+    <User userData={chatEvent.sender} />
+    {messageHtml}<sup class="upvote-counter upvote-1">
+        {upvotesHtml}
+    </sup>
+</span>
 
 <style>
     :global(.inline-image) {
@@ -45,28 +44,21 @@
     /* Upvotes */
     :global(.upvote-1) {
         /* 1+ */
-        color: #FF00FF;
+        color: #ff00ff;
     }
 
     :global(.upvote-2) {
         /* 10+ */
-        color: #00FF00;
+        color: #00ff00;
     }
 
     :global(.upvote-3) {
         /* 100+ */
-        color: #FFFF00;
+        color: #ffff00;
     }
 
     :global(.upvote-4) {
         /* 1000+ */
-        color: #FFFFFF;
+        color: #ffffff;
     }
 </style>
-
-<span data-id="{chatEvent.id}" data-sender="{chatEvent.sender.UPID}">
-    <User userData="{chatEvent.sender}" />
-    {messageHtml}<sup class="upvote-counter upvote-1">
-        {upvotesHtml}
-    </sup>
-</span>

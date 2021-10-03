@@ -5,4 +5,4 @@
     let checked = module.settings[itemDeclaration.name] ?? itemDeclaration.defaultValue;
 </script>
 
-<input class="checkbox" type="checkbox" bind:checked="{checked}" />
+<input class="checkbox" type="checkbox" bind:checked />

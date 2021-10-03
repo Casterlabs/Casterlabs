@@ -1,14 +1,7 @@
 <script>
     import PretzelRocksButton from "./music-services/pretzelrocks-button.svelte";
     import SpotifyButton from "./music-services/spotify-button.svelte";
-
 </script>
-
-<style>
-    #accounts {
-        margin-right: 55px;
-    }
-</style>
 
 <div class="no-select">
     <div id="accounts">
@@ -17,8 +10,12 @@
         <SpotifyButton />
     </div>
 
-
     <script type="module">
-
     </script>
 </div>
+
+<style>
+    #accounts {
+        margin-right: 55px;
+    }
+</style>

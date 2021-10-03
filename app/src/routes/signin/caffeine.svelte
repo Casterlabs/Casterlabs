@@ -29,6 +29,7 @@
         <button id="signin-submit" class="button"> Sign In </button>
         <br />
         <br />
+        <!-- svelte-ignore a11y-missing-attribute -->
         <a onclick="history.back()" style="color: var(--theme);"> Want to go back? </a>
     </div>
 

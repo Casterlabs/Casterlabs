@@ -1,3 +1,10 @@
+<div class="lds-ring">
+    <div />
+    <div />
+    <div />
+    <div />
+</div>
+
 <style>
     .lds-ring {
         display: inline-block;
@@ -45,10 +52,3 @@
         }
     }
 </style>
-
-<div class="lds-ring">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-</div>

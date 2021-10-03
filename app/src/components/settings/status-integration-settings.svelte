@@ -1,7 +1,3 @@
-<style>
-
-</style>
-
 <div class="no-select">
     <div>
         <label class="checkbox">
@@ -26,11 +22,9 @@
         </label>
     </div>
 
-
     <script type="module">
         import { appStore } from "./js/caffeinated.mjs";
         import { getStatusIcon, setStatusIcon, updateDiscord } from "./js/status-integration/discord.mjs";
-
 
         /* ------------ */
         /* Discord status integration enable */
@@ -44,7 +38,6 @@
             updateDiscord();
         });
 
-
         /* ------------ */
         /* Status icon  */
         /* ------------ */
@@ -55,7 +48,8 @@
         statusIntegrationIcon.addEventListener("change", () => {
             setStatusIcon(statusIntegrationIcon.value);
         });
-
-
     </script>
 </div>
+
+<style>
+</style>

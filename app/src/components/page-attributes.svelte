@@ -1,7 +1,6 @@
 <script>
     export let title = "";
     export let allowNavigateBackwards = false;
-
 </script>
 
 <div class="hidden">
@@ -46,6 +45,5 @@
             currentPage.innerText = "Caffeinated";
             document.title = "Casterlabs Caffeinated";
         }
-
     </script>
 </div>

@@ -1,54 +1,52 @@
 <script>
-	import LoadingSpinner from "../components/loading-spinner.svelte";
-	import { setPageProperties } from "./__layout.svelte";
+    import LoadingSpinner from "../components/loading-spinner.svelte";
+    import { setPageProperties } from "./__layout.svelte";
 
-	import { onMount } from "svelte";
+    import { onMount } from "svelte";
 
-	setPageProperties({
-		showSideBar: false,
-		pageTitle: "",
-		allowNavigateBackwards: false,
-	});
+    setPageProperties({
+        showSideBar: false,
+        pageTitle: "",
+        allowNavigateBackwards: false
+    });
 
-	let logo = "casterlabs";
-	let color = "white";
+    let logo = "casterlabs";
+    let color = "white";
 
-	onMount(async () => {
-		logo = UI.getLogo();
+    onMount(async () => {
+        logo = UI.getLogo();
 
-		if ([
-			"dark"
-		].includes(UI.getTheme())) {
-			color = "white";
-		} else {
-			color = "black";
-		}
-	});
+        if (["dark"].includes(UI.getTheme())) {
+            color = "white";
+        } else {
+            color = "black";
+        }
+    });
 </script>
 
-<style>
-	.casterlabs-wordmark {
-		padding-top: 35%;
-		transform: translateY(-50%);
-	}
-
-	.casterlabs-wordmark img {
-		width: 240px;
-	}
-
-	.loading-spinner {
-		width: 50px;
-		height: 50px;
-		margin: auto;
-	}
-</style>
-
 <div class="has-text-centered">
-	<div class="casterlabs-wordmark">
-		<img src="/img/wordmark/{logo}/{color}.svg" alt="Casterlabs Logo" />
+    <div class="casterlabs-wordmark">
+        <img src="/img/wordmark/{logo}/{color}.svg" alt="Casterlabs Logo" />
 
-		<div class="loading-spinner">
-			<LoadingSpinner />
-		</div>
-	</div>
+        <div class="loading-spinner">
+            <LoadingSpinner />
+        </div>
+    </div>
 </div>
+
+<style>
+    .casterlabs-wordmark {
+        padding-top: 35%;
+        transform: translateY(-50%);
+    }
+
+    .casterlabs-wordmark img {
+        width: 240px;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        margin: auto;
+    }
+</style>

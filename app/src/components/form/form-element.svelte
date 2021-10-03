@@ -22,7 +22,7 @@
 
     const ELEMENTS = {
         // "button": FormButton,
-        "checkbox": FormCheckbox,
+        checkbox: FormCheckbox
         // "color": FormColor,
         // "currency": FormCurrency,
         // "dynamic": FormDynamic,
@@ -59,5 +59,4 @@
     });
 </script>
 
-<span bind:this="{container}">
-</span>
+<span bind:this={container} />

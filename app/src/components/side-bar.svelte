@@ -1,6 +1,33 @@
 <script>
-
 </script>
+
+<div class="sidebar-container has-text-left">
+    <!-- Your Stream -->
+    <!-- svelte-ignore a11y-missing-attribute -->
+    <div class="sidebar-section">
+        <h1 class="title">Your Stream</h1>
+
+        <a class="sidebar-category-button" href="/pages/stream-chat"> Chat </a>
+        <a class="sidebar-category-button hidden"> Analytics </a>
+        <a class="sidebar-category-button" href="/pages/widget-manager"> Widgets </a>
+    </div>
+
+    <!-- Channel -->
+    <!-- svelte-ignore a11y-missing-attribute -->
+    <div class="sidebar-section hidden">
+        <h1 class="title">Channel</h1>
+
+        <a class="sidebar-category-button"> Custom Emotes </a>
+        <a class="sidebar-category-button"> Shako </a>
+    </div>
+
+    <!-- Other -->
+    <div class="sidebar-section">
+        <h1 class="title">Other</h1>
+
+        <a class="sidebar-category-button" href="/settings"> Settings </a>
+    </div>
+</div>
 
 <style>
     .sidebar-container {
@@ -15,7 +42,7 @@
         padding-right: 10px;
     }
 
-    .sidebar-section>.title {
+    .sidebar-section > .title {
         margin-bottom: 0 !important;
     }
 
@@ -23,7 +50,7 @@
         margin-top: 15px;
     }
 
-    .sidebar-section>.title,
+    .sidebar-section > .title,
     .sidebar-category-button {
         font-size: 1.15em !important;
     }
@@ -35,62 +62,16 @@
         display: block;
     }
 
-    :not(.sidebar-section)>.sidebar-category-button {
+    :not(.sidebar-section) > .sidebar-category-button {
         padding-left: 10px;
         padding-right: 10px;
     }
 
     .sidebar-category-button:hover {
-        background-color: rgba(100, 100, 100, .05);
+        background-color: rgba(100, 100, 100, 0.05);
     }
 
     .sidebar-category-button:global(.is-selected) {
-        background-color: rgba(100, 100, 100, .2);
+        background-color: rgba(100, 100, 100, 0.2);
     }
 </style>
-
-<div class="sidebar-container has-text-left">
-
-    <!-- Your Stream -->
-    <div class="sidebar-section">
-        <h1 class="title">
-            Your Stream
-        </h1>
-
-        <a class="sidebar-category-button" href="/pages/stream-chat">
-            Chat
-        </a>
-        <a class="sidebar-category-button hidden">
-            Analytics
-        </a>
-        <a class="sidebar-category-button" href="/pages/widget-manager">
-            Widgets
-        </a>
-    </div>
-
-    <!-- Channel -->
-    <div class="sidebar-section hidden">
-        <h1 class="title">
-            Channel
-        </h1>
-
-        <a class="sidebar-category-button">
-            Custom Emotes
-        </a>
-        <a class="sidebar-category-button">
-            Shako
-        </a>
-    </div>
-
-    <!-- Other -->
-    <div class="sidebar-section">
-        <h1 class="title">
-            Other
-        </h1>
-
-        <a class="sidebar-category-button" href="/settings">
-            Settings
-        </a>
-    </div>
-
-</div>
