@@ -1,21 +1,15 @@
 
-function clickNav(name) {
-    const navigation = document.querySelector(`#router-navigate-${name}`);
-
-    navigation.click();
-}
-
 const Router = {
 
     navigateSignin() {
-        clickNav("signin");
+        goto("/signin");
     },
 
     navigateHome() {
         if (getUrlVars().homeGoBack) {
             history.back();
         } else {
-            clickNav("home");
+            goto("/home");
         }
     },
 

@@ -1,26 +1,18 @@
 <script>
-    import PageAttributes from "../../components/page-attributes.svelte";
-    import HideSideBar from "../../components/displaymodes/hide-sidebar.svelte";
+    import { setPageProperties } from "../__layout.svelte";
 
+    setPageProperties({
+        showSideBar: false,
+        pageTitle: "",
+        allowNavigateBackwards: true
+    });
 </script>
-
-<PageAttributes allowNavigateBackwards="true" />
-<HideSideBar />
-
-<style>
-    .input,
-    .button {
-        width: 280px;
-    }
-</style>
 
 <div id="signin-container" class="has-text-centered no-select">
     <br />
     <br />
     <br />
-    <h1 class="title is-4">
-        Sign in with Caffeine
-    </h1>
+    <h1 class="title is-4">Sign in with Caffeine</h1>
     <br />
     <div>
         <input id="username-input" class="input" type="text" placeholder="Username" />
@@ -33,15 +25,11 @@
             <br />
         </div>
         <br />
-        <span id="error-message" class="hidden is-6"></span>
-        <button id="signin-submit" class="button">
-            Sign In
-        </button>
+        <span id="error-message" class="hidden is-6" />
+        <button id="signin-submit" class="button"> Sign In </button>
         <br />
         <br />
-        <a onclick="history.back()" style="color: var(--theme);">
-            Want to go back?
-        </a>
+        <a onclick="history.back()" style="color: var(--theme);"> Want to go back? </a>
     </div>
 
     <script type="module">
@@ -84,7 +72,7 @@
         /* UX Features  */
         /* ------------ */
 
-        // Make it so when you hit enter on the username input 
+        // Make it so when you hit enter on the username input
         // it'll automagically take you to the password field.
         usernameInput.addEventListener("keyup", (e) => {
             if (e.code == "Enter") {
@@ -152,6 +140,12 @@
                 }
             }
         });
-
     </script>
 </div>
+
+<style>
+    .input,
+    .button {
+        width: 280px;
+    }
+</style>

@@ -57,7 +57,7 @@
             <img src="/img/services/spotify/icon.svg" alt="Spotify Logo" />
         </div>
         <span>
-            Spotify ({MusicIntegration.SPOTIFY.spotifyProfile.display_name})
+            Spotify ({window.MusicIntegration.SPOTIFY.spotifyProfile.display_name})
         </span>
     </button>
     {:else}

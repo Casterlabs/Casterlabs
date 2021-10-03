@@ -1,8 +1,13 @@
 <script>
-    import PageAttributes from "../../components/page-attributes.svelte";
-    import ShowSideBar from "../../components/displaymodes/show-sidebar.svelte";
+    import { setPageProperties } from "../__layout.svelte";
 
     import { onMount } from "svelte";
+
+    setPageProperties({
+        showSideBar: true,
+        pageTitle: "",
+        allowNavigateBackwards: true
+    });
 
     onMount(async () => {
         const ChatMessage = (await import("../../components/chat/chat-message.svelte")).default;
@@ -82,11 +87,11 @@
                 posX: 0,
                 posY: 0,
 
-                width: .05,
-                height: .05,
+                width: 0.05,
+                height: 0.05,
 
-                minWidth: .15,
-                minHeight: .15,
+                minWidth: 0.15,
+                minHeight: 0.15,
 
                 maxWidth: 1,
                 maxHeight: 1,
@@ -110,12 +115,18 @@
             draggable.on("resize", sendUpdate);
             draggable.on("move", sendUpdate);
         }
-
     });
 </script>
 
-<PageAttributes />
-<ShowSideBar />
+<div class="stream-chat-container">
+    <div class="chat-content">
+        <div id="viewers-box" class="draggable hidden" />
+        <div id="chat-box" class="allow-select">
+            <ul />
+        </div>
+    </div>
+    <div id="interact-box" />
+</div>
 
 <style>
     :root {
@@ -162,13 +173,3 @@
         height: var(--interact-height);
     }
 </style>
-
-<div class="stream-chat-container">
-    <div class="chat-content">
-        <div id="viewers-box" class="draggable hidden"></div>
-        <div id="chat-box" class="allow-select">
-            <ul></ul>
-        </div>
-    </div>
-    <div id="interact-box"></div>
-</div>

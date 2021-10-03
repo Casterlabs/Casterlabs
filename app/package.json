@@ -1,7 +1,6 @@
 {
   "name": "Caffeinated",
   "version": "1.0.0",
-  "main": "main.js",
   "author": "Casterlabs <support@casterlabs.co>",
   "build": {
     "icon": "static/logo-512.png",
@@ -13,46 +12,35 @@
       "createWindow.js"
     ]
   },
+  "main": "main.cjs",
+  "type": "module",
   "scripts": {
+    "sveltekit-dev-start": "svelte-kit dev",
     "electron-dev-start": "wait-on http://localhost:3000 && electron .",
-    "electron-dev": "concurrently \"sapper dev\" \"npm run electron-dev-start\"",
-    "electron-package": "sapper export && electron-builder"
-  },
-  "dependencies": {
-    "computer-name": "^0.1.0",
-    "discord-rpc": "^4.0.1",
-    "electron-serve": "^1.0.0",
-    "electron-store": "^6.0.1",
-    "electron-window-state": "^5.0.3",
-    "node-machine-id": "^1.1.12",
-    "obs-websocket-js": "^4.0.3",
-    "uuid": "^8.3.2"
+    "dev": "concurrently \"svelte-kit dev\" \"npm run electron-dev-start\"",
+    "package": "svelte-kit build && electron-builder"
   },
   "devDependencies": {
-    "compression": "^1.7.1",
-    "concurrently": "^6.2.0",
+    "@sveltejs/adapter-static": "^1.0.0-next.17",
+    "@sveltejs/kit": "^1.0.0-next.179",
+    "concurrently": "^6.3.0",
     "electron": "^11.4.10",
     "electron-builder": "^22.8.0",
     "npm-run-all": "^4.1.5",
-    "polka": "^0.5.2",
-    "sapper": "^0.29.1",
-    "sirv": "^1.0.0",
-    "svelte": "^3.17.3",
+    "svelte": "^3.34.0",
     "svelte-loader": "^3.1.2",
-    "wait-on": "^6.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/runtime": "^7.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-babel": "^5.0.0",
-    "@rollup/plugin-commonjs": "^14.0.0",
-    "@rollup/plugin-node-resolve": "^8.0.0",
-    "@rollup/plugin-replace": "^2.4.0",
-    "@rollup/plugin-url": "^5.0.0",
-    "rollup": "^2.3.4",
-    "rollup-plugin-svelte": "^7.0.0",
-    "rollup-plugin-terser": "^7.0.0"
+    "wait-on": "^6.0.0"
+  },
+  "dependencies": {
+    "electron-store": "^6.0.1",
+    "@lukeed/uuid": "^2.0.0",
+    "cookie": "^0.4.1",
+    "electron-serve": "^1.0.0",
+    "svelte-kit": "^1.0.0",
+    "electron-window-state": "^5.0.3",
+    "node-machine-id": "^1.1.12",
+    "obs-websocket-js": "^4.0.3",
+    "computer-name": "^0.1.0",
+    "discord-rpc": "^4.0.1"
   }
 }

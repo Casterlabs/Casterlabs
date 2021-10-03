@@ -5,7 +5,7 @@ const windowStateKeeper = require("electron-window-state");
 
 // Used in the packaged environment.
 const serve = require("electron-serve");
-const loadURL = serve({ directory: "__sapper__/export" });
+const loadURL = serve({ directory: "build" });
 
 const isDev = !app.isPackaged;
 
@@ -25,7 +25,7 @@ function reloadPage() {
 }
 
 function createWindow(appDir) {
-    const baseDir = isDev ? path.join(appDir, "static") : path.join(appDir, "__sapper__/export");
+    const baseDir = isDev ? path.join(appDir, "static") : path.join(appDir, "build");
 
     const mainWindowState = windowStateKeeper({
         defaultWidth: MIN_WIDTH,

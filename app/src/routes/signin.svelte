@@ -1,6 +1,5 @@
 <script>
-    import PageAttributes from "../components/page-attributes.svelte";
-    import HideSideBar from "../components/displaymodes/hide-sidebar.svelte";
+    import { setPageProperties } from "./__layout.svelte";
 
     import TwitchButton from "../components/platforms/signin-buttons/twitch.svelte";
     import TrovoButton from "../components/platforms/signin-buttons/trovo.svelte";
@@ -8,39 +7,27 @@
     import GlimeshButton from "../components/platforms/signin-buttons/glimesh.svelte";
     import BrimeButton from "../components/platforms/signin-buttons/brime.svelte";
 
-    import { goto } from "@sapper/app";
+    import { goto } from "$app/navigation";
     import { onMount } from "svelte";
 
+    setPageProperties({
+        showSideBar: false,
+        pageTitle: "",
+        allowNavigateBackwards: false
+    });
+
     onMount(() => {
-
         window.gotoStep1 = function () {
-            goto("/welcome/step1")
+            goto("/welcome/step1");
         };
-
     });
 </script>
-
-<PageAttributes />
-<HideSideBar />
-
-<style>
-    .service-disclaimer {
-        width: 370px;
-        margin: auto;
-    }
-
-    .service-disclaimer a {
-        color: var(--theme);
-    }
-</style>
 
 <div class="has-text-centered">
     <br />
     <br />
     <br />
-    <h1 class="title is-4">
-        Sign into your favorite platform.
-    </h1>
+    <h1 class="title is-4">Sign into your favorite platform.</h1>
     <br />
     <div class="signin-buttons">
         <TwitchButton />
@@ -66,3 +53,14 @@
         Auth.cancelOAuthSignin();
     </script>
 </div>
+
+<style>
+    .service-disclaimer {
+        width: 370px;
+        margin: auto;
+    }
+
+    .service-disclaimer a {
+        color: var(--theme);
+    }
+</style>

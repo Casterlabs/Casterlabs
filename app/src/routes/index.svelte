@@ -1,9 +1,14 @@
 <script>
-	import PageAttributes from "../components/page-attributes.svelte";
-	import HideSideBar from "../components/displaymodes/hide-sidebar.svelte";
 	import LoadingSpinner from "../components/loading-spinner.svelte";
+	import { setPageProperties } from "./__layout.svelte";
 
 	import { onMount } from "svelte";
+
+	setPageProperties({
+		showSideBar: false,
+		pageTitle: "",
+		allowNavigateBackwards: false,
+	});
 
 	let logo = "casterlabs";
 	let color = "white";
@@ -20,9 +25,6 @@
 		}
 	});
 </script>
-
-<PageAttributes />
-<HideSideBar />
 
 <style>
 	.casterlabs-wordmark {

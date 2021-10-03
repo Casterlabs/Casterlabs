@@ -1,7 +1,12 @@
 <script>
     // Meta
-    import PageAttributes from "../../components/page-attributes.svelte";
-    import HideSideBar from "../../components/displaymodes/hide-sidebar.svelte";
+    import { setPageProperties } from "../__layout.svelte";
+
+    setPageProperties({
+        showSideBar: false,
+        pageTitle: "",
+        allowNavigateBackwards: false
+    });
 
     // Settings Content
     import SettingsContainer from "../../components/settings/settings-container.svelte";
@@ -30,8 +35,26 @@
     ];
 </script>
 
-<PageAttributes />
-<HideSideBar />
+<div class="welcome-contents">
+    <div class="welcome-title has-text-centered">
+        <h1 class="title is-4">Let's customize Caffeinated.</h1>
+    </div>
+
+    <div class="welcome-settings">
+        <SettingsContainer categories={settingsContainerContents}>
+            <section class="hidden" data-id="appearance">
+                <AppearanceSettings />
+            </section>
+            <section class="hidden" data-id="status_integration">
+                <StatusIntegrationSettings />
+            </section>
+        </SettingsContainer>
+    </div>
+
+    <a id="next-page-button" class="button" href="/signin">
+        Next <i data-feather="arrow-right" />
+    </a>
+</div>
 
 <style>
     .welcome-settings {
@@ -62,26 +85,3 @@
         right: 1em;
     }
 </style>
-
-<div class="welcome-contents">
-    <div class="welcome-title has-text-centered">
-        <h1 class="title is-4">
-            Let's customize Caffeinated.
-        </h1>
-    </div>
-
-    <div class="welcome-settings">
-        <SettingsContainer categories="{settingsContainerContents}">
-            <section class="hidden" data-id="appearance">
-                <AppearanceSettings />
-            </section>
-            <section class="hidden" data-id="status_integration">
-                <StatusIntegrationSettings />
-            </section>
-        </SettingsContainer>
-    </div>
-
-    <a id="next-page-button" class="button" href="/signin">
-        Next <i data-feather="arrow-right"></i>
-    </a>
-</div>

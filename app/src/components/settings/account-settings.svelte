@@ -1,19 +1,6 @@
 <script>
     import AccountBox from "./account-settings/account-box.svelte";
-
 </script>
-
-<style>
-    #accounts {
-        margin-right: 55px;
-    }
-
-    #account-caffeine .platform-logo {
-        top: 22px;
-        left: 13px;
-        width: 23px;
-    }
-</style>
 
 <div class="no-select">
     <div id="accounts">
@@ -24,10 +11,9 @@
         <AccountBox platform="brime" platformName="Brime" />
     </div>
 
-
     <script type="module">
-        import Auth from "./js/auth.mjs";
-        import Koi from "./js/koi.mjs";
+        import Auth from "../js/auth.mjs";
+        import Koi from "../js/koi.mjs";
 
         const accountsContainer = document.querySelector("#accounts");
         const caffeineBox = accountsContainer.querySelector("#account-caffeine");
@@ -42,25 +28,15 @@
         /* Signout Buttons  */
         /* ---------------- */
 
-        caffeineBox
-            .querySelector(".signout-button")
-            .addEventListener("click", () => Auth.signOutUser("CAFFEINE"));
+        caffeineBox.querySelector(".signout-button").addEventListener("click", () => Auth.signOutUser("CAFFEINE"));
 
-        twitchBox
-            .querySelector(".signout-button")
-            .addEventListener("click", () => Auth.signOutUser("TWITCH"));
+        twitchBox.querySelector(".signout-button").addEventListener("click", () => Auth.signOutUser("TWITCH"));
 
-        trovoBox
-            .querySelector(".signout-button")
-            .addEventListener("click", () => Auth.signOutUser("TROVO"));
+        trovoBox.querySelector(".signout-button").addEventListener("click", () => Auth.signOutUser("TROVO"));
 
-        glimeshBox
-            .querySelector(".signout-button")
-            .addEventListener("click", () => Auth.signOutUser("GLIMESH"));
+        glimeshBox.querySelector(".signout-button").addEventListener("click", () => Auth.signOutUser("GLIMESH"));
 
-        brimeBox
-            .querySelector(".signout-button")
-            .addEventListener("click", () => Auth.signOutUser("BRIME"));
+        brimeBox.querySelector(".signout-button").addEventListener("click", () => Auth.signOutUser("BRIME"));
 
         /* ---------------- */
         /* State Switching  */
@@ -91,7 +67,7 @@
         });
 
         for (const data of Object.values(Auth.getSignedInPlatforms())) {
-            const userData = data.userData
+            const userData = data.userData;
 
             if (userData) {
                 onAccountSignin(userData.streamer);
@@ -101,3 +77,15 @@
         Auth.cancelOAuthSignin();
     </script>
 </div>
+
+<style>
+    #accounts {
+        margin-right: 55px;
+    }
+
+    :global(#account-caffeine .platform-logo) {
+        top: 22px;
+        left: 13px;
+        width: 23px;
+    }
+</style>

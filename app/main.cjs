@@ -1,6 +1,6 @@
 const { app } = require("electron");
 
-const createWindow = require("./createWindow.js");
+const createWindow = require("./createWindow.cjs");
 
 let mainWindow = null;
 

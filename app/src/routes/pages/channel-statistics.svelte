@@ -1,15 +1,15 @@
 <script>
-    import PageAttributes from "../../components/page-attributes.svelte";
-    import HideSideBar from "../../components/displaymodes/hide-sidebar.svelte";
-</script>
+    import { setPageProperties } from "../__layout.svelte";
 
-<PageAttributes />
-<HideSideBar />
+    setPageProperties({
+        showSideBar: false,
+        pageTitle: "",
+        allowNavigateBackwards: false
+    });
+</script>
 
 <div class="has-text-centered">
     <br />
     <br />
-    <h1 class="title">
-        test page :^)
-    </h1>
+    <h1 class="title">test page :^)</h1>
 </div>

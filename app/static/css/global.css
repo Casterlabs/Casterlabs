@@ -24,29 +24,6 @@ html {
 	display: block !important;
 }
 
-#side-bar {
-	position: absolute;
-	top: var(--title-bar-height);
-	bottom: 0;
-	left: 0;
-	width: var(--side-bar-width);
-	display: none;
-}
-
-.sapper-container {
-	position: absolute;
-	top: var(--title-bar-height);
-	bottom: 0;
-	left: var(--side-bar-width);
-	right: 0;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-
-#sapper {
-	min-height: 100%;
-}
-
 /* Color changes */
 
 html {

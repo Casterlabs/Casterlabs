@@ -8,12 +8,6 @@
     #accounts {
         margin-right: 55px;
     }
-
-    #account-caffeine .platform-logo {
-        top: 22px;
-        left: 13px;
-        width: 23px;
-    }
 </style>
 
 <div class="no-select">

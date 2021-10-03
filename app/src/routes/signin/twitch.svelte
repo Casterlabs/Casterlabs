@@ -1,12 +1,13 @@
 <script>
-    import PageAttributes from "../../components/page-attributes.svelte";
-    import HideSideBar from "../../components/displaymodes/hide-sidebar.svelte";
-    import OAuthSignin from "../../components/platforms/oauth-signin.svelte"
+    import { setPageProperties } from "../__layout.svelte";
+    import OAuthSignin from "../../components/platforms/oauth-signin.svelte";
 
+    setPageProperties({
+        showSideBar: false,
+        pageTitle: "",
+        allowNavigateBackwards: true
+    });
 </script>
-
-<PageAttributes allowNavigateBackwards="true" />
-<HideSideBar />
 
 <div id="signin-container">
     <OAuthSignin platform="twitch" />
