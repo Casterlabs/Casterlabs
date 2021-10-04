@@ -1,7 +1,7 @@
 <div class="no-select signin-button">
     <a class="button has-text-centered" href="/signin/twitch">
         <div class="platform-logo">
-            <img src="/img/platforms/twitch/icon.svg" alt="Twitch Logo" />
+            <img src="/img/services/twitch/icon.svg" alt="Twitch Logo" />
         </div>
         <span> Twitch </span>
     </a>

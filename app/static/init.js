@@ -45,11 +45,6 @@ function openLink(link) {
     shell.openExternal(link);
 }
 
-// Make the page come to life.
-window.addEventListener("load", () => {
-    feather.replace();
-});
-
 function getUrlVars() {
     const vars = {};
 

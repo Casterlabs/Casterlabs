@@ -512,9 +512,12 @@ Object.freeze(Auth);
 
     Koi.on("account_signin", () => {
         if (signedOutEntirely) {
-            console.debug("[Auth]", "User is now logged in, sending them to Home.");
             signedOutEntirely = false;
-            Router.navigateHome();
+            // Artifical delay to prevent a jarring experience.
+            setTimeout(() => {
+                console.debug("[Auth]", "User is now logged in, sending them to Home.");
+                Router.navigateHome();
+            }, 2500);
         }
     });
 }

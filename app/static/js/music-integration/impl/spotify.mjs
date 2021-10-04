@@ -26,6 +26,7 @@ class SpotifyIntegration extends MusicIntegration {
             taskId = null;
             accessToken = null;
             this.spotifyProfile = null;
+            this.currentTrack = null;
             this.playbackState = MusicStates.INACTIVE;
         }
     }

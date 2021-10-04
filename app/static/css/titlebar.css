@@ -4,7 +4,7 @@
     width: 100%;
     height: var(--title-bar-height);
     -webkit-app-region: drag;
-    background-color: #e2e2e2;
+    background-color: #dedede;
     z-index: 100;
 }
 

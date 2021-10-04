@@ -1,91 +1,90 @@
 <script>
     import AccountBox from "./account-settings/account-box.svelte";
-</script>
 
-<div class="no-select">
-    <div id="accounts">
-        <AccountBox platform="caffeine" platformName="Caffeine" />
-        <AccountBox platform="twitch" platformName="Twitch" />
-        <AccountBox platform="trovo" platformName="Trovo" />
-        <AccountBox platform="glimesh" platformName="Glimesh" />
-        <AccountBox platform="brime" platformName="Brime" />
-    </div>
+    import { onMount } from "svelte";
 
-    <script type="module">
-        import Auth from "../js/auth.mjs";
-        import Koi from "../js/koi.mjs";
-
-        const accountsContainer = document.querySelector("#accounts");
-        const caffeineBox = accountsContainer.querySelector("#account-caffeine");
-        const twitchBox = accountsContainer.querySelector("#account-twitch");
-        const trovoBox = accountsContainer.querySelector("#account-trovo");
-        const glimeshBox = accountsContainer.querySelector("#account-glimesh");
-        const brimeBox = accountsContainer.querySelector("#account-brime");
-
-        // Signin buttons are handled already.
-
-        /* ---------------- */
-        /* Signout Buttons  */
-        /* ---------------- */
-
-        caffeineBox.querySelector(".signout-button").addEventListener("click", () => Auth.signOutUser("CAFFEINE"));
-
-        twitchBox.querySelector(".signout-button").addEventListener("click", () => Auth.signOutUser("TWITCH"));
-
-        trovoBox.querySelector(".signout-button").addEventListener("click", () => Auth.signOutUser("TROVO"));
-
-        glimeshBox.querySelector(".signout-button").addEventListener("click", () => Auth.signOutUser("GLIMESH"));
-
-        brimeBox.querySelector(".signout-button").addEventListener("click", () => Auth.signOutUser("BRIME"));
-
-        /* ---------------- */
-        /* State Switching  */
-        /* ---------------- */
-
-        function onAccountSignin(account) {
-            const box = accountsContainer.querySelector(`#account-${account.platform.toLowerCase()}`);
-            const streamerName = box.querySelector(".streamer-name");
-            const openChannel = box.querySelector(".open-channel");
-
-            openChannel.href = account.link;
-            streamerName.innerHTML = account.displayname;
-            box.classList.add("linked");
+    let accounts = {
+        caffeine: {
+            accountName: "",
+            accountLink: "#",
+            isSignedIn: false
+        },
+        twitch: {
+            accountName: "",
+            accountLink: "#",
+            isSignedIn: false
+        },
+        trovo: {
+            accountName: "",
+            accountLink: "#",
+            isSignedIn: false
+        },
+        glimesh: {
+            accountName: "",
+            accountLink: "#",
+            isSignedIn: false
+        },
+        brime: {
+            accountName: "",
+            accountLink: "#",
+            isSignedIn: false
         }
+    };
 
-        Koi.on("account_signin", onAccountSignin);
+    /* ---------------- */
+    /* State Switching  */
+    /* ---------------- */
 
-        Koi.on("account_signout", (data) => {
-            const platform = data.platform;
+    function onAccountSignIn(account) {
+        accounts[account.platform.toLowerCase()] = {
+            accountName: account.displayname,
+            accountLink: account.link,
+            isSignedIn: true
+        };
+    }
 
-            const box = accountsContainer.querySelector(`#account-${platform.toLowerCase()}`);
-            const streamerName = box.querySelector(".streamer-name");
-            const openChannel = box.querySelector(".open-channel");
+    function onAccountSignOut(data) {
+        accounts[data.platform.toLowerCase()] = {
+            accountName: "",
+            accountLink: "#",
+            isSignedIn: false
+        };
+    }
 
-            openChannel.href = "#";
-            streamerName.innerHTML = "";
-            box.classList.remove("linked");
-        });
+    onMount(() => {
+        Koi.on("account_signin", onAccountSignIn);
+        Koi.on("account_signout", onAccountSignOut);
 
         for (const data of Object.values(Auth.getSignedInPlatforms())) {
             const userData = data.userData;
 
             if (userData) {
-                onAccountSignin(userData.streamer);
+                onAccountSignIn(userData.streamer);
             }
         }
 
         Auth.cancelOAuthSignin();
-    </script>
+    });
+
+    function signout(event) {
+        const platform = event.detail.platform.toUpperCase();
+        window.Auth.signOutUser(platform);
+    }
+</script>
+
+<div class="no-select">
+    <div id="accounts">
+        <!-- i know, i know, it looks messy but it works so well. -->
+        <AccountBox platform="caffeine" platformName="Caffeine" signInLink="/signin/caffeine" bind:accountName={accounts.caffeine.accountName} bind:accountLink={accounts.caffeine.accountLink} bind:isSignedIn={accounts.caffeine.isSignedIn} on:signout={signout} />
+        <AccountBox platform="twitch" platformName="Twitch" signInLink="/signin/twitch" bind:accountName={accounts.twitch.accountName} bind:accountLink={accounts.twitch.accountLink} bind:isSignedIn={accounts.twitch.isSignedIn} on:signout={signout} />
+        <AccountBox platform="trovo" platformName="Trovo" signInLink="/signin/trovo" bind:accountName={accounts.trovo.accountName} bind:accountLink={accounts.trovo.accountLink} bind:isSignedIn={accounts.trovo.isSignedIn} on:signout={signout} />
+        <AccountBox platform="glimesh" platformName="Glimesh" signInLink="/signin/glimesh" bind:accountName={accounts.glimesh.accountName} bind:accountLink={accounts.glimesh.accountLink} bind:isSignedIn={accounts.glimesh.isSignedIn} on:signout={signout} />
+        <AccountBox platform="brime" platformName="Brime" signInLink="/signin/brime" bind:accountName={accounts.brime.accountName} bind:accountLink={accounts.brime.accountLink} bind:isSignedIn={accounts.brime.isSignedIn} on:signout={signout} />
+    </div>
 </div>
 
 <style>
     #accounts {
         margin-right: 55px;
-    }
-
-    :global(#account-caffeine .platform-logo) {
-        top: 22px;
-        left: 13px;
-        width: 23px;
     }
 </style>

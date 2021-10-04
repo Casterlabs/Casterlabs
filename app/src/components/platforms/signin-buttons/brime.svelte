@@ -1,7 +1,7 @@
 <div class="no-select signin-button">
     <a class="button has-text-centered" href="/signin/brime">
         <div class="platform-logo">
-            <img src="/img/platforms/brime/icon.svg" alt="Brime Logo" />
+            <img src="/img/services/brime/icon.svg" alt="Brime Logo" />
         </div>
         <span> Brime </span>
     </a>

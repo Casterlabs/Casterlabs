@@ -47,7 +47,7 @@
     import SideBar from "../components/side-bar.svelte";
 
     import { goto } from "$app/navigation";
-    import { onMount, onDestroy } from "svelte";
+    import { onMount } from "svelte";
 
     elementUpdateHandler = update;
 
@@ -59,9 +59,8 @@
 
     onMount(() => {
         window.goto = goto;
+        window.feather.replace();
     });
-
-    onDestroy(() => {});
 </script>
 
 <!-- Titlebar -->

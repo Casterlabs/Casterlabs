@@ -1,7 +1,7 @@
 <div class="no-select login-button">
     <a class="button has-text-centered" href="/signin/trovo">
         <div class="platform-logo">
-            <img src="/img/platforms/trovo/icon.svg" alt="Trovo Logo" />
+            <img src="/img/services/trovo/icon.svg" alt="Trovo Logo" />
         </div>
         <span> Trovo </span>
     </a>

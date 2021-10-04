@@ -1,7 +1,7 @@
 <div class="no-select signin-button">
     <a class="button has-text-centered" href="/signin/glimesh">
         <div class="platform-logo">
-            <img src="/img/platforms/glimesh/icon.svg" alt="Glimesh Logo" />
+            <img src="/img/services/glimesh/icon.svg" alt="Glimesh Logo" />
         </div>
         <span> Glimesh </span>
     </a>

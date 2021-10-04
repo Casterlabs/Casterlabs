@@ -1,8 +1,31 @@
 
+function awaitGoto() {
+    return new Promise((resolve) => {
+        function wait() {
+            if (window.goto) {
+                resolve();
+            }
+
+            setTimeout(wait, 100);
+        }
+
+        wait();
+    });
+}
+
+async function goto() {
+    await awaitGoto();
+    window.goto(...arguments);
+}
+
 const Router = {
 
     navigateSignin() {
         goto("/signin");
+    },
+
+    goto() {
+        goto(...arguments);
     },
 
     navigateHome() {

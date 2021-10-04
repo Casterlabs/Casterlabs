@@ -1,3 +1,71 @@
+<script>
+    import { onMount } from "svelte";
+
+    let zoomValue;
+
+    onMount(() => {
+        /* -------- */
+        /* Zoom     */
+        /* -------- */
+        const appearanceZoom = document.querySelector("#accessibility-zoom");
+        const appearanceZoomReset = document.querySelector("#accessibility-zoom-reset");
+
+        zoomValue = webFrame.getZoomLevel();
+
+        function checkZoomReset() {
+            if (zoomValue == 0) {
+                appearanceZoomReset.classList.add("hidden");
+            } else {
+                appearanceZoomReset.classList.remove("hidden");
+            }
+        }
+
+        appearanceZoomReset.addEventListener("click", () => {
+            appearanceZoom.value = 0;
+            webFrame.setZoomLevel(0);
+            zoomValue = 0;
+            appearanceZoomReset.classList.add("hidden");
+        });
+
+        appearanceZoom.addEventListener("change", () => {
+            zoomValue = parseFloat(appearanceZoom.value);
+            webFrame.setZoomLevel(zoomValue);
+            checkZoomReset();
+        });
+
+        window.addEventListener("zoom_changed", () => {
+            zoomValue = webFrame.getZoomLevel();
+            appearanceZoom.value = zoomValue;
+            checkZoomReset();
+        });
+
+        appearanceZoom.value = zoomValue;
+        setTimeout(checkZoomReset, 500); // There seems to be a race on this, so this is the "fix".
+
+        /* -------- */
+        /* Theme    */
+        /* -------- */
+        const appearanceTheme = document.querySelector("#appearance-theme");
+
+        appearanceTheme.value = UI.getTheme();
+
+        appearanceTheme.addEventListener("change", () => {
+            UI.setTheme(appearanceTheme.value);
+        });
+
+        /* -------- */
+        /* Logo     */
+        /* -------- */
+        const appearanceIcon = document.querySelector("#appearance-icon");
+
+        appearanceIcon.value = UI.getLogo();
+
+        appearanceIcon.addEventListener("change", () => {
+            UI.setLogo(appearanceIcon.value);
+        });
+    });
+</script>
+
 <div class="no-select">
     <div>
         <!-- svelte-ignore a11y-label-has-associated-control -->
@@ -42,70 +110,6 @@
             </a>
         </label>
     </div>
-
-    <script type="module">
-        import { getTheme, setTheme, getLogo, setLogo } from "./js/ui.mjs";
-
-        /* -------- */
-        /* Zoom     */
-        /* -------- */
-        const appearanceZoom = document.querySelector("#accessibility-zoom");
-        const appearanceZoomReset = document.querySelector("#accessibility-zoom-reset");
-
-        let zoomValue = webFrame.getZoomLevel();
-
-        function checkZoomReset() {
-            if (zoomValue == 0) {
-                appearanceZoomReset.classList.add("hidden");
-            } else {
-                appearanceZoomReset.classList.remove("hidden");
-            }
-        }
-
-        appearanceZoomReset.addEventListener("click", () => {
-            appearanceZoom.value = 0;
-            webFrame.setZoomLevel(0);
-            zoomValue = 0;
-            appearanceZoomReset.classList.add("hidden");
-        });
-
-        appearanceZoom.addEventListener("change", () => {
-            zoomValue = parseFloat(appearanceZoom.value);
-            webFrame.setZoomLevel(zoomValue);
-            checkZoomReset();
-        });
-
-        window.addEventListener("zoom_changed", () => {
-            zoomValue = webFrame.getZoomLevel();
-            appearanceZoom.value = zoomValue;
-            checkZoomReset();
-        });
-
-        appearanceZoom.value = zoomValue;
-        setTimeout(checkZoomReset, 500); // There seems to be a race on this, so this is the "fix".
-
-        /* -------- */
-        /* Theme    */
-        /* -------- */
-        const appearanceTheme = document.querySelector("#appearance-theme");
-
-        appearanceTheme.value = getTheme();
-
-        appearanceTheme.addEventListener("change", () => {
-            setTheme(appearanceTheme.value);
-        });
-
-        /* -------- */
-        /* Logo     */
-        /* -------- */
-        const appearanceIcon = document.querySelector("#appearance-icon");
-
-        appearanceIcon.value = getLogo();
-
-        appearanceIcon.addEventListener("change", () => {
-            setLogo(appearanceIcon.value);
-        });
-    </script>
 </div>
 
 <style>

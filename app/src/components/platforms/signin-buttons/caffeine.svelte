@@ -1,7 +1,7 @@
 <div class="no-select login-button">
     <a class="button has-text-centered" href="/signin/caffeine">
         <div class="platform-logo">
-            <img src="/img/platforms/caffeine/icon.svg" alt="Caffeine Logo" />
+            <img src="/img/services/caffeine/icon.svg" alt="Caffeine Logo" />
         </div>
         <span> Caffeine </span>
     </a>

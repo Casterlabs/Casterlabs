@@ -17,6 +17,13 @@
 		<script type="module" src="./js/status-integration/discord.mjs"></script>
 		<script type="module" src="./js/ui.mjs"></script>
 
+		<script>
+			if (location.pathname != "/") {
+				console.warn("[app.html]", "Reload detected, redirecting to /");
+				location.href = "/";
+			}
+		</script>
+
 		<!-- DEBUG SCRIPT -->
 		<script type="module">
 			import * as Caffeinated from "./js/caffeinated.mjs";
@@ -34,6 +41,15 @@
 			window.Modules = Modules;
 			window.obs = OBS;
 			window.UI = UI;
+
+			window.debugClearCaches = function () {
+				caches.keys()
+					.then((names) => {
+						for (const name of names) {
+							caches.delete(name);
+						}
+					});
+			}
 		</script>
 
 		<script type="module" src="./postInit.mjs"></script>

@@ -21,6 +21,9 @@
         } else {
             color = "black";
         }
+
+        console.debug("[App]", "Signaling ui-theme-loaded");
+        currentWindow.emit("ui-theme-loaded", {});
     });
 </script>
 

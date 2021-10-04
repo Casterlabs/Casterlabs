@@ -34,8 +34,8 @@
     </div>
 
     <script type="module">
-        import Auth from "./js/auth.mjs";
-        import Router from "./js/router.mjs";
+        import Auth from "../js/auth.mjs";
+        import Router from "../js/router.mjs";
 
         const signinContainer = document.querySelector("#signin-container");
         const usernameInput = signinContainer.querySelector("#username-input");
