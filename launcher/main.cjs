@@ -12,7 +12,7 @@ const serve = require("electron-serve");
 const loadURL = serve({ directory: "build" });
 
 // Setup some globals
-const LAUNCHER_VERSION = 5;
+const LAUNCHER_VERSION = 6;
 
 global.PACKAGED = app.isPackaged;
 const isDev = !PACKAGED;
@@ -180,7 +180,7 @@ async function loadUpdatedFile() {
     if (PACKAGED || await confirm()) {
         try {
             // Load the main.js.
-            const createCaffeinatedWindow = require(path.join(directory, file, "/createWindow.js"));
+            const createCaffeinatedWindow = require(path.join(directory, file, "/createWindow.cjs"));
 
             const caffeinatedWindow = createCaffeinatedWindow(path.join(directory, file));
 

@@ -1,5 +1,5 @@
 {
-  "name": "Caffeinated",
+  "name": "casterlabs-caffeinated",
   "version": "1.0.0",
   "author": "Casterlabs <support@casterlabs.co>",
   "build": {
@@ -10,7 +10,7 @@
       "main.cjs"
     ],
     "appId": "casterlabs.caffeinated",
-    "artifactName": "Caffeinated-${os}.${ext}",
+    "artifactName": "Casterlabs Caffeinated-${os}.${ext}",
     "dmg": {
       "contents": [
         {
