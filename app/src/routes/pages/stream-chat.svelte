@@ -11,7 +11,7 @@
 
     onMount(async () => {
         const ChatMessage = (await import("../../components/chat/chat-message.svelte")).default;
-        const Draggable = (await import("../../../static/js/util/draggable.mjs")).default;
+        // const Draggable = (await import("../../../static/js/util/draggable.mjs")).default;
         const { appStore } = window.Caffeinated;
         const Koi = window.Koi;
 
@@ -79,42 +79,42 @@
             }
         }
 
-        // Add the viewers box and make it draggable
-        {
-            const VIEWERS_BOX_OPTIONS = {
-                limit: true,
+        // // Add the viewers box and make it draggable
+        // {
+        //     const VIEWERS_BOX_OPTIONS = {
+        //         limit: true,
 
-                posX: 0,
-                posY: 0,
+        //         posX: 0,
+        //         posY: 0,
 
-                width: 0.05,
-                height: 0.05,
+        //         width: 0.05,
+        //         height: 0.05,
 
-                minWidth: 0.15,
-                minHeight: 0.15,
+        //         minWidth: 0.15,
+        //         minHeight: 0.15,
 
-                maxWidth: 1,
-                maxHeight: 1,
+        //         maxWidth: 1,
+        //         maxHeight: 1,
 
-                ...(appStore.get("page.chat.viewers_box") ?? {}),
+        //         ...(appStore.get("page.chat.viewers_box") ?? {}),
 
-                zIndex: 15
-            };
+        //         zIndex: 15
+        //     };
 
-            const draggable = new Draggable(document.querySelector("#viewers-box"), VIEWERS_BOX_OPTIONS);
+        //     const draggable = new Draggable(document.querySelector("#viewers-box"), VIEWERS_BOX_OPTIONS);
 
-            draggable.enabled = true;
+        //     draggable.enabled = true;
 
-            function sendUpdate() {
-                const posAndSize = draggable.getPositionAndSize();
+        //     function sendUpdate() {
+        //         const posAndSize = draggable.getPositionAndSize();
 
-                appStore.set("page.chat.viewers_box", posAndSize);
-            }
+        //         appStore.set("page.chat.viewers_box", posAndSize);
+        //     }
 
-            document.addEventListener("mouseup", sendUpdate);
-            draggable.on("resize", sendUpdate);
-            draggable.on("move", sendUpdate);
-        }
+        //     document.addEventListener("mouseup", sendUpdate);
+        //     draggable.on("resize", sendUpdate);
+        //     draggable.on("move", sendUpdate);
+        // }
     });
 </script>
 

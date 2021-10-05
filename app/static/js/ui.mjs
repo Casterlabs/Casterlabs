@@ -51,7 +51,7 @@ function setLogo(logo) {
     if (isDev) {
         currentWindow.setIcon(`${appPath}/static/img/logo/${logo}.png`);
     } else {
-        currentWindow.setIcon(`${appPath}/img/logo/${logo}.png`);
+        currentWindow.setIcon(`${appPath}/build/img/logo/${logo}.png`);
     }
 
     updateLogoImages();

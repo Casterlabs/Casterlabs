@@ -2,7 +2,7 @@ import Koi from "./koi.mjs";
 import { KinokoV1 } from "./util/kinoko.mjs";
 import KoiConn from "./util/koiconn.mjs";
 import { generateUnsafePassword, getRandomItemInArray } from "./util/misc.mjs";
-import { authStore } from "./caffeinated.mjs";
+import { appStore, authStore } from "./caffeinated.mjs";
 import Router from "./router.mjs";
 
 const BRIME_CLIENT_ID = "605fadfe563212359ce4eb8b";
@@ -507,7 +507,13 @@ Object.freeze(Auth);
     Koi.on("no_account", () => {
         console.debug("[Auth]", "User has not signed into an account yet, sending them to the signin screen.");
         signedOutEntirely = true;
-        Router.navigateSignin();
+
+        if (appStore.get("isNew")) {
+            appStore.set("isNew", false);
+            Router.goto("/welcome/step1");
+        } else {
+            Router.navigateSignin();
+        }
     });
 
     Koi.on("account_signin", () => {

@@ -66,7 +66,7 @@ function createWindow(appDir) {
 
     // Emitted when the window is ready to be shown
     // This helps in showing the window gracefully.
-    mainWindow.once("ui-theme-loaded", () => {
+    mainWindow.once("ready-to-show", () => {
         mainWindow.show();
     });
 

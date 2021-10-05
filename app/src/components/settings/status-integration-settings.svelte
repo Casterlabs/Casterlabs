@@ -23,8 +23,8 @@
     </div>
 
     <script type="module">
-        import { appStore } from "./js/caffeinated.mjs";
-        import { getStatusIcon, setStatusIcon, updateDiscord } from "./js/status-integration/discord.mjs";
+        import { appStore } from "/js/caffeinated.mjs";
+        import { getStatusIcon, setStatusIcon, updateDiscord } from "/js/status-integration/discord.mjs";
 
         /* ------------ */
         /* Discord status integration enable */

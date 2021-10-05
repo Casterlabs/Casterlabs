@@ -79,6 +79,7 @@ for (const supportedPlatform of SUPPORTED_PLATFORMS) {
 
 const appStore = new Store({
     defaults: {
+        isNew: true,
         appearance: {
             theme: "dark",
             logo: "casterlabs"

@@ -21,7 +21,9 @@ async function goto() {
 const Router = {
 
     navigateSignin() {
-        goto("/signin");
+        if (!location.pathname.startsWith("/welcome/")) {
+            goto("/signin");
+        }
     },
 
     goto() {

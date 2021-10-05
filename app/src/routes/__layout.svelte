@@ -66,7 +66,7 @@
 <!-- Titlebar -->
 <section class="title-bar no-select">
     <div class=" title-bar-title">
-        <img class="app-logo" src="img/logo/casterlabs.png" alt="Casterlabs" />
+        <img class="app-logo" src="/img/logo/casterlabs.png" alt="Casterlabs" />
         <span class="current-page title is-6">
             {#if currentPageAttributes.pageTitle.length > 0}
                 Caffeinated - {currentPageAttributes.pageTitle}

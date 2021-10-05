@@ -9,6 +9,7 @@ const config = {
 			// default options are shown
 			pages: 'build',
 			assets: 'build',
+			ssr: false,
 			fallback: null
 		})
 	}

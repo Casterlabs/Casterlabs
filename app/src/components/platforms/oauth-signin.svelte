@@ -22,16 +22,16 @@
         import Auth from "../js/auth.mjs";
         import Router from "../js/router.mjs";
 
-        const platform = document.querySelector("#signin-platform").innerText.toUpperCase();
+        const plat = document.querySelector("#signin-platform").innerText.toUpperCase();
 
-        Auth.signinOAuth(platform)
+        Auth.signinOAuth(plat)
             .then(async (token) => {
                 try {
-                    if (platform == "SPOTIFY") {
+                    if (plat == "SPOTIFY") {
                         await MusicIntegration.SPOTIFY.loginOauth(token);
                         history.back();
                     } else {
-                        await Auth.addUserAuth(platform, token);
+                        await Auth.addUserAuth(plat, token);
                         Router.tryHomeGoBack();
                     }
                 } catch (e) {

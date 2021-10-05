@@ -1,16 +1,49 @@
 {
-  "name": "Caffeinated",
+  "name": "casterlabs-caffeinated",
   "version": "1.0.0",
   "author": "Casterlabs <support@casterlabs.co>",
   "build": {
-    "icon": "static/logo-512.png",
+    "icon": "assets/app_icon.icns",
     "productName": "Caffeinated Dummy Build",
     "files": [
-      "__sapper__/export/**/*",
-      "../default-modules/**/*",
-      "main.js",
-      "createWindow.js"
-    ]
+      "build/**/*",
+      "default-modules/**/*",
+      "main.cjs",
+      "createWindow.cjs"
+    ],
+    "appId": "casterlabs.caffeinated",
+    "artifactName": "Casterlabs Caffeinated-${os}.${ext}",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "icon": "assets/app_icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    }
   },
   "main": "main.cjs",
   "type": "module",
@@ -35,7 +68,7 @@
     "electron-store": "^6.0.1",
     "@lukeed/uuid": "^2.0.0",
     "cookie": "^0.4.1",
-    "electron-serve": "^1.0.0",
+    "electron-serve": "^1.1.0",
     "svelte-kit": "^1.0.0",
     "electron-window-state": "^5.0.3",
     "node-machine-id": "^1.1.12",

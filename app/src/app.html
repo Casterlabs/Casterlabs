@@ -8,14 +8,10 @@
 
 		<!-- Scripts -->
 		<script src="https://unpkg.com/feather-icons"></script>
-		<script src="./init.js"></script>
-		<script type="module" src="./js/interceptAnchors.js"></script>
-		<script type="module" src="./js/keybinds.mjs"></script>
-		<script type="module" src="./js/caffeinated.mjs"></script>
-		<script type="module" src="./js/auth.mjs"></script>
-		<script type="module" src="./js/koi.mjs"></script>
-		<script type="module" src="./js/status-integration/discord.mjs"></script>
-		<script type="module" src="./js/ui.mjs"></script>
+		<script src="/init.js"></script>
+		<script type="module" src="/js/interceptAnchors.js"></script>
+		<script type="module" src="/js/keybinds.mjs"></script>
+		<script type="module" src="/js/status-integration/discord.mjs"></script>
 
 		<script>
 			if (location.pathname != "/") {
@@ -26,15 +22,17 @@
 
 		<!-- DEBUG SCRIPT -->
 		<script type="module">
-			import * as Caffeinated from "./js/caffeinated.mjs";
-			import Auth from "./js/auth.mjs";
-			import Koi from "./js/koi.mjs";
-			import MusicIntegration from "./js/music-integration/music.mjs";
-			import * as Modules from "./js/modules/modules.mjs";
-			import OBS from "./js/obs.mjs";
-			import * as UI from "./js/ui.mjs";
+			import * as Caffeinated from "/js/caffeinated.mjs";
+			import Router from "/js/router.mjs";
+			import Auth from "/js/auth.mjs";
+			import Koi from "/js/koi.mjs";
+			import MusicIntegration from "/js/music-integration/music.mjs";
+			import * as Modules from "/js/modules/modules.mjs";
+			import OBS from "/js/obs.mjs";
+			import * as UI from "/js/ui.mjs";
 
 			window.Caffeinated = Caffeinated;
+			window.Router = Router;
 			window.Auth = Auth;
 			window.Koi = Koi;
 			window.MusicIntegration = MusicIntegration;
@@ -52,14 +50,14 @@
 			}
 		</script>
 
-		<script type="module" src="./postInit.mjs"></script>
+		<script type="module" src="/postInit.mjs"></script>
 
-		<link rel="stylesheet" href="css/bulma.min.css" />
-		<link rel="stylesheet" href="css/bulma-prefers-dark.min.css" />
-		<link rel="stylesheet" href="css/global.css" />
-		<link rel="stylesheet" href="css/titlebar.css" />
-		<link rel="stylesheet" href="css/scrollbar.css" />
-		<link rel="stylesheet" href="css/sidebar.css" />
+		<link rel="stylesheet" href="/css/bulma.min.css" />
+		<link rel="stylesheet" href="/css/bulma-prefers-dark.min.css" />
+		<link rel="stylesheet" href="/css/global.css" />
+		<link rel="stylesheet" href="/css/titlebar.css" />
+		<link rel="stylesheet" href="/css/scrollbar.css" />
+		<link rel="stylesheet" href="/css/sidebar.css" />
 
 		%svelte.head%
 	</head>
