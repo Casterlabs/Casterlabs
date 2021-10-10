@@ -1,6 +1,9 @@
 const RPC = require("discord-rpc");
 
 import { appStore } from "../caffeinated.mjs";
+import Auth from "../auth.mjs";
+import Koi from "../koi.mjs";
+import { prettifyString } from "../util/misc.mjs";
 
 const DISCORD_CLIENT_ID = "829844402548768768";
 const DISCORD_CLIENT_SECRET = "3d829b1a030e39dcf354edda0e0777e6a15a0993d0dfb4b2193f6cc2b19481e0";
@@ -14,13 +17,7 @@ function isEnabled() {
 }
 
 function getStatusIcon() {
-    const icon = appStore.get("status_integration.discord.icon");
-
-    if (icon == "streaming-platform") {
-        return "brime-logo"; // TEMP
-    } else {
-        return icon;
-    }
+    return appStore.get("status_integration.discord.icon");
 }
 
 function setStatusIcon(icon) {
@@ -28,7 +25,11 @@ function setStatusIcon(icon) {
         "casterlabs-logo",
         "casterlabs-pride",
         "casterlabs-moon",
-        "streaming-platform"
+        "caffeine-logo",
+        "twitch-logo",
+        "trovo-logo",
+        "glimesh-logo",
+        "brime-logo"
     ].includes(icon)) {
         icon = "casterlabs-logo";
     }
@@ -39,9 +40,27 @@ function setStatusIcon(icon) {
 }
 
 async function updateDiscord() {
-    if (isEnabled()) {
+    const isLive = [];
+
+    for (const [plat, data] of Object.entries(Auth.getSignedInPlatforms())) {
+        if (data.streamData?.is_live) {
+            isLive.push(data.streamData);
+        }
+    }
+
+    if (isEnabled() && (isLive.length > 0)) {
+        console.debug("[Discord RPC]", "Setting state.")
         const icon = getStatusIcon();
-        const title = "test, pls ignore <3";
+        const title = "I'm live.";
+
+        const buttons = [];
+
+        for (const liveData of isLive) {
+            buttons.push({
+                label: `Watch on ${prettifyString(liveData.streamer.platform)}`,
+                url: liveData.streamer.link
+            });
+        }
 
         discordRPCClient.setActivity({
             state: title,
@@ -52,13 +71,7 @@ async function updateDiscord() {
             // },
             largeImageKey: icon,
             largeImageText: title,
-            buttons: [
-                // TEMP
-                {
-                    label: "Casterlabs",
-                    url: "https://casterlabs.co"
-                }
-            ]
+            buttons: buttons
         });
 
         // discordRPCClient.request("SET_ACTIVITY", {
@@ -101,6 +114,10 @@ function login() {
 }
 
 login();
+
+Koi.on("stream_status", () => {
+    updateDiscord();
+});
 
 export {
     getStatusIcon,

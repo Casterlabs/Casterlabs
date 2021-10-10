@@ -16,7 +16,11 @@
                     <option value="casterlabs-logo">Casterlabs</option>
                     <option value="casterlabs-pride">Pride</option>
                     <option value="casterlabs-moon">Moonlabs</option>
-                    <option value="streaming-platform">Same as streaming platform</option>
+                    <option value="caffeine-logo">Caffeine</option>
+                    <option value="twitch-logo">Twitch</option>
+                    <option value="trovo-logo">Trovo</option>
+                    <option value="glimesh-logo">Glimesh</option>
+                    <option value="brime-logo">Brime</option>
                 </select>
             </div>
         </label>

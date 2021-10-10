@@ -43,7 +43,7 @@ function sleep(millis) {
 }
 
 function prettifyString(str) {
-    let splitStr = str.split("_");
+    let splitStr = str.toLowerCase().split("_");
 
     if (splitStr.length == 0) {
         return splitStr[0].charAt(0).toUpperCase() + splitStr[0].substring(1);
