@@ -16,6 +16,8 @@
 
     <a href="/welcome/step1">welcome/step1</a>
     <br />
+    <a href="/controldeck">controldeck</a>
+    <br />
     <a href="/settings">settings</a>
     <br />
     <a href="/pages/stream-chat">pages/stream-chat</a>
