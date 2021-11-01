@@ -65,15 +65,16 @@
     "wait-on": "^6.0.0"
   },
   "dependencies": {
-    "electron-store": "^6.0.1",
     "@lukeed/uuid": "^2.0.0",
+    "computer-name": "^0.1.0",
     "cookie": "^0.4.1",
+    "discord-rpc": "^4.0.1",
     "electron-serve": "^1.1.0",
-    "svelte-kit": "^1.0.0",
+    "electron-store": "^6.0.1",
     "electron-window-state": "^5.0.3",
+    "native-sound-mixer": "^3.3.0-win",
     "node-machine-id": "^1.1.12",
     "obs-websocket-js": "^4.0.3",
-    "computer-name": "^0.1.0",
-    "discord-rpc": "^4.0.1"
+    "svelte-kit": "^1.0.0"
   }
 }
