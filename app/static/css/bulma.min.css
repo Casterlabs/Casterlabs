@@ -1,3 +1,8 @@
+input.number {
+    font-size: 0.75em;
+    width: 6em;
+}
+
 /*! bulma.io v0.9.3 | MIT License | github.com/jgthms/bulma */
 .button,
 .file-cta,

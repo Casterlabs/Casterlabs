@@ -1,5 +1,6 @@
 <script>
     import { setPageProperties } from "../__layout.svelte";
+
     import FormElement from "../../components/form/form-element.svelte";
 
     import { onMount } from "svelte";
@@ -12,11 +13,21 @@
 
     let widget = null;
 
+    // Holy shit this is so ugly.
+    // For some reason svelte won't always render the component properly.
+    // Sometimes it renders the component, but the data is not updated.
+    let blanking = false;
+
     let widgetCategories = [];
     let currentWidgetCategory = null;
 
     function switchCategory(category) {
-        currentWidgetCategory = category;
+        blanking = true;
+
+        setTimeout(() => {
+            currentWidgetCategory = category;
+            blanking = false;
+        }, 50);
     }
 
     onMount(async () => {
@@ -57,25 +68,24 @@
         </div>
 
         <div class="allow-select has-text-left">
-            {#each currentWidgetCategory.items as widgetSettingsOption}
-                <div class="columns">
-                    <div class="column" style="max-width: 260px; min-width: 260px;">
-                        <span class="has-text-weight-medium">
-                            {widgetSettingsOption.label}
-                        </span>
+            {#if !blanking}
+                {#each currentWidgetCategory.items as widgetSettingsOption}
+                    <div class="columns">
+                        <div class="column" style="max-width: 260px; min-width: 260px;">
+                            <span class="has-text-weight-medium">
+                                {widgetSettingsOption.label}
+                            </span>
+                        </div>
+                        <div class="column">
+                            <FormElement module={widget} itemDeclaration={widgetSettingsOption} />
+                        </div>
                     </div>
-                    <div class="column">
-                        <FormElement module={widget} itemDeclaration={widgetSettingsOption} />
-                    </div>
-                </div>
-            {/each}
+                {/each}
 
-            <script>
-                feather.replace();
-            </script>
+                <script>
+                    feather.replace();
+                </script>
+            {/if}
         </div>
     </div>
 {/if}
-
-<style>
-</style>
