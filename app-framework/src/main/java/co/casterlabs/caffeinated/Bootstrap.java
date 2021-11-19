@@ -1,39 +1,83 @@
 package co.casterlabs.caffeinated;
 
+import java.io.IOException;
+
 import co.casterlabs.caffeinated.ui.ApplicationUI;
 import co.casterlabs.caffeinated.ui.UILifeCycleListener;
+import co.casterlabs.rakurai.json.Rson;
+import lombok.Getter;
 import lombok.SneakyThrows;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import xyz.e3ndr.consoleutil.ConsoleUtil;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class Bootstrap {
+@Command(name = "start", mixinStandardHelpOptions = true, version = "Caffeinated", description = "Starts Caffeinated")
+public class Bootstrap implements Runnable {
+
+    @Option(names = {
+            "-D",
+            "--dev-address"
+    }, description = "Whether or not this is a dev environment, normal users beware.")
+    private String devAddress = "";
+
+    private static FastLogger logger = new FastLogger();
+
+    private static @Getter BuildInfo buildInfo;
+    private static @Getter boolean isDev;
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        new CommandLine(new Bootstrap()).execute(args);
+    }
 
     @SneakyThrows
-    public static void main(String[] args) {
-        FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
-        FastLogger.logStatic(LogLevel.INFO, "Running on %s.", ConsoleUtil.getPlatform().name());
+    @Override
+    public void run() {
+        ConsoleUtil.getPlatform(); // Init ConsoleUtil.
+
+        isDev = this.devAddress != null;
+
+        if (isDev) {
+            FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
+        }
+
+        buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
+
+        System.out.println("\n > System.out.println(\"Hello World!\");\nHello World!\n\n");
+
+        logger.info("Entry                        | Value", buildInfo.getVersionString());
+        logger.info("-----------------------------+-------------------------");
+        logger.info("buildInfo.versionString      | %s", buildInfo.getVersionString());
+        logger.info("buildInfo.author             | %s", buildInfo.getAuthor());
+        logger.info("system.platform              | %s", ConsoleUtil.getPlatform().name());
+        logger.info("bootstrap.isDev              | %b", isDev);
 
         ApplicationUI.initialize(new UILifeCycleListener() {
 
             @Override
             public void onPreLoad() {
+                logger.debug("onPreLoad");
 
             }
 
             @Override
             public void onInitialLoad() {
+                logger.debug("onInitialLoad");
 
             }
 
             @Override
             public boolean onCloseAttempt() {
+                logger.debug("onCloseAttempt");
                 return true;
             }
 
             @Override
             public void onTrayMinimize() {
+                logger.debug("onTrayMinimize");
 
             }
 

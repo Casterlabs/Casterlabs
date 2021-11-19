@@ -12,6 +12,13 @@
 	</properties>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -78,6 +85,12 @@
 
 
 		<!-- Utility packages -->
+		<dependency>
+			<groupId>info.picocli</groupId>
+			<artifactId>picocli</artifactId>
+			<version>4.3.0</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.github.casterlabs.rakurai</groupId>
 			<artifactId>Json</artifactId>
