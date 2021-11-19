@@ -26,7 +26,7 @@ public class JavascriptBridge {
 
     static {
         try {
-            bridgeScript = FileUtil.loadResource("resources/JavascriptBridge.js");
+            bridgeScript = FileUtil.loadResource("JavascriptBridge.js");
         } catch (IOException e) {
             e.printStackTrace();
         }
