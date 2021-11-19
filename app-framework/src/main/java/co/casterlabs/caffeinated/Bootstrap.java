@@ -37,7 +37,7 @@ public class Bootstrap implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
-        isDev = this.devAddress != null;
+//        isDev = this.devAddress != null;
 
         if (isDev) {
             FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);

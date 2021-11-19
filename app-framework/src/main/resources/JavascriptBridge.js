@@ -119,7 +119,21 @@
 			onSuccess(response) { },
 			onFailure: onFailure
 		});
+	}
 
+	function sendQuery(field, nonce) {
+		const payload = {
+			type: "query",
+			field: field,
+			nonce: nonce
+		};
+
+		cefQuery({
+			request: JSON.stringify(payload),
+			persistent: false,
+			onSuccess(response) { },
+			onFailure: onFailure
+		});
 	}
 
 	const Bridge = {
@@ -128,6 +142,16 @@
 				type: type,
 				data: data
 			});
+		},
+
+		query(field) {
+			return new Promise((resolve) => {
+				const nonce = `${Math.random()}${Math.random()}`;
+
+				eventHandler.once(`querynonce:${nonce}`, resolve);
+
+				sendQuery(field, nonce);
+			})
 		},
 
 		once: eventHandler.once,

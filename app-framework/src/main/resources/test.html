@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    Hello World!
+    <br />
+    <br />
+    <br />
+    to: world 🌎
+    <br />
+    from: Casterlabs-Caffeinated (JCEF)
+    <br />
+    <br />
+    <br />
+    currentTimeMillis = <span id="time"></span>
+</body>
+
+<script>
+    const timeSpan = document.querySelector("#time");
+
+    setInterval(async () => {
+        try {
+            const { data } = await Bridge.query("currentTimeMillis");
+
+            timeSpan.innerText = data;
+        } catch (e) {
+            alert(e);
+        }
+    }, 1000);
+</script>
+
+</html>

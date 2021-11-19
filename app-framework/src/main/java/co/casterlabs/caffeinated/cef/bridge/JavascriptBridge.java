@@ -11,8 +11,10 @@ import org.cef.handler.CefMessageRouterHandlerAdapter;
 
 import co.casterlabs.caffeinated.FileUtil;
 import co.casterlabs.rakurai.json.Rson;
+import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
+import lombok.Getter;
 
 @SuppressWarnings("unused")
 public class JavascriptBridge {
@@ -23,6 +25,8 @@ public class JavascriptBridge {
 
     private CefQueryCallback sub;
     private long subId;
+
+    private @Getter JsonObject queryData = new JsonObject();
 
     static {
         try {
@@ -59,6 +63,23 @@ public class JavascriptBridge {
                             break;
                         }
 
+                        case "query": {
+                            if (!persistent) {
+                                String queryField = query.getString("field");
+                                String queryNonce = query.getString("nonce");
+
+                                JsonElement data = queryData.get(queryField);
+
+                                callback.success("");
+                                emit(
+                                    "querynonce:" + queryNonce,
+                                    new JsonObject()
+                                        .put("data", data)
+                                );
+                            }
+                            break;
+                        }
+
                         default: {
                             callback.failure(-2, "Invalid payload type.");
                         }
@@ -88,7 +109,7 @@ public class JavascriptBridge {
         frame.executeJavaScript(bridgeScript, "", 1);
     }
 
-    public void emit(String type, JsonObject data) {
+    public void emit(String type, JsonElement data) {
         if (this.sub != null) {
             JsonObject payload = new JsonObject()
                 .put("type", type)

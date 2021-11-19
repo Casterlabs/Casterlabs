@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import org.panda_lang.pandomium.Pandomium;
 import org.panda_lang.pandomium.wrapper.PandomiumClient;
 
+import co.casterlabs.caffeinated.FileUtil;
 import co.casterlabs.caffeinated.cef.CefUtil;
 import co.casterlabs.caffeinated.cef.bridge.JavascriptBridge;
 import co.casterlabs.caffeinated.cef.scheme.SchemeHandler;
@@ -24,6 +25,7 @@ import co.casterlabs.caffeinated.cef.scheme.http.HttpResponse;
 import co.casterlabs.caffeinated.cef.scheme.http.StandardHttpStatus;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
@@ -73,6 +75,25 @@ public class ApplicationUI {
             }
 
         });
+
+        // Timekeeper test.
+        {
+            Thread timekeeper = new Thread(() -> {
+                try {
+                    while (true) {
+                        Thread.sleep(150);
+                        bridge
+                            .getQueryData()
+                            .put("currentTimeMillis", System.currentTimeMillis());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            timekeeper.setDaemon(true);
+            timekeeper.setName("Timekeeper");
+            timekeeper.start();
+        }
 
         browser = pandaClient.loadURL(appAddress);
         window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
@@ -141,21 +162,10 @@ public class ApplicationUI {
 
     public static class TestSchemeHandler implements SchemeHandler {
 
+        @SneakyThrows
         @Override
         public HttpResponse onRequest(HttpRequest request) {
-            String content = "<!DOCTYPE html>"
-                + "<html>"
-                + "<meta charset=\"utf-8\">"
-                + "<body>"
-                + "Hello World!"
-                + "<br />"
-                + "<br />"
-                + "<br />"
-                + "to: world 🌎"
-                + "<br />"
-                + "from: Casterlabs-Caffeinated (JCEF/Pandomium)"
-                + "</body>"
-                + "</html>";
+            String content = FileUtil.loadResource("test.html");
 
             return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content)
                 .setMimeType("text/html");
