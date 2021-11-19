@@ -19,8 +19,12 @@ public class ApplicationDevTools {
         this.browser = browser;
     }
 
+    public boolean isOpen() {
+        return this.frame != null;
+    }
+
     public void summon() {
-        if (this.frame == null) {
+        if (!this.isOpen()) {
             this.frame = new JFrame();
 
             this.frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -43,11 +47,19 @@ public class ApplicationDevTools {
     }
 
     public void destroy() {
-        if (this.frame != null) {
+        if (this.isOpen()) {
             this.frame.dispose();
             this.devtools.close(false);
             this.frame = null;
             this.devtools = null;
+        }
+    }
+
+    public void toggle() {
+        if (this.isOpen()) {
+            this.destroy();
+        } else {
+            this.summon();
         }
     }
 

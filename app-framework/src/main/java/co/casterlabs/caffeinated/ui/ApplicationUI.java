@@ -8,8 +8,11 @@ import org.cef.CefClient;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.callback.CefCommandLine;
+import org.cef.callback.CefContextMenuParams;
+import org.cef.callback.CefMenuModel;
 import org.cef.callback.CefSchemeRegistrar;
 import org.cef.handler.CefAppHandler;
+import org.cef.handler.CefContextMenuHandler;
 import org.cef.handler.CefLifeSpanHandler;
 import org.cef.handler.CefLoadHandlerAdapter;
 import org.cef.handler.CefPrintHandler;
@@ -17,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.panda_lang.pandomium.Pandomium;
 import org.panda_lang.pandomium.wrapper.PandomiumClient;
 
+import co.casterlabs.caffeinated.Bootstrap;
 import co.casterlabs.caffeinated.FileUtil;
 import co.casterlabs.caffeinated.cef.CefUtil;
 import co.casterlabs.caffeinated.cef.bridge.JavascriptBridge;
@@ -55,6 +59,37 @@ public class ApplicationUI {
         window = new ApplicationWindow(listener);
         client = pandaClient.getCefClient();
         bridge = new JavascriptBridge(client);
+
+        client.addContextMenuHandler(new CefContextMenuHandler() {
+            // ID | Name
+            // ---+-------------------------
+            // 01 | Inspect Element
+            //
+
+            @Override
+            public void onBeforeContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams params, CefMenuModel model) {
+                model.clear();
+
+                if (Bootstrap.isDev()) {
+                    model.addCheckItem(1, "Inspect Element");
+                    model.setChecked(1, devtools.isOpen());
+                }
+            }
+
+            @Override
+            public boolean onContextMenuCommand(CefBrowser browser, CefFrame frame, CefContextMenuParams params, int commandId, int eventFlags) {
+                switch (commandId) {
+                    case 1: {
+                        devtools.toggle();
+                        break;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public void onContextMenuDismissed(CefBrowser browser, CefFrame frame) {}
+        });
 
         logger.debug("Loadstate 0");
         lifeCycleListener.onPreLoad();
@@ -108,7 +143,6 @@ public class ApplicationUI {
             public void onAfterCreated(CefBrowser _browser) {
                 if (browser == _browser) {
                     devtools = new ApplicationDevTools(browser);
-                    devtools.summon();
                     bridge.injectBridgeScript(browser.getMainFrame());
                 }
             }
