@@ -3,6 +3,8 @@ package co.casterlabs.caffeinated.cef;
 import java.io.PrintStream;
 
 import org.cef.CefApp;
+import org.cef.CefSettings;
+import org.cef.CefSettings.LogSeverity;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.callback.CefSchemeHandlerFactory;
@@ -13,11 +15,13 @@ import org.panda_lang.pandomium.Pandomium;
 import co.casterlabs.caffeinated.cef.scheme.SchemeHandler;
 import co.casterlabs.caffeinated.cef.scheme.impl.ResponseResourceHandler;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import net.dzikoysk.dynamiclogger.Channel;
 import net.dzikoysk.dynamiclogger.Logger;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 import xyz.e3ndr.fastloggingframework.logging.LoggingUtil;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class CefUtil {
 
@@ -53,10 +57,12 @@ public class CefUtil {
         }
     }
 
+    @SneakyThrows
     public static Pandomium createCefApp() {
+        FastLogger pandaLogger = new FastLogger("CefLoader/Pandomium");
+
         // We use Pandomium to bundle the CEF natives and load them,
         // thanks Pandominum team! <3
-        FastLogger pandaLogger = new FastLogger("CefLoader/Pandomium");
         Pandomium panda = Pandomium.builder()
             .logger(new Logger() {
                 @Override
@@ -90,9 +96,15 @@ public class CefUtil {
                     return null;
                 }
             })
+            .argument("--disable-http-cache")
             .build();
 
-        panda.getCommandLine().addArgument("--log-severity=disable");
+        // The default settings has broken defaults.
+        CefSettings settings = ReflectionLib.getValue(panda.getCefApp(), "settings_");
+
+        settings.log_severity = LogSeverity.LOGSEVERITY_DISABLE;
+
+        panda.getCefApp().setSettings(settings);
 
         return panda;
     }

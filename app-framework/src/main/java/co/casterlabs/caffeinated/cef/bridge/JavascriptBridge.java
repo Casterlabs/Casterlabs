@@ -13,18 +13,15 @@ import co.casterlabs.caffeinated.FileUtil;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
+import co.casterlabs.rakurai.json.element.JsonString;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.Getter;
 
-@SuppressWarnings("unused")
 public class JavascriptBridge {
     private static String bridgeScript = "";
 
-    private CefClient client;
     private CefMessageRouter router;
-
-    private CefQueryCallback sub;
-    private long subId;
+    private CefFrame frame;
 
     private @Getter JsonObject queryData = new JsonObject();
 
@@ -42,7 +39,10 @@ public class JavascriptBridge {
         this.router.addHandler(new CefMessageRouterHandlerAdapter() {
 
             @Override
-            public boolean onQuery(CefBrowser browser, CefFrame frame, long queryId, String request, boolean persistent, CefQueryCallback callback) {
+            public boolean onQuery(
+                CefBrowser browser, CefFrame frame, long queryId, String request, boolean persistent,
+                CefQueryCallback callback
+            ) {
                 try {
                     JsonObject query = Rson.DEFAULT.fromJson(request, JsonObject.class);
 
@@ -50,15 +50,6 @@ public class JavascriptBridge {
                         case "emission": {
                             if (!persistent) {
                                 handleEmission(query);
-                                callback.success("");
-                            }
-                            break;
-                        }
-
-                        case "subscribe": {
-                            if (persistent && (sub == null)) {
-                                subId = queryId;
-                                sub = callback;
                             }
                             break;
                         }
@@ -70,12 +61,7 @@ public class JavascriptBridge {
 
                                 JsonElement data = queryData.get(queryField);
 
-                                callback.success("");
-                                emit(
-                                    "querynonce:" + queryNonce,
-                                    new JsonObject()
-                                        .put("data", data)
-                                );
+                                emit("querynonce:" + queryNonce, new JsonObject().put("data", data));
                             }
                             break;
                         }
@@ -84,6 +70,8 @@ public class JavascriptBridge {
                             callback.failure(-2, "Invalid payload type.");
                         }
                     }
+
+                    callback.success("");
                 } catch (JsonParseException ignored) {
                     callback.failure(-2, "Invalid JSON payload.");
                 }
@@ -92,12 +80,7 @@ public class JavascriptBridge {
             }
 
             @Override
-            public void onQueryCanceled(CefBrowser browser, CefFrame frame, long queryId) {
-                if (subId == queryId) {
-                    subId = -1;
-                    sub = null;
-                }
-            }
+            public void onQueryCanceled(CefBrowser browser, CefFrame frame, long queryId) {}
 
         }, true);
 
@@ -106,17 +89,14 @@ public class JavascriptBridge {
 
     public void injectBridgeScript(CefFrame frame) {
         // Inject the bridge script.
-        frame.executeJavaScript(bridgeScript, "", 1);
+        this.frame = frame;
+        this.frame.executeJavaScript(bridgeScript, "", 1);
     }
 
     public void emit(String type, JsonElement data) {
-        if (this.sub != null) {
-            JsonObject payload = new JsonObject()
-                .put("type", type)
-                .put("data", data);
+        String line = String.format("window.Bridge.broadcast(%s,%s);", new JsonString(type), data);
 
-            this.sub.success(payload.toString());
-        }
+        this.frame.executeJavaScript(line, "", 1);
     }
 
     private void handleEmission(JsonObject query) {

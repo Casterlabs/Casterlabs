@@ -10,6 +10,7 @@ import org.cef.browser.CefFrame;
 import org.cef.callback.CefCommandLine;
 import org.cef.callback.CefSchemeRegistrar;
 import org.cef.handler.CefAppHandler;
+import org.cef.handler.CefLifeSpanHandler;
 import org.cef.handler.CefLoadHandlerAdapter;
 import org.cef.handler.CefPrintHandler;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +39,7 @@ public class ApplicationUI {
     private static CefBrowser browser;
     private static CefClient client;
     private static @Getter String appAddress;
+    private static @Getter ApplicationDevTools devtools;
 
     private static FastLogger logger = new FastLogger();
 
@@ -70,8 +72,6 @@ public class ApplicationUI {
                     this.loadState = 2;
                     logger.debug("Loadstate 2");
                 }
-
-                bridge.injectBridgeScript(_frame);
             }
 
         });
@@ -81,10 +81,8 @@ public class ApplicationUI {
             Thread timekeeper = new Thread(() -> {
                 try {
                     while (true) {
-                        Thread.sleep(150);
-                        bridge
-                            .getQueryData()
-                            .put("currentTimeMillis", System.currentTimeMillis());
+                        Thread.sleep(10);
+                        bridge.getQueryData().put("currentTimeMillis", System.currentTimeMillis());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -98,6 +96,34 @@ public class ApplicationUI {
         browser = pandaClient.loadURL(appAddress);
         window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
         window.getFrame().setVisible(true); // TODO figure out why onLoadEnd is not firing.
+
+        client.addLifeSpanHandler(new CefLifeSpanHandler() {
+
+            @Override
+            public boolean doClose(CefBrowser var1) {
+                return false;
+            }
+
+            @Override
+            public void onAfterCreated(CefBrowser _browser) {
+                if (browser == _browser) {
+                    devtools = new ApplicationDevTools(browser);
+                    devtools.summon();
+                    bridge.injectBridgeScript(browser.getMainFrame());
+                }
+            }
+
+            @Override
+            public void onAfterParentChanged(CefBrowser var1) {}
+
+            @Override
+            public void onBeforeClose(CefBrowser var1) {}
+
+            @Override
+            public boolean onBeforePopup(CefBrowser var1, CefFrame var2, String var3, String var4) {
+                return false;
+            }
+        });
 
         setTitle(null);
     }
@@ -115,13 +141,13 @@ public class ApplicationUI {
             public void onRegisterCustomSchemes(CefSchemeRegistrar registrar) {
                 if (!registrar.addCustomScheme(
                     "app", // Scheme
-                    true,  // isStandard
+                    true, // isStandard
                     false, // isLocal
                     false, // isDisplayIsolated
-                    true,  // isSecure
+                    true, // isSecure
                     false, // isCorsEnabled
                     false, // isCspBypassing
-                    true   // isFetchEnabled
+                    true // isFetchEnabled
                 )) {
                     FastLogger.logStatic(LogLevel.SEVERE, "Could not register scheme.");
                     System.exit(1);
@@ -167,8 +193,7 @@ public class ApplicationUI {
         public HttpResponse onRequest(HttpRequest request) {
             String content = FileUtil.loadResource("test.html");
 
-            return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content)
-                .setMimeType("text/html");
+            return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content).setMimeType("text/html");
         }
 
     }

@@ -68,16 +68,31 @@ public class ApplicationWindow {
         this.titleBarPanel.setLayout(titleBarPanelLayout);
 
         this.titleLabel = new JLabel("AppTitleBar");
-        titleBarPanelLayout.putConstraint(SpringLayout.NORTH, this.titleLabel, 5, SpringLayout.NORTH, this.titleBarPanel);
-        titleBarPanelLayout.putConstraint(SpringLayout.WEST, this.titleLabel, 10, SpringLayout.WEST, this.titleBarPanel);
-        titleBarPanelLayout.putConstraint(SpringLayout.EAST, this.titleLabel, -376, SpringLayout.EAST, this.titleBarPanel);
+        titleBarPanelLayout.putConstraint(
+            SpringLayout.NORTH, this.titleLabel, 5, SpringLayout.NORTH,
+            this.titleBarPanel
+        );
+        titleBarPanelLayout.putConstraint(
+            SpringLayout.WEST, this.titleLabel, 10, SpringLayout.WEST,
+            this.titleBarPanel
+        );
+        titleBarPanelLayout.putConstraint(
+            SpringLayout.EAST, this.titleLabel, -376, SpringLayout.EAST,
+            this.titleBarPanel
+        );
         this.titleBarPanel.add(this.titleLabel);
 
         new FrameDragListener(this.frame, this.titleBarPanel);
 
         this.closeButton = new JButton("X");
-        titleBarPanelLayout.putConstraint(SpringLayout.NORTH, this.closeButton, 0, SpringLayout.NORTH, this.titleBarPanel);
-        titleBarPanelLayout.putConstraint(SpringLayout.EAST, this.closeButton, 0, SpringLayout.EAST, this.titleBarPanel);
+        titleBarPanelLayout.putConstraint(
+            SpringLayout.NORTH, this.closeButton, 0, SpringLayout.NORTH,
+            this.titleBarPanel
+        );
+        titleBarPanelLayout.putConstraint(
+            SpringLayout.EAST, this.closeButton, 0, SpringLayout.EAST,
+            this.titleBarPanel
+        );
         this.titleBarPanel.add(this.closeButton);
 
         this.closeButton.addActionListener((ActionEvent e) -> onClose());
@@ -90,6 +105,7 @@ public class ApplicationWindow {
     private void onClose() {
         if (this.listener.onCloseAttempt()) {
             this.frame.dispose();
+            ApplicationUI.getDevtools().destroy();
             FastLoggingFramework.close(); // Faster shutdown.
         }
     }

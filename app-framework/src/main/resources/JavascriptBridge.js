@@ -93,19 +93,8 @@
 	delete window.cefQuery;
 
 	function onFailure(code, message) {
-		alert(`Javascript bridge query error:\ncode: ${code}\n\n${message}`)
+		console.error(`Javascript bridge query error:\ncode: ${code}\n\n${message}`)
 	}
-
-	cefQuery({
-		request: `{"type": "subscribe"}`,
-		persistent: true,
-		onSuccess(response) {
-			const payload = JSON.parse(response);
-
-			eventHandler.broadcast(payload.type, payload.data, true);
-		},
-		onFailure: onFailure
-	});
 
 	function sendToParent(emission) {
 		const payload = {
@@ -146,17 +135,15 @@
 
 		query(field) {
 			return new Promise((resolve) => {
-				const nonce = `${Math.random()}${Math.random()}`;
+				const nonce = `${Math.random()}${Math.random()}`.split(".").join("");
 
 				eventHandler.once(`querynonce:${nonce}`, resolve);
 
 				sendQuery(field, nonce);
-			})
+			});
 		},
 
-		once: eventHandler.once,
-		on: eventHandler.on,
-		off: eventHandler.off
+		...eventHandler
 	};
 
 	Object.freeze(Bridge);
