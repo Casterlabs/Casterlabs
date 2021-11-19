@@ -22,7 +22,13 @@ public class Bootstrap implements Runnable {
             "-D",
             "--dev-address"
     }, description = "Whether or not this is a dev environment, normal users beware.")
-    private String devAddress = "";
+    private String devAddress;
+
+    @Option(names = {
+            "-t",
+            "--trace"
+    }, description = "Enables Trace Logging.")
+    private boolean enableTraceLogging;
 
     private static FastLogger logger = new FastLogger();
 
@@ -37,9 +43,11 @@ public class Bootstrap implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
-//        isDev = this.devAddress != null;
+        isDev = this.devAddress != null;
 
-        if (isDev) {
+        if (this.enableTraceLogging) {
+            FastLoggingFramework.setDefaultLevel(LogLevel.TRACE);
+        } else if (isDev) {
             FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
         }
 

@@ -16,6 +16,9 @@ import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.element.JsonString;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.Getter;
+import lombok.Setter;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class JavascriptBridge {
     private static String bridgeScript = "";
@@ -24,6 +27,8 @@ public class JavascriptBridge {
     private CefFrame frame;
 
     private @Getter JsonObject queryData = new JsonObject();
+
+    private @Setter DualConsumer<String, JsonObject> onEvent;
 
     static {
         try {
@@ -101,9 +106,14 @@ public class JavascriptBridge {
 
     private void handleEmission(JsonObject query) {
         JsonObject emission = query.getObject("data");
+        String type = emission.getString("type");
+        JsonObject data = emission.getObject("data");
 
-        // TODO integrate event handling (JavascriptBridge#on method)
-        System.out.println(emission);
+        FastLogger.logStatic(LogLevel.TRACE, "%s: %s", type, data);
+
+        if (this.onEvent != null) {
+            this.onEvent.accept(type, data);
+        }
     }
 
 }

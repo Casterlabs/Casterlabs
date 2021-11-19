@@ -16,6 +16,7 @@ import org.cef.handler.CefContextMenuHandler;
 import org.cef.handler.CefLifeSpanHandler;
 import org.cef.handler.CefLoadHandlerAdapter;
 import org.cef.handler.CefPrintHandler;
+import org.cef.network.CefRequest.TransitionType;
 import org.jetbrains.annotations.Nullable;
 import org.panda_lang.pandomium.Pandomium;
 import org.panda_lang.pandomium.wrapper.PandomiumClient;
@@ -64,6 +65,7 @@ public class ApplicationUI {
             // ID | Name
             // ---+-------------------------
             // 01 | Inspect Element
+            // 02 | Reload
             //
 
             @Override
@@ -71,6 +73,8 @@ public class ApplicationUI {
                 model.clear();
 
                 if (Bootstrap.isDev()) {
+                    model.addItem(2, "Reload");
+
                     model.addCheckItem(1, "Inspect Element");
                     model.setChecked(1, devtools.isOpen());
                 }
@@ -83,6 +87,11 @@ public class ApplicationUI {
                         devtools.toggle();
                         break;
                     }
+
+                    case 2: {
+                        browser.reloadIgnoreCache();
+                        break;
+                    }
                 }
                 return true;
             }
@@ -90,6 +99,8 @@ public class ApplicationUI {
             @Override
             public void onContextMenuDismissed(CefBrowser browser, CefFrame frame) {}
         });
+
+        logger.info("appAddress = %s", appAddress);
 
         logger.debug("Loadstate 0");
         lifeCycleListener.onPreLoad();
@@ -109,24 +120,15 @@ public class ApplicationUI {
                 }
             }
 
-        });
-
-        // Timekeeper test.
-        {
-            Thread timekeeper = new Thread(() -> {
-                try {
-                    while (true) {
-                        Thread.sleep(10);
-                        bridge.getQueryData().put("currentTimeMillis", System.currentTimeMillis());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            @Override
+            public void onLoadStart(CefBrowser _browser, CefFrame _frame, TransitionType transitionType) {
+                if (browser == _browser) {
+                    logger.info("Injected Bridge.");
+                    bridge.injectBridgeScript(browser.getMainFrame());
                 }
-            });
-            timekeeper.setDaemon(true);
-            timekeeper.setName("Timekeeper");
-            timekeeper.start();
-        }
+            }
+
+        });
 
         browser = pandaClient.loadURL(appAddress);
         window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
@@ -142,8 +144,8 @@ public class ApplicationUI {
             @Override
             public void onAfterCreated(CefBrowser _browser) {
                 if (browser == _browser) {
+                    logger.info("Created window.");
                     devtools = new ApplicationDevTools(browser);
-                    bridge.injectBridgeScript(browser.getMainFrame());
                 }
             }
 

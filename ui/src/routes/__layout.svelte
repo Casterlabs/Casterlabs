@@ -88,15 +88,15 @@
         </span>
         <script>
             document.querySelector(".minimize").addEventListener("click", () => {
-                currentWindow.minimize();
+                window.Bridge.emit("ui:minimize");
             });
 
             document.querySelector(".maximize").addEventListener("click", () => {
-                currentWindow.isMaximized() ? currentWindow.unmaximize() : currentWindow.maximize();
+                window.Bridge.emit("ui:minmax");
             });
 
             document.querySelector(".close").addEventListener("click", () => {
-                app.exit();
+                window.Bridge.emit("ui:close");
             });
         </script>
     </div>

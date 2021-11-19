@@ -1,0 +1,39 @@
+<!doctype html>
+<html class="bulma-dark-mode">
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+		<title>Casterlabs Caffeinated</title>
+
+		<!-- Scripts -->
+		<script src="https://unpkg.com/feather-icons"></script>
+		<script src="/init.js"></script>
+		<script type="module" src="/js/interceptAnchors.js"></script>
+
+		<script>
+			if (location.pathname != "/") {
+				console.warn("[app.html]", "Reload detected, redirecting to /");
+				location.href = "/";
+			}
+		</script>
+
+		<link rel="stylesheet" href="/css/bulma.min.css" />
+		<link rel="stylesheet" href="/css/bulma-prefers-dark.min.css" />
+		<link rel="stylesheet" href="/css/global.css" />
+		<link rel="stylesheet" href="/css/titlebar.css" />
+		<link rel="stylesheet" href="/css/scrollbar.css" />
+		<link rel="stylesheet" href="/css/sidebar.css" />
+
+		%svelte.head%
+	</head>
+
+	<body>
+		<div class="body-container">
+			<div id="svelte">%svelte.body%</div>
+		</div>
+
+		<div id="sandbox-frames" class="hidden"></div>
+	</body>
+
+</html>

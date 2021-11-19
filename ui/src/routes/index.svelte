@@ -14,16 +14,16 @@
     let color = "white";
 
     onMount(async () => {
-        logo = UI.getLogo();
+        // logo = UI.getLogo();
 
-        if (["dark"].includes(UI.getTheme())) {
-            color = "white";
-        } else {
-            color = "black";
-        }
+        // if (["dark"].includes(UI.getTheme())) {
+        //     color = "white";
+        // } else {
+        //     color = "black";
+        // }
 
         console.debug("[App]", "Signaling ui-theme-loaded");
-        currentWindow.emit("ui-theme-loaded", {});
+        window.Bridge.emit("ui:theme-loaded");
     });
 </script>
 
