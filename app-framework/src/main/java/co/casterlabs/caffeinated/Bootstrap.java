@@ -30,14 +30,13 @@ public class Bootstrap implements Runnable {
     private static @Getter boolean isDev;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        new CommandLine(new Bootstrap()).execute(args);
+        ConsoleUtil.getPlatform(); // Init ConsoleUtil.
+        new CommandLine(new Bootstrap()).execute(args); // Calls #run()
     }
 
     @SneakyThrows
     @Override
     public void run() {
-        ConsoleUtil.getPlatform(); // Init ConsoleUtil.
-
         isDev = this.devAddress != null;
 
         if (isDev) {
@@ -55,33 +54,36 @@ public class Bootstrap implements Runnable {
         logger.info("system.platform              | %s", ConsoleUtil.getPlatform().name());
         logger.info("bootstrap.isDev              | %b", isDev);
 
-        ApplicationUI.initialize(new UILifeCycleListener() {
+        ApplicationUI.initialize(
+            isDev ? this.devAddress : "app://index",
+            new UILifeCycleListener() {
 
-            @Override
-            public void onPreLoad() {
-                logger.debug("onPreLoad");
+                @Override
+                public void onPreLoad() {
+                    logger.debug("onPreLoad");
+
+                }
+
+                @Override
+                public void onInitialLoad() {
+                    logger.debug("onInitialLoad");
+
+                }
+
+                @Override
+                public boolean onCloseAttempt() {
+                    logger.debug("onCloseAttempt");
+                    return true;
+                }
+
+                @Override
+                public void onTrayMinimize() {
+                    logger.debug("onTrayMinimize");
+
+                }
 
             }
-
-            @Override
-            public void onInitialLoad() {
-                logger.debug("onInitialLoad");
-
-            }
-
-            @Override
-            public boolean onCloseAttempt() {
-                logger.debug("onCloseAttempt");
-                return true;
-            }
-
-            @Override
-            public void onTrayMinimize() {
-                logger.debug("onTrayMinimize");
-
-            }
-
-        });
+        );
 
     }
 

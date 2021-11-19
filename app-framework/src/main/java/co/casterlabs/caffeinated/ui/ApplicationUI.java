@@ -23,6 +23,7 @@ import co.casterlabs.caffeinated.cef.scheme.http.HttpRequest;
 import co.casterlabs.caffeinated.cef.scheme.http.HttpResponse;
 import co.casterlabs.caffeinated.cef.scheme.http.StandardHttpStatus;
 import lombok.Getter;
+import lombok.NonNull;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
@@ -34,10 +35,12 @@ public class ApplicationUI {
     private static ApplicationWindow window;
     private static CefBrowser browser;
     private static CefClient client;
+    private static @Getter String appAddress;
 
     private static FastLogger logger = new FastLogger();
 
-    public static void initialize(UILifeCycleListener listener) {
+    public static void initialize(@NonNull String addr, @NonNull UILifeCycleListener listener) {
+        appAddress = addr;
         lifeCycleListener = listener;
 
         registerSchemes();
@@ -71,7 +74,7 @@ public class ApplicationUI {
 
         });
 
-        browser = pandaClient.loadURL("app://index");
+        browser = pandaClient.loadURL(appAddress);
         window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
         window.getFrame().setVisible(true); // TODO figure out why onLoadEnd is not firing.
 
