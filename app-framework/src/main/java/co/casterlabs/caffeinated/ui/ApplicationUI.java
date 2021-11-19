@@ -1,60 +1,81 @@
-package co.casterlabs.caffeinated;
+package co.casterlabs.caffeinated.ui;
 
 import java.awt.BorderLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 
 import org.cef.CefApp;
 import org.cef.CefApp.CefAppState;
+import org.cef.CefClient;
 import org.cef.browser.CefBrowser;
+import org.cef.browser.CefFrame;
 import org.cef.callback.CefCommandLine;
 import org.cef.callback.CefSchemeRegistrar;
 import org.cef.handler.CefAppHandler;
+import org.cef.handler.CefLoadHandlerAdapter;
 import org.cef.handler.CefPrintHandler;
+import org.jetbrains.annotations.Nullable;
 import org.panda_lang.pandomium.Pandomium;
 import org.panda_lang.pandomium.wrapper.PandomiumClient;
 
 import co.casterlabs.caffeinated.cef.CefUtil;
+import co.casterlabs.caffeinated.cef.bridge.JavascriptBridge;
 import co.casterlabs.caffeinated.cef.scheme.SchemeHandler;
 import co.casterlabs.caffeinated.cef.scheme.http.HttpRequest;
 import co.casterlabs.caffeinated.cef.scheme.http.HttpResponse;
 import co.casterlabs.caffeinated.cef.scheme.http.StandardHttpStatus;
-import lombok.SneakyThrows;
+import lombok.Getter;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class Test {
+public class ApplicationUI {
 
-    @SneakyThrows
-    public static void main(String[] args) {
+    private static UILifeCycleListener lifeCycleListener = null;
+
+    private static @Getter JavascriptBridge bridge;
+    private static ApplicationWindow window;
+    private static CefBrowser browser;
+    private static CefClient client;
+
+    private static FastLogger logger = new FastLogger();
+
+    public static void initialize(UILifeCycleListener listener) {
+        lifeCycleListener = listener;
+
         registerSchemes();
 
         Pandomium panda = CefUtil.createCefApp();
-        PandomiumClient client = panda.createClient();
+        PandomiumClient pandaClient = panda.createClient();
 
-//        JavascriptBridge bridge = new JavascriptBridge(client.getCefClient());
+        window = new ApplicationWindow(listener);
+        client = pandaClient.getCefClient();
+        bridge = new JavascriptBridge(client);
 
-        CefBrowser browser = client.loadURL("app://index");
+        logger.debug("Loadstate 0");
+        lifeCycleListener.onPreLoad();
+        client.addLoadHandler(new CefLoadHandlerAdapter() {
+            // 0 = about:blank (preload)
+            // 1 = app://index (load)
+            // 2 = ... (completely loaded)
+            private int loadState = 0;
 
-        JFrame frame = new JFrame();
-        frame.getContentPane().add(browser.getUIComponent(), BorderLayout.CENTER);
-
-        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent e) {
-                frame.dispose();
+            public void onLoadEnd(CefBrowser _browser, CefFrame _frame, int httpStatusCode) {
+                if (this.loadState == 0) {
+                    logger.debug("Loadstate 1");
+                    lifeCycleListener.onInitialLoad();
+                    this.loadState = 2;
+                    logger.debug("Loadstate 2");
+                }
+
+                bridge.injectBridgeScript(_frame);
             }
+
         });
 
-        frame.setTitle("Casterlabs-Caffeinated");
-        frame.setSize(800, 600);
-        frame.setVisible(true);
+        browser = pandaClient.loadURL("app://index");
+        window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
+        window.getFrame().setVisible(true); // TODO figure out why onLoadEnd is not firing.
 
-        Thread.sleep(5000);
-
-//        bridge.emit("test!", new JsonObject());
+        setTitle(null);
     }
 
     public static void registerSchemes() {
@@ -78,7 +99,8 @@ public class Test {
                     false, // isCspBypassing
                     true   // isFetchEnabled
                 )) {
-                    System.out.println("Could not register scheme.");
+                    FastLogger.logStatic(LogLevel.SEVERE, "Could not register scheme.");
+                    System.exit(1);
                 }
             }
 
@@ -101,6 +123,17 @@ public class Test {
             }
 
         });
+    }
+
+    public static void setTitle(@Nullable String title) {
+        if (title == null) {
+            title = "Casterlabs Caffeinated";
+        } else {
+            title = "Casterlabs Caffeinated - " + title;
+        }
+
+        window.getFrame().setTitle(title);
+        window.getTitleLabel().setText(title);
     }
 
     public static class TestSchemeHandler implements SchemeHandler {

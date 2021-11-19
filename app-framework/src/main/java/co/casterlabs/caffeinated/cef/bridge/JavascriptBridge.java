@@ -7,7 +7,6 @@ import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.browser.CefMessageRouter;
 import org.cef.callback.CefQueryCallback;
-import org.cef.handler.CefLoadHandlerAdapter;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
 
 import co.casterlabs.caffeinated.FileUtil;
@@ -82,16 +81,11 @@ public class JavascriptBridge {
         }, true);
 
         client.addMessageRouter(this.router);
+    }
 
-        client.addLoadHandler(new CefLoadHandlerAdapter() {
-
-            @Override
-            public void onLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode) {
-                // Inject the bridge script.
-                frame.executeJavaScript(bridgeScript, "", 1);
-            }
-
-        });
+    public void injectBridgeScript(CefFrame frame) {
+        // Inject the bridge script.
+        frame.executeJavaScript(bridgeScript, "", 1);
     }
 
     public void emit(String type, JsonObject data) {
