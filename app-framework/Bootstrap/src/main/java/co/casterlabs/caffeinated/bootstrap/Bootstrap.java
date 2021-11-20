@@ -62,6 +62,7 @@ public class Bootstrap implements Runnable {
         logger.info("system.platform              | %s", ConsoleUtil.getPlatform().name());
         logger.info("bootstrap.isDev              | %b", isDev);
 
+        logger.info("Initializing CEF (it may take some time to download the natives)");
         ApplicationUI.initialize(
             isDev ? this.devAddress : "app://index",
             new UILifeCycleListener() {
