@@ -1,5 +1,5 @@
 <div class="no-select login-button">
-    <a class="button has-text-centered" href="/signin/caffeine">
+    <a class="button has-text-centered" href="/signin/caffeine" disabled style="pointer-events: none;">
         <div class="platform-logo">
             <img src="/img/services/caffeine/icon.svg" alt="Caffeine Logo" />
         </div>
