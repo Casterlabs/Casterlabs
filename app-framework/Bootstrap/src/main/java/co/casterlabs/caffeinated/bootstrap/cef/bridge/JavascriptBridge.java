@@ -9,6 +9,7 @@ import org.cef.browser.CefMessageRouter;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
 
+import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -20,7 +21,7 @@ import lombok.Setter;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class JavascriptBridge {
+public class JavascriptBridge implements AppBridge {
     private static String bridgeScript = "";
 
     private CefMessageRouter router;

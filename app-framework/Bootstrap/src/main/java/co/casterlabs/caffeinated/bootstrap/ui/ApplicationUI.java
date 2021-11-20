@@ -224,6 +224,7 @@ public class ApplicationUI {
         window.getFrame().setTitle(title);
     }
 
+    // TODO read internal app files.
     public static class TestSchemeHandler implements SchemeHandler {
 
         @SneakyThrows

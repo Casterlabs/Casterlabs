@@ -1,6 +1,8 @@
 package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -9,8 +11,12 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
+import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
+import co.casterlabs.caffeinated.app.preferences.WindowPreferences;
+import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import lombok.Getter;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
@@ -33,11 +39,47 @@ public class ApplicationWindow {
         this.listener = listener;
         this.frame = new JFrame();
 
+        PreferenceFile<WindowPreferences> preferenceFile = Bootstrap.getApp().getWindowPreferences();
+        WindowPreferences windowPreferences = preferenceFile.get();
+
         this.frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.frame.addWindowListener(new WindowAdapter() {
             @Override
+            public void windowStateChanged(WindowEvent e) {
+                windowPreferences.setStateFlags(e.getNewState());
+                preferenceFile.save();
+            }
+
+            @Override
             public void windowClosing(WindowEvent e) {
                 tryClose();
+            }
+        });
+
+        Timer saveTimer = new Timer(100, (e) -> {
+            preferenceFile.save();
+        });
+        saveTimer.setRepeats(false);
+        this.frame.addComponentListener(new ComponentAdapter() {
+
+            @Override
+            public void componentResized(ComponentEvent e) {
+
+                if ((frame.getState() & JFrame.MAXIMIZED_BOTH) == 0) {
+                    windowPreferences.setWidth(frame.getWidth());
+                    windowPreferences.setHeight(frame.getHeight());
+                    saveTimer.restart();
+                }
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                if ((frame.getState() & JFrame.MAXIMIZED_BOTH) == 0) {
+                    windowPreferences.setX(frame.getX());
+                    windowPreferences.setY(frame.getY());
+                    preferenceFile.save();
+                    saveTimer.restart();
+                }
             }
         });
 
@@ -55,8 +97,10 @@ public class ApplicationWindow {
             e.printStackTrace();
         }
 
+        this.frame.setSize(windowPreferences.getWidth(), windowPreferences.getHeight());
+        this.frame.setLocation(windowPreferences.getX(), windowPreferences.getY());
+        this.frame.setState(windowPreferences.getStateFlags());
         this.frame.setResizable(true);
-        this.frame.setSize(800, 600);
 //      this.frame.setUndecorated(true);
 
         this.cefPanel = new JPanel();

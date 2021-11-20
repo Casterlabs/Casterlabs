@@ -64,7 +64,6 @@ public class Bootstrap implements Runnable {
 
         this.handler.register(this);
 
-        // This is the real meat and potatoes.
         app = new CaffeinatedApp(buildInfo, isDev);
 
         buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
@@ -87,13 +86,17 @@ public class Bootstrap implements Runnable {
                 @Override
                 public void onPreLoad() {
                     logger.debug("onPreLoad");
+
+                    // This is the real meat and potatoes.
+                    app.setBridge(ApplicationUI.getBridge());
+
                     ApplicationUI.getBridge().setOnEvent((t, d) -> onBridgeEvent(t, d));
                 }
 
                 @Override
                 public void onInitialLoad() {
                     logger.debug("onInitialLoad");
-
+                    app.init();
                 }
 
                 @Override
@@ -105,7 +108,6 @@ public class Bootstrap implements Runnable {
                 @Override
                 public void onTrayMinimize() {
                     logger.debug("onTrayMinimize");
-
                 }
 
             }
