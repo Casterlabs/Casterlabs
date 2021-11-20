@@ -1,10 +1,6 @@
 package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
 
 import org.cef.CefApp;
 import org.cef.CefApp.CefAppState;
@@ -238,19 +234,6 @@ public class ApplicationUI {
             return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content).setMimeType("text/html");
         }
 
-    }
-
-    private static Dimension getMaximumScreenBounds() {
-        int maxx = 0;
-        int maxy = 0;
-
-        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        for (GraphicsDevice device : environment.getScreenDevices()) {
-            Rectangle bounds = device.getDefaultConfiguration().getBounds();
-            maxx = Math.max(maxx, bounds.x + bounds.width);
-            maxy = Math.max(maxy, bounds.y + bounds.height);
-        }
-        return new Dimension(maxx, maxy);
     }
 
 }
