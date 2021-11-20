@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.ui;
+package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.BorderLayout;
 
@@ -21,14 +21,14 @@ import org.jetbrains.annotations.Nullable;
 import org.panda_lang.pandomium.Pandomium;
 import org.panda_lang.pandomium.wrapper.PandomiumClient;
 
-import co.casterlabs.caffeinated.Bootstrap;
-import co.casterlabs.caffeinated.FileUtil;
-import co.casterlabs.caffeinated.cef.CefUtil;
-import co.casterlabs.caffeinated.cef.bridge.JavascriptBridge;
-import co.casterlabs.caffeinated.cef.scheme.SchemeHandler;
-import co.casterlabs.caffeinated.cef.scheme.http.HttpRequest;
-import co.casterlabs.caffeinated.cef.scheme.http.HttpResponse;
-import co.casterlabs.caffeinated.cef.scheme.http.StandardHttpStatus;
+import co.casterlabs.caffeinated.bootstrap.Bootstrap;
+import co.casterlabs.caffeinated.bootstrap.FileUtil;
+import co.casterlabs.caffeinated.bootstrap.cef.CefUtil;
+import co.casterlabs.caffeinated.bootstrap.cef.bridge.JavascriptBridge;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.SchemeHandler;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpRequest;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpResponse;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.StandardHttpStatus;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;

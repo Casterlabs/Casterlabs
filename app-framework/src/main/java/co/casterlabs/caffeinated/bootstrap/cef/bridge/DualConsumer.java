@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.cef.bridge;
+package co.casterlabs.caffeinated.bootstrap.cef.bridge;
 
 public interface DualConsumer<T, D> {
 

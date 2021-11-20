@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.cef.scheme.impl;
+package co.casterlabs.caffeinated.bootstrap.cef.scheme.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,11 +12,11 @@ import org.cef.misc.StringRef;
 import org.cef.network.CefRequest;
 import org.cef.network.CefResponse;
 
-import co.casterlabs.caffeinated.cef.scheme.SchemeHandler;
-import co.casterlabs.caffeinated.cef.scheme.http.HttpMethod;
-import co.casterlabs.caffeinated.cef.scheme.http.HttpRequest;
-import co.casterlabs.caffeinated.cef.scheme.http.HttpResponse;
-import co.casterlabs.caffeinated.cef.scheme.http.HttpResponse.TransferEncoding;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.SchemeHandler;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpMethod;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpRequest;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpResponse;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpResponse.TransferEncoding;
 import co.casterlabs.rakurai.collections.HeaderMap;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

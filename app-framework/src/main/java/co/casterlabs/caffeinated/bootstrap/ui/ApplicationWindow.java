@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.ui;
+package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

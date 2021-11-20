@@ -1,9 +1,9 @@
-package co.casterlabs.caffeinated;
+package co.casterlabs.caffeinated.bootstrap;
 
 import java.io.IOException;
 
-import co.casterlabs.caffeinated.ui.ApplicationUI;
-import co.casterlabs.caffeinated.ui.UILifeCycleListener;
+import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
+import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
 import co.casterlabs.rakurai.json.Rson;
 import lombok.Getter;
 import lombok.SneakyThrows;

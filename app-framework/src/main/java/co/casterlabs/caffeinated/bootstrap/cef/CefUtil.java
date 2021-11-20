@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.cef;
+package co.casterlabs.caffeinated.bootstrap.cef;
 
 import java.io.PrintStream;
 
@@ -12,8 +12,8 @@ import org.cef.handler.CefResourceHandler;
 import org.cef.network.CefRequest;
 import org.panda_lang.pandomium.Pandomium;
 
-import co.casterlabs.caffeinated.cef.scheme.SchemeHandler;
-import co.casterlabs.caffeinated.cef.scheme.impl.ResponseResourceHandler;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.SchemeHandler;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.impl.ResponseResourceHandler;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import net.dzikoysk.dynamiclogger.Channel;

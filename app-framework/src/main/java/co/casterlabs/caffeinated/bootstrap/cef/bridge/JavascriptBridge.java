@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.cef.bridge;
+package co.casterlabs.caffeinated.bootstrap.cef.bridge;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import org.cef.browser.CefMessageRouter;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
 
-import co.casterlabs.caffeinated.FileUtil;
+import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;

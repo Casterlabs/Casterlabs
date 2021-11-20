@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated;
+package co.casterlabs.caffeinated.bootstrap;
 
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import lombok.Getter;

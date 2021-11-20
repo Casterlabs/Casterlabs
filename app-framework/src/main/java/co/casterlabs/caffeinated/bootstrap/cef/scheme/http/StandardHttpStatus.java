@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.cef.scheme.http;
+package co.casterlabs.caffeinated.bootstrap.cef.scheme.http;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.Nullable;

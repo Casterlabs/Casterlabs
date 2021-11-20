@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.cef.scheme.http;
+package co.casterlabs.caffeinated.bootstrap.cef.scheme.http;
 
 import java.io.File;
 import java.util.HashMap;
