@@ -57,11 +57,31 @@
         currentPageAttributes = val;
     }
 
-    onMount(() => {
-        window.goto = goto;
-        window.feather.replace();
+    function updateTheme({ theme }) {
+        const htmlElement = document.querySelector("html");
 
-        window.Bridge.on("goto", ({ path }) => goto(path));
+        switch (theme) {
+            case "light": {
+                htmlElement.classList.remove("bulma-dark-mode");
+                return;
+            }
+
+            case "dark":
+            default: {
+                htmlElement.classList.add("bulma-dark-mode");
+                return;
+            }
+        }
+    }
+
+    onMount(async () => {
+        window.goto = goto;
+        feather.replace();
+
+        Bridge.on("goto", ({ path }) => goto(path));
+
+        Bridge.on("pref-update:ui", updateTheme);
+        updateTheme((await Bridge.query("ui")).data);
     });
 </script>
 
@@ -128,7 +148,7 @@
 <style>
     :global(#side-bar) {
         position: absolute;
-        top: var(--title-bar-height);
+        top: 0;
         bottom: 0;
         left: 0;
         width: var(--side-bar-width);
@@ -136,7 +156,7 @@
 
     .svelte-container {
         position: absolute;
-        top: var(--title-bar-height);
+        top: 0;
         bottom: 0;
         left: var(--side-bar-width);
         right: 0;
@@ -144,7 +164,7 @@
         overflow-y: auto;
     }
 
-    #svelte {
+    /* #svelte {
         min-height: 100%;
-    }
+    } */
 </style>

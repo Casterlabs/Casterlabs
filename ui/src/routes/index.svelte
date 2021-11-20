@@ -14,13 +14,15 @@
     let color = "white";
 
     onMount(async () => {
-        // logo = UI.getLogo();
+        const { icon, theme } = (await Bridge.query("ui")).data;
 
-        // if (["dark"].includes(UI.getTheme())) {
-        //     color = "white";
-        // } else {
-        //     color = "black";
-        // }
+        logo = icon;
+
+        if (["dark"].includes(theme)) {
+            color = "white";
+        } else {
+            color = "black";
+        }
 
         console.debug("[App]", "Signaling window:theme-loaded");
         window.Bridge.emit("ui:theme-loaded");

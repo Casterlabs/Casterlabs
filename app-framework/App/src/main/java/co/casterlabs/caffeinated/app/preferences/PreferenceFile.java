@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -24,6 +27,8 @@ public class PreferenceFile<T> {
     private FastLogger logger;
     private Class<T> clazz;
     private File file;
+
+    private List<Consumer<PreferenceFile<T>>> saveListeners = new LinkedList<>();
 
     private String name;
     private @Getter(AccessLevel.NONE) T data;
@@ -86,11 +91,26 @@ public class PreferenceFile<T> {
                     .getBytes(StandardCharsets.UTF_8)
             );
 
+            for (Consumer<PreferenceFile<T>> listener : this.saveListeners) {
+                listener.accept(this);
+            }
+
             this.logger.log(LogLevel.TRACE, String.format("Saved preferences: %s", json));
         } catch (IOException e) {
             this.logger.severe("Unable to write preferences file: %s", e);
         }
 
+        return this;
+    }
+
+    public PreferenceFile<T> addSaveListener(Consumer<PreferenceFile<T>> listener) {
+        this.saveListeners.add(listener);
+        listener.accept(this);
+        return this;
+    }
+
+    public PreferenceFile<T> removeSaveListener(Consumer<PreferenceFile<T>> listener) {
+        this.saveListeners.remove(listener);
         return this;
     }
 

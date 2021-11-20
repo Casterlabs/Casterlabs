@@ -16,6 +16,7 @@ import javax.swing.WindowConstants;
 
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.preferences.WindowPreferences;
+import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import lombok.Getter;
@@ -85,17 +86,8 @@ public class ApplicationWindow {
 
         this.frame.setLayout(new BorderLayout(0, 0));
 
-        try {
-            URL iconUrl = FileUtil.loadResourceAsUrl("assets/logo/casterlabs.png");
-
-            if (iconUrl != null) {
-                FastLogger.logStatic(LogLevel.DEBUG, "Set app icon.");
-                ImageIcon img = new ImageIcon(iconUrl);
-                this.frame.setIconImage(img.getImage());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.updateAppIcon(Bootstrap.getApp().getUiPreferences());
+        Bootstrap.getApp().getUiPreferences().addSaveListener(this::updateAppIcon);
 
         this.frame.setSize(windowPreferences.getWidth(), windowPreferences.getHeight());
         this.frame.setLocation(windowPreferences.getX(), windowPreferences.getY());
@@ -107,6 +99,21 @@ public class ApplicationWindow {
         this.cefPanel.setLayout(new BorderLayout(0, 0));
         this.frame.getContentPane().add(this.cefPanel, BorderLayout.CENTER);
 
+    }
+
+    private void updateAppIcon(PreferenceFile<UIPreferences> uiPreferences) {
+        try {
+            String icon = uiPreferences.get().getIcon();
+            URL iconUrl = FileUtil.loadResourceAsUrl(String.format("assets/logo/%s.png", icon));
+
+            if (iconUrl != null) {
+                FastLogger.logStatic(LogLevel.DEBUG, "Set app icon to %s.", icon);
+                ImageIcon img = new ImageIcon(iconUrl);
+                this.frame.setIconImage(img.getImage());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void tryClose() {

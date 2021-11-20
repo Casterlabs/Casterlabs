@@ -11,7 +11,7 @@
     // Settings Content
     import SettingsContainer from "../../components/settings/settings-container.svelte";
     import AppearanceSettings from "../../components/settings/appearance-settings.svelte";
-    import StatusIntegrationSettings from "../../components/settings/status-integration-settings.svelte";
+    // import StatusIntegrationSettings from "../../components/settings/status-integration-settings.svelte";
 
     const settingsContainerContents = [
         {
@@ -22,16 +22,16 @@
             name: "Appearance",
             id: "appearance",
             type: "category"
-        },
-        {
-            name: "Other",
-            type: "section"
-        },
-        {
-            name: "Status Integration",
-            id: "status_integration",
-            type: "category"
         }
+        // {
+        //     name: "Other",
+        //     type: "section"
+        // },
+        // {
+        //     name: "Status Integration",
+        //     id: "status_integration",
+        //     type: "category"
+        // }
     ];
 </script>
 
@@ -45,9 +45,9 @@
             <section class="hidden" data-id="appearance">
                 <AppearanceSettings />
             </section>
-            <section class="hidden" data-id="status_integration">
+            <!-- <section class="hidden" data-id="status_integration">
                 <StatusIntegrationSettings />
-            </section>
+            </section> -->
         </SettingsContainer>
     </div>
 

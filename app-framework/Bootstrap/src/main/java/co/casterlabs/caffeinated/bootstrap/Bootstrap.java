@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.bootstrap.events.window.AppWindowEventType;
-import co.casterlabs.caffeinated.bootstrap.events.window.AppWindowThemeLoadedEvent;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
 import co.casterlabs.rakurai.json.Rson;
@@ -16,9 +14,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import xyz.e3ndr.consoleutil.ConsoleUtil;
-import xyz.e3ndr.eventapi.EventHandler;
-import xyz.e3ndr.eventapi.events.AbstractEvent;
-import xyz.e3ndr.eventapi.listeners.EventListener;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
@@ -44,8 +39,6 @@ public class Bootstrap implements Runnable {
     private static @Getter boolean isDev;
     private static @Getter CaffeinatedApp app;
 
-    private EventHandler<AppWindowEventType> handler = new EventHandler<>();
-
     public static void main(String[] args) throws IOException, InterruptedException {
         ConsoleUtil.getPlatform(); // Init ConsoleUtil.
         new CommandLine(new Bootstrap()).execute(args); // Calls #run()
@@ -61,8 +54,6 @@ public class Bootstrap implements Runnable {
         } else if (isDev) {
             FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
         }
-
-        this.handler.register(this);
 
         app = new CaffeinatedApp(buildInfo, isDev);
 
@@ -114,41 +105,10 @@ public class Bootstrap implements Runnable {
         );
     }
 
-//    @EventListener
-//    public void onAppWindowMinimizeEvent(AppWindowMinimizeEvent event) {
-//        ApplicationUI.getWindow().getFrame().setState(JFrame.ICONIFIED);
-//    }
-//
-//    @EventListener
-//    public void onAppWindowMinMaxEvent(AppWindowMinMaxEvent event) {
-//        if ((ApplicationUI.getWindow().getFrame().getState() & JFrame.MAXIMIZED_BOTH) != 0) {
-//            ApplicationUI.getWindow().getFrame().setState(JFrame.MAXIMIZED_BOTH);
-//        } else {
-//            ApplicationUI.getWindow().getFrame().setState(JFrame.NORMAL);
-//        }
-//    }
-//
-//    @EventListener
-//    public void onAppWindowCloseEvent(AppWindowCloseEvent event) {
-//        ApplicationUI.getWindow().tryClose();
-//    }
-
-    @EventListener
-    public void onAppWindowThemeLoadedEvent(AppWindowThemeLoadedEvent event) {}
-
     @SneakyThrows
     private void onBridgeEvent(String type, JsonObject data) {
-        if (type.startsWith("window")) {
-            String signal = type.split(":", 2)[1].replace('-', '_').toUpperCase();
-
-            AppWindowEventType eventType = AppWindowEventType.valueOf(signal);
-            AbstractEvent<AppWindowEventType> event = Rson.DEFAULT.fromJson(data, eventType.getEventClass());
-
-            this.handler.call(event);
-        } else {
-            // Pass it to the app.
-            app.onBridgeEvent(type, data);
-        }
+        // Pass it to the app.
+        app.onBridgeEvent(type, data);
     }
 
 }

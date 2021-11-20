@@ -20,6 +20,8 @@
         window.gotoStep1 = function () {
             goto("/welcome/step1");
         };
+
+        Bridge.emit("auth:cancel-signin");
     });
 </script>
 
@@ -48,10 +50,6 @@
             applies to you.
         </span>
     </div>
-    <script type="module">
-        import Auth from "./js/auth.mjs";
-        Auth.cancelOAuthSignin();
-    </script>
 </div>
 
 <style>
