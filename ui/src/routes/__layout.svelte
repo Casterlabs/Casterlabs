@@ -60,6 +60,8 @@
     onMount(() => {
         window.goto = goto;
         window.feather.replace();
+
+        window.Bridge.on("goto", ({ path }) => goto(path));
     });
 </script>
 

@@ -23,7 +23,7 @@
         // }
 
         console.debug("[App]", "Signaling window:theme-loaded");
-        window.Bridge.emit("window:theme-loaded");
+        window.Bridge.emit("ui:theme-loaded");
     });
 </script>
 
