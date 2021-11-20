@@ -64,7 +64,8 @@
 </script>
 
 <!-- Titlebar -->
-<section class="title-bar no-select">
+<!-- svelte-ignore a11y-missing-attribute -->
+<!-- <section class="title-bar no-select">
     <div class=" title-bar-title">
         <img class="app-logo" src="/img/logo/casterlabs.png" alt="Casterlabs" />
         <span class="current-page title is-6">
@@ -75,32 +76,31 @@
             {/if}
         </span>
     </div>
-    <div class="title-actions">
+    <div class="title-actions hide">
         <span class="title is-6">
-            <!-- svelte-ignore a11y-missing-attribute -->
             <a class="minimize title-action">
                 <i data-feather="minus" />
-            </a><!-- svelte-ignore a11y-missing-attribute --><a class="maximize title-action">
+            </a><a class="maximize title-action">
                 <i data-feather="maximize" />
-            </a><!-- svelte-ignore a11y-missing-attribute --><a class="close title-action">
+            </a><a class="close title-action">
                 <i data-feather="x" />
             </a>
         </span>
         <script>
             document.querySelector(".minimize").addEventListener("click", () => {
-                window.Bridge.emit("ui:minimize");
+                window.Bridge.emit("window:minimize");
             });
 
             document.querySelector(".maximize").addEventListener("click", () => {
-                window.Bridge.emit("ui:minmax");
+                window.Bridge.emit("window:minmax");
             });
 
             document.querySelector(".close").addEventListener("click", () => {
-                window.Bridge.emit("ui:close");
+                window.Bridge.emit("window:close");
             });
         </script>
     </div>
-</section>
+</section> -->
 
 <section id="notifications" class="no-select" />
 

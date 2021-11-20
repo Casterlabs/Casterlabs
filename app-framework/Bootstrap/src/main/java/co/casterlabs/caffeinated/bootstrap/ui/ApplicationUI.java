@@ -1,6 +1,10 @@
 package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 
 import org.cef.CefApp;
 import org.cef.CefApp.CefAppState;
@@ -40,11 +44,12 @@ public class ApplicationUI {
     private static UILifeCycleListener lifeCycleListener = null;
 
     private static @Getter JavascriptBridge bridge;
-    private static ApplicationWindow window;
+    private static @Getter ApplicationWindow window;
+    private static @Getter ApplicationDevTools devtools;
+
+    private static @Getter String appAddress;
     private static CefBrowser browser;
     private static CefClient client;
-    private static @Getter String appAddress;
-    private static @Getter ApplicationDevTools devtools;
 
     private static FastLogger logger = new FastLogger();
 
@@ -132,7 +137,9 @@ public class ApplicationUI {
 
         browser = pandaClient.loadURL(appAddress);
         window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
-        window.getFrame().setVisible(true); // TODO figure out why onLoadEnd is not firing.
+
+        // CEF needs to be visible in order to load the page.
+        window.getFrame().setVisible(true);
 
         client.addLifeSpanHandler(new CefLifeSpanHandler() {
 
@@ -219,7 +226,6 @@ public class ApplicationUI {
         }
 
         window.getFrame().setTitle(title);
-        window.getTitleLabel().setText(title);
     }
 
     public static class TestSchemeHandler implements SchemeHandler {
@@ -232,6 +238,19 @@ public class ApplicationUI {
             return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content).setMimeType("text/html");
         }
 
+    }
+
+    private static Dimension getMaximumScreenBounds() {
+        int maxx = 0;
+        int maxy = 0;
+
+        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        for (GraphicsDevice device : environment.getScreenDevices()) {
+            Rectangle bounds = device.getDefaultConfiguration().getBounds();
+            maxx = Math.max(maxx, bounds.x + bounds.width);
+            maxy = Math.max(maxy, bounds.y + bounds.height);
+        }
+        return new Dimension(maxx, maxy);
     }
 
 }

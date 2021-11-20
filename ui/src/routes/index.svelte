@@ -22,8 +22,8 @@
         //     color = "black";
         // }
 
-        console.debug("[App]", "Signaling ui-theme-loaded");
-        window.Bridge.emit("ui:theme-loaded");
+        console.debug("[App]", "Signaling window:theme-loaded");
+        window.Bridge.emit("window:theme-loaded");
     });
 </script>
 
