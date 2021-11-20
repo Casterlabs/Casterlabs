@@ -43,12 +43,17 @@ public class ApplicationWindow {
         PreferenceFile<WindowPreferences> preferenceFile = Bootstrap.getApp().getWindowPreferences();
         WindowPreferences windowPreferences = preferenceFile.get();
 
+        Timer saveTimer = new Timer(500, (e) -> {
+            preferenceFile.save();
+        });
+        saveTimer.setRepeats(false);
+
         this.frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowStateChanged(WindowEvent e) {
                 windowPreferences.setStateFlags(e.getNewState());
-                preferenceFile.save();
+                saveTimer.restart();
             }
 
             @Override
@@ -57,15 +62,10 @@ public class ApplicationWindow {
             }
         });
 
-        Timer saveTimer = new Timer(500, (e) -> {
-            preferenceFile.save();
-        });
-        saveTimer.setRepeats(false);
         this.frame.addComponentListener(new ComponentAdapter() {
 
             @Override
             public void componentResized(ComponentEvent e) {
-
                 if ((frame.getState() & JFrame.MAXIMIZED_BOTH) == 0) {
                     windowPreferences.setWidth(frame.getWidth());
                     windowPreferences.setHeight(frame.getHeight());
@@ -78,7 +78,6 @@ public class ApplicationWindow {
                 if ((frame.getState() & JFrame.MAXIMIZED_BOTH) == 0) {
                     windowPreferences.setX(frame.getX());
                     windowPreferences.setY(frame.getY());
-                    preferenceFile.save();
                     saveTimer.restart();
                 }
             }
