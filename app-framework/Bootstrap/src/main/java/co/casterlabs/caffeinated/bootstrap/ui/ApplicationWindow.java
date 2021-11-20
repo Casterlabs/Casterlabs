@@ -57,7 +57,7 @@ public class ApplicationWindow {
             }
         });
 
-        Timer saveTimer = new Timer(100, (e) -> {
+        Timer saveTimer = new Timer(500, (e) -> {
             preferenceFile.save();
         });
         saveTimer.setRepeats(false);
