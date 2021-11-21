@@ -9,15 +9,17 @@ import co.casterlabs.rakurai.json.annotating.JsonClass;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 
 @Getter
+@ToString
 @JsonClass(exposeAll = true)
 public class AuthPreferences {
     private JsonObject tokens = new JsonObject();
     private JsonObject koiTokens = new JsonObject();
 
     public List<String> getKoiTokenIds() {
-        return new ArrayList<>(this.tokens.getObject("koiTokens").keySet());
+        return new ArrayList<>(this.koiTokens.keySet());
     }
 
     public String addKoiToken(@NonNull String token) {

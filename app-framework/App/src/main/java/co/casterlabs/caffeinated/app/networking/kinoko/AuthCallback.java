@@ -2,9 +2,9 @@ package co.casterlabs.caffeinated.app.networking.kinoko;
 
 import java.util.concurrent.TimeUnit;
 
-import co.casterlabs.caffeinated.app.Crypto;
-import co.casterlabs.caffeinated.app.util.async.AsyncTask;
-import co.casterlabs.caffeinated.app.util.async.Promise;
+import co.casterlabs.caffeinated.util.Crypto;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.caffeinated.util.async.Promise;
 import lombok.Getter;
 import lombok.SneakyThrows;
 

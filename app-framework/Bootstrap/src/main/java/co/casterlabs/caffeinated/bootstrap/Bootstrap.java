@@ -6,6 +6,7 @@ import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
@@ -87,13 +88,22 @@ public class Bootstrap implements Runnable {
                 @Override
                 public void onInitialLoad() {
                     logger.debug("onInitialLoad");
+
                     app.init();
                 }
 
                 @Override
                 public boolean onCloseAttempt() {
                     logger.debug("onCloseAttempt");
-                    return true;
+
+                    // If CLOSING
+                    if (app.canShutdown()) {
+                        new AsyncTask(() -> app.shutdown());
+
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
 
                 @Override

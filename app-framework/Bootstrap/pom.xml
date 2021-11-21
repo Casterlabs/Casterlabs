@@ -81,6 +81,12 @@
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>co.casterlabs</groupId>
+			<artifactId>Util</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<!-- UI packages -->
 		<dependency>
@@ -93,15 +99,15 @@
 
 		<!-- Utility packages -->
 		<dependency>
-			<groupId>info.picocli</groupId>
-			<artifactId>picocli</artifactId>
-			<version>4.3.0</version>
+			<groupId>com.github.casterlabs.rakurai</groupId>
+			<artifactId>Json</artifactId>
+			<version>bb1ddfe</version> <!-- 1.7.2 -->
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.casterlabs.rakurai</groupId>
-			<artifactId>Json</artifactId>
-			<version>8649f6d</version> <!-- 1.7.1 -->
+			<groupId>info.picocli</groupId>
+			<artifactId>picocli</artifactId>
+			<version>4.3.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

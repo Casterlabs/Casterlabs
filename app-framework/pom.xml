@@ -10,6 +10,7 @@
 	<modules>
 		<module>Bootstrap</module>
 		<module>App</module>
+		<module>Util</module>
 	</modules>
 
 	<properties>

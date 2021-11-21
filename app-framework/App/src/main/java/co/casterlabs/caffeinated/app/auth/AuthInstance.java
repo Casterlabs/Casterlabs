@@ -18,6 +18,7 @@ import co.casterlabs.koi.api.types.user.User;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class AuthInstance implements EventListener, Closeable {
     private @Getter String tokenId;
@@ -43,9 +44,11 @@ public class AuthInstance implements EventListener, Closeable {
             .getKoiTokens()
             .getString(this.tokenId);
 
+        FastLogger koiLogger = new FastLogger("AuthInstance Koi");
+        koiLogger.setCurrentLevel(LogLevel.SEVERE);
         this.koi = new Koi(
             Koi.KOI_URL,
-            new FastLogger("AuthInstance KOI"),
+            koiLogger,
             this,
             CaffeinatedApp.caffeinatedClientId
         );
@@ -122,6 +125,10 @@ public class AuthInstance implements EventListener, Closeable {
     @Override
     public void close() throws IOException {
         this.koi.close();
+    }
+
+    public boolean isConnected() {
+        return this.koi.isConnected();
     }
 
 }

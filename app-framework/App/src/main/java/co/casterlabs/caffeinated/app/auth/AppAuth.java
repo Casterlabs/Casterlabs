@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
@@ -33,8 +34,36 @@ public class AppAuth {
 
     private @Getter Map<String, AuthInstance> authInstances = new HashMap<>();
 
+    private @Getter boolean isAuthorized = false;
+
     public AppAuth() {
         handler.register(this);
+    }
+
+    public boolean isSignedIn() {
+        return !this.authInstances.isEmpty();
+    }
+
+    public void init() {
+        this.updateBridgeData(); // Populate
+
+        List<String> ids = CaffeinatedApp.getInstance().getAuthPreferences().get().getKoiTokenIds();
+
+        for (String tokenId : ids) {
+            this.startAuthInstance(tokenId);
+        }
+    }
+
+    public void shutdown() {
+        this.onCancelSigninEvent(null);
+
+        for (AuthInstance inst : this.authInstances.values()) {
+            try {
+                inst.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public int countPlatform(UserPlatform platform) {
@@ -47,7 +76,27 @@ public class AppAuth {
         return count;
     }
 
+    public void checkAuth() {
+        boolean authorized = false;
+
+        for (AuthInstance inst : this.authInstances.values()) {
+            if (inst.isConnected() && (inst.getUserData() != null)) {
+                authorized = true;
+                break;
+            }
+        }
+
+        this.isAuthorized = authorized;
+
+        CaffeinatedApp
+            .getInstance()
+            .getAppearanceManager()
+            .navigate(this.isAuthorized ? "/home" : "/signin");
+    }
+
     public void updateBridgeData() {
+        this.checkAuth();
+
         JsonArray koiAuth = new JsonArray();
 
         for (AuthInstance inst : this.authInstances.values()) {
@@ -60,6 +109,7 @@ public class AppAuth {
         }
 
         JsonObject bridgeData = new JsonObject()
+            .put("isAuthorized", this.isAuthorized)
             .put("koiAuth", koiAuth);
 
         CaffeinatedApp.getInstance().getBridge().getQueryData().put("auth", bridgeData);

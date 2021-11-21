@@ -46,7 +46,16 @@ public class CaffeinatedApp {
 
         this.uiPreferences.addSaveListener(this::saveListener);
 
-        auth.updateBridgeData();
+        this.auth.init();
+    }
+
+    public boolean canShutdown() {
+        // TODO if needed.
+        return true;
+    }
+
+    public void shutdown() {
+        this.auth.shutdown();
     }
 
     @SneakyThrows

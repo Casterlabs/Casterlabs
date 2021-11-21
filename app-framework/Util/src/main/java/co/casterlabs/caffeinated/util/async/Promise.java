@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.app.util.async;
+package co.casterlabs.caffeinated.util.async;
 
 import java.util.function.Consumer;
 
