@@ -1,11 +1,11 @@
 <script>
-    import { setPageProperties } from "./__layout.svelte";
+    import { setPageProperties } from "../__layout.svelte";
 
-    import TwitchButton from "../components/platforms/signin-buttons/twitch.svelte";
-    import TrovoButton from "../components/platforms/signin-buttons/trovo.svelte";
-    import CaffeineButton from "../components/platforms/signin-buttons/caffeine.svelte";
-    import GlimeshButton from "../components/platforms/signin-buttons/glimesh.svelte";
-    import BrimeButton from "../components/platforms/signin-buttons/brime.svelte";
+    import TwitchButton from "../../components/platforms/signin-buttons/twitch.svelte";
+    import TrovoButton from "../../components/platforms/signin-buttons/trovo.svelte";
+    import CaffeineButton from "../../components/platforms/signin-buttons/caffeine.svelte";
+    import GlimeshButton from "../../components/platforms/signin-buttons/glimesh.svelte";
+    import BrimeButton from "../../components/platforms/signin-buttons/brime.svelte";
 
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
