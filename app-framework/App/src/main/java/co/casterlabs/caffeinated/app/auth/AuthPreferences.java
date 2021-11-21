@@ -31,13 +31,9 @@ public class AuthPreferences {
         return tokenId;
     }
 
-    public String addToken(@NonNull String token) {
-        String tokenId = UUID.randomUUID().toString();
-
+    public void addToken(@NonNull String tokenId, @NonNull String token) {
         this.tokens.put(tokenId, token);
         CaffeinatedApp.getInstance().getAuthPreferences().save();
-
-        return tokenId;
     }
 
 }

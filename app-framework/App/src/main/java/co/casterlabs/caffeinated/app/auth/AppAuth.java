@@ -146,13 +146,18 @@ public class AppAuth {
 
                             this.startAuthInstance(tokenId);
                         } else {
-                            // TODO things like spotify.
-                            @SuppressWarnings("unused")
-                            String tokenId = CaffeinatedApp
+                            CaffeinatedApp
                                 .getInstance()
                                 .getAuthPreferences()
                                 .get()
-                                .addToken(token);
+                                .addToken(event.getPlatform(), token);
+
+                            CaffeinatedApp.getInstance().emitAppEvent(
+                                "auth:completion",
+                                new JsonObject()
+                                    .put("platform", event.getPlatform())
+                                    .put("tokenId", event.getPlatform())
+                            );
                         }
                     }
 
