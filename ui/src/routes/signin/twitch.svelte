@@ -10,5 +10,5 @@
 </script>
 
 <div id="signin-container">
-    <OAuthSignin platform="twitch" />
+    <OAuthSignin platform="caffeinated_twitch" isKoi={true} />
 </div>

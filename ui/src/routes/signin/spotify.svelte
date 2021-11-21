@@ -10,5 +10,5 @@
 </script>
 
 <div id="signin-container">
-    <OAuthSignin platform="spotify" />
+    <OAuthSignin platform="caffeinated_spotify" isKoi={false} />
 </div>

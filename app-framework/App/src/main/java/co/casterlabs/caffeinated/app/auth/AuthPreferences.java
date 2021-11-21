@@ -1,0 +1,41 @@
+package co.casterlabs.caffeinated.app.auth;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.rakurai.json.annotating.JsonClass;
+import co.casterlabs.rakurai.json.element.JsonObject;
+import lombok.Getter;
+import lombok.NonNull;
+
+@Getter
+@JsonClass(exposeAll = true)
+public class AuthPreferences {
+    private JsonObject tokens = new JsonObject();
+    private JsonObject koiTokens = new JsonObject();
+
+    public List<String> getKoiTokenIds() {
+        return new ArrayList<>(this.tokens.getObject("koiTokens").keySet());
+    }
+
+    public String addKoiToken(@NonNull String token) {
+        String tokenId = UUID.randomUUID().toString();
+
+        this.koiTokens.put(tokenId, token);
+        CaffeinatedApp.getInstance().getAuthPreferences().save();
+
+        return tokenId;
+    }
+
+    public String addToken(@NonNull String token) {
+        String tokenId = UUID.randomUUID().toString();
+
+        this.tokens.put(tokenId, token);
+        CaffeinatedApp.getInstance().getAuthPreferences().save();
+
+        return tokenId;
+    }
+
+}

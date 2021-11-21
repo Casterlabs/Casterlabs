@@ -10,5 +10,5 @@
 </script>
 
 <div id="signin-container">
-    <OAuthSignin platform="brime" />
+    <OAuthSignin platform="caffeinated_brime" isKoi={true} />
 </div>

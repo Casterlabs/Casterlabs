@@ -1,9 +1,21 @@
 <script>
+    import { onMount } from "svelte";
+
     export let platform;
+    export let isKoi = false;
+
+    onMount(() => {
+        Bridge.emit("auth:request-oauth-signin", { platform: platform, isKoi: isKoi });
+    });
+
+    function cancelAuth() {
+        Bridge.emit("auth:cancel-signin");
+        history.back();
+    }
 </script>
 
+<!-- svelte-ignore a11y-missing-attribute -->
 <div class="has-text-centered no-select">
-    <span id="signin-platform" class="hidden">{platform}</span>
     <br />
     <br />
     <br />
@@ -16,37 +28,7 @@
     <br />
     <br />
     <br />
-    <a id="signin-go-back" style="color: var(--theme);"> Want to go back? </a>
-
-    <script type="module">
-        import Auth from "../js/auth.mjs";
-        import Router from "../js/router.mjs";
-
-        const plat = document.querySelector("#signin-platform").innerText.toUpperCase();
-
-        Auth.signinOAuth(plat)
-            .then(async (token) => {
-                try {
-                    if (plat == "SPOTIFY") {
-                        await MusicIntegration.SPOTIFY.loginOauth(token);
-                        history.back();
-                    } else {
-                        await Auth.addUserAuth(plat, token);
-                        Router.tryHomeGoBack();
-                    }
-                } catch (e) {
-                    history.back();
-                }
-            })
-            .catch(() => {
-                history.back();
-            });
-
-        document.querySelector("#signin-go-back").addEventListener("click", () => {
-            Auth.cancelOAuthSignin();
-            history.back();
-        });
-    </script>
+    <a on:click={cancelAuth} style="color: var(--theme);"> Want to go back? </a>
 </div>
 
 <!-- https://tobiasahlin.com/spinkit/ -->

@@ -10,5 +10,5 @@
 </script>
 
 <div id="signin-container">
-    <OAuthSignin platform="glimesh" />
+    <OAuthSignin platform="caffeinated_glimesh" isKoi={true} />
 </div>

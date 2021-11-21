@@ -10,5 +10,5 @@
 </script>
 
 <div id="signin-container">
-    <OAuthSignin platform="trovo" />
+    <OAuthSignin platform="caffeinated_trovo" isKoi={true} />
 </div>
