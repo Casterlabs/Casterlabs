@@ -42,7 +42,7 @@ public class PretzelMusicProvider extends MusicProvider<PretzelSettings> {
 
                 String id = twitchUserData.getString("channel_id");
 
-                if (!this.channelId.equals(id)) {
+                if ((this.channelId == null) || !this.channelId.equals(id)) {
                     this.logger.info("Now signed in as: %s", twitchUserData.getString("displayname"));
 
                     this.channelId = id;
