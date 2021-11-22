@@ -101,7 +101,7 @@
 		<dependency>
 			<groupId>com.github.casterlabs.rakurai</groupId>
 			<artifactId>Json</artifactId>
-			<version>bb1ddfe</version> <!-- 1.7.2 -->
+			<version>bb236ca</version> <!-- 1.8.0 -->
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

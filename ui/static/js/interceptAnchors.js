@@ -9,7 +9,7 @@ new MutationObserver(() => {
             // We use the onclick function rather than 
             // addEventListener("click", ...) because it helps prevent duplicates.
             anchor.onclick = () => {
-                openLink(anchor.href);
+                window.Bridge.emit("ui:openlink", { link: anchor.href });
                 return false;
             };
         }

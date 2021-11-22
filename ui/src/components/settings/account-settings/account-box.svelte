@@ -29,7 +29,7 @@
             {platformName}
         </a>
 
-        <span class="tag allow-select streamer-name"> {accountName} </span>
+        <span class="tag streamer-name" style="user-select: all !important;"> {accountName} </span>
 
         {#if canSignOut}
             <a on:click={sendSignout} class="tag is-danger signout-button"> Unlink </a>
@@ -41,6 +41,8 @@
 
         <a href="{signInLink}?homeGoBack=1" class="tag is-success signin-button"> Link </a>
     {/if}
+
+    <span style="margin-left: 10px;"><slot /> </span>
 </div>
 
 <style>

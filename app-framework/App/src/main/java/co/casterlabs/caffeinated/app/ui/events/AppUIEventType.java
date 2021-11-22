@@ -5,7 +5,8 @@ import xyz.e3ndr.eventapi.events.AbstractEvent;
 
 public enum AppUIEventType {
     APPEARANCE_UPDATE(AppUIAppearanceUpdateEvent.class),
-    THEME_LOADED(AppUIThemeLoadedEvent.class);
+    THEME_LOADED(AppUIThemeLoadedEvent.class),
+    OPENLINK(AppUIOpenLinkEvent.class);
 
     private @Getter Class<AbstractEvent<AppUIEventType>> eventClass;
 

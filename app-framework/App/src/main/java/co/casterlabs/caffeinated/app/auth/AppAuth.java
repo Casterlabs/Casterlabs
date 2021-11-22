@@ -17,7 +17,7 @@ import co.casterlabs.caffeinated.app.auth.events.AppAuthSignoutEvent;
 import co.casterlabs.caffeinated.app.networking.kinoko.AuthCallback;
 import co.casterlabs.koi.api.types.user.UserPlatform;
 import co.casterlabs.rakurai.json.Rson;
-import co.casterlabs.rakurai.json.element.JsonArray;
+import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.Getter;
@@ -100,21 +100,28 @@ public class AppAuth {
     public void updateBridgeData() {
         this.checkAuth();
 
-        JsonArray koiAuth = new JsonArray();
+        JsonObject koiAuth = new JsonObject();
 
         for (AuthInstance inst : this.authInstances.values()) {
-            koiAuth.add(
-                new JsonObject()
-                    .put("tokenId", inst.getTokenId())
-                    .put("userData", Rson.DEFAULT.toJson(inst.getUserData()))
-                    .put("streamData", Rson.DEFAULT.toJson(inst.getStreamData()))
-            );
+            if (inst.getUserData() != null) {
+                JsonElement userData = Rson.DEFAULT.toJson(inst.getUserData());
+                JsonElement streamData = Rson.DEFAULT.toJson(inst.getStreamData());
+
+                koiAuth.put(
+                    inst.getUserData().getPlatform().name(),
+                    new JsonObject()
+                        .put("tokenId", inst.getTokenId())
+                        .put("userData", userData)
+                        .put("streamData", streamData)
+                );
+            }
         }
 
         JsonObject bridgeData = new JsonObject()
             .put("isAuthorized", this.isAuthorized)
             .put("koiAuth", koiAuth);
 
+        CaffeinatedApp.getInstance().emitAppEvent("auth:platforms", bridgeData);
         CaffeinatedApp.getInstance().getBridge().getQueryData().put("auth", bridgeData);
         CaffeinatedApp.getInstance().getKoi().updateFromAuth();
     }

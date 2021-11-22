@@ -9,4 +9,6 @@ public interface AppBridge {
 
     public void emit(String type, JsonElement data);
 
+    public void eval(String script);
+
 }

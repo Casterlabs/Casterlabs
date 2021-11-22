@@ -7,7 +7,7 @@
     import AccountSettings from "../components/settings/account-settings.svelte";
     import MusicServicesSettings from "../components/settings/music-services-settings.svelte";
     import AppearanceSettings from "../components/settings/appearance-settings.svelte";
-    import StatusIntegrationSettings from "../components/settings/status-integration-settings.svelte";
+    // import StatusIntegrationSettings from "../components/settings/status-integration-settings.svelte";
 
     setPageProperties({
         showSideBar: false,
@@ -38,23 +38,34 @@
             name: "Appearance",
             id: "appearance",
             type: "category"
-        },
-        {
-            name: "Other",
-            type: "section"
-        },
-        {
-            name: "Status Integration",
-            id: "status_integration",
-            type: "category"
         }
+        // {
+        //     name: "Other",
+        //     type: "section"
+        // },
+        // {
+        //     name: "Status Integration",
+        //     id: "status_integration",
+        //     type: "category"
+        // }
     ];
 </script>
 
 <div class="settings-contents">
     <!-- svelte-ignore a11y-missing-attribute -->
     <a class="settings-close fade-on-hover" onclick="history.back()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-x-circle"
+        >
             <circle cx="12" cy="12" r="10" />
             <line x1="15" y1="9" x2="9" y2="15" />
             <line x1="9" y1="9" x2="15" y2="15" />
@@ -72,9 +83,9 @@
             <section class="hidden" data-id="appearance">
                 <AppearanceSettings />
             </section>
-            <section class="hidden" data-id="status_integration">
+            <!-- <section class="hidden" data-id="status_integration">
                 <StatusIntegrationSettings />
-            </section>
+            </section> -->
         </SettingsContainer>
     </div>
 </div>

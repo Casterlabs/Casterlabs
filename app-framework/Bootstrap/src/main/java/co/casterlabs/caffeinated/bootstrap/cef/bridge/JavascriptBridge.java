@@ -129,4 +129,15 @@ public class JavascriptBridge implements AppBridge {
         }
     }
 
+    @Override
+    public void eval(String script) {
+        new AsyncTask(() -> {
+            try {
+                this.loadPromise.await();
+            } catch (Throwable e) {}
+
+            this.frame.executeJavaScript(script, "", 1);
+        });
+    }
+
 }

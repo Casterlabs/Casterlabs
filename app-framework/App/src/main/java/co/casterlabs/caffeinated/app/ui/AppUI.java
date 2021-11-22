@@ -1,11 +1,16 @@
 package co.casterlabs.caffeinated.app.ui;
 
+import java.awt.Desktop;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AppAuth;
 import co.casterlabs.caffeinated.app.ui.events.AppUIAppearanceUpdateEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUIEventType;
+import co.casterlabs.caffeinated.app.ui.events.AppUIOpenLinkEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUIThemeLoadedEvent;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
@@ -14,12 +19,12 @@ import lombok.Getter;
 import xyz.e3ndr.eventapi.EventHandler;
 import xyz.e3ndr.eventapi.listeners.EventListener;
 
-public class AppearanceManager {
+public class AppUI {
     private static EventHandler<AppUIEventType> handler = new EventHandler<>();
 
     private @Getter boolean uiFinishedLoad = false;
 
-    public AppearanceManager() {
+    public AppUI() {
         handler.register(this);
     }
 
@@ -42,6 +47,26 @@ public class AppearanceManager {
         } else if (auth.isAuthorized()) {
             this.navigate("/home");
         } // Otherwise AppAuth will automagically move us there :D
+    }
+
+    @EventListener
+    public void onUIOpenLinkEvent(AppUIOpenLinkEvent event) {
+        try {
+            Desktop
+                .getDesktop()
+                .browse(new URI(event.getLink()));
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void goBack() {
+        if (this.uiFinishedLoad) {
+            CaffeinatedApp
+                .getInstance()
+                .getBridge()
+                .eval("history.back()");
+        }
     }
 
     public void navigate(String path) {

@@ -14,6 +14,8 @@ public class WebUtil {
         try (Response response = client.newCall(builder.build()).execute()) {
             String body = response.body().string();
 
+//            FastLogger.logStatic(LogLevel.TRACE, "%s: %d\n%s\n", builder.getUrl$okhttp(), response.code(), body);
+
             return body;
         }
     }

@@ -3,104 +3,84 @@
 
     import { onMount, onDestroy } from "svelte";
 
-    let pollingIds = [];
-    let services = {
-        spotify: {
-            accountName: "",
-            accountLink: "#",
-            isSignedIn: false
-        },
-        pretzelrocks: {
-            accountName: "",
-            accountLink: "#",
-            isSignedIn: false
-        }
-    };
+    let eventHandler;
 
-    let currentTrack;
+    let spotifyData = null;
+    let pretzelData = null;
+    let activePlayback = null;
 
-    // onMount for Pretzel.
-    onMount(() => {
-        const pretzel = MusicIntegration.PRETZEL_ROCKS;
-
-        const pollId = setInterval(() => {
-            const isSignedIn = pretzel.isLoggedIn();
-
-            if (isSignedIn) {
-                const { displayname, link } = Auth.getSignedInPlatforms().TWITCH.userData.streamer;
-                services.pretzelrocks = {
-                    accountName: `Twitch: ${displayname}`,
-                    accountLink: link,
-                    isSignedIn: isSignedIn
-                };
-            } else {
-                services.pretzelrocks = {
-                    accountName: "",
-                    accountLink: "#",
-                    isSignedIn: false
-                };
-            }
-        }, 500);
-        pollingIds.push(pollId);
-    });
-
-    let spotify;
-
-    // onMount for Spotify.
-    onMount(() => {
-        spotify = MusicIntegration.SPOTIFY;
-
-        const pollId = setInterval(() => {
-            const isSignedIn = spotify.isEnabled() && spotify.spotifyProfile;
-
-            if (isSignedIn) {
-                const { display_name, external_urls } = MusicIntegration.SPOTIFY.spotifyProfile;
-                services.spotify = {
-                    accountName: display_name,
-                    accountLink: external_urls.spotify,
-                    isSignedIn: isSignedIn
-                };
-            } else {
-                services.spotify = {
-                    accountName: "",
-                    accountLink: "#",
-                    isSignedIn: false
-                };
-            }
-        }, 500);
-        pollingIds.push(pollId);
-    });
-
-    function signOutSpotify() {
-        spotify.setToken(null);
+    function parseBridgeData(data) {
+        console.debug("[MusicServicesSettings]", data);
+        activePlayback = data.activePlayback;
+        spotifyData = data.musicServices.spotify;
+        pretzelData = data.musicServices.pretzel;
     }
 
-    // onMount for currentPlayback.
-    onMount(() => {
-        const pollId = setInterval(() => {
-            currentTrack = MusicIntegration.getCurrentPlayback()?.currentTrack;
-        }, 500);
-        pollingIds.push(pollId);
+    onDestroy(() => {
+        eventHandler.destroy();
     });
 
-    onDestroy(() => {
-        pollingIds.forEach(clearInterval);
+    onMount(async () => {
+        eventHandler = Bridge.createThrowawayEventHandler();
+        eventHandler.on("music:update", parseBridgeData);
+        parseBridgeData((await Bridge.query("music")).data);
     });
+
+    function updatePretzel(e) {
+        const enabled = e.target.checked;
+        Bridge.emit("music:settings-update", {
+            platform: "pretzel",
+            settings: {
+                enabled: enabled
+            }
+        });
+    }
+
+    function signOutSpotify() {
+        Bridge.emit("music:signout", { platform: "spotify" });
+    }
 </script>
 
 <div class="no-select">
     <p>
-        {#if currentTrack}
-            &nbsp;Now Playing: {currentTrack.title} - {currentTrack.artists.join(", ")}
+        {#if activePlayback}
+            &nbsp;Now Playing: {activePlayback.currentTrack.title} - {activePlayback.currentTrack.artists.join(", ")}
         {/if}
     </p>
 
     <br />
 
     <div id="accounts">
-        <!-- i know, i know, it looks messy but it works so well. -->
-        <AccountBox platform="pretzelrocks" platformName="Pretzel" signInLink="/signin/twitch" bind:accountName={services.pretzelrocks.accountName} bind:accountLink={services.pretzelrocks.accountLink} bind:isSignedIn={services.pretzelrocks.isSignedIn} canSignOut={false} />
-        <AccountBox platform="spotify" platformName="Spotify" signInLink="/signin/spotify" bind:accountName={services.spotify.accountName} bind:accountLink={services.spotify.accountLink} bind:isSignedIn={services.spotify.isSignedIn} on:signout={signOutSpotify} />
+        <!-- These are in order of preference btw -->
+        {#if spotifyData}
+            <AccountBox
+                platform="spotify"
+                platformName="Spotify"
+                signInLink="/signin/spotify"
+                bind:accountName={spotifyData.accountName}
+                bind:accountLink={spotifyData.accountLink}
+                bind:isSignedIn={spotifyData.isSignedIn}
+                on:signout={signOutSpotify}
+            />
+        {/if}
+        {#if pretzelData}
+            <AccountBox
+                platform="pretzelrocks"
+                platformName="Pretzel"
+                signInLink="/signin/twitch"
+                bind:accountName={pretzelData.accountName}
+                bind:accountLink={pretzelData.accountLink}
+                bind:isSignedIn={pretzelData.isSignedIn}
+                canSignOut={false}
+            >
+                {#if pretzelData.isSignedIn}
+                    <label class="checkbox">
+                        <input type="checkbox" bind:checked={pretzelData.settings.enabled} on:change={updatePretzel} />
+                        Enabled
+                    </label>
+                {/if}
+            </AccountBox>
+        {/if}
     </div>
 </div>
 

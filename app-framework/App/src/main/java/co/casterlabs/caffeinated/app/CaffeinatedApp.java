@@ -13,7 +13,7 @@ import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegrationPreferences;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.preferences.WindowPreferences;
-import co.casterlabs.caffeinated.app.ui.AppearanceManager;
+import co.casterlabs.caffeinated.app.ui.AppUI;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -46,13 +46,12 @@ public class CaffeinatedApp {
     private AppAuth auth = new AppAuth();
     private MusicIntegration musicIntegration = new MusicIntegration();
     private GlobalKoi koi = new GlobalKoi();
+    private AppUI UI = new AppUI();
 
     private PreferenceFile<WindowPreferences> windowPreferences = new PreferenceFile<>("window", WindowPreferences.class);
     private PreferenceFile<UIPreferences> uiPreferences = new PreferenceFile<>("ui", UIPreferences.class);
     private PreferenceFile<AuthPreferences> authPreferences = new PreferenceFile<>("auth", AuthPreferences.class);
     private PreferenceFile<MusicIntegrationPreferences> musicIntegrationPreferences = new PreferenceFile<>("music", MusicIntegrationPreferences.class);
-
-    private AppearanceManager appearanceManager = new AppearanceManager();
 
     private Map<String, List<Consumer<JsonObject>>> bridgeEventListeners = new HashMap<>();
     private Map<String, List<Consumer<JsonObject>>> appEventListeners = new HashMap<>();
@@ -105,7 +104,6 @@ public class CaffeinatedApp {
 
     public void emitAppEvent(@NonNull String type, @NonNull JsonObject data) {
         if (this.appEventListeners.containsKey(type)) {
-            System.out.println(this.appEventListeners);
             this.appEventListeners
                 .get(type)
                 .forEach((c) -> c.accept(data));
@@ -126,12 +124,17 @@ public class CaffeinatedApp {
         switch (signal[0].toLowerCase()) {
 
             case "ui": {
-                AppearanceManager.invokeEvent(data, nestedType);
+                AppUI.invokeEvent(data, nestedType);
                 return;
             }
 
             case "auth": {
                 AppAuth.invokeEvent(data, nestedType);
+                return;
+            }
+
+            case "music": {
+                MusicIntegration.invokeEvent(data, nestedType);
                 return;
             }
 
