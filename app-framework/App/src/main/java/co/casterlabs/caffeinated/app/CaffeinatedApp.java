@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 
 import co.casterlabs.caffeinated.app.auth.AppAuth;
 import co.casterlabs.caffeinated.app.auth.AuthPreferences;
+import co.casterlabs.caffeinated.app.koi.GlobalKoi;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegrationPreferences;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
@@ -44,6 +45,7 @@ public class CaffeinatedApp {
 
     private AppAuth auth = new AppAuth();
     private MusicIntegration musicIntegration = new MusicIntegration();
+    private GlobalKoi koi = new GlobalKoi();
 
     private PreferenceFile<WindowPreferences> windowPreferences = new PreferenceFile<>("window", WindowPreferences.class);
     private PreferenceFile<UIPreferences> uiPreferences = new PreferenceFile<>("ui", UIPreferences.class);

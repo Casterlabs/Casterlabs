@@ -94,6 +94,7 @@ public class AppAuth {
             .navigate(this.isAuthorized ? "/home" : "/signin");
     }
 
+    @SuppressWarnings("deprecation")
     public void updateBridgeData() {
         this.checkAuth();
 
@@ -113,6 +114,7 @@ public class AppAuth {
             .put("koiAuth", koiAuth);
 
         CaffeinatedApp.getInstance().getBridge().getQueryData().put("auth", bridgeData);
+        CaffeinatedApp.getInstance().getKoi().updateFromAuth();
     }
 
     private void startAuthInstance(String tokenId) {

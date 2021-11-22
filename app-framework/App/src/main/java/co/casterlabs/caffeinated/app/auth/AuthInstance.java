@@ -10,6 +10,7 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.koi.api.Koi;
 import co.casterlabs.koi.api.listener.EventHandler;
 import co.casterlabs.koi.api.listener.EventListener;
+import co.casterlabs.koi.api.listener.EventUtil;
 import co.casterlabs.koi.api.types.events.Event;
 import co.casterlabs.koi.api.types.events.StreamStatusEvent;
 import co.casterlabs.koi.api.types.events.UserUpdateEvent;
@@ -92,7 +93,7 @@ public class AuthInstance implements EventListener, Closeable {
 
     @EventHandler
     public void onEvent(Event e) {
-        // TODO fire global koi.
+        EventUtil.reflectInvoke(CaffeinatedApp.getInstance().getKoi(), e);
     }
 
     /* ---------------- */

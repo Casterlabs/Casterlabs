@@ -11,6 +11,8 @@ import org.cef.handler.CefMessageRouterHandlerAdapter;
 
 import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.caffeinated.util.async.Promise;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
@@ -30,6 +32,8 @@ public class JavascriptBridge implements AppBridge {
     private @Getter JsonObject queryData = new JsonObject();
 
     private @Setter DualConsumer<String, JsonObject> onEvent;
+
+    private Promise<Void> loadPromise = new Promise<>();
 
     static {
         try {
@@ -97,12 +101,20 @@ public class JavascriptBridge implements AppBridge {
         // Inject the bridge script.
         this.frame = frame;
         this.frame.executeJavaScript(bridgeScript, "", 1);
+        this.loadPromise.fulfill(null);
     }
 
+    @Override
     public void emit(String type, JsonElement data) {
-        String line = String.format("window.Bridge.broadcast(%s,%s);", new JsonString(type), data);
+        new AsyncTask(() -> {
+            try {
+                this.loadPromise.await();
+            } catch (Throwable e) {}
 
-        this.frame.executeJavaScript(line, "", 1);
+            String line = String.format("window.Bridge.broadcast(%s,%s);", new JsonString(type), data);
+
+            this.frame.executeJavaScript(line, "", 1);
+        });
     }
 
     private void handleEmission(JsonObject query) {
