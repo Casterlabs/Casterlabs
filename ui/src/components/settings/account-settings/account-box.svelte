@@ -1,11 +1,18 @@
 <script>
+    import { goto } from "$app/navigation";
+
     export let platform;
     export let platformName;
+
     export let signInLink;
+    export let signInHandler;
+
     export let accountName;
     export let accountLink;
+
     export let isSignedIn = false;
     export let canSignOut = true;
+    export let isLoading = false;
 
     import { createEventDispatcher } from "svelte";
 
@@ -15,6 +22,18 @@
         dispatch("signout", {
             platform: platform
         });
+    }
+
+    function signin(e) {
+        e.target.blur();
+
+        if (!isLoading) {
+            if (signInLink) {
+                goto(`${signInLink}?homeGoBack=1`);
+            } else if (signInHandler) {
+                signInHandler(platform);
+            }
+        }
     }
 </script>
 
@@ -39,7 +58,7 @@
             {platformName}
         </span>
 
-        <a href="{signInLink}?homeGoBack=1" class="tag is-success signin-button"> Link </a>
+        <button on:click={signin} class="button tag signin-button is-success is-text {isLoading ? 'is-loading' : ''}"> Link </button>
     {/if}
 
     <span style="margin-left: 10px;"><slot /> </span>
@@ -89,6 +108,8 @@
         top: 50%;
         right: 1.5em;
         width: 55px;
+        line-height: 0.75em;
+        text-decoration: none;
         transform: translateY(-50%);
         text-align: center;
     }

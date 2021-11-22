@@ -65,6 +65,9 @@ public class AuthInstance implements EventListener, Closeable {
         this.logger.info("I have been invalidate()'d, goodbye.");
         CaffeinatedApp.getInstance().getAuthPreferences().get().getKoiTokens().remove(this.tokenId);
         CaffeinatedApp.getInstance().getAuthPreferences().save();
+        CaffeinatedApp.getInstance().getAuth().getAuthInstances().remove(this.tokenId);
+        CaffeinatedApp.getInstance().getAuth().checkAuth();
+        CaffeinatedApp.getInstance().getAuth().updateBridgeData();
     }
 
     /* ---------------- */

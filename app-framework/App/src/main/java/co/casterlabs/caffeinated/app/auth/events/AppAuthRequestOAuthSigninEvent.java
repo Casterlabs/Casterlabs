@@ -9,6 +9,7 @@ import xyz.e3ndr.eventapi.events.AbstractCancellableEvent;
 public class AppAuthRequestOAuthSigninEvent extends AbstractCancellableEvent<AppAuthEventType> {
     private String platform;
     private boolean isKoi;
+    private boolean goBack = true;
 
     public AppAuthRequestOAuthSigninEvent() {
         super(AppAuthEventType.REQUEST_OAUTH_SIGNIN);

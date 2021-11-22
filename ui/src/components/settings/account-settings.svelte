@@ -1,120 +1,119 @@
 <script>
     import AccountBox from "./account-settings/account-box.svelte";
 
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
+
+    let eventHandler;
 
     let accounts = {
-        caffeine: {
-            accountName: "",
-            accountLink: "#",
-            isSignedIn: false
-        },
-        twitch: {
-            accountName: "",
-            accountLink: "#",
-            isSignedIn: false
-        },
-        trovo: {
-            accountName: "",
-            accountLink: "#",
-            isSignedIn: false
-        },
-        glimesh: {
-            accountName: "",
-            accountLink: "#",
-            isSignedIn: false
-        },
-        brime: {
-            accountName: "",
-            accountLink: "#",
-            isSignedIn: false
-        }
+        caffeine: {},
+        twitch: {},
+        trovo: {},
+        glimesh: {},
+        brime: {}
     };
 
-    /* ---------------- */
-    /* State Switching  */
-    /* ---------------- */
+    function parseBridgeData({ koiAuth }) {
+        // Reset accounts object
+        for (const account of Object.values(accounts)) {
+            account.accountName = "";
+            account.accountLink = "#";
+            account.tokenId = null;
+            // account.isLoading = false;
+            account.isSignedIn = false;
+        }
 
-    function onAccountSignIn(account) {
-        accounts[account.platform.toLowerCase()] = {
-            accountName: account.displayname,
-            accountLink: account.link,
-            isSignedIn: true
-        };
+        // Parse data from bridge
+        for (const [platform, account] of Object.entries(koiAuth)) {
+            accounts[platform.toLowerCase()].accountName = account.userData.displayname;
+            accounts[platform.toLowerCase()].accountLink = account.userData.link;
+            accounts[platform.toLowerCase()].tokenId = account.tokenId;
+            account.isLoading = false;
+            accounts[platform.toLowerCase()].isSignedIn = true;
+        }
+
+        accounts = accounts; // Update dom.
     }
 
-    function onAccountSignOut(data) {
-        accounts[data.platform.toLowerCase()] = {
-            accountName: "",
-            accountLink: "#",
-            isSignedIn: false
-        };
-    }
+    onDestroy(() => {
+        eventHandler.destroy();
+    });
 
-    onMount(() => {
-        // Koi.on("account_signin", onAccountSignIn);
-        // Koi.on("account_signout", onAccountSignOut);
-        // for (const data of Object.values(Auth.getSignedInPlatforms())) {
-        //     const userData = data.userData;
-        //     if (userData) {
-        //         onAccountSignIn(userData.streamer);
-        //     }
-        // }
-        // Auth.cancelOAuthSignin();
+    onMount(async () => {
+        eventHandler = Bridge.createThrowawayEventHandler();
+        eventHandler.on("auth:platforms", parseBridgeData);
+        parseBridgeData((await Bridge.query("auth")).data);
+
+        Bridge.emit("auth:cancel-signin");
     });
 
     function signout(event) {
-        const platform = event.detail.platform.toUpperCase();
-        window.Auth.signOutUser(platform);
+        const platform = event.detail.platform.toLowerCase();
+        const tokenId = accounts[platform].tokenId;
+
+        if (tokenId) {
+            Bridge.emit("auth:signout", { tokenId: tokenId });
+        }
+    }
+
+    function signin(platform) {
+        platform = platform.toLowerCase();
+        accounts[platform].isLoading = true;
+
+        Bridge.emit("auth:request-oauth-signin", { platform: `caffeinated_${platform}`, isKoi: true, goBack: false });
     }
 </script>
 
 <div class="no-select">
     <div id="accounts">
-        <!-- i know, i know, it looks messy but it works so well. -->
-        <AccountBox
+        <!-- <AccountBox
             platform="caffeine"
             platformName="Caffeine"
             signInLink="/signin/caffeine"
             bind:accountName={accounts.caffeine.accountName}
             bind:accountLink={accounts.caffeine.accountLink}
             bind:isSignedIn={accounts.caffeine.isSignedIn}
+            bind:isLoading={isLoading}
             on:signout={signout}
-        />
+        /> -->
         <AccountBox
             platform="twitch"
             platformName="Twitch"
-            signInLink="/signin/twitch"
+            signInHandler={signin}
             bind:accountName={accounts.twitch.accountName}
             bind:accountLink={accounts.twitch.accountLink}
             bind:isSignedIn={accounts.twitch.isSignedIn}
+            bind:isLoading={accounts.twitch.isLoading}
             on:signout={signout}
         />
         <AccountBox
             platform="trovo"
             platformName="Trovo"
-            signInLink="/signin/trovo"
+            signInHandler={signin}
             bind:accountName={accounts.trovo.accountName}
             bind:accountLink={accounts.trovo.accountLink}
             bind:isSignedIn={accounts.trovo.isSignedIn}
+            bind:isLoading={accounts.trovo.isLoading}
             on:signout={signout}
         />
         <AccountBox
             platform="glimesh"
             platformName="Glimesh"
-            signInLink="/signin/glimesh"
+            signInHandler={signin}
             bind:accountName={accounts.glimesh.accountName}
             bind:accountLink={accounts.glimesh.accountLink}
             bind:isSignedIn={accounts.glimesh.isSignedIn}
+            bind:isLoading={accounts.glimesh.isLoading}
             on:signout={signout}
         />
         <AccountBox
             platform="brime"
             platformName="Brime"
-            signInLink="/signin/brime"
+            signInHandler={signin}
             bind:accountName={accounts.brime.accountName}
             bind:accountLink={accounts.brime.accountLink}
             bind:isSignedIn={accounts.brime.isSignedIn}
+            bind:isLoading={accounts.brime.isLoading}
             on:signout={signout}
         />
     </div>

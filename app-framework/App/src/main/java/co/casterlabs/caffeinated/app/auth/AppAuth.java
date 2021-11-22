@@ -80,7 +80,7 @@ public class AppAuth {
         boolean authorized = false;
 
         for (AuthInstance inst : this.authInstances.values()) {
-            if (inst.isConnected() && (inst.getUserData() != null)) {
+            if (inst.isConnected()) {
                 authorized = true;
                 break;
             }
@@ -122,6 +122,7 @@ public class AppAuth {
             .put("koiAuth", koiAuth);
 
         CaffeinatedApp.getInstance().emitAppEvent("auth:platforms", bridgeData);
+        CaffeinatedApp.getInstance().getBridge().emit("auth:platforms", bridgeData);
         CaffeinatedApp.getInstance().getBridge().getQueryData().put("auth", bridgeData);
         CaffeinatedApp.getInstance().getKoi().updateFromAuth();
     }
@@ -145,6 +146,8 @@ public class AppAuth {
             this.currentAuthCallback
                 .connect()
                 .then((token) -> {
+                    this.currentAuthCallback = null;
+
                     if (token != null) {
                         this.logger.info("Signin completed (%s)", event.getPlatform());
 
@@ -170,9 +173,12 @@ public class AppAuth {
                                     .put("tokenId", event.getPlatform())
                             );
                         }
-                    }
 
-                    this.currentAuthCallback = null;
+                        if (event.isGoBack()) {
+                            // Navigate backwards for the signin screen.
+                            CaffeinatedApp.getInstance().getUI().goBack();
+                        }
+                    }
                 });
         } catch (IOException e) {
             e.printStackTrace();
@@ -181,7 +187,11 @@ public class AppAuth {
 
     @EventListener
     public void onSignoutEvent(AppAuthSignoutEvent event) {
+        AuthInstance inst = this.authInstances.remove(event.getTokenId());
 
+        if (inst != null) {
+            inst.invalidate();
+        }
     }
 
     @EventListener

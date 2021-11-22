@@ -40,9 +40,6 @@ public class SpotifyMusicProvider extends MusicProvider<SpotifySettings> {
                 if (data.getString("platform").equals("caffeinated_spotify")) {
                     this.logger.info("Completing OAuth.");
                     this.completeOAuth(data.getString("tokenId"));
-
-                    // Navigate backwards for the signin screen.
-                    CaffeinatedApp.getInstance().getUI().goBack();
                 }
             });
 
