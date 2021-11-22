@@ -86,12 +86,14 @@ public class AppAuth {
             }
         }
 
-        this.isAuthorized = authorized;
+        if (this.isAuthorized != authorized) {
+            CaffeinatedApp
+                .getInstance()
+                .getUI()
+                .navigate(this.isAuthorized ? "/home" : "/signin");
+        }
 
-        CaffeinatedApp
-            .getInstance()
-            .getAppearanceManager()
-            .navigate(this.isAuthorized ? "/home" : "/signin");
+        this.isAuthorized = authorized;
     }
 
     @SuppressWarnings("deprecation")
