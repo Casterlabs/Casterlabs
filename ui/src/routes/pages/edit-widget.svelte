@@ -81,10 +81,6 @@
                         </div>
                     </div>
                 {/each}
-
-                <script>
-                    feather.replace();
-                </script>
             {/if}
         </div>
     </div>

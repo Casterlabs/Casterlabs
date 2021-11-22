@@ -76,7 +76,6 @@
 
     onMount(async () => {
         window.goto = goto;
-        feather.replace();
 
         Bridge.on("goto", ({ path }) => goto(path));
 
