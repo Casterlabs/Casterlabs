@@ -40,19 +40,23 @@ public class PretzelMusicProvider extends MusicProvider<PretzelSettings> {
                     .getObject("TWITCH")
                     .getObject("userData");
 
-                this.logger.info("Now signed in as: %s", twitchUserData.getString("displayname"));
+                String id = twitchUserData.getString("channel_id");
 
-                this.channelId = twitchUserData.getString("channel_id");
+                if (!this.channelId.equals(id)) {
+                    this.logger.info("Now signed in as: %s", twitchUserData.getString("displayname"));
 
-                this.setAccountData(
-                    true,
-                    String.format("Twitch: %s", twitchUserData.getString("displayname")),
-                    "https://play.pretzel.rocks"
-                );
+                    this.channelId = id;
 
-                new AsyncTask(() -> {
-                    this.pollPretzel();
-                });
+                    this.setAccountData(
+                        true,
+                        String.format("Twitch: %s", twitchUserData.getString("displayname")),
+                        "https://play.pretzel.rocks"
+                    );
+
+                    new AsyncTask(() -> {
+                        this.pollPretzel();
+                    });
+                }
             } else {
                 this.logger.info("Signed out.");
                 this.channelId = null;
