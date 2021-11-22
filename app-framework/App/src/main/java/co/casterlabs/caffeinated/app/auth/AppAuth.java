@@ -90,7 +90,7 @@ public class AppAuth {
             CaffeinatedApp
                 .getInstance()
                 .getUI()
-                .navigate(this.isAuthorized ? "/home" : "/signin");
+                .navigate(authorized ? "/home" : "/signin");
         }
 
         this.isAuthorized = authorized;
