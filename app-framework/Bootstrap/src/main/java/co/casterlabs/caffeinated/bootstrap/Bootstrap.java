@@ -23,17 +23,24 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @Command(name = "start", mixinStandardHelpOptions = true, version = "Caffeinated", description = "Starts Caffeinated")
 public class Bootstrap implements Runnable {
+    private static final String appUrl = "app://index.html";
 
     @Option(names = {
             "-D",
             "--dev-address"
     }, description = "Whether or not this is a dev environment, normal users beware.")
-    private String devAddress;
+    private String devAddress = appUrl;
+
+    @Option(names = {
+            "-d",
+            "--debug"
+    }, description = "Enables debug logging.")
+    private boolean enableDebugLogging;
 
     @Option(names = {
             "-t",
             "--trace"
-    }, description = "Enables Trace Logging.")
+    }, description = "Enables trace logging.")
     private boolean enableTraceLogging;
 
     private static FastLogger logger = new FastLogger();
@@ -76,7 +83,7 @@ public class Bootstrap implements Runnable {
         // We do this down here because of the IPC.
         if (this.enableTraceLogging) {
             FastLoggingFramework.setDefaultLevel(LogLevel.TRACE);
-        } else if (isDev) {
+        } else if (isDev || this.enableDebugLogging) {
             FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
         }
 
@@ -99,7 +106,7 @@ public class Bootstrap implements Runnable {
         logger.info("Initializing CEF (it may take some time to download the natives)");
 
         ApplicationUI.initialize(
-            isDev ? this.devAddress : "app://index",
+            isDev ? this.devAddress : appUrl,
             new UILifeCycleListener() {
 
                 @Override
@@ -180,6 +187,7 @@ public class Bootstrap implements Runnable {
             new AsyncTask(() -> {
                 logger.info("Shutting down.");
                 TrayHandler.destroy();
+                ApplicationUI.getDevtools().close();
                 ApplicationUI.getWindow().dispose();
                 CaffeinatedApp.getInstance().shutdown();
                 InstanceManager.cleanShutdown();

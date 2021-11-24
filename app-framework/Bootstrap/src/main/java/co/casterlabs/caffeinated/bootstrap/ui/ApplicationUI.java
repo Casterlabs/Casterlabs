@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.BorderLayout;
+import java.io.IOException;
 
 import org.cef.CefApp;
 import org.cef.CefApp.CefAppState;
@@ -27,11 +28,11 @@ import co.casterlabs.caffeinated.bootstrap.cef.bridge.JavascriptBridge;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.SchemeHandler;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpRequest;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpResponse;
+import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.MimeTypes;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.StandardHttpStatus;
 import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import xyz.e3ndr.consoleutil.ConsoleUtil;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
@@ -230,7 +231,7 @@ public class ApplicationUI {
 
             @Override
             public void onContextInitialized() {
-                CefUtil.registerUrlScheme("app", new TestSchemeHandler());
+                CefUtil.registerUrlScheme("app", new AppSchemeHandler());
             }
 
             @Override
@@ -259,15 +260,49 @@ public class ApplicationUI {
         window.getFrame().setTitle(title);
     }
 
-    // TODO read internal app files.
-    public static class TestSchemeHandler implements SchemeHandler {
+    public static class AppSchemeHandler implements SchemeHandler {
 
-        @SneakyThrows
         @Override
         public HttpResponse onRequest(HttpRequest request) {
-            String content = FileUtil.loadResource("test.html");
+            String uri = '/' + request.getUri().substring("app://".length());
 
-            return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content).setMimeType("text/html");
+            // Some dumb logic to deal with the uris.
+            if (uri.equals("/index.html/")) {
+                uri = "/index.html";
+            } else {
+                // Chop off some stupid stuff.
+                if (uri.startsWith("/index.html/")) {
+                    uri = uri.substring("/index.html".length());
+                }
+
+                if (!uri.contains(".")) {
+                    if (uri.endsWith("/")) {
+                        uri += "index.html";
+                    } else {
+                        uri += "/index.html";
+                    }
+                }
+            }
+
+            try {
+                byte[] content = FileUtil.loadResourceBytes("app" + uri);
+                String mimeType = "application/octet-stream";
+
+                String[] split = uri.split("\\.");
+                if (split.length > 1) {
+                    mimeType = MimeTypes.getMimeForType(split[split.length - 1]);
+                }
+
+                FastLogger.logStatic(LogLevel.DEBUG, "200 %s -> app%s (%s)", request.getUri(), uri, mimeType);
+
+                return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content)
+                    .setMimeType(mimeType);
+            } catch (IOException e) {
+                FastLogger.logStatic(LogLevel.SEVERE, "404 %s -> app%s", request.getUri(), uri);
+
+                return HttpResponse.newFixedLengthResponse(StandardHttpStatus.NOT_FOUND, "")
+                    .setMimeType("application/octet-stream");
+            }
         }
 
     }

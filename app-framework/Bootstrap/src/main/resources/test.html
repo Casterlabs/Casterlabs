@@ -13,26 +13,6 @@
         to: world 🌎
         <br />
         from: Casterlabs-Caffeinated (JCEF)
-        <br />
-        <br />
-        <br />
-        currentTimeMillis = <span id="time"></span>
     </body>
-
-    <script>
-        const timeSpan = document.querySelector("#time");
-        let currentTimeMillis = 0;
-
-        setInterval(async () => {
-            const { data } = await Bridge.query("currentTimeMillis");
-
-            currentTimeMillis = data;
-            timeSpan.innerText = data;
-        }, 10);
-
-        setInterval(() => {
-            console.log("currentTimeMillis =", currentTimeMillis);
-        }, 500);
-    </script>
 
 </html>
