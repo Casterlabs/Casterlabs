@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.bootstrap.instancing.InstanceManager;
 import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
@@ -35,7 +36,7 @@ public class Bootstrap implements Runnable {
     }, description = "Enables Trace Logging.")
     private boolean enableTraceLogging;
 
-    private static FastLogger logger;
+    private static FastLogger logger = new FastLogger();
 
     private static @Getter BuildInfo buildInfo;
     private static @Getter boolean isDev = true;
@@ -51,17 +52,32 @@ public class Bootstrap implements Runnable {
     @Override
     public void run() {
         isDev = this.devAddress != null;
+        buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
 
+        // Check for another instance, and do IPC things.
+        if (!InstanceManager.isSingleInstance()) {
+            logger.info("App is already running, summoning it now.");
+
+            if (InstanceManager.trySummonInstance()) {
+                FastLoggingFramework.close(); // Faster shutdown.
+                return;
+            } else {
+                logger.warn("Summon failed, launching anyways.");
+//                return;
+            }
+        } else {
+            logger.info("Starting app.");
+        }
+
+        // We do this down here because of the IPC.
         if (this.enableTraceLogging) {
             FastLoggingFramework.setDefaultLevel(LogLevel.TRACE);
         } else if (isDev) {
             FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
         }
 
-        // Initialize it down here so it gets the default log level.
-        logger = new FastLogger();
-
-        buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
+        // Update the log level.
+        logger.setCurrentLevel(FastLoggingFramework.getDefaultLevel());
 
         this.startApp();
     }
@@ -78,8 +94,6 @@ public class Bootstrap implements Runnable {
 
         logger.info("Initializing CEF (it may take some time to download the natives)");
 
-        Bootstrap _inst = this;
-
         ApplicationUI.initialize(
             isDev ? this.devAddress : "app://index",
             new UILifeCycleListener() {
@@ -94,7 +108,7 @@ public class Bootstrap implements Runnable {
 
                     app.init();
 
-                    TrayHandler.tryCreateTray(_inst);
+                    TrayHandler.tryCreateTray();
                 }
 
                 @Override
@@ -135,13 +149,14 @@ public class Bootstrap implements Runnable {
         CaffeinatedApp.getInstance().onBridgeEvent(type, data);
     }
 
-    public void shutdown() {
+    public static void shutdown() {
         if (CaffeinatedApp.getInstance().canCloseUI()) {
             new AsyncTask(() -> {
                 logger.info("Shutting down.");
                 TrayHandler.destroy();
                 ApplicationUI.getWindow().dispose();
                 CaffeinatedApp.getInstance().shutdown();
+                InstanceManager.cleanShutdown();
                 FastLoggingFramework.close(); // Faster shutdown.
             });
         } else {

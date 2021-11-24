@@ -23,16 +23,13 @@ import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import lombok.NonNull;
 
 public class TrayHandler {
-    private static Bootstrap bootstrap;
     private static CheckboxMenuItem showCheckbox;
     private static SystemTray tray;
 
     private static TrayIcon lastIcon;
 
-    public static void tryCreateTray(@NonNull Bootstrap bootstrap) {
-        if (TrayHandler.bootstrap == null) {
-            TrayHandler.bootstrap = bootstrap;
-
+    public static void tryCreateTray() {
+        if (tray == null) {
             // Check the SystemTray support
             if (!SystemTray.isSupported()) {
                 return;
@@ -91,7 +88,7 @@ public class TrayHandler {
         });
 
         itemExit.addActionListener((ActionEvent e) -> {
-            bootstrap.shutdown();
+            Bootstrap.shutdown();
         });
 
         // Setup the tray icon.

@@ -272,6 +272,10 @@ public class ApplicationUI {
     }
 
     public static void focusAndBeep() {
+        if (!open) {
+            showWindow();
+        }
+
         window.getFrame().toFront();
         ConsoleUtil.bell();
     }

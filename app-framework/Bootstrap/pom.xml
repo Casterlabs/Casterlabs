@@ -119,7 +119,7 @@
 		<dependency>
 			<groupId>com.github.e3ndr</groupId>
 			<artifactId>ConsoleUtil</artifactId>
-			<version>8b862c5</version> <!-- 1.4.0-EXPERIMENTAL -->
+			<version>bd6442f</version> <!-- 1.4.0-EXPERIMENTAL -->
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
