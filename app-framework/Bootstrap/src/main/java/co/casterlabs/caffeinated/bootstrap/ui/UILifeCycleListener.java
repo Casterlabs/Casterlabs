@@ -11,6 +11,8 @@ public interface UILifeCycleListener {
      */
     public boolean onUICloseAttempt();
 
+    public void onMinimize();
+
     public void onWindowOpen();
 
     public void onTrayMinimize();

@@ -9,6 +9,8 @@ import xyz.e3ndr.eventapi.events.AbstractCancellableEvent;
 public class AppUIAppearanceUpdateEvent extends AbstractCancellableEvent<AppUIEventType> {
     private String theme;
     private String icon;
+    private boolean closeToTray;
+    private boolean minimizeToTray;
 
     public AppUIAppearanceUpdateEvent() {
         super(AppUIEventType.APPEARANCE_UPDATE);

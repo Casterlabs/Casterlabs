@@ -34,6 +34,8 @@ public class AppUI {
 
         uiPrefs.setIcon(event.getIcon());
         uiPrefs.setTheme(event.getTheme());
+        uiPrefs.setCloseToTray(event.isCloseToTray());
+        uiPrefs.setMinimizeToTray(event.isMinimizeToTray());
         CaffeinatedApp.getInstance().getUiPreferences().save();
     }
 

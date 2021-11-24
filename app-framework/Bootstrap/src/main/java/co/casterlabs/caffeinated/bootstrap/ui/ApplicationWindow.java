@@ -48,8 +48,13 @@ public class ApplicationWindow {
         this.frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.frame.addWindowListener(new WindowAdapter() {
             @Override
+            public void windowIconified(WindowEvent e) {
+                listener.onMinimize();
+            }
+
+            @Override
             public void windowStateChanged(WindowEvent e) {
-                windowPreferences.setStateFlags(e.getNewState());
+                windowPreferences.setStateFlags(e.getNewState() & ~JFrame.ICONIFIED); // State WITHOUT iconified flag.
                 saveTimer.restart();
             }
 
@@ -114,6 +119,11 @@ public class ApplicationWindow {
 
     public void dispose() {
         this.frame.dispose();
+    }
+
+    public void toFront() {
+        this.frame.setState(this.frame.getState() & ~JFrame.ICONIFIED); // State WITHOUT iconified flag.
+        this.frame.toFront();
     }
 
 }

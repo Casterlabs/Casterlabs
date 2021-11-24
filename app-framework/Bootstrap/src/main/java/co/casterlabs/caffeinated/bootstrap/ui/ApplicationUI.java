@@ -171,6 +171,7 @@ public class ApplicationUI {
 
             // CEF needs to be visible in order to load the page.
             window.getFrame().setVisible(true);
+            window.toFront();
 
             // Update state
             open = true;
@@ -276,7 +277,7 @@ public class ApplicationUI {
             showWindow();
         }
 
-        window.getFrame().toFront();
+        window.toFront();
         ConsoleUtil.bell();
     }
 

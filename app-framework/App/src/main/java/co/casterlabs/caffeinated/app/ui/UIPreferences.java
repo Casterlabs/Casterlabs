@@ -8,5 +8,7 @@ import lombok.Data;
 public class UIPreferences {
     private String icon = "casterlabs";
     private String theme = "light";
+    private boolean closeToTray = true;
+    private boolean minimizeToTray = false;
 
 }

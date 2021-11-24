@@ -53,12 +53,22 @@ public class InstanceManager {
     }
 
     public static void cleanShutdown() {
-        try {
-            lockFile.delete();
-            fileLock.release();
-            randomAccessFile.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (lockFile != null) {
+            try {
+                lockFile.delete();
+            } catch (Exception e) {}
+        }
+
+        if (fileLock != null) {
+            try {
+                fileLock.release();
+            } catch (Exception e) {}
+        }
+
+        if (randomAccessFile != null) {
+            try {
+                randomAccessFile.close();
+            } catch (Exception e) {}
         }
     }
 

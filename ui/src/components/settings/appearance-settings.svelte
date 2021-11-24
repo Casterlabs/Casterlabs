@@ -6,17 +6,23 @@
     // let zoomValue;
     let appearanceTheme;
     let appearanceIcon;
+    let appearanceCloseToTray;
+    let appearanceMinimizeToTray;
 
     function sendUpdatedPreferences() {
         Bridge.emit("ui:appearance-update", {
             theme: appearanceTheme,
-            icon: appearanceIcon
+            icon: appearanceIcon,
+            closeToTray: appearanceCloseToTray,
+            minimizeToTray: appearanceMinimizeToTray
         });
     }
 
     function loadPreferences(data) {
         appearanceTheme = data.theme;
         appearanceIcon = data.icon;
+        appearanceCloseToTray = data.closeToTray;
+        appearanceMinimizeToTray = data.minimizeToTray;
     }
 
     onDestroy(() => {
@@ -58,6 +64,19 @@
                     <option value="moonlabs">Moonlabs</option>
                 </select>
             </div>
+        </label>
+    </div>
+    <br />
+    <div>
+        <label class="checkbox">
+            <input type="checkbox" bind:checked={appearanceCloseToTray} on:change={sendUpdatedPreferences} />
+            Close button sends to tray
+        </label>
+    </div>
+    <div>
+        <label class="checkbox">
+            <input type="checkbox" bind:checked={appearanceMinimizeToTray} on:change={sendUpdatedPreferences} />
+            Minimize to tray
         </label>
     </div>
 </div>

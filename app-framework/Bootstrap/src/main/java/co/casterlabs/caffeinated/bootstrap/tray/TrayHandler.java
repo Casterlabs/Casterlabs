@@ -26,7 +26,8 @@ public class TrayHandler {
     private static CheckboxMenuItem showCheckbox;
     private static SystemTray tray;
 
-    private static TrayIcon lastIcon;
+    private static Image lastImage;
+    private static TrayIcon icon;
 
     public static void tryCreateTray() {
         if (tray == null) {
@@ -36,18 +37,56 @@ public class TrayHandler {
             }
 
             tray = SystemTray.getSystemTray();
-            changeTrayIcon(CaffeinatedApp.getInstance().getUiPreferences().get().getIcon());
+            PopupMenu popup = new PopupMenu();
 
+            // Create the popup menu components
+            showCheckbox = new CheckboxMenuItem("Show");
+            MenuItem itemExit = new MenuItem("Exit");
+
+            showCheckbox.setState(ApplicationUI.isOpen());
+
+            // Add components to popup menu
+            popup.add(showCheckbox);
+            popup.addSeparator();
+            popup.add(itemExit);
+
+            showCheckbox.addItemListener((ItemEvent e) -> {
+                if (ApplicationUI.isOpen()) {
+                    ApplicationUI.closeWindow();
+                } else {
+                    ApplicationUI.showWindow();
+                }
+            });
+
+            itemExit.addActionListener((ActionEvent e) -> {
+                Bootstrap.shutdown();
+            });
+
+            // Setup the tray icon.
+            icon = new TrayIcon(createImage("assets/logo/casterlabs.png", "Casterlabs Logo"));
+
+            changeTrayIcon(CaffeinatedApp.getInstance().getUiPreferences().get().getIcon());
             CaffeinatedApp.getInstance().getUiPreferences().addSaveListener((PreferenceFile<UIPreferences> uiPreferences) -> {
                 changeTrayIcon(uiPreferences.get().getIcon());
             });
+
+            icon.setImageAutoSize(true);
+            icon.setPopupMenu(popup);
+
+            icon.addActionListener((ActionEvent e) -> {
+                ApplicationUI.showWindow();
+            });
+
+            try {
+                tray.add(icon);
+            } catch (AWTException e) {}
 
             // Remove the icon on shutdown.
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
                 public void run() {
                     try {
-                        tray.remove(lastIcon);
+                        tray.remove(icon);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -64,57 +103,25 @@ public class TrayHandler {
         }
     }
 
-    private static void changeTrayIcon(String icon) {
-        // We recreate the pop up menu because..... idk
-        PopupMenu popup = new PopupMenu();
+    private static void changeTrayIcon(String logo) {
+        if (lastImage != null) {
+            lastImage.flush();
+        }
 
-        // Create a popup menu components
-        showCheckbox = new CheckboxMenuItem("Show");
-        MenuItem itemExit = new MenuItem("Exit");
+        Image image = createImage(String.format("assets/logo/%s.png", logo), "Casterlabs Logo");
+        lastImage = image;
 
-        showCheckbox.setState(ApplicationUI.isOpen());
-
-        // Add components to popup menu
-        popup.add(showCheckbox);
-        popup.addSeparator();
-        popup.add(itemExit);
-
-        showCheckbox.addItemListener((ItemEvent e) -> {
-            if (ApplicationUI.isOpen()) {
-                ApplicationUI.closeWindow();
-            } else {
-                ApplicationUI.showWindow();
-            }
-        });
-
-        itemExit.addActionListener((ActionEvent e) -> {
-            Bootstrap.shutdown();
-        });
-
-        // Setup the tray icon.
-        TrayIcon trayIcon = new TrayIcon(createImage(String.format("assets/logo/%s.png", icon), "Casterlabs Logo"));
-
-        trayIcon.setImageAutoSize(true);
-        trayIcon.setPopupMenu(popup);
-
-        trayIcon.addActionListener((ActionEvent e) -> {
-            ApplicationUI.showWindow();
-        });
-
-        try {
-            // The ole' switch'aroo
-            tray.add(trayIcon);
-            tray.remove(lastIcon);
-            lastIcon = trayIcon;
-        } catch (AWTException e) {}
+        icon.setImage(image);
     }
 
     public static void notify(@NonNull String message, @NonNull MessageType type) {
-        lastIcon.displayMessage("Casterlabs Caffeinated", message, type);
+        icon.displayMessage("Casterlabs Caffeinated", message, type);
     }
 
     public static void destroy() {
-        tray.remove(lastIcon);
+        if (tray != null) {
+            tray.remove(icon);
+        }
     }
 
     private static Image createImage(String path, String description) {

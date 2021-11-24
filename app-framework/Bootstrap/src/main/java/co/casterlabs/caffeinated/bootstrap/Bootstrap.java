@@ -125,12 +125,34 @@ public class Bootstrap implements Runnable {
                     logger.debug("onUICloseAttempt");
 
                     if (app.canCloseUI()) {
-                        new AsyncTask(() -> ApplicationUI.closeWindow());
+                        new AsyncTask(() -> {
+                            if (CaffeinatedApp.getInstance().getUiPreferences().get().isCloseToTray()) {
+                                ApplicationUI.closeWindow();
+                            } else {
+                                shutdown();
+                            }
+                        });
                         return true;
                     } else {
-                        new AsyncTask(() -> ApplicationUI.focusAndBeep());
+                        ApplicationUI.focusAndBeep();
                         return false;
                     }
+                }
+
+                @Override
+                public void onMinimize() {
+                    logger.debug("onMinimize");
+                    new AsyncTask(() -> {
+                        if (CaffeinatedApp.getInstance().getUiPreferences().get().isMinimizeToTray()) {
+                            // See if the minimize to tray option is checked.
+                            // If so, make sure the app can close before closing the window.
+                            if (app.canCloseUI()) {
+                                ApplicationUI.closeWindow();
+                            } else {
+                                ApplicationUI.focusAndBeep();
+                            }
+                        }
+                    });
                 }
 
                 @Override
