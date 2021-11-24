@@ -10,6 +10,8 @@ import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
@@ -73,8 +75,26 @@ public class TrayHandler {
             icon.setImageAutoSize(true);
             icon.setPopupMenu(popup);
 
-            icon.addActionListener((ActionEvent e) -> {
-                ApplicationUI.showWindow();
+            icon.addMouseListener(new MouseListener() {
+
+                @Override
+                public void mouseClicked(MouseEvent e) {}
+
+                @Override
+                public void mousePressed(MouseEvent e) {}
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (!e.isPopupTrigger()) {
+                        ApplicationUI.showWindow();
+                    }
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {}
+
+                @Override
+                public void mouseExited(MouseEvent e) {}
             });
 
             try {
