@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Delete old build stuff.
+rm -rf ./ui/build
+rm -rf ./app-framework/Bootstrap/src/main/resources/app
+
 # Build UI
 cd ./ui
 npm i
