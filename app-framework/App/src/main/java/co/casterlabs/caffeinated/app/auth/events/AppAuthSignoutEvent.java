@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.app.auth.events;
 
 import co.casterlabs.rakurai.json.annotating.JsonClass;
+import co.casterlabs.rakurai.json.validation.JsonValidate;
 import lombok.Getter;
 import xyz.e3ndr.eventapi.events.AbstractCancellableEvent;
 
@@ -11,6 +12,11 @@ public class AppAuthSignoutEvent extends AbstractCancellableEvent<AppAuthEventTy
 
     public AppAuthSignoutEvent() {
         super(AppAuthEventType.SIGNOUT);
+    }
+
+    @JsonValidate
+    private void validate() {
+        assert this.tokenId != null;
     }
 
 }

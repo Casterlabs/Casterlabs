@@ -161,7 +161,6 @@ public class InstanceManager {
                 }
             } catch (Exception e) {
                 commsPromise.fulfill(null);
-                e.printStackTrace();
             }
         });
 

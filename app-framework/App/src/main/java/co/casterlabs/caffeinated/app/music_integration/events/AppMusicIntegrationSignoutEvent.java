@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.app.music_integration.events;
 
 import co.casterlabs.rakurai.json.annotating.JsonClass;
+import co.casterlabs.rakurai.json.validation.JsonValidate;
 import lombok.Getter;
 import xyz.e3ndr.eventapi.events.AbstractCancellableEvent;
 
@@ -11,6 +12,11 @@ public class AppMusicIntegrationSignoutEvent extends AbstractCancellableEvent<Ap
 
     public AppMusicIntegrationSignoutEvent() {
         super(AppMusicIntegrationEventType.SIGNOUT);
+    }
+
+    @JsonValidate
+    private void validate() {
+        assert this.platform != null;
     }
 
 }

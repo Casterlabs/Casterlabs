@@ -202,7 +202,7 @@ public class SpotifyMusicProvider extends MusicProvider<SpotifySettings> {
             CaffeinatedApp.getInstance().getAuthPreferences().save();
 
             FastLogger.logStatic("RefreshToken: ", refreshToken);
-        } catch (JsonParseException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

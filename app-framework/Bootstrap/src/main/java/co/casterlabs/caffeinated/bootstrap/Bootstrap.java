@@ -49,6 +49,9 @@ public class Bootstrap implements Runnable {
     private static @Getter boolean isDev;
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        // Enable assertions programatically.
+        ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true);
+
         System.out.println(" > System.out.println(\"Hello World!\");\nHello World!\n\n");
 
         ConsoleUtil.getPlatform(); // Init ConsoleUtil.
