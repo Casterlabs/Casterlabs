@@ -17,6 +17,15 @@
 
     const settingsContainerContents = [
         {
+            name: "App Settings",
+            type: "section"
+        },
+        {
+            name: "Appearance",
+            id: "appearance",
+            type: "category"
+        },
+        {
             name: "User Settings",
             type: "section"
         },
@@ -28,15 +37,6 @@
         {
             name: "Music Services",
             id: "music_services",
-            type: "category"
-        },
-        {
-            name: "App Settings",
-            type: "section"
-        },
-        {
-            name: "Appearance",
-            id: "appearance",
             type: "category"
         }
         // {
