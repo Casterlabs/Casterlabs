@@ -56,14 +56,18 @@ public class Bootstrap implements Runnable {
 
         // Check for another instance, and do IPC things.
         if (!InstanceManager.isSingleInstance()) {
-            logger.info("App is already running, summoning it now.");
-
-            if (InstanceManager.trySummonInstance()) {
-                FastLoggingFramework.close(); // Faster shutdown.
-                return;
+            if (isDev) {
+                logger.info("App is already running, closing it now.");
+                InstanceManager.closeOtherInstance();
             } else {
-                logger.warn("Summon failed, launching anyways.");
-//                return;
+                logger.info("App is already running, summoning it now.");
+
+                if (InstanceManager.trySummonInstance()) {
+                    FastLoggingFramework.close(); // Faster shutdown.
+                    return;
+                } else {
+                    logger.warn("Summon failed, launching anyways.");
+                }
             }
         } else {
             logger.info("Starting app.");
