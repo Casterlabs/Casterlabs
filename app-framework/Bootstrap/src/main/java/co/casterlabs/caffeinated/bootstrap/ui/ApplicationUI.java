@@ -214,6 +214,10 @@ public class ApplicationUI {
         });
     }
 
+    public static void show() {
+        window.getFrame().setVisible(true);
+    }
+
     public static void setTitle(@Nullable String title) {
         if (title == null) {
             title = "Casterlabs Caffeinated";

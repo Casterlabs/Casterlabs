@@ -37,7 +37,7 @@ public class Bootstrap implements Runnable {
     private static FastLogger logger = new FastLogger();
 
     private static @Getter BuildInfo buildInfo;
-    private static @Getter boolean isDev;
+    private static @Getter boolean isDev = true;
     private static @Getter CaffeinatedApp app;
 
     public static void main(String[] args) throws IOException, InterruptedException {

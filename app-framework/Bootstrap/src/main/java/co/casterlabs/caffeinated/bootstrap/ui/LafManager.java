@@ -21,6 +21,7 @@ public class LafManager {
 //                setWindow10LAF();
 //            } else {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//            UIManager.put("swing.boldMetal", Boolean.FALSE);
 //            }
         } catch (Exception e) {
             FastLogger.logException(e);
