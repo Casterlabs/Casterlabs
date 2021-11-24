@@ -12,13 +12,25 @@ import lombok.ToString;
 @JsonClass(exposeAll = true)
 public class User {
     private List<UserRoles> roles;
+
     private List<String> badges;
+
     private UserPlatform platform;
+
     private String color;
+
     private String username;
+
     private String displayname;
-    private String bio = "";
+
+    private String bio;
+
     private String id;
+
+    @JsonField("UPID")
+    private String upid;
+
+    private String link;
 
     @JsonField("channel_id")
     private String channelId = "";
