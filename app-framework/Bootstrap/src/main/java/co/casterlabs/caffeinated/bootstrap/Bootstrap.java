@@ -29,7 +29,7 @@ public class Bootstrap implements Runnable {
             "-D",
             "--dev-address"
     }, description = "Whether or not this is a dev environment, normal users beware.")
-    private String devAddress = appUrl;
+    private String devAddress;
 
     @Option(names = {
             "-d",
@@ -46,7 +46,7 @@ public class Bootstrap implements Runnable {
     private static FastLogger logger = new FastLogger();
 
     private static @Getter BuildInfo buildInfo;
-    private static @Getter boolean isDev = true;
+    private static @Getter boolean isDev;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println(" > System.out.println(\"Hello World!\");\nHello World!\n\n");
