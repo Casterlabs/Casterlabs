@@ -6,7 +6,7 @@ import java.net.URI;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
-import co.casterlabs.koi.api.listener.EventListener;
+import co.casterlabs.koi.api.listener.KoiEventListener;
 import co.casterlabs.koi.api.listener.EventUtil;
 import co.casterlabs.koi.api.types.events.Event;
 import co.casterlabs.koi.api.types.events.EventType;
@@ -21,14 +21,14 @@ import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 public class Koi implements Closeable {
     public static final String KOI_URL = "wss://api.casterlabs.co/v2/koi";
 
-    private EventListener listener;
+    private KoiEventListener listener;
     private FastLogger logger;
     private KoiSocket socket;
 
     private JsonObject request;
 
     @SneakyThrows
-    public Koi(@NonNull String url, @NonNull FastLogger logger, @NonNull EventListener listener, String clientId) {
+    public Koi(@NonNull String url, @NonNull FastLogger logger, @NonNull KoiEventListener listener, String clientId) {
         this.logger = logger;
         this.listener = listener;
         this.socket = new KoiSocket(new URI(url + "?client_id=" + clientId));

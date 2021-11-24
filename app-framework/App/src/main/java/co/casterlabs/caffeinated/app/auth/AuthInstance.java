@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.koi.api.Koi;
 import co.casterlabs.koi.api.listener.EventHandler;
-import co.casterlabs.koi.api.listener.EventListener;
+import co.casterlabs.koi.api.listener.KoiEventListener;
 import co.casterlabs.koi.api.listener.EventUtil;
 import co.casterlabs.koi.api.types.events.Event;
 import co.casterlabs.koi.api.types.events.StreamStatusEvent;
@@ -21,7 +21,7 @@ import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class AuthInstance implements EventListener, Closeable {
+public class AuthInstance implements KoiEventListener, Closeable {
     private @Getter String tokenId;
     private String token;
 

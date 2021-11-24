@@ -12,7 +12,7 @@ import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AuthInstance;
 import co.casterlabs.koi.api.listener.EventHandler;
-import co.casterlabs.koi.api.listener.EventListener;
+import co.casterlabs.koi.api.listener.KoiEventListener;
 import co.casterlabs.koi.api.listener.EventUtil;
 import co.casterlabs.koi.api.types.events.CatchupEvent;
 import co.casterlabs.koi.api.types.events.Event;
@@ -27,10 +27,10 @@ import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @Getter
-public class GlobalKoi implements EventListener {
+public class GlobalKoi implements KoiEventListener {
     private static final List<EventType> HISTORY_EVENTS = Arrays.asList();
 
-    private List<EventListener> koiEventListeners = new LinkedList<>();
+    private List<KoiEventListener> koiEventListeners = new LinkedList<>();
 
     private List<Event> chatHistory = new LinkedList<>();
     private Map<String, List<User>> viewers = new HashMap<>();
@@ -101,7 +101,7 @@ public class GlobalKoi implements EventListener {
             // Emit the event to Caffeinated.
             CaffeinatedApp.getInstance().getBridge().emit("koi:event:" + e.getType().name().toLowerCase(), Rson.DEFAULT.toJson(e));
 
-            for (EventListener listener : this.koiEventListeners) {
+            for (KoiEventListener listener : this.koiEventListeners) {
                 EventUtil.reflectInvoke(listener, e);
             }
         }

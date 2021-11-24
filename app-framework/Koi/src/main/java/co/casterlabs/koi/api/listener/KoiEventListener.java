@@ -1,6 +1,6 @@
 package co.casterlabs.koi.api.listener;
 
-public interface EventListener {
+public interface KoiEventListener {
 
     default void onClose(boolean remote) {}
 
