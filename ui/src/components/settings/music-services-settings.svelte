@@ -44,7 +44,14 @@
 <div class="no-select">
     <p>
         {#if activePlayback}
-            &nbsp;Now Playing: {activePlayback.currentTrack.title} - {activePlayback.currentTrack.artists.join(", ")}
+            &nbsp;Now Playing:
+            <span style="user-select: all !important;">
+                {activePlayback.currentTrack.title}
+            </span>
+            &bull;
+            <span style="user-select: all !important;">
+                {activePlayback.currentTrack.artists.join(", ")}
+            </span>
         {/if}
     </p>
 
