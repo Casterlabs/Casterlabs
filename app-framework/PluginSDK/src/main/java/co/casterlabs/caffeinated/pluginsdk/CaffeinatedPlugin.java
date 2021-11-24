@@ -25,9 +25,13 @@ public abstract class CaffeinatedPlugin implements Closeable {
 
     public abstract void onClose();
 
-    public abstract @Nullable String getVersion();
+    public @Nullable String getVersion() {
+        return null;
+    }
 
-    public abstract @Nullable String getAuthor();
+    public @Nullable String getAuthor() {
+        return null;
+    }
 
     public abstract @NonNull String getName();
 

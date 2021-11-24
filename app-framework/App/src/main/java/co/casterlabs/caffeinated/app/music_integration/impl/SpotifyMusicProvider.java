@@ -134,7 +134,7 @@ public class SpotifyMusicProvider extends MusicProvider<SpotifySettings> {
                         }
                     }
                 }
-            } catch (JsonParseException ignored) {
+            } catch (StringIndexOutOfBoundsException | JsonParseException ignored) {
                 // ignored.
             } catch (Exception e) {
                 e.printStackTrace();

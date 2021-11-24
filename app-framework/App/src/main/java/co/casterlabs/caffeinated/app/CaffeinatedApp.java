@@ -11,6 +11,7 @@ import co.casterlabs.caffeinated.app.auth.AuthPreferences;
 import co.casterlabs.caffeinated.app.koi.GlobalKoi;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegrationPreferences;
+import co.casterlabs.caffeinated.app.plugins.PluginsHandler;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.preferences.WindowPreferences;
 import co.casterlabs.caffeinated.app.ui.AppUI;
@@ -65,6 +66,8 @@ public class CaffeinatedApp {
 
         this.auth.init();
         this.musicIntegration.init();
+
+        PluginsHandler.getInstance().loadPluginsFromClassLoader(this.getClass().getClassLoader());
     }
 
     public boolean canCloseUI() {

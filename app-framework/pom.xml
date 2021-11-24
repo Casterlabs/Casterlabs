@@ -13,6 +13,7 @@
 		<module>Util</module>
 		<module>PluginSDK</module>
 		<module>Koi</module>
+		<module>BuiltInPlugins</module>
 	</modules>
 
 	<properties>
