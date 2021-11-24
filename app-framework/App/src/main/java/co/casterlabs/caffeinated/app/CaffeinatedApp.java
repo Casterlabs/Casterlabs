@@ -20,12 +20,10 @@ import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
 
 @Getter
-@RequiredArgsConstructor
 public class CaffeinatedApp {
     public static final String caffeinatedClientId = "LmHG2ux992BxqQ7w9RJrfhkW";
 
@@ -56,17 +54,23 @@ public class CaffeinatedApp {
     private Map<String, List<Consumer<JsonObject>>> bridgeEventListeners = new HashMap<>();
     private Map<String, List<Consumer<JsonObject>>> appEventListeners = new HashMap<>();
 
-    public void init() {
+    public CaffeinatedApp(@NonNull BuildInfo buildInfo, boolean isDev) {
+        this.buildInfo = buildInfo;
+        this.isDev = isDev;
         instance = this;
+    }
 
+    public void init() {
         this.uiPreferences.addSaveListener(this::saveListener);
 
         this.auth.init();
         this.musicIntegration.init();
     }
 
-    public boolean canShutdown() {
-        // TODO if needed.
+    public boolean canCloseUI() {
+        // We can prevent ui closure if needed.
+        // Maybe during plugin installs?
+        // TODO
         return true;
     }
 

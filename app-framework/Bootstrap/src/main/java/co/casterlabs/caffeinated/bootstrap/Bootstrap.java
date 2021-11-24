@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
@@ -34,13 +35,14 @@ public class Bootstrap implements Runnable {
     }, description = "Enables Trace Logging.")
     private boolean enableTraceLogging;
 
-    private static FastLogger logger = new FastLogger();
+    private static FastLogger logger;
 
     private static @Getter BuildInfo buildInfo;
     private static @Getter boolean isDev = true;
-    private static @Getter CaffeinatedApp app;
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        System.out.println(" > System.out.println(\"Hello World!\");\nHello World!\n\n");
+
         ConsoleUtil.getPlatform(); // Init ConsoleUtil.
         new CommandLine(new Bootstrap()).execute(args); // Calls #run()
     }
@@ -56,11 +58,16 @@ public class Bootstrap implements Runnable {
             FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
         }
 
-        app = new CaffeinatedApp(buildInfo, isDev);
+        // Initialize it down here so it gets the default log level.
+        logger = new FastLogger();
 
         buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
 
-        System.out.println(" > System.out.println(\"Hello World!\");\nHello World!\n\n");
+        this.startApp();
+    }
+
+    private void startApp() {
+        CaffeinatedApp app = new CaffeinatedApp(buildInfo, isDev);
 
         logger.info("Entry                        | Value", buildInfo.getVersionString());
         logger.info("-----------------------------+-------------------------");
@@ -70,6 +77,8 @@ public class Bootstrap implements Runnable {
         logger.info("bootstrap.isDev              | %b", isDev);
 
         logger.info("Initializing CEF (it may take some time to download the natives)");
+
+        Bootstrap _inst = this;
 
         ApplicationUI.initialize(
             isDev ? this.devAddress : "app://index",
@@ -81,29 +90,34 @@ public class Bootstrap implements Runnable {
 
                     // This is the real meat and potatoes.
                     app.setBridge(ApplicationUI.getBridge());
-
                     ApplicationUI.getBridge().setOnEvent((t, d) -> onBridgeEvent(t, d));
+
+                    app.init();
+
+                    TrayHandler.tryCreateTray(_inst);
                 }
 
                 @Override
                 public void onInitialLoad() {
                     logger.debug("onInitialLoad");
-
-                    app.init();
                 }
 
                 @Override
-                public boolean onCloseAttempt() {
-                    logger.debug("onCloseAttempt");
+                public boolean onUICloseAttempt() {
+                    logger.debug("onUICloseAttempt");
 
-                    // If CLOSING
-                    if (app.canShutdown()) {
-                        new AsyncTask(() -> app.shutdown());
-
+                    if (app.canCloseUI()) {
+                        new AsyncTask(() -> ApplicationUI.closeWindow());
                         return true;
                     } else {
+                        new AsyncTask(() -> ApplicationUI.focusAndBeep());
                         return false;
                     }
+                }
+
+                @Override
+                public void onWindowOpen() {
+                    logger.debug("onWindowOpen");
                 }
 
                 @Override
@@ -118,7 +132,21 @@ public class Bootstrap implements Runnable {
     @SneakyThrows
     private void onBridgeEvent(String type, JsonObject data) {
         // Pass it to the app.
-        app.onBridgeEvent(type, data);
+        CaffeinatedApp.getInstance().onBridgeEvent(type, data);
+    }
+
+    public void shutdown() {
+        if (CaffeinatedApp.getInstance().canCloseUI()) {
+            new AsyncTask(() -> {
+                logger.info("Shutting down.");
+                TrayHandler.destroy();
+                ApplicationUI.getWindow().dispose();
+                CaffeinatedApp.getInstance().shutdown();
+                FastLoggingFramework.close(); // Faster shutdown.
+            });
+        } else {
+            ApplicationUI.focusAndBeep();
+        }
     }
 
 }

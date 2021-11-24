@@ -1,76 +1,123 @@
 package co.casterlabs.caffeinated.bootstrap.tray;
 
 import java.awt.AWTException;
+import java.awt.CheckboxMenuItem;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
+import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
+import lombok.NonNull;
 
 public class TrayHandler {
+    private static Bootstrap bootstrap;
+    private static CheckboxMenuItem showCheckbox;
+    private static SystemTray tray;
 
-    // TODO integrate with the rest of the app.
-    @SuppressWarnings("unused")
-    private static void tryCreateTray() {
-        // Check the SystemTray support
-        if (!SystemTray.isSupported()) {
-            return;
+    private static TrayIcon lastIcon;
+
+    public static void tryCreateTray(@NonNull Bootstrap bootstrap) {
+        if (TrayHandler.bootstrap == null) {
+            TrayHandler.bootstrap = bootstrap;
+
+            // Check the SystemTray support
+            if (!SystemTray.isSupported()) {
+                return;
+            }
+
+            tray = SystemTray.getSystemTray();
+            changeTrayIcon(CaffeinatedApp.getInstance().getUiPreferences().get().getIcon());
+
+            CaffeinatedApp.getInstance().getUiPreferences().addSaveListener((PreferenceFile<UIPreferences> uiPreferences) -> {
+                changeTrayIcon(uiPreferences.get().getIcon());
+            });
+
+            // Remove the icon on shutdown.
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        tray.remove(lastIcon);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else {
+            throw new IllegalStateException("Tray handler is already initialized.");
         }
+    }
 
+    public static void updateShowCheckbox(boolean newState) {
+        if (showCheckbox != null) {
+            showCheckbox.setState(newState);
+        }
+    }
+
+    private static void changeTrayIcon(String icon) {
+        // We recreate the pop up menu because..... idk
         PopupMenu popup = new PopupMenu();
-        SystemTray tray = SystemTray.getSystemTray();
-        changeTrayIcon(Bootstrap.getApp().getUiPreferences().get().getIcon(), popup, tray);
 
         // Create a popup menu components
-        MenuItem itemShow = new MenuItem("Show");
+        showCheckbox = new CheckboxMenuItem("Show");
         MenuItem itemExit = new MenuItem("Exit");
 
+        showCheckbox.setState(ApplicationUI.isOpen());
+
         // Add components to popup menu
-        popup.add(itemShow);
+        popup.add(showCheckbox);
         popup.addSeparator();
         popup.add(itemExit);
 
-        Bootstrap.getApp().getUiPreferences().addSaveListener((PreferenceFile<UIPreferences> uiPreferences) -> {
-            changeTrayIcon(uiPreferences.get().getIcon(), popup, tray);
-        });
-
-        itemShow.addActionListener((ActionEvent e) -> {
-            ApplicationUI.show();
-        });
-
-        itemExit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+        showCheckbox.addItemListener((ItemEvent e) -> {
+            if (ApplicationUI.isOpen()) {
+                ApplicationUI.closeWindow();
+            } else {
+                ApplicationUI.showWindow();
             }
         });
-    }
 
-    private static void changeTrayIcon(String icon, PopupMenu popup, SystemTray tray) {
+        itemExit.addActionListener((ActionEvent e) -> {
+            bootstrap.shutdown();
+        });
+
+        // Setup the tray icon.
         TrayIcon trayIcon = new TrayIcon(createImage(String.format("assets/logo/%s.png", icon), "Casterlabs Logo"));
 
         trayIcon.setImageAutoSize(true);
         trayIcon.setPopupMenu(popup);
 
-        try {
-            tray.add(trayIcon);
-        } catch (AWTException e) {}
-
         trayIcon.addActionListener((ActionEvent e) -> {
-            ApplicationUI.show();
+            ApplicationUI.showWindow();
         });
 
+        try {
+            // The ole' switch'aroo
+            tray.add(trayIcon);
+            tray.remove(lastIcon);
+            lastIcon = trayIcon;
+        } catch (AWTException e) {}
+    }
+
+    public static void notify(@NonNull String message, @NonNull MessageType type) {
+        lastIcon.displayMessage("Casterlabs Caffeinated", message, type);
+    }
+
+    public static void destroy() {
+        tray.remove(lastIcon);
     }
 
     private static Image createImage(String path, String description) {

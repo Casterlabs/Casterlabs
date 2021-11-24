@@ -9,7 +9,9 @@ public interface UILifeCycleListener {
     /**
      * @return true to close the window, false to cancel.
      */
-    public boolean onCloseAttempt();
+    public boolean onUICloseAttempt();
+
+    public void onWindowOpen();
 
     public void onTrayMinimize();
 

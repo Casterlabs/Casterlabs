@@ -14,13 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
+import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.preferences.WindowPreferences;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
-import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import lombok.Getter;
-import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
@@ -30,8 +29,6 @@ public class ApplicationWindow {
     private JPanel cefPanel;
     private UILifeCycleListener listener;
 
-    private boolean disposed = false;
-
     static {
         LafManager.setupLAF();
     }
@@ -40,7 +37,7 @@ public class ApplicationWindow {
         this.listener = listener;
         this.frame = new JFrame();
 
-        PreferenceFile<WindowPreferences> preferenceFile = Bootstrap.getApp().getWindowPreferences();
+        PreferenceFile<WindowPreferences> preferenceFile = CaffeinatedApp.getInstance().getWindowPreferences();
         WindowPreferences windowPreferences = preferenceFile.get();
 
         Timer saveTimer = new Timer(500, (e) -> {
@@ -58,7 +55,7 @@ public class ApplicationWindow {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                tryClose();
+                listener.onUICloseAttempt();
             }
         });
 
@@ -85,8 +82,8 @@ public class ApplicationWindow {
 
         this.frame.setLayout(new BorderLayout(0, 0));
 
-        this.updateAppIcon(Bootstrap.getApp().getUiPreferences());
-        Bootstrap.getApp().getUiPreferences().addSaveListener(this::updateAppIcon);
+        this.updateAppIcon(CaffeinatedApp.getInstance().getUiPreferences());
+        CaffeinatedApp.getInstance().getUiPreferences().addSaveListener(this::updateAppIcon);
 
         this.frame.setSize(windowPreferences.getWidth(), windowPreferences.getHeight());
         this.frame.setLocation(windowPreferences.getX(), windowPreferences.getY());
@@ -115,15 +112,8 @@ public class ApplicationWindow {
         }
     }
 
-    public void tryClose() {
-        new Thread(() -> {
-            if (!this.disposed && this.listener.onCloseAttempt()) {
-                this.disposed = true;
-                this.frame.dispose();
-                ApplicationUI.getDevtools().destroy();
-                FastLoggingFramework.close(); // Faster shutdown.
-            }
-        }).start();
+    public void dispose() {
+        this.frame.dispose();
     }
 
 }

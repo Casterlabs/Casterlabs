@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 
 import org.cef.CefApp;
 import org.cef.CefApp.CefAppState;
-import org.cef.CefClient;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.callback.CefCommandLine;
@@ -29,14 +28,15 @@ import co.casterlabs.caffeinated.bootstrap.cef.scheme.SchemeHandler;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpRequest;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpResponse;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.StandardHttpStatus;
+import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import xyz.e3ndr.consoleutil.ConsoleUtil;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class ApplicationUI {
-
     private static UILifeCycleListener lifeCycleListener = null;
 
     private static @Getter JavascriptBridge bridge;
@@ -45,7 +45,9 @@ public class ApplicationUI {
 
     private static @Getter String appAddress;
     private static CefBrowser browser;
-    private static CefClient client;
+    private static PandomiumClient pandaClient;
+
+    private static @Getter boolean open = false;
 
     private static FastLogger logger = new FastLogger();
 
@@ -56,13 +58,12 @@ public class ApplicationUI {
         registerSchemes();
 
         Pandomium panda = CefUtil.createCefApp();
-        PandomiumClient pandaClient = panda.createClient();
+        pandaClient = panda.createClient();
 
         window = new ApplicationWindow(listener);
-        client = pandaClient.getCefClient();
-        bridge = new JavascriptBridge(client);
+        bridge = new JavascriptBridge(pandaClient.getCefClient());
 
-        client.addContextMenuHandler(new CefContextMenuHandler() {
+        pandaClient.getCefClient().addContextMenuHandler(new CefContextMenuHandler() {
             // ID | Name
             // ---+-------------------------
             // 01 | Inspect Element
@@ -105,7 +106,7 @@ public class ApplicationUI {
 
         logger.debug("Loadstate 0");
         lifeCycleListener.onPreLoad();
-        client.addLoadHandler(new CefLoadHandlerAdapter() {
+        pandaClient.getCefClient().addLoadHandler(new CefLoadHandlerAdapter() {
             // 0 = about:blank (preload)
             // 1 = app://index (load)
             // 2 = ... (completely loaded)
@@ -131,13 +132,7 @@ public class ApplicationUI {
 
         });
 
-        browser = pandaClient.loadURL(appAddress);
-        window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
-
-        // CEF needs to be visible in order to load the page.
-        window.getFrame().setVisible(true);
-
-        client.addLifeSpanHandler(new CefLifeSpanHandler() {
+        pandaClient.getCefClient().addLifeSpanHandler(new CefLifeSpanHandler() {
 
             @Override
             public boolean doClose(CefBrowser var1) {
@@ -165,6 +160,45 @@ public class ApplicationUI {
         });
 
         setTitle(null);
+        showWindow();
+    }
+
+    public static void showWindow() {
+        if (browser == null) {
+            // Create browser
+            browser = pandaClient.loadURL(appAddress);
+            window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
+
+            // CEF needs to be visible in order to load the page.
+            window.getFrame().setVisible(true);
+
+            // Update state
+            open = true;
+            TrayHandler.updateShowCheckbox(true);
+
+            // Notify
+            lifeCycleListener.onWindowOpen();
+        }
+    }
+
+    public static void closeWindow() {
+        if (browser != null) {
+            // Remove the frame
+            window.getFrame().setVisible(false);
+            window.getCefPanel().removeAll();
+
+            // Close the browser
+            ApplicationUI.getDevtools().close();
+            browser.close(false);
+            browser = null;
+
+            // Update state.
+            open = false;
+            TrayHandler.updateShowCheckbox(false);
+
+            // Notify
+            lifeCycleListener.onTrayMinimize();
+        }
     }
 
     public static void registerSchemes() {
@@ -214,10 +248,6 @@ public class ApplicationUI {
         });
     }
 
-    public static void show() {
-        window.getFrame().setVisible(true);
-    }
-
     public static void setTitle(@Nullable String title) {
         if (title == null) {
             title = "Casterlabs Caffeinated";
@@ -239,6 +269,11 @@ public class ApplicationUI {
             return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content).setMimeType("text/html");
         }
 
+    }
+
+    public static void focusAndBeep() {
+        window.getFrame().toFront();
+        ConsoleUtil.bell();
     }
 
 }

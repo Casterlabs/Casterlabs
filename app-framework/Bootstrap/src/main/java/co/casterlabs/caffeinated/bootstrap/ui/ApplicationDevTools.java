@@ -31,7 +31,7 @@ public class ApplicationDevTools {
             this.frame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    destroy();
+                    close();
                 }
             });
 
@@ -46,7 +46,7 @@ public class ApplicationDevTools {
         }
     }
 
-    public void destroy() {
+    public void close() {
         if (this.isOpen()) {
             this.frame.dispose();
             this.devtools.close(false);
@@ -57,7 +57,7 @@ public class ApplicationDevTools {
 
     public void toggle() {
         if (this.isOpen()) {
-            this.destroy();
+            this.close();
         } else {
             this.summon();
         }

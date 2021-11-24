@@ -75,6 +75,8 @@ public class CefUtil {
                     LogLevel level = channelToLevel(channel);
                     if ((level == LogLevel.WARNING) || (level == LogLevel.SEVERE)) {
                         pandaLogger.log(level, LoggingUtil.parseFormat(message, arguments));
+                    } else {
+                        pandaLogger.log(LogLevel.DEBUG, LoggingUtil.parseFormat(message, arguments));
                     }
                     return this;
                 }

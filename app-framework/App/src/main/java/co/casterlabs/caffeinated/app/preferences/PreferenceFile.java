@@ -22,7 +22,7 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @Getter
 public class PreferenceFile<T> {
-    private static final String userDataDir;
+    public static final String userDataDir;
 
     private FastLogger logger;
     private Class<T> clazz;
