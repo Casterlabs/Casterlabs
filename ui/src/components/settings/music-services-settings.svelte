@@ -17,7 +17,7 @@
     }
 
     onDestroy(() => {
-        eventHandler.destroy();
+        eventHandler?.destroy();
     });
 
     onMount(async () => {
