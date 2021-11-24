@@ -12,6 +12,7 @@
 		<module>App</module>
 		<module>Util</module>
 		<module>PluginSDK</module>
+		<module>Koi</module>
 	</modules>
 
 	<properties>
