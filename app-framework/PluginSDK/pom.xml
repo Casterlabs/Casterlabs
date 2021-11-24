@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>App</artifactId>
+	<artifactId>PluginSDK</artifactId>
 
 	<parent>
 		<groupId>co.casterlabs</groupId>
@@ -42,49 +42,25 @@
 			<version>19.0.0</version>
 			<scope>provided</scope>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>co.casterlabs</groupId>
 			<artifactId>Util</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>
+		
+		<!-- Utilities -->
 		<dependency>
-			<groupId>co.casterlabs</groupId>
-			<artifactId>PluginSDK</artifactId>
-			<version>${project.parent.version}</version>
+			<groupId>com.github.e3ndr</groupId>
+			<artifactId>ReflectionLib</artifactId>
+			<version>1.0.0</version>
 			<scope>compile</scope>
 		</dependency>
-
-		<!-- Utility packages -->
 		<dependency>
 			<groupId>com.github.casterlabs.rakurai</groupId>
 			<artifactId>Json</artifactId>
 			<version>1.9.0-HOTFIX</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.java-websocket</groupId>
-			<artifactId>Java-WebSocket</artifactId>
-			<version>1.5.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.Casterlabs</groupId>
-			<artifactId>KoiApi</artifactId>
-			<version>2.4.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.harawata</groupId>
-			<artifactId>appdirs</artifactId>
-			<version>1.2.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.e3ndr</groupId>
-			<artifactId>EventApi</artifactId>
-			<version>1.2.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

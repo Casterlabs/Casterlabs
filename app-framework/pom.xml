@@ -11,6 +11,7 @@
 		<module>Bootstrap</module>
 		<module>App</module>
 		<module>Util</module>
+		<module>PluginSDK</module>
 	</modules>
 
 	<properties>
