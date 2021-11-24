@@ -36,7 +36,7 @@
 				</executions>
 				<configuration>
 					<shadedArtifactAttached>true</shadedArtifactAttached>
-					<finalName>Sora</finalName>
+					<finalName>caffeinated</finalName>
 					<transformers>
 						<transformer
 							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">

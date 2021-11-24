@@ -12,5 +12,5 @@
 target/
 plugins/
 natives/
-src/main/resources/app
+Bootstrap/src/main/resources/app
 debug.log
