@@ -11,6 +11,7 @@ import org.cef.handler.CefMessageRouterHandlerAdapter;
 
 import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
+import co.casterlabs.caffeinated.util.DualConsumer;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
 import co.casterlabs.rakurai.json.Rson;
