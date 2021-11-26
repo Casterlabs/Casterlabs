@@ -5,7 +5,7 @@ import co.casterlabs.caffeinated.pluginsdk.PluginImplementation;
 import lombok.NonNull;
 
 @PluginImplementation
-public class ChatWidget extends CaffeinatedPlugin {
+public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
 
     @Override
     public void onInit() {
