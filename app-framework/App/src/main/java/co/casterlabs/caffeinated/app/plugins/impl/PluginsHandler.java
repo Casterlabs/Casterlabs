@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugins;
-import co.casterlabs.caffeinated.pluginsdk.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
+import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.util.Producer;
 import co.casterlabs.caffeinated.util.Triple;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
@@ -29,6 +29,10 @@ public class PluginsHandler implements CaffeinatedPlugins {
     private Map<String, CaffeinatedPlugin> plugins = new HashMap<>();
     private Map<String, Triple<CaffeinatedPlugin, Producer<Widget>, WidgetDetails>> widgetFactories = new HashMap<>();
     private Map<String, Widget> widgets = new HashMap<>();
+
+    public List<CaffeinatedPlugin> getPlugins() {
+        return new ArrayList<>(this.plugins.values());
+    }
 
     public List<Widget> getWidgets() {
         return new ArrayList<>(this.widgets.values());
@@ -115,7 +119,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
     public CaffeinatedPlugins registerWidgetFactory(@NonNull CaffeinatedPlugin plugin, @NonNull WidgetDetails widgetDetails, @NonNull Producer<Widget> widgetProducer) {
         widgetDetails.validate();
 
-        assert this.widgetFactories.containsKey(widgetDetails.getNamespace()) : "A widget of that namespace is already registered.";
+        assert !this.widgetFactories.containsKey(widgetDetails.getNamespace()) : "A widget of that namespace is already registered.";
 
         List<String> pluginWidgetNamespacesField = ReflectionLib.getValue(plugin, "widgetNamespaces");
 

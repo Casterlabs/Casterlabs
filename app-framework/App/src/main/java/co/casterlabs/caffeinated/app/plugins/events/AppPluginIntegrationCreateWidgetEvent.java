@@ -12,7 +12,7 @@ public class AppPluginIntegrationCreateWidgetEvent extends AbstractCancellableEv
     private String name;
 
     public AppPluginIntegrationCreateWidgetEvent() {
-        super(AppPluginIntegrationEventType.WIDGET_CREATE);
+        super(AppPluginIntegrationEventType.CREATE_WIDGET);
     }
 
     @JsonValidate

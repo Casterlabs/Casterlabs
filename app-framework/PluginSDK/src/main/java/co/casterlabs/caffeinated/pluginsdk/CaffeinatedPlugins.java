@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
+import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.util.Producer;
 import lombok.NonNull;
 

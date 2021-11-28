@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.util.Reflective;
+import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
@@ -28,6 +29,18 @@ public abstract class CaffeinatedPlugin implements Closeable {
 
     private @Reflective List<String> widgetNamespaces = new LinkedList<>();
     private @Reflective List<Widget> widgets = new LinkedList<>();
+
+    /**
+     * @deprecated This is used internally.
+     */
+    @Deprecated
+    public final JsonObject toJson() {
+        return new JsonObject()
+            .put("version", this.getVersion())
+            .put("author", this.getAuthor())
+            .put("name", this.getName())
+            .put("id", this.getId());
+    }
 
     /* ---------------- */
     /* Overrides        */

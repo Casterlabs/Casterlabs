@@ -28,7 +28,8 @@ public abstract class Widget {
         return new JsonObject()
             .put("namespace", this.namespace)
             .put("id", this.id)
-            .put("id", this.id)
+            .put("name", this.name)
+            .put("owner", this.plugin.getId())
             .put("settingsLayout", Rson.DEFAULT.toJson(this.settingsLayout))
             .put("settings", this.getSettings());
     }
@@ -48,7 +49,7 @@ public abstract class Widget {
 
     public void onNameUpdate() {}
 
-    public abstract void onSettingsUpdate();
+    public void onSettingsUpdate() {}
 
     /* ---------------- */
     /* Mutators         */
@@ -71,7 +72,11 @@ public abstract class Widget {
     public final JsonObject getSettings() {
         // Convert to string and then reparse as object,
         // Basically one JANKY clone.
-        return Rson.DEFAULT.fromJson(this.settings.toString(), JsonObject.class);
+        if (this.settings == null) {
+            return new JsonObject();
+        } else {
+            return Rson.DEFAULT.fromJson(this.settings.toString(), JsonObject.class);
+        }
     }
 
     public final String getNamespace() {

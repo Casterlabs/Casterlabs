@@ -1,18 +1,28 @@
-package co.casterlabs.caffeinated.pluginsdk;
+package co.casterlabs.caffeinated.pluginsdk.widgets;
 
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.rakurai.json.annotating.JsonClass;
-import lombok.NonNull;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.With;
 
+/**
+ * See {@link https://feathericons.com/} for icons.
+ */
 @Value
+@AllArgsConstructor
 @JsonClass(exposeAll = true)
 public class WidgetDetails {
-    private @With @NonNull String namespace;
+    private @With String namespace;
     private @With @Nullable String icon;
-    private @With @NonNull String friendlyName;
+    private @With String friendlyName;
+
+    public WidgetDetails() {
+        this.namespace = null;
+        this.icon = null;
+        this.friendlyName = null;
+    }
 
     public void validate() {
         assert this.namespace != null : "Namespace cannot be null";

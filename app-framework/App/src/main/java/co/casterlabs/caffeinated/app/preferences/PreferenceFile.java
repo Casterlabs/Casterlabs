@@ -70,6 +70,7 @@ public class PreferenceFile<T> {
             }
         } catch (JsonParseException e) {
             this.logger.warn("Unable to parse preferences file, overwriting with defaults.");
+            this.logger.warn(e);
             this.save();
         } catch (IOException e) {
             this.logger.severe("Unable to read preferences file: %s", e);
