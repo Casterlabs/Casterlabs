@@ -102,7 +102,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
         } else {
             this.plugins.put(id, plugin);
 
-            logger.info("Loaded plugin %s:%s (%s)", plugin.getName(), plugin.getAuthor(), id);
+            logger.info("Loaded plugin %s (%s)", plugin.getName(), id);
 
             plugin.onInit();
         }
@@ -123,7 +123,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
                 }
             } catch (Throwable ignored) {}
 
-            logger.info("Unloaded plugin %s:%s (%s)", plugin.getName(), plugin.getAuthor(), id);
+            logger.info("Unloaded plugin %s (%s)", plugin.getName(), id);
 
             // Important for the GC sweep to remove the class loader.
             plugin = null;

@@ -10,10 +10,10 @@ import lombok.ToString;
 @ToString
 @JsonClass(exposeAll = true)
 public abstract class Event {
-    public User streamer;
+    protected User streamer;
 
     @JsonField("event_abilities")
-    public EventAbilities abilities;
+    protected EventAbilities abilities;
 
     public abstract EventType getType();
 
