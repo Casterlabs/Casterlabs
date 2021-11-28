@@ -10,7 +10,6 @@
 
 # Common
 target/
-plugins/
 natives/
 Bootstrap/src/main/resources/app
 debug.log
