@@ -12,6 +12,24 @@
     });
 
     let widget = null;
+    let nameEditorTextContent;
+
+    function editName() {
+        Bridge.emit("plugin:rename-widget", { id: widget.id, newName: nameEditorTextContent });
+    }
+
+    function deleteWidget() {
+        Bridge.emit("plugin:delete-widget", { id: widget.id });
+    }
+
+    function fixEditableDiv(elem) {
+        elem.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                elem.blur();
+            }
+        });
+    }
 
     // Holy shit this is so ugly.
     // For some reason svelte won't always render the component properly.
@@ -38,6 +56,7 @@
 
         console.log(widget);
 
+        nameEditorTextContent = widget.name;
         widgetSections = widget.settingsLayout?.sections || [];
         currentWidgetSection = widgetSections[0];
     });
@@ -45,9 +64,34 @@
 
 {#if widget}
     <div class="has-text-centered">
-        <h1 class="title is-5" style="padding-top: 10px; padding-bottom: 10px;">
-            {widget.name}
-        </h1>
+        <div style="margin-top: 2px; margin-bottom: .5em;">
+            <div class="widget-controls">
+                <div contenteditable="true" class="title is-5 is-inline-block cursor-edit" bind:textContent={nameEditorTextContent} on:blur={editName} use:fixEditableDiv />
+
+                <div class="buttons is-inline-block are-small">
+                    <button on:click={deleteWidget} class="button show-on-hover is-danger is-outlined">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-trash-2"
+                            ><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><line
+                                x1="10"
+                                y1="11"
+                                x2="10"
+                                y2="17"
+                            /><line x1="14" y1="11" x2="14" y2="17" /></svg
+                        >
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <div class="tabs">
             <!-- svelte-ignore a11y-missing-attribute -->
@@ -70,7 +114,7 @@
             </ul>
         </div>
 
-        <div class="allow-select has-text-left">
+        <div class="widget-settings allow-select has-text-left">
             {#if !blanking}
                 {#each currentWidgetSection.items as widgetSettingsOption}
                     <div class="columns">
@@ -86,5 +130,68 @@
                 {/each}
             {/if}
         </div>
+
+        <button class="button back-button" onclick="history.back();">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg
+            >
+        </button>
     </div>
 {/if}
+
+<style>
+    .widget-settings {
+        position: absolute;
+        top: 125px;
+        bottom: 4.25em;
+        left: 3.5em;
+        right: 3.5em;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .back-button {
+        position: absolute;
+        bottom: 2em;
+        left: 2em;
+    }
+
+    .show-on-hover {
+        visibility: hidden;
+    }
+
+    .widget-controls:hover .show-on-hover {
+        visibility: visible;
+    }
+
+    .widget-controls {
+        position: relative;
+        width: fit-content;
+        margin: auto;
+        height: 3.5em;
+        line-height: 3.5em;
+    }
+
+    .widget-controls .title {
+        padding-bottom: 0;
+    }
+
+    .widget-controls .buttons {
+        position: absolute;
+        right: -10px;
+        transform: translate(100%, 20%);
+    }
+
+    .widget-controls .buttons .button {
+        margin: auto;
+    }
+</style>

@@ -9,7 +9,9 @@ import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences.WidgetSettingsDetails;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCreateWidgetEvent;
+import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationDeleteWidgetEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationEventType;
+import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationRenameWidgetEvent;
 import co.casterlabs.caffeinated.app.plugins.impl.PluginsHandler;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
@@ -20,10 +22,12 @@ import co.casterlabs.rakurai.json.element.JsonArray;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import xyz.e3ndr.eventapi.EventHandler;
 import xyz.e3ndr.eventapi.listeners.EventListener;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @Getter
 public class PluginIntegration {
@@ -79,6 +83,26 @@ public class PluginIntegration {
 
         this.save();
         CaffeinatedApp.getInstance().getUI().navigate("/pages/edit-widget?widget=" + widget.getId());
+    }
+
+    @SneakyThrows
+    @EventListener
+    public void onPluginIntegrationRenameWidgetEvent(AppPluginIntegrationRenameWidgetEvent event) {
+        Widget widget = this.plugins.getWidget(event.getId());
+
+        ReflectionLib.setValue(widget, "name", event.getNewName());
+        this.save();
+
+        widget.onNameUpdate();
+    }
+
+    @EventListener
+    public void onPluginIntegrationDeleteCreateWidgetEvent(AppPluginIntegrationDeleteWidgetEvent event) {
+        this.plugins.destroyWidget(event.getId());
+
+        this.save();
+
+        CaffeinatedApp.getInstance().getUI().goBack();
     }
 
     @SuppressWarnings("deprecation")

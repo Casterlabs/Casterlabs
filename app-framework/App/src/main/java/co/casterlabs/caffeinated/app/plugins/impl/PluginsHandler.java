@@ -39,6 +39,10 @@ public class PluginsHandler implements CaffeinatedPlugins {
         return new ArrayList<>(this.widgets.values());
     }
 
+    public Widget getWidget(@NonNull String id) {
+        return this.widgets.get(id);
+    }
+
     public List<WidgetDetails> getCreatableWidgets() {
         List<WidgetDetails> details = new LinkedList<>();
 
@@ -85,7 +89,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
 
     @SneakyThrows
     public void destroyWidget(@NonNull String id) {
-        Widget widget = this.widgets.get(id);
+        Widget widget = this.widgets.remove(id);
 
         assert widget != null : "That widget is not registered.";
 

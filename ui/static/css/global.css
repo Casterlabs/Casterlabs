@@ -29,6 +29,16 @@ html {
 	background-color: var(--background-color) !important;
 }
 
+/* Cursors */
+
+.cursor-edit {
+	cursor: url(/cursors/edit-dark.svg) 0 16, auto;
+}
+
+.bulma-dark-mode .cursor-edit {
+	cursor: url(/cursors/edit-light.svg) 0 16, auto;
+}
+
 /* Helpers */
 
 .no-select {

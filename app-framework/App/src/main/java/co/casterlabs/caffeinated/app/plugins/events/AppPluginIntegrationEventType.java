@@ -4,7 +4,9 @@ import lombok.Getter;
 import xyz.e3ndr.eventapi.events.AbstractEvent;
 
 public enum AppPluginIntegrationEventType {
-    CREATE_WIDGET(AppPluginIntegrationCreateWidgetEvent.class);
+    CREATE_WIDGET(AppPluginIntegrationCreateWidgetEvent.class),
+    RENAME_WIDGET(AppPluginIntegrationRenameWidgetEvent.class),
+    DELETE_WIDGET(AppPluginIntegrationDeleteWidgetEvent.class);
 
     private @Getter Class<AbstractEvent<AppPluginIntegrationEventType>> eventClass;
 
