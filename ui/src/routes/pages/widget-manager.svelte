@@ -2,9 +2,7 @@
     import CreationDropdownCategory from "../../components/widget-manager/creation-dropdown-category.svelte";
     import { setPageProperties } from "../__layout.svelte";
 
-    import { onDestroy, onMount } from "svelte";
-
-    let eventHandler;
+    import { onMount } from "svelte";
 
     setPageProperties({
         showSideBar: true,
@@ -58,13 +56,7 @@
         feather.replace();
     }
 
-    onDestroy(() => {
-        eventHandler?.destroy();
-    });
-
     onMount(async () => {
-        eventHandler = Bridge.createThrowawayEventHandler();
-        eventHandler.on("plugins:update", render);
         render((await Bridge.query("plugins")).data);
     });
 </script>
@@ -74,7 +66,7 @@
     <div id="all-widgets">
         {#each widgets as widget}
             <a class="button widget-tile" href="/pages/edit-widget?widget={widget.id}" title={widget.name}>
-                <i data-feather={widget.details.icon} aria-hidden="true" />
+                <i data-feather={widget.details.icon || DEFAULT_MODULE_ICON} aria-hidden="true" />
                 <p>
                     {widget.name}
                 </p>
