@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
+import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugins;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
@@ -65,6 +66,10 @@ public class PluginsHandler implements CaffeinatedPlugins {
         ReflectionLib.setValue(widget, "id", id);
         ReflectionLib.setValue(widget, "name", name);
         ReflectionLib.setValue(widget, "plugin", factory.a);
+        ReflectionLib.setValue(widget, "details", factory.c);
+        ReflectionLib.setValue(widget, "pokeOutside", (Runnable) (() -> {
+            CaffeinatedApp.getInstance().getPlugins().updateBridgeData();
+        }));
 
         // Register it, update it, and return it.
         this.widgets.put(widget.getId(), widget);

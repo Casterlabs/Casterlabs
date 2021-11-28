@@ -2,7 +2,9 @@
     import CreationDropdownCategory from "../../components/widget-manager/creation-dropdown-category.svelte";
     import { setPageProperties } from "../__layout.svelte";
 
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
+
+    let eventHandler;
 
     setPageProperties({
         showSideBar: true,
@@ -22,7 +24,7 @@
 
     let widgets = [];
 
-    async function renderCreationDisplay() {
+    async function renderCreationDisplay(creatableWidgets) {
         let _widgetCategories = {
             alerts: [],
             labels: [],
@@ -32,13 +34,11 @@
         };
 
         // We rely on the global Modules instance
-        for (const dynamicHolder of Object.values(Modules.getDynamicModuleHolders())) {
-            const { declaration } = dynamicHolder;
-
-            (_widgetCategories[declaration.category] || _widgetCategories.other).push({
-                name: declaration.label,
+        for (const createable of creatableWidgets) {
+            _widgetCategories[createable.category.toLowerCase()].push({
+                name: createable.friendlyName,
                 create: () => {
-                    dynamicHolder.create("New Widget");
+                    Bridge.emit("plugin:create-widget", { namespace: createable.namespace, name: "New Widget" });
                 }
             });
         }
@@ -47,22 +47,25 @@
         widgetCategories = _widgetCategories;
     }
 
-    function renderWidgetTiles() {
-        const staticModules = Object.values(Modules.getStaticModules());
-        const dynamicModules = Object.values(Modules.getDynamicModules());
-
-        widgets = [...staticModules, ...dynamicModules];
+    function renderWidgetTiles(loadedWidgets) {
+        widgets = Object.values(loadedWidgets);
     }
 
-    async function render() {
-        await renderCreationDisplay();
-        renderWidgetTiles();
+    async function render(bridgeData) {
+        await renderCreationDisplay(bridgeData.creatableWidgets);
+        renderWidgetTiles(bridgeData.widgets);
 
         feather.replace();
     }
 
+    onDestroy(() => {
+        eventHandler?.destroy();
+    });
+
     onMount(async () => {
-        await render();
+        eventHandler = Bridge.createThrowawayEventHandler();
+        eventHandler.on("plugins:update", render);
+        render((await Bridge.query("plugins")).data);
     });
 </script>
 
@@ -70,8 +73,8 @@
     <!-- All widgets -->
     <div id="all-widgets">
         {#each widgets as widget}
-            <a class="button widget-tile" href="/pages/edit-widget?widget={widget.getFullId()}" title={widget.name}>
-                <i data-feather={widget.moduleDeclaration.icon} aria-hidden="true" />
+            <a class="button widget-tile" href="/pages/edit-widget?widget={widget.id}" title={widget.name}>
+                <i data-feather={widget.details.icon} aria-hidden="true" />
                 <p>
                     {widget.name}
                 </p>

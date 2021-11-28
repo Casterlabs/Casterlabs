@@ -1,8 +1,8 @@
 <script>
-    export let module;
-    export let itemDeclaration;
+    export let widget;
+    export let widgetSettingsOption;
 
-    export let checked = module.settings[itemDeclaration.name] ?? itemDeclaration.defaultValue;
+    export let checked = widget.settings[widgetSettingsOption.id] ?? widgetSettingsOption.extraData.defaultValue;
 
     import { createEventDispatcher } from "svelte";
 

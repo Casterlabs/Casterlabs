@@ -35,8 +35,6 @@ public class PluginIntegration {
         handler.register(this);
     }
 
-    /* await Bridge.query("plugins") */
-    /* Bridge.emit("plugin:create-widget", { namespace: "co.casterlabs.chat", name: "Chat" }); */
     public void init() {
         // Load the built-in widgets.
         this.plugins.loadPluginsFromClassLoader(this.getClass().getClassLoader());
@@ -90,9 +88,9 @@ public class PluginIntegration {
             widgets.put(widget.getId(), widget.toJson());
         }
 
-        JsonArray createableWidgets = new JsonArray();
+        JsonArray creatableWidgets = new JsonArray();
         for (WidgetDetails details : this.plugins.getCreatableWidgets()) {
-            createableWidgets.add(Rson.DEFAULT.toJson(details));
+            creatableWidgets.add(Rson.DEFAULT.toJson(details));
         }
 
         JsonArray loadedPlugins = new JsonArray();
@@ -102,7 +100,7 @@ public class PluginIntegration {
 
         JsonObject bridgeData = new JsonObject()
             .put("widgets", widgets)
-            .put("createableWidgets", createableWidgets)
+            .put("creatableWidgets", creatableWidgets)
             .put("loadedPlugins", loadedPlugins);
 
         AppBridge bridge = CaffeinatedApp.getInstance().getBridge();

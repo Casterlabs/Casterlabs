@@ -1,8 +1,8 @@
 <script>
-    export let module;
-    export let itemDeclaration;
+    export let widget;
+    export let widgetSettingsOption;
 
-    export let value = module.settings[itemDeclaration.name] ?? itemDeclaration.defaultValue;
+    export let value = widget.settings[widgetSettingsOption.id] ?? widgetSettingsOption.extraData.defaultValue;
 
     import { createEventDispatcher } from "svelte";
 
@@ -17,8 +17,8 @@
 
 <div class="select">
     <select bind:value on:blur={onChange}>
-        {#each Object.entries(itemDeclaration.options) as option}
-            <option value={option[0]}>{option[1]}</option>
+        {#each widgetSettingsOption.extraData.options as name}
+            <option>{name}</option>
         {/each}
     </select>
 </div>

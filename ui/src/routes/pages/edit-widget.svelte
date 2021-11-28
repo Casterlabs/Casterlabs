@@ -18,14 +18,14 @@
     // Sometimes it renders the component, but the data is not updated.
     let blanking = false;
 
-    let widgetCategories = [];
-    let currentWidgetCategory = null;
+    let widgetSections = [];
+    let currentWidgetSection = null;
 
     function switchCategory(category) {
         blanking = true;
 
         setTimeout(() => {
-            currentWidgetCategory = category;
+            currentWidgetSection = category;
             blanking = false;
         }, 50);
     }
@@ -33,10 +33,13 @@
     onMount(async () => {
         const widgetId = location.href.split("?widget=")[1];
 
-        widget = Modules.getDynamicModules()[widgetId] || Modules.getStaticModules()[widgetId];
+        const { widgets } = (await Bridge.query("plugins")).data;
+        widget = widgets[widgetId];
 
-        widgetCategories = widget.moduleDeclaration.settings;
-        currentWidgetCategory = widgetCategories[0];
+        console.log(widget);
+
+        widgetSections = widget.settingsLayout?.sections || [];
+        currentWidgetSection = widgetSections[0];
     });
 </script>
 
@@ -49,17 +52,17 @@
         <div class="tabs">
             <!-- svelte-ignore a11y-missing-attribute -->
             <ul style="justify-content: center !important;">
-                {#each widgetCategories as widgetCategory}
-                    {#if widgetCategory == currentWidgetCategory}
+                {#each widgetSections as widgetSection}
+                    {#if widgetSection == currentWidgetSection}
                         <li class="is-active">
                             <a>
-                                {widgetCategory.label}
+                                {widgetSection.name}
                             </a>
                         </li>
                     {:else}
                         <li>
-                            <a on:click={switchCategory(widgetCategory)}>
-                                {widgetCategory.label}
+                            <a on:click={switchCategory(widgetSection)}>
+                                {widgetSection.name}
                             </a>
                         </li>
                     {/if}
@@ -69,15 +72,15 @@
 
         <div class="allow-select has-text-left">
             {#if !blanking}
-                {#each currentWidgetCategory.items as widgetSettingsOption}
+                {#each currentWidgetSection.items as widgetSettingsOption}
                     <div class="columns">
                         <div class="column" style="max-width: 260px; min-width: 260px;">
                             <span class="has-text-weight-medium">
-                                {widgetSettingsOption.label}
+                                {widgetSettingsOption.name}
                             </span>
                         </div>
                         <div class="column">
-                            <FormElement module={widget} itemDeclaration={widgetSettingsOption} />
+                            <FormElement {widget} {widgetSettingsOption} />
                         </div>
                     </div>
                 {/each}

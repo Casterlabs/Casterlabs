@@ -1,8 +1,8 @@
 <script>
-    export let module;
-    export let itemDeclaration;
+    export let widget;
+    export let widgetSettingsOption;
 
-    export let value = module.settings[itemDeclaration.name] ?? itemDeclaration.defaultValue;
+    export let value = widget.settings[widgetSettingsOption.id] ?? widgetSettingsOption.extraData.defaultValue;
 
     import { createEventDispatcher } from "svelte";
 
@@ -21,4 +21,11 @@
     }
 </script>
 
-<textarea class="textarea" bind:value on:change={onChange} on:input={onInput} placeholder={itemDeclaration.placeholder} rows={itemDeclaration.rows || 4} />
+<textarea
+    class="textarea"
+    bind:value
+    on:change={onChange}
+    on:input={onInput}
+    placeholder={widgetSettingsOption.extraData.placeholder}
+    rows={widgetSettingsOption.extraData.rows || 4}
+/>

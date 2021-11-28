@@ -6,6 +6,7 @@ import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsLayout;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 
@@ -16,6 +17,9 @@ public abstract class Widget {
     private String id;
     private String name; // This is mutable by the end user.
     private CaffeinatedPlugin plugin;
+    private @Getter WidgetDetails details;
+
+    private Runnable pokeOutside;
 
     private @Nullable WidgetSettingsLayout settingsLayout;
     private @NonNull JsonObject settings;
@@ -30,6 +34,7 @@ public abstract class Widget {
             .put("id", this.id)
             .put("name", this.name)
             .put("owner", this.plugin.getId())
+            .put("details", Rson.DEFAULT.toJson(this.details))
             .put("settingsLayout", Rson.DEFAULT.toJson(this.settingsLayout))
             .put("settings", this.getSettings());
     }
@@ -56,7 +61,12 @@ public abstract class Widget {
     /* ---------------- */
 
     public final <T extends Widget> T setSettingsLayout(@NonNull WidgetSettingsLayout newSettingsLayout) {
-        // TODO pass to caffeinated:app
+        this.settingsLayout = newSettingsLayout;
+
+        if (this.pokeOutside != null) {
+            this.pokeOutside.run();
+        }
+
         return (T) this;
     }
 

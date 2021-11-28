@@ -1,8 +1,8 @@
 <script>
-    export let module;
-    export let itemDeclaration;
+    export let widget;
+    export let widgetSettingsOption;
 
-    export let value = module.settings[itemDeclaration.name] ?? itemDeclaration.defaultValue;
+    export let value = widget.settings[widgetSettingsOption.id] ?? widgetSettingsOption.extraData.defaultValue;
 
     import { createEventDispatcher } from "svelte";
 
@@ -21,4 +21,4 @@
     }
 </script>
 
-<input class="input" type="input" bind:value on:change={onChange} on:input={onInput} placeholder={itemDeclaration.placeholder} />
+<input class="input" type="input" bind:value on:change={onChange} on:input={onInput} placeholder={widgetSettingsOption.extraData.placeholder} />
