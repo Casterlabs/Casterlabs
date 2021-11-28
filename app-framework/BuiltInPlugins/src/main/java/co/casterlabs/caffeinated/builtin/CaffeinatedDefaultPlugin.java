@@ -4,6 +4,7 @@ import co.casterlabs.caffeinated.builtin.widgets.ChatWidget;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.PluginImplementation;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
+import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails.WidgetDetailsCategory;
 import lombok.NonNull;
 
 @PluginImplementation
@@ -18,6 +19,7 @@ public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
             new WidgetDetails()
                 .withNamespace("co.casterlabs.chat")
                 .withIcon("message-square")
+                .withCategory(WidgetDetailsCategory.INTERACTION)
                 .withFriendlyName("Chat Widget"),
             ChatWidget.class
         );
