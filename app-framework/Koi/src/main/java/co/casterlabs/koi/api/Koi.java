@@ -6,8 +6,8 @@ import java.net.URI;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
-import co.casterlabs.koi.api.listener.KoiEventListener;
 import co.casterlabs.koi.api.listener.EventUtil;
+import co.casterlabs.koi.api.listener.KoiEventListener;
 import co.casterlabs.koi.api.types.events.Event;
 import co.casterlabs.koi.api.types.events.EventType;
 import co.casterlabs.koi.api.types.user.UserPlatform;
@@ -17,6 +17,7 @@ import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class Koi implements Closeable {
     public static final String KOI_URL = "wss://api.casterlabs.co/v2/koi";
@@ -127,6 +128,10 @@ public class Koi implements Closeable {
                         listener.onServerMessage(packet.get("server").getAsString());
                         return;
 
+                    case "ERROR":
+                        listener.onError(packet.get("error").getAsString());
+                        return;
+
                     case "EVENT":
                         JsonObject eventJson = packet.getObject("event");
                         Event event = EventType.get(eventJson);
@@ -140,6 +145,7 @@ public class Koi implements Closeable {
                         return;
                 }
             } catch (Exception e) {
+                FastLogger.logStatic(LogLevel.SEVERE, raw);
                 listener.onException(e);
             }
         }
