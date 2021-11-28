@@ -14,19 +14,19 @@ import lombok.experimental.Accessors;
 @NonNull
 @Accessors(chain = true)
 @JsonClass(exposeAll = true)
-public class WidgetSettings {
+public class WidgetSettingsLayout {
     private List<WidgetSettingsSection> sections = new LinkedList<>();
 
     public List<WidgetSettingsSection> getSections() {
         return Collections.unmodifiableList(this.sections);
     }
 
-    public WidgetSettings setSections(@NonNull WidgetSettingsSection... section) {
+    public WidgetSettingsLayout setSections(@NonNull WidgetSettingsSection... section) {
         this.setSections(Arrays.asList(section));
         return this;
     }
 
-    public WidgetSettings setSections(@NonNull List<WidgetSettingsSection> sections) {
+    public WidgetSettingsLayout setSections(@NonNull List<WidgetSettingsSection> sections) {
         for (WidgetSettingsSection section : sections) {
             assert section == null : "NULL is not a valid WidgetSettingsSection.";
         }
@@ -35,12 +35,12 @@ public class WidgetSettings {
         return this;
     }
 
-    public WidgetSettings addSection(@NonNull WidgetSettingsSection section) {
+    public WidgetSettingsLayout addSection(@NonNull WidgetSettingsSection section) {
         this.sections.add(section);
         return this;
     }
 
-    public WidgetSettings removeSection(@NonNull WidgetSettingsSection section) {
+    public WidgetSettingsLayout removeSection(@NonNull WidgetSettingsSection section) {
         this.sections.remove(section);
         return this;
     }

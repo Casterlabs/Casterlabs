@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.util.async;
+package co.casterlabs.caffeinated.util;
 
 import org.jetbrains.annotations.Nullable;
 

@@ -8,7 +8,7 @@ import lombok.SneakyThrows;
 public class EventUtil {
 
     @SneakyThrows
-    public static void reflectInvoke(@NonNull KoiEventListener listener, @NonNull Object event) {
+    public static void reflectInvoke(@NonNull Object listener, @NonNull Object event) {
         for (Method method : listener.getClass().getMethods()) {
             if (method.isAnnotationPresent(EventHandler.class) &&
                 (method.getParameterCount() == 1) &&

@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
+import co.casterlabs.caffeinated.util.Producer;
 import lombok.Getter;
 import lombok.NonNull;
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 public class WidgetSettingsItem {
     private final String id;
     private final String name;
+    private final Object defaultValue;
     private final WidgetSettingsItemType type;
 
     public static enum WidgetSettingsItemType {

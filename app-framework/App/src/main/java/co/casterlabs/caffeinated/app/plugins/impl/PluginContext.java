@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.app.plugins;
+package co.casterlabs.caffeinated.app.plugins.impl;
 
 import java.io.File;
 import java.util.Collections;

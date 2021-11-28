@@ -11,7 +11,8 @@ import co.casterlabs.caffeinated.app.auth.AuthPreferences;
 import co.casterlabs.caffeinated.app.koi.GlobalKoi;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegrationPreferences;
-import co.casterlabs.caffeinated.app.plugins.PluginsHandler;
+import co.casterlabs.caffeinated.app.plugins.PluginIntegration;
+import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.preferences.WindowPreferences;
 import co.casterlabs.caffeinated.app.ui.AppUI;
@@ -46,11 +47,13 @@ public class CaffeinatedApp {
     private MusicIntegration musicIntegration = new MusicIntegration();
     private GlobalKoi koi = new GlobalKoi();
     private AppUI UI = new AppUI();
+    private PluginIntegration plugins = new PluginIntegration();
 
     private PreferenceFile<WindowPreferences> windowPreferences = new PreferenceFile<>("window", WindowPreferences.class);
     private PreferenceFile<UIPreferences> uiPreferences = new PreferenceFile<>("ui", UIPreferences.class);
     private PreferenceFile<AuthPreferences> authPreferences = new PreferenceFile<>("auth", AuthPreferences.class);
     private PreferenceFile<MusicIntegrationPreferences> musicIntegrationPreferences = new PreferenceFile<>("music", MusicIntegrationPreferences.class);
+    private PreferenceFile<PluginIntegrationPreferences> pluginIntegrationPreferences = new PreferenceFile<>("plugins", PluginIntegrationPreferences.class);
 
     private Map<String, List<Consumer<JsonObject>>> bridgeEventListeners = new HashMap<>();
     private Map<String, List<Consumer<JsonObject>>> appEventListeners = new HashMap<>();
@@ -66,8 +69,7 @@ public class CaffeinatedApp {
 
         this.auth.init();
         this.musicIntegration.init();
-
-        PluginsHandler.getInstance().loadPluginsFromClassLoader(this.getClass().getClassLoader());
+        this.plugins.init();
     }
 
     public boolean canCloseUI() {
@@ -142,6 +144,11 @@ public class CaffeinatedApp {
 
             case "music": {
                 MusicIntegration.invokeEvent(data, nestedType);
+                return;
+            }
+
+            case "plugin": {
+                PluginIntegration.invokeEvent(data, nestedType);
                 return;
             }
 
