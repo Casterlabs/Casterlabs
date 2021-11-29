@@ -43,6 +43,18 @@ public class WidgetSettingsItem {
         );
     }
 
+    /* Html */
+
+//    public static WidgetSettingsItem asHtml(@NonNull String html) {
+//        return new WidgetSettingsItem(
+//            "",
+//            "",
+//            WidgetSettingsItemType.HTML,
+//            new JsonObject()
+//                .put("html", html)
+//        );
+//    }
+
     /* Checkbox */
 
     public static WidgetSettingsItem asCheckbox(@NonNull String id, @NonNull String name, boolean defaultValue) {
@@ -149,6 +161,7 @@ public class WidgetSettingsItem {
         TEXT,
         TEXTAREA,
         PASSWORD,
+//        HTML,
 
     }
 

@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.builtin.widgets;
+package co.casterlabs.caffeinated.builtin.widgets.alerts;
 
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
@@ -9,7 +9,7 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsSectio
 
 public class DonationAlert extends Widget {
     public static final WidgetDetails DETAILS = new WidgetDetails()
-        .withNamespace("co.casterlabs.donation")
+        .withNamespace("co.casterlabs.donation_alert")
         .withIcon("bell")
         .withCategory(WidgetDetailsCategory.ALERTS)
         .withFriendlyName("Donation Alert");
@@ -27,11 +27,13 @@ public class DonationAlert extends Widget {
     // Dynamically updates the settings page as the user selects things.
     public void updateLayout() {
         WidgetSettingsLayout layout = new WidgetSettingsLayout()
+            .setAllowWidgetPreview(true)
             .addSection(
-                new WidgetSettingsSection("text_style", "Style")
+                new WidgetSettingsSection("text", "Text")
                     .addItem(WidgetSettingsItem.asUnknown("font", "Font", "Poppins"))
                     .addItem(WidgetSettingsItem.asNumber("font_size", "Font Size", 16, 1, 0, 128))
-                    .addItem(WidgetSettingsItem.asColor("text_color", "Text Color", "#ffffff"))
+                    .addItem(WidgetSettingsItem.asColor("text_color", "Text Color", "#4a4a4a"))
+                    .addItem(WidgetSettingsItem.asColor("highlight_color", "Highlight Color", "#6ef2cb"))
             );
 
         // If the user enables alert audio we show the settings options,
@@ -102,10 +104,14 @@ public class DonationAlert extends Widget {
     }
 
     private String safeGetString(String property) {
+        return this.safeGetString(property, "");
+    }
+
+    private String safeGetString(String property, String defaultValue) {
         if (this.getSettings().containsKey(property)) {
             return this.getSettings().getString(property);
         } else {
-            return "";
+            return defaultValue;
         }
     }
 

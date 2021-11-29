@@ -9,7 +9,7 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsSectio
 
 public class ChatWidget extends Widget {
     public static final WidgetDetails DETAILS = new WidgetDetails()
-        .withNamespace("co.casterlabs.chat")
+        .withNamespace("co.casterlabs.chat_widget")
         .withIcon("message-square")
         .withCategory(WidgetDetailsCategory.INTERACTION)
         .withFriendlyName("Chat Widget");

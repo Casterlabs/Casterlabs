@@ -50,7 +50,9 @@
 </script>
 
 <span>
-    {#if type === "checkbox"}
+    {#if type === "html"}
+        {@html widgetSettingsOption.extraData.html}
+    {:else if type === "checkbox"}
         <FormCheckbox {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else if type === "color"}
         <FormColor {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
