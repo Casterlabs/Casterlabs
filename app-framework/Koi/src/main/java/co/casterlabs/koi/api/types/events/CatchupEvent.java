@@ -8,12 +8,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class CatchupEvent extends Event {
+public class CatchupEvent extends KoiEvent {
     private JsonArray events;
 
     @Override
-    public EventType getType() {
-        return EventType.CATCHUP;
+    public KoiEventType getType() {
+        return KoiEventType.CATCHUP;
     }
 
 }

@@ -7,11 +7,11 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.koi.api.Koi;
-import co.casterlabs.koi.api.listener.EventHandler;
-import co.casterlabs.koi.api.listener.KoiEventListener;
-import co.casterlabs.koi.api.listener.EventUtil;
-import co.casterlabs.koi.api.types.events.Event;
+import co.casterlabs.koi.api.KoiConnection;
+import co.casterlabs.koi.api.listener.KoiEventHandler;
+import co.casterlabs.koi.api.listener.KoiLifeCycleHandler;
+import co.casterlabs.koi.api.listener.KoiEventUtil;
+import co.casterlabs.koi.api.types.events.KoiEvent;
 import co.casterlabs.koi.api.types.events.StreamStatusEvent;
 import co.casterlabs.koi.api.types.events.UserUpdateEvent;
 import co.casterlabs.koi.api.types.events.ViewerListEvent;
@@ -21,12 +21,12 @@ import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class AuthInstance implements KoiEventListener, Closeable {
+public class AuthInstance implements KoiLifeCycleHandler, Closeable {
     private @Getter String tokenId;
     private String token;
 
     private FastLogger logger;
-    private Koi koi;
+    private KoiConnection koi;
 
     private @Getter @Nullable User userData;
     private @Getter @Nullable StreamStatusEvent streamData;
@@ -47,8 +47,8 @@ public class AuthInstance implements KoiEventListener, Closeable {
 
         FastLogger koiLogger = new FastLogger("AuthInstance Koi");
         koiLogger.setCurrentLevel(LogLevel.SEVERE);
-        this.koi = new Koi(
-            Koi.KOI_URL,
+        this.koi = new KoiConnection(
+            KoiConnection.KOI_URL,
             koiLogger,
             this,
             CaffeinatedApp.caffeinatedClientId
@@ -74,7 +74,7 @@ public class AuthInstance implements KoiEventListener, Closeable {
     /* Event Listeners  */
     /* ---------------- */
 
-    @EventHandler
+    @KoiEventHandler
     public void onUserUpdate(UserUpdateEvent e) {
         // Update the logger with the streamer's name.
         this.logger = new FastLogger(String.format("AuthInstance (%d) %s", this.tokenId.hashCode(), e.getStreamer().getDisplayname()));
@@ -82,21 +82,21 @@ public class AuthInstance implements KoiEventListener, Closeable {
         CaffeinatedApp.getInstance().getAuth().updateBridgeData();
     }
 
-    @EventHandler
+    @KoiEventHandler
     public void onStreamStatus(StreamStatusEvent e) {
         this.streamData = e;
         CaffeinatedApp.getInstance().getAuth().updateBridgeData();
     }
 
-    @EventHandler
+    @KoiEventHandler
     public void onViewerList(ViewerListEvent e) {
         this.viewers = e.getViewers();
         CaffeinatedApp.getInstance().getAuth().updateBridgeData();
     }
 
-    @EventHandler
-    public void onEvent(Event e) {
-        EventUtil.reflectInvoke(CaffeinatedApp.getInstance().getKoi(), e);
+    @KoiEventHandler
+    public void onEvent(KoiEvent e) {
+        KoiEventUtil.reflectInvoke(CaffeinatedApp.getInstance().getKoi(), e);
     }
 
     /* ---------------- */

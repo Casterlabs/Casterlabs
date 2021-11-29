@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class MessageMetaEvent extends Event {
+public class MessageMetaEvent extends KoiEvent {
     private String id;
 
     @JsonField("is_visible")
@@ -17,8 +17,8 @@ public class MessageMetaEvent extends Event {
     private int upvotes;
 
     @Override
-    public EventType getType() {
-        return EventType.META;
+    public KoiEventType getType() {
+        return KoiEventType.META;
     }
 
 }

@@ -6,10 +6,10 @@ import java.net.URI;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
-import co.casterlabs.koi.api.listener.EventUtil;
-import co.casterlabs.koi.api.listener.KoiEventListener;
-import co.casterlabs.koi.api.types.events.Event;
-import co.casterlabs.koi.api.types.events.EventType;
+import co.casterlabs.koi.api.listener.KoiEventUtil;
+import co.casterlabs.koi.api.listener.KoiLifeCycleHandler;
+import co.casterlabs.koi.api.types.events.KoiEvent;
+import co.casterlabs.koi.api.types.events.KoiEventType;
 import co.casterlabs.koi.api.types.user.UserPlatform;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -19,17 +19,17 @@ import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class Koi implements Closeable {
+public class KoiConnection implements Closeable {
     public static final String KOI_URL = "wss://api.casterlabs.co/v2/koi";
 
-    private KoiEventListener listener;
+    private KoiLifeCycleHandler listener;
     private FastLogger logger;
     private KoiSocket socket;
 
     private JsonObject request;
 
     @SneakyThrows
-    public Koi(@NonNull String url, @NonNull FastLogger logger, @NonNull KoiEventListener listener, String clientId) {
+    public KoiConnection(@NonNull String url, @NonNull FastLogger logger, @NonNull KoiLifeCycleHandler listener, String clientId) {
         this.logger = logger;
         this.listener = listener;
         this.socket = new KoiSocket(new URI(url + "?client_id=" + clientId));
@@ -44,7 +44,7 @@ public class Koi implements Closeable {
         return this.socket.isOpen();
     }
 
-    public Koi hookStreamStatus(String username, UserPlatform platform) throws InterruptedException {
+    public KoiConnection hookStreamStatus(String username, UserPlatform platform) throws InterruptedException {
         if (this.isConnected()) {
             throw new IllegalStateException("Already connected.");
         } else {
@@ -61,7 +61,7 @@ public class Koi implements Closeable {
         }
     }
 
-    public Koi login(String token) throws InterruptedException {
+    public KoiConnection login(String token) throws InterruptedException {
         if (this.isConnected()) {
             throw new IllegalStateException("Already connected.");
         } else {
@@ -134,12 +134,12 @@ public class Koi implements Closeable {
 
                     case "EVENT":
                         JsonObject eventJson = packet.getObject("event");
-                        Event event = EventType.get(eventJson);
+                        KoiEvent event = KoiEventType.get(eventJson);
 
                         if (event == null) {
                             logger.warn("Unsupported event type: %s", eventJson.getString("event_type"));
                         } else {
-                            EventUtil.reflectInvoke(listener, event);
+                            KoiEventUtil.reflectInvoke(listener, event);
                         }
 
                         return;

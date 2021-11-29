@@ -14,8 +14,8 @@ public class DonationEvent extends ChatEvent {
     private List<Donation> donations;
 
     @Override
-    public EventType getType() {
-        return EventType.DONATION;
+    public KoiEventType getType() {
+        return KoiEventType.DONATION;
     }
 
     @Getter

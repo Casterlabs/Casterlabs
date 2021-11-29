@@ -12,7 +12,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class ChatEvent extends Event {
+public class ChatEvent extends KoiEvent {
     private Map<String, String> emotes;
     private List<Mention> mentions;
     private List<String> links;
@@ -24,8 +24,8 @@ public class ChatEvent extends Event {
     private int upvotes = 0;
 
     @Override
-    public EventType getType() {
-        return EventType.CHAT;
+    public KoiEventType getType() {
+        return KoiEventType.CHAT;
     }
 
     @Getter

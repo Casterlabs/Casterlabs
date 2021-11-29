@@ -10,12 +10,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class ViewerListEvent extends Event {
+public class ViewerListEvent extends KoiEvent {
     private List<User> viewers;
 
     @Override
-    public EventType getType() {
-        return EventType.VIEWER_LIST;
+    public KoiEventType getType() {
+        return KoiEventType.VIEWER_LIST;
     }
 
 }

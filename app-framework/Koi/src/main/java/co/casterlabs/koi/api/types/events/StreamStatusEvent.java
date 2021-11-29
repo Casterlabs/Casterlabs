@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class StreamStatusEvent extends Event {
+public class StreamStatusEvent extends KoiEvent {
     @JsonField("is_live")
     private boolean live;
     private String title;
@@ -16,8 +16,8 @@ public class StreamStatusEvent extends Event {
     private String startTime;
 
     @Override
-    public EventType getType() {
-        return EventType.STREAM_STATUS;
+    public KoiEventType getType() {
+        return KoiEventType.STREAM_STATUS;
     }
 
 }

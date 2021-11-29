@@ -8,12 +8,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class FollowEvent extends Event {
+public class FollowEvent extends KoiEvent {
     private User follower;
 
     @Override
-    public EventType getType() {
-        return EventType.FOLLOW;
+    public KoiEventType getType() {
+        return KoiEventType.FOLLOW;
     }
 
 }

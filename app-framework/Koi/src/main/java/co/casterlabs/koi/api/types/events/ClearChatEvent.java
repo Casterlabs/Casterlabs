@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class ClearChatEvent extends Event {
+public class ClearChatEvent extends KoiEvent {
     @JsonField("user_upid")
     private String userUPID;
 
@@ -16,8 +16,8 @@ public class ClearChatEvent extends Event {
     private ClearChatType clearType;
 
     @Override
-    public EventType getType() {
-        return EventType.CLEARCHAT;
+    public KoiEventType getType() {
+        return KoiEventType.CLEARCHAT;
     }
 
     public static enum ClearChatType {

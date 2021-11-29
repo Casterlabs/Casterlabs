@@ -9,13 +9,13 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public abstract class Event {
+public abstract class KoiEvent {
     protected User streamer;
 
     @JsonField("event_abilities")
     protected EventAbilities abilities;
 
-    public abstract EventType getType();
+    public abstract KoiEventType getType();
 
     @Getter
     @ToString

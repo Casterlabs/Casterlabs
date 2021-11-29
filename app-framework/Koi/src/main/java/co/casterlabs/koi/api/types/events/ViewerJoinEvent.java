@@ -8,12 +8,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class ViewerJoinEvent extends Event {
+public class ViewerJoinEvent extends KoiEvent {
     private User viewer;
 
     @Override
-    public EventType getType() {
-        return EventType.VIEWER_JOIN;
+    public KoiEventType getType() {
+        return KoiEventType.VIEWER_JOIN;
     }
 
 }

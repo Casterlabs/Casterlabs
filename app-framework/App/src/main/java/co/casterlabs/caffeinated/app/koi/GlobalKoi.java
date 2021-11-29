@@ -11,32 +11,42 @@ import java.util.Map;
 import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AuthInstance;
-import co.casterlabs.koi.api.listener.EventHandler;
-import co.casterlabs.koi.api.listener.KoiEventListener;
-import co.casterlabs.koi.api.listener.EventUtil;
+import co.casterlabs.caffeinated.pluginsdk.Koi;
+import co.casterlabs.koi.api.listener.KoiEventHandler;
+import co.casterlabs.koi.api.listener.KoiEventUtil;
+import co.casterlabs.koi.api.listener.KoiLifeCycleHandler;
 import co.casterlabs.koi.api.types.events.CatchupEvent;
-import co.casterlabs.koi.api.types.events.Event;
-import co.casterlabs.koi.api.types.events.EventType;
+import co.casterlabs.koi.api.types.events.KoiEvent;
+import co.casterlabs.koi.api.types.events.KoiEventType;
 import co.casterlabs.koi.api.types.events.ViewerListEvent;
 import co.casterlabs.koi.api.types.user.User;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @Getter
-public class GlobalKoi implements KoiEventListener {
-    private static final List<EventType> HISTORY_EVENTS = Arrays.asList();
+public class GlobalKoi implements KoiLifeCycleHandler {
+    private static final List<KoiEventType> HISTORY_EVENTS = Arrays.asList();
 
-    private List<KoiEventListener> koiEventListeners = new LinkedList<>();
+    private List<KoiLifeCycleHandler> koiEventListeners = new LinkedList<>();
 
-    private List<Event> chatHistory = new LinkedList<>();
+    private List<KoiEvent> chatHistory = new LinkedList<>();
     private Map<String, List<User>> viewers = new HashMap<>();
 
+    @SneakyThrows
+    public void init() {
+        // Set read-only pointers to this instance's chatHistory and viewers fields.
+        ReflectionLib.setStaticValue(Koi.class, "chatHistory", Collections.unmodifiableList(this.chatHistory));
+        ReflectionLib.setStaticValue(Koi.class, "viewers", Collections.unmodifiableMap(this.viewers));
+    }
+
     /**
-     * Should *only* be called from AppAuth.
+     * @deprecated Should <b>only</b> be called from AppAuth.
      */
     @Deprecated
     public void updateFromAuth() {
@@ -70,9 +80,9 @@ public class GlobalKoi implements KoiEventListener {
         bridge.getQueryData().put("koi", bridgeData);
     }
 
-    @EventHandler
-    public void onEvent(Event e) {
-        if (e.getType() == EventType.CATCHUP) {
+    @KoiEventHandler
+    public void onEvent(KoiEvent e) {
+        if (e.getType() == KoiEventType.CATCHUP) {
             CatchupEvent catchUp = (CatchupEvent) e;
 
             // Loop through the catchup events,
@@ -81,7 +91,7 @@ public class GlobalKoi implements KoiEventListener {
             // Broadcast that event.
             // (We need to do these in order)
             for (JsonElement element : catchUp.getEvents()) {
-                Event cEvent = EventType.get(element.getAsObject());
+                KoiEvent cEvent = KoiEventType.get(element.getAsObject());
 
                 if (cEvent != null) {
                     this.onEvent(cEvent);
@@ -91,7 +101,7 @@ public class GlobalKoi implements KoiEventListener {
             if (HISTORY_EVENTS.contains(e.getType())) {
                 this.chatHistory.add(e);
                 this.updateBridgeData();
-            } else if (e.getType() == EventType.VIEWER_LIST) {
+            } else if (e.getType() == KoiEventType.VIEWER_LIST) {
                 this.viewers.put(
                     e.getStreamer().getPlatform().name(),
                     Collections.unmodifiableList(((ViewerListEvent) e).getViewers())
@@ -101,12 +111,17 @@ public class GlobalKoi implements KoiEventListener {
             // Emit the event to Caffeinated.
             CaffeinatedApp.getInstance().getBridge().emit("koi:event:" + e.getType().name().toLowerCase(), Rson.DEFAULT.toJson(e));
 
-            for (KoiEventListener listener : this.koiEventListeners) {
-                EventUtil.reflectInvoke(listener, e);
+            for (KoiLifeCycleHandler listener : this.koiEventListeners) {
+                KoiEventUtil.reflectInvoke(listener, e);
             }
         }
 
-        FastLogger.logStatic(LogLevel.DEBUG, "Processed event for %s: %s", e.getStreamer().getDisplayname(), e);
+        FastLogger.logStatic(
+            LogLevel.DEBUG,
+            "Processed %s event for %s.",
+            e.getType().name().toLowerCase().replace('_', ' '),
+            e.getStreamer().getDisplayname()
+        );
     }
 
 }

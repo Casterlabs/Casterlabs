@@ -8,7 +8,7 @@ import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @AllArgsConstructor
-public enum EventType {
+public enum KoiEventType {
     // @formatter:off
     FOLLOW           (FollowEvent.class),
     CHAT             (ChatEvent.class),
@@ -26,17 +26,17 @@ public enum EventType {
     CLEARCHAT        (ClearChatEvent.class);
     // @formatter:on
 
-    private Class<? extends Event> eventClass;
+    private Class<? extends KoiEvent> eventClass;
 
-    public static Event get(JsonObject eventJson) {
+    public static KoiEvent get(JsonObject eventJson) {
         String eventType = eventJson.getString("event_type");
 
         try {
             // 1) Lookup the event type
             // 2) Use RSON to deserialize to object using the eventClass.
             // 3) Profit!
-            EventType type = EventType.valueOf(eventType);
-            Event event = Rson.DEFAULT.fromJson(eventJson, type.eventClass);
+            KoiEventType type = KoiEventType.valueOf(eventType);
+            KoiEvent event = Rson.DEFAULT.fromJson(eventJson, type.eventClass);
 
             return event;
         } catch (IllegalArgumentException e) {

@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class SubscriptionEvent extends Event {
+public class SubscriptionEvent extends KoiEvent {
     private User subscriber;
 
     @Deprecated
@@ -25,8 +25,8 @@ public class SubscriptionEvent extends Event {
     private SubscriptionLevel subLevel;
 
     @Override
-    public EventType getType() {
-        return EventType.SUBSCRIPTION;
+    public KoiEventType getType() {
+        return KoiEventType.SUBSCRIPTION;
     }
 
     public static enum SubscriptionType {

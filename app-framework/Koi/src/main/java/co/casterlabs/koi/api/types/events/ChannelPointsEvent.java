@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class ChannelPointsEvent extends Event {
+public class ChannelPointsEvent extends KoiEvent {
     private User sender;
     private ChannelPointsReward reward;
     private RedemptionStatus status;
@@ -19,8 +19,8 @@ public class ChannelPointsEvent extends Event {
     private String message;
 
     @Override
-    public EventType getType() {
-        return EventType.CHANNEL_POINTS;
+    public KoiEventType getType() {
+        return KoiEventType.CHANNEL_POINTS;
     }
 
     public static enum RedemptionStatus {

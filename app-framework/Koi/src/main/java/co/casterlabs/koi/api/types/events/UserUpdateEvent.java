@@ -7,12 +7,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @JsonClass(exposeAll = true)
-public class UserUpdateEvent extends Event {
+public class UserUpdateEvent extends KoiEvent {
     private String timestamp;
 
     @Override
-    public EventType getType() {
-        return EventType.USER_UPDATE;
+    public KoiEventType getType() {
+        return KoiEventType.USER_UPDATE;
     }
 
 }

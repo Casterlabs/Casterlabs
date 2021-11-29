@@ -67,6 +67,7 @@ public class CaffeinatedApp {
     public void init() {
         this.uiPreferences.addSaveListener(this::saveListener);
 
+        this.koi.init();
         this.auth.init();
         this.musicIntegration.init();
         this.plugins.init();

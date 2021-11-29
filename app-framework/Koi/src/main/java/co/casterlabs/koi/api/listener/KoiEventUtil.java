@@ -5,12 +5,12 @@ import java.lang.reflect.Method;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 
-public class EventUtil {
+public class KoiEventUtil {
 
     @SneakyThrows
     public static void reflectInvoke(@NonNull Object listener, @NonNull Object event) {
         for (Method method : listener.getClass().getMethods()) {
-            if (method.isAnnotationPresent(EventHandler.class) &&
+            if (method.isAnnotationPresent(KoiEventHandler.class) &&
                 (method.getParameterCount() == 1) &&
                 method.getParameterTypes()[0].isAssignableFrom(event.getClass())) {
                 method.invoke(listener, event);
