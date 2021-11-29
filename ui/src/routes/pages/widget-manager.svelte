@@ -32,11 +32,11 @@
         };
 
         // We rely on the global Modules instance
-        for (const createable of creatableWidgets) {
-            _widgetCategories[createable.category.toLowerCase()].push({
-                name: createable.friendlyName,
+        for (const creatable of creatableWidgets) {
+            _widgetCategories[creatable.category.toLowerCase()].push({
+                name: creatable.friendlyName,
                 create: () => {
-                    Bridge.emit("plugins:create-widget", { namespace: createable.namespace, name: "New Widget" });
+                    Bridge.emit("plugins:create-widget", { namespace: creatable.namespace, name: `${creatable.friendlyName} (New)` });
                 }
             });
         }
