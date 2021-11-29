@@ -1,8 +1,11 @@
 package co.casterlabs.caffeinated.pluginsdk.widgets.settings;
 
+import org.jetbrains.annotations.Nullable;
+
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import co.casterlabs.rakurai.json.element.JsonArray;
+import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,6 +26,10 @@ public class WidgetSettingsItem {
     @SneakyThrows
     public JsonObject getExtraData() {
         return Rson.DEFAULT.fromJson(this.extraData.toString(), JsonObject.class); // Clone
+    }
+
+    public @Nullable JsonElement getDefaultValue() {
+        return this.getExtraData().get("defaultValue");
     }
 
     /* Unknown */
@@ -142,9 +149,6 @@ public class WidgetSettingsItem {
         TEXT,
         TEXTAREA,
         PASSWORD,
-
-        FONT,
-        CURRENCY
 
     }
 

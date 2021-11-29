@@ -25,12 +25,6 @@ public class ChatWidget extends Widget {
                 .addItem(WidgetSettingsItem.asCheckbox("show_donations", "Show Donations", true))
         )
         .addSection(
-            new WidgetSettingsSection("custom_emotes", "Custom Emotes")
-                .addItem(WidgetSettingsItem.asCheckbox("show_betterbrime", "Show BetterBrime Emotes", true))
-                .addItem(WidgetSettingsItem.asCheckbox("show_betterttv", "Show BetterTTV Emotes", true))
-                .addItem(WidgetSettingsItem.asCheckbox("show_casterlabsemotes", "Show Casterlabs Emotes", true))
-        )
-        .addSection(
             new WidgetSettingsSection("moderation", "Moderation")
                 .addItem(WidgetSettingsItem.asCheckbox("hide_bots", "Hide Bots", true))
                 .addItem(WidgetSettingsItem.asCheckbox("hide_naughty_language", "Hide Naughty Language", true))

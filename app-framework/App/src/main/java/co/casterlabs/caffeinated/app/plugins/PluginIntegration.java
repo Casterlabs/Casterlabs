@@ -10,6 +10,7 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences.WidgetSettingsDetails;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCreateWidgetEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationDeleteWidgetEvent;
+import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationEditWidgetSettingsEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationEventType;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationRenameWidgetEvent;
 import co.casterlabs.caffeinated.app.plugins.impl.PluginsHandler;
@@ -48,15 +49,17 @@ public class PluginIntegration {
         for (WidgetSettingsDetails details : CaffeinatedApp.getInstance().getPluginIntegrationPreferences().get().getWidgetSettings()) {
             try {
                 // Reconstruct the widget.
-                this.plugins.createWidget(details.getNamespace(), details.getId(), details.getName());
-            } catch (AssertionError e) {
+                Widget widget = this.plugins.createWidget(details.getNamespace(), details.getId(), details.getName());
+
+                ReflectionLib.invokeMethod(widget, "setSettings", details.getSettings());
+            } catch (AssertionError | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 if (e.getMessage().equals("A factory associated to that widget is not registered.")) {
                     // We can safely ignore it.
                     // TODO let the user know that the widget could not be found.
                     FastLogger.logStatic(LogLevel.WARNING, "Unable to create missing widget: %s (%s)", details.getName(), details.getNamespace());
-                } else {
-                    throw e;
                 }
+
+                e.printStackTrace();
             }
         }
 
@@ -97,12 +100,23 @@ public class PluginIntegration {
     }
 
     @EventListener
-    public void onPluginIntegrationDeleteCreateWidgetEvent(AppPluginIntegrationDeleteWidgetEvent event) {
+    public void onPluginIntegrationDeleteWidgetEvent(AppPluginIntegrationDeleteWidgetEvent event) {
         this.plugins.destroyWidget(event.getId());
 
         this.save();
 
         CaffeinatedApp.getInstance().getUI().goBack();
+    }
+
+    @SneakyThrows
+    @EventListener
+    public void onPluginIntegrationEditWidgetSettingsEvent(AppPluginIntegrationEditWidgetSettingsEvent event) {
+        Widget widget = this.plugins.getWidget(event.getId());
+
+        // Might not work....
+        ReflectionLib.invokeMethod(widget, "setSettingsProperty", event.getKey(), event.getNewValue());
+
+        this.save();
     }
 
     @SuppressWarnings("deprecation")

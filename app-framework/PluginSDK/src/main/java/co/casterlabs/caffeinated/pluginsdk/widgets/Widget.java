@@ -3,8 +3,12 @@ package co.casterlabs.caffeinated.pluginsdk.widgets;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
+import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsItem;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsLayout;
+import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsSection;
+import co.casterlabs.caffeinated.util.Reflective;
 import co.casterlabs.rakurai.json.Rson;
+import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
@@ -23,6 +27,25 @@ public abstract class Widget {
 
     private @Nullable WidgetSettingsLayout settingsLayout;
     private @NonNull JsonObject settings;
+
+    @Reflective
+    private void setSettings(@Nullable JsonObject newSettings) {
+        if (newSettings != null) {
+            this.settings = newSettings;
+            this.onSettingsUpdate();
+        }
+    }
+
+    @Reflective
+    private void setSettingsProperty(@NonNull String key, @Nullable JsonElement value) {
+        // JsonNull should always be converted to null.
+        if ((value != null) && value.isJsonNull()) {
+            value = null;
+        }
+
+        this.settings.put(key, value);
+        this.onSettingsUpdate();
+    }
 
     /**
      * @deprecated This is used internally.
@@ -60,10 +83,45 @@ public abstract class Widget {
     /* Mutators         */
     /* ---------------- */
 
-    public final <T extends Widget> T setSettingsLayout(@NonNull WidgetSettingsLayout newSettingsLayout) {
+    public final synchronized <T extends Widget> T setSettingsLayout(@NonNull WidgetSettingsLayout newSettingsLayout) {
+        return this.setSettingsLayout(newSettingsLayout, false);
+    }
+
+    public final synchronized <T extends Widget> T setSettingsLayout(@NonNull WidgetSettingsLayout newSettingsLayout, boolean preserveExtraSettings) {
         this.settingsLayout = newSettingsLayout;
 
-        if (this.pokeOutside != null) {
+        JsonObject oldSettings = this.getSettings();
+        JsonObject newSettings = preserveExtraSettings ? this.getSettings() : new JsonObject(); // Clone.
+
+        for (WidgetSettingsSection section : this.settingsLayout.getSections()) {
+            for (WidgetSettingsItem item : section.getItems()) {
+                String key = String.format("%s.%s", section.getId(), item.getId());
+
+                if (preserveExtraSettings) {
+                    JsonElement existingValue = oldSettings.get(key);
+
+                    if (existingValue == null) {
+                        JsonElement defaultValue = item.getDefaultValue();
+
+                        newSettings.put(key, defaultValue);
+                    } else {
+                        newSettings.put(key, existingValue);
+                    }
+                } else {
+                    if (!newSettings.containsKey(key)) {
+                        JsonElement defaultValue = item.getDefaultValue();
+
+                        newSettings.put(key, defaultValue);
+                    }
+                }
+            }
+        }
+
+        this.settings = newSettings;
+
+        if (this.pokeOutside != null)
+
+        {
             this.pokeOutside.run();
         }
 
