@@ -36,7 +36,7 @@
             _widgetCategories[createable.category.toLowerCase()].push({
                 name: createable.friendlyName,
                 create: () => {
-                    Bridge.emit("plugin:create-widget", { namespace: createable.namespace, name: "New Widget" });
+                    Bridge.emit("plugins:create-widget", { namespace: createable.namespace, name: "New Widget" });
                 }
             });
         }

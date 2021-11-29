@@ -179,10 +179,14 @@ public class Bootstrap implements Runnable {
         );
     }
 
-    @SneakyThrows
     private void onBridgeEvent(String type, JsonObject data) {
-        // Pass it to the app.
-        CaffeinatedApp.getInstance().onBridgeEvent(type, data);
+        try {
+            // Pass it to the app.
+            CaffeinatedApp.getInstance().onBridgeEvent(type, data);
+        } catch (Throwable t) {
+            logger.severe("Uncaught exception whilst processing bridge event:");
+            logger.exception(t);
+        }
     }
 
     public static void shutdown() {

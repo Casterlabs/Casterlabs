@@ -20,6 +20,7 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonArray;
+import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.Getter;
@@ -104,17 +105,27 @@ public class PluginIntegration {
         this.plugins.destroyWidget(event.getId());
 
         this.save();
-
-        CaffeinatedApp.getInstance().getUI().goBack();
     }
 
-    @SneakyThrows
     @EventListener
     public void onPluginIntegrationEditWidgetSettingsEvent(AppPluginIntegrationEditWidgetSettingsEvent event) {
         Widget widget = this.plugins.getWidget(event.getId());
 
-        // Might not work....
-        ReflectionLib.invokeMethod(widget, "setSettingsProperty", event.getKey(), event.getNewValue());
+        try {
+            JsonObject settings = ReflectionLib.getValue(widget, "settings");
+            JsonElement value = event.getNewValue();
+
+            // JsonNull should always be converted to null.
+            if ((value == null) || value.isJsonNull()) {
+                settings.remove(event.getKey());
+            } else {
+                settings.put(event.getKey(), value);
+            }
+
+            widget.onSettingsUpdate();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
 
         this.save();
     }

@@ -1,8 +1,7 @@
 <script>
-    export let widget;
     export let widgetSettingsOption;
 
-    export let value = widget.settings[widgetSettingsOption.id] ?? widgetSettingsOption.extraData.defaultValue;
+    export let value;
 
     import { createEventDispatcher } from "svelte";
 
@@ -15,7 +14,7 @@
     }
 
     function onInput() {
-        dispatch("value", {
+        dispatch("input", {
             value: value
         });
     }

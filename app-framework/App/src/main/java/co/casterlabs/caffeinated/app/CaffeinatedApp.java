@@ -148,7 +148,7 @@ public class CaffeinatedApp {
                 return;
             }
 
-            case "plugin": {
+            case "plugins": {
                 PluginIntegration.invokeEvent(data, nestedType);
                 return;
             }

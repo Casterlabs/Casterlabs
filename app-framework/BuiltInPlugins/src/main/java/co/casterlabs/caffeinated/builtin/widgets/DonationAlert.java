@@ -26,60 +26,71 @@ public class DonationAlert extends Widget {
 
     // Dynamically updates the settings page as the user selects things.
     public void updateLayout() {
-        WidgetSettingsSection alertAudioSection = new WidgetSettingsSection("alert_audio", "Alert Audio")
-            .addItem(WidgetSettingsItem.asCheckbox("enable_alert_audio", "Enable Alert Audio", true));
-
-        if (this.safeGetBoolean("alert_audio.enable_alert_audio", true)) {
-            alertAudioSection.addItem(
-                WidgetSettingsItem.asDropdown(
-                    "alert_audio", "Alert Audio",
-                    "Text-to-Speech",
-                    "Custom Audio", "Text-to-Speech"
-                )
+        WidgetSettingsLayout layout = new WidgetSettingsLayout()
+            .addSection(
+                new WidgetSettingsSection("text_style", "Style")
+                    .addItem(WidgetSettingsItem.asUnknown("font", "Font", "Poppins"))
+                    .addItem(WidgetSettingsItem.asNumber("font_size", "Font Size", 16, 1, 0, 128))
+                    .addItem(WidgetSettingsItem.asColor("text_color", "Text Color", "#ffffff"))
             );
 
-            if (this.safeGetString("alert_audio.alert_audio", "Custom Audio").equals("Custom Audio")) {
+        // If the user enables alert audio we show the settings options,
+        // otherwise we only show the checkbox.
+        // Same for the alert image.
+        {
+            WidgetSettingsSection alertAudioSection = new WidgetSettingsSection("alert_audio", "Alert Audio")
+                .addItem(WidgetSettingsItem.asCheckbox("enable_alert_audio", "Enable Alert Audio", true));
+
+            if (this.safeGetBoolean("alert_audio.enable_alert_audio", true)) {
                 alertAudioSection.addItem(
-                    WidgetSettingsItem.asUnknown("custom_audio", "Custom Audio")
+                    WidgetSettingsItem.asDropdown(
+                        "alert_audio", "Alert Audio",
+                        "Text-to-Speech",
+                        "Custom Audio", "Text-to-Speech"
+                    )
                 );
+
+                // We show the file picker if the user selects custom audio.
+                if (this.safeGetString("alert_audio.alert_audio").equals("Custom Audio")) {
+                    alertAudioSection.addItem(
+                        WidgetSettingsItem.asUnknown("custom_audio", "Custom Audio")
+                    );
+                }
             }
+
+            layout.addSection(alertAudioSection);
         }
 
-        WidgetSettingsSection alertImageSection = new WidgetSettingsSection("alert_image", "Alert Image")
-            .addItem(WidgetSettingsItem.asCheckbox("enable_alert_image", "Show Alert Image", true));
+        {
+            WidgetSettingsSection alertImageSection = new WidgetSettingsSection("alert_image", "Alert Image")
+                .addItem(WidgetSettingsItem.asCheckbox("enable_alert_image", "Show Alert Image", true));
 
-        if (this.safeGetBoolean("alert_image.enable_alert_image", true)) {
-            alertImageSection.addItem(
-                WidgetSettingsItem.asDropdown(
-                    "alert_image", "Alert Image",
-                    "Animated Donation Image",
-                    "Donation Image", "Animated Donation Image", "Custom Image"
-                )
-            );
-
-            if (this.safeGetString("alert_image.alert_image", "Custom Image").equals("Custom Image")) {
+            if (this.safeGetBoolean("alert_image.enable_alert_image", true)) {
                 alertImageSection.addItem(
-                    WidgetSettingsItem.asUnknown("custom_image", "Custom Image")
+                    WidgetSettingsItem.asDropdown(
+                        "alert_image", "Alert Image",
+                        "Animated Donation Image",
+                        "Donation Image", "Animated Donation Image", "Custom Image"
+                    )
                 );
+
+                if (this.safeGetString("alert_image.alert_image").equals("Custom Image")) {
+                    alertImageSection.addItem(
+                        WidgetSettingsItem.asUnknown("custom_image", "Custom Image")
+                    );
+                }
             }
+
+            layout.addSection(alertImageSection);
         }
 
-        this.setSettingsLayout(
-            new WidgetSettingsLayout()
-                .addSection(
-                    new WidgetSettingsSection("text_style", "Style")
-                        .addItem(WidgetSettingsItem.asUnknown("font", "Font", "Poppins"))
-                        .addItem(WidgetSettingsItem.asNumber("font_size", "Font Size", 16, 1, 0, 128))
-                        .addItem(WidgetSettingsItem.asColor("text_color", "Text Color", "#ffffff"))
-                )
-                .addSection(alertAudioSection)
-                .addSection(alertImageSection)
-                .addSection(
-                    new WidgetSettingsSection("moderation", "Moderation")
-                        .addItem(WidgetSettingsItem.asCheckbox("hide_bots", "Hide Bots", true))
-                        .addItem(WidgetSettingsItem.asCheckbox("hide_naughty_language", "Hide Naughty Language", true))
-                )
+        layout.addSection(
+            new WidgetSettingsSection("moderation", "Moderation")
+                .addItem(WidgetSettingsItem.asCheckbox("hide_bots", "Hide Bots", true))
+                .addItem(WidgetSettingsItem.asCheckbox("hide_naughty_language", "Hide Naughty Language", true))
         );
+
+        this.setSettingsLayout(layout, true);
     }
 
     private boolean safeGetBoolean(String property, boolean defaultValue) {
@@ -90,11 +101,11 @@ public class DonationAlert extends Widget {
         }
     }
 
-    private String safeGetString(String property, String defaultValue) {
+    private String safeGetString(String property) {
         if (this.getSettings().containsKey(property)) {
             return this.getSettings().getString(property);
         } else {
-            return defaultValue;
+            return "";
         }
     }
 

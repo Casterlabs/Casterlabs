@@ -1,8 +1,6 @@
 <script>
-    export let widget;
     export let widgetSettingsOption;
-
-    export let checked = widget.settings[widgetSettingsOption.id] ?? widgetSettingsOption.extraData.defaultValue;
+    export let value;
 
     import { createEventDispatcher } from "svelte";
 
@@ -10,9 +8,9 @@
 
     function onChange() {
         dispatch("change", {
-            checked: checked
+            value: value
         });
     }
 </script>
 
-<input class="checkbox" type="checkbox" bind:checked on:change={onChange} />
+<input class="checkbox" type="checkbox" bind:checked={value} on:change={onChange} />

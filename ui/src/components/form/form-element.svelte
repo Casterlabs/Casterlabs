@@ -1,5 +1,6 @@
 <script>
     export let widget;
+    export let widgetSettingsSection;
     export let widgetSettingsOption;
 
     import FormCheckbox from "./elements/checkbox.svelte";
@@ -19,24 +20,52 @@
     // import FormIframe from "./elements/iframe.svelte";
 
     const type = widgetSettingsOption.type.toLowerCase();
+    const settingsKey = `${widgetSettingsSection.id}.${widgetSettingsOption.id}`;
+
+    let value = widget.settings[settingsKey];
+    let inputDebounce = -1;
+
+    if (value == undefined || value == null) {
+        value = widgetSettingsOption.extraData.defaultValue;
+    }
+
+    // console.debug("[FormElement]", settingsKey, value);
+
+    function onInput() {
+        if (inputDebounce == -1) {
+            inputDebounce = setTimeout(onChange, 275);
+        }
+    }
+
+    async function onChange() {
+        clearTimeout(inputDebounce);
+        inputDebounce = -1;
+
+        Bridge.emit("plugins:edit-widget-settings", {
+            id: widget.id,
+            key: settingsKey,
+            newValue: value
+        });
+    }
 </script>
 
 <span>
     {#if type === "checkbox"}
-        <FormCheckbox {widget} {widgetSettingsOption} />
+        <FormCheckbox {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else if type === "color"}
-        <FormColor {widget} {widgetSettingsOption} />
+        <FormColor {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else if type === "number"}
-        <FormNumber {widget} {widgetSettingsOption} />
+        <FormNumber {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else if type === "dropdown"}
-        <FormSelect {widget} {widgetSettingsOption} />
+        <FormSelect {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else if type === "text"}
-        <FormText {widget} {widgetSettingsOption} />
+        <FormText {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else if type === "textarea"}
-        <FormTextArea {widget} {widgetSettingsOption} />
+        <FormTextArea {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else if type === "password"}
-        <FormPassword {widget} {widgetSettingsOption} />
+        <FormPassword {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else}
         ... {type}
     {/if}
+    <!-- {settingsKey} -->
 </span>

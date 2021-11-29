@@ -3,7 +3,9 @@
 
     import FormElement from "../../components/form/form-element.svelte";
 
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
+
+    let eventHandler;
 
     setPageProperties({
         showSideBar: false,
@@ -15,11 +17,12 @@
     let nameEditorTextContent;
 
     function editName() {
-        Bridge.emit("plugin:rename-widget", { id: widget.id, newName: nameEditorTextContent });
+        Bridge.emit("plugins:rename-widget", { id: widget.id, newName: nameEditorTextContent });
     }
 
     function deleteWidget() {
-        Bridge.emit("plugin:delete-widget", { id: widget.id });
+        Bridge.emit("plugins:delete-widget", { id: widget.id });
+        history.back();
     }
 
     function fixEditableDiv(elem) {
@@ -36,6 +39,7 @@
     // Sometimes it renders the component, but the data is not updated.
     let blanking = false;
 
+    let settingsLayout = {};
     let widgetSections = [];
     let currentWidgetSection = null;
 
@@ -48,18 +52,66 @@
         }, 50);
     }
 
-    onMount(async () => {
+    function parseBridgeData({ widgets }) {
         const widgetId = location.href.split("?widget=")[1];
 
-        const { widgets } = (await Bridge.query("plugins")).data;
         widget = widgets[widgetId];
 
-        console.log(widget);
+        if (!objectEquals(settingsLayout, widget.settingsLayout)) {
+            blanking = true;
+            console.info("[Widget Editor]", "Settings layout changed, blanking.");
 
+            setTimeout(() => {
+                blanking = false;
+            }, 75);
+        }
+
+        settingsLayout = widget.settingsLayout || {};
         nameEditorTextContent = widget.name;
-        widgetSections = widget.settingsLayout?.sections || [];
-        currentWidgetSection = widgetSections[0];
+        widgetSections = {};
+        currentWidgetSection = currentWidgetSection || settingsLayout.sections[0]?.id || null;
+
+        for (const section of widget.settingsLayout?.sections || []) {
+            widgetSections[section.id] = section;
+        }
+    }
+
+    onDestroy(() => {
+        eventHandler?.destroy();
     });
+
+    onMount(async () => {
+        eventHandler = Bridge.createThrowawayEventHandler();
+        eventHandler.on("plugins:update", parseBridgeData);
+        parseBridgeData((await Bridge.query("plugins")).data);
+    });
+
+    // https://stackoverflow.com/a/6713782
+    function objectEquals(x, y) {
+        if (x === y) return true;
+
+        if (!(x instanceof Object) || !(y instanceof Object)) return false;
+
+        if (x.constructor !== y.constructor) return false;
+
+        for (var p in x) {
+            if (!x.hasOwnProperty(p)) continue;
+
+            if (!y.hasOwnProperty(p)) return false;
+
+            if (x[p] === y[p]) continue;
+
+            if (typeof x[p] !== "object") return false;
+
+            if (!objectEquals(x[p], y[p])) return false;
+        }
+
+        for (p in y) {
+            if (y.hasOwnProperty(p) && !x.hasOwnProperty(p)) return false;
+        }
+
+        return true;
+    }
 </script>
 
 {#if widget}
@@ -96,8 +148,8 @@
         <div class="tabs">
             <!-- svelte-ignore a11y-missing-attribute -->
             <ul style="justify-content: center !important;">
-                {#each widgetSections as widgetSection}
-                    {#if widgetSection == currentWidgetSection}
+                {#each Object.values(widgetSections) as widgetSection}
+                    {#if widgetSection.id == currentWidgetSection}
                         <li class="is-active">
                             <a>
                                 {widgetSection.name}
@@ -105,7 +157,7 @@
                         </li>
                     {:else}
                         <li>
-                            <a on:click={switchCategory(widgetSection)}>
+                            <a on:click={switchCategory(widgetSection.id)}>
                                 {widgetSection.name}
                             </a>
                         </li>
@@ -116,7 +168,7 @@
 
         <div class="widget-settings allow-select has-text-left">
             {#if !blanking}
-                {#each currentWidgetSection.items as widgetSettingsOption}
+                {#each widgetSections[currentWidgetSection].items as widgetSettingsOption}
                     <div class="columns">
                         <div class="column" style="max-width: 260px; min-width: 260px;">
                             <span class="has-text-weight-medium">
@@ -124,7 +176,7 @@
                             </span>
                         </div>
                         <div class="column">
-                            <FormElement {widget} {widgetSettingsOption} />
+                            <FormElement {widget} {widgetSettingsOption} widgetSettingsSection={widgetSections[currentWidgetSection]} />
                         </div>
                     </div>
                 {/each}

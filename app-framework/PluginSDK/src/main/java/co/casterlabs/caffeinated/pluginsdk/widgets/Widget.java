@@ -36,17 +36,6 @@ public abstract class Widget {
         }
     }
 
-    @Reflective
-    private void setSettingsProperty(@NonNull String key, @Nullable JsonElement value) {
-        // JsonNull should always be converted to null.
-        if ((value != null) && value.isJsonNull()) {
-            value = null;
-        }
-
-        this.settings.put(key, value);
-        this.onSettingsUpdate();
-    }
-
     /**
      * @deprecated This is used internally.
      */
