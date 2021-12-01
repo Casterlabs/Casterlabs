@@ -22,6 +22,7 @@ public abstract class Widget {
     private String name; // This is mutable by the end user.
     private CaffeinatedPlugin plugin;
     private @Getter WidgetDetails details;
+    public @Getter WidgetType type = WidgetType.WIDGET; // TODO
 
     private Runnable pokeOutside;
 
@@ -67,6 +68,10 @@ public abstract class Widget {
     public void onNameUpdate() {}
 
     public void onSettingsUpdate() {}
+
+    public @Nullable String getWidgetHtml() {
+        return null;
+    }
 
     /* ---------------- */
     /* Mutators         */

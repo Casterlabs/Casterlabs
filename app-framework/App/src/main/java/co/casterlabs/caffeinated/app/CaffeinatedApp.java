@@ -1,5 +1,6 @@
 package co.casterlabs.caffeinated.app;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,7 @@ import co.casterlabs.caffeinated.app.auth.AuthPreferences;
 import co.casterlabs.caffeinated.app.koi.GlobalKoi;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegrationPreferences;
+import co.casterlabs.caffeinated.app.networking.localserver.LocalServer;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegration;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
@@ -24,6 +26,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @Getter
 public class CaffeinatedApp {
@@ -49,6 +53,9 @@ public class CaffeinatedApp {
     private AppUI UI = new AppUI();
     private PluginIntegration plugins = new PluginIntegration();
 
+    private LocalServer localServer;
+
+    private PreferenceFile<AppPreferences> appPreferences = new PreferenceFile<>("app", AppPreferences.class);
     private PreferenceFile<WindowPreferences> windowPreferences = new PreferenceFile<>("window", WindowPreferences.class);
     private PreferenceFile<UIPreferences> uiPreferences = new PreferenceFile<>("ui", UIPreferences.class);
     private PreferenceFile<AuthPreferences> authPreferences = new PreferenceFile<>("auth", AuthPreferences.class);
@@ -66,11 +73,21 @@ public class CaffeinatedApp {
 
     public void init() {
         this.uiPreferences.addSaveListener(this::saveListener);
+        this.appPreferences.addSaveListener(this::saveListener);
+
+        this.localServer = new LocalServer(LocalServer.DEFAULT_PORT);
 
         this.koi.init();
         this.auth.init();
         this.musicIntegration.init();
         this.plugins.init();
+
+        try {
+            this.localServer.start();
+        } catch (IOException e) {
+            FastLogger.logStatic(LogLevel.SEVERE, "Unable to start LocalServer (conductor):");
+            FastLogger.logException(e);
+        }
     }
 
     public boolean canCloseUI() {
@@ -82,6 +99,12 @@ public class CaffeinatedApp {
 
     public void shutdown() {
         this.auth.shutdown();
+
+        try {
+            this.localServer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
