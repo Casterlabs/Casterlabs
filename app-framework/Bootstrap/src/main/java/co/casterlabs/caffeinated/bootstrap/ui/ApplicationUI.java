@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.panda_lang.pandomium.Pandomium;
 import org.panda_lang.pandomium.wrapper.PandomiumClient;
 
-import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.caffeinated.bootstrap.cef.CefUtil;
 import co.casterlabs.caffeinated.bootstrap.cef.bridge.JavascriptBridge;
@@ -75,12 +74,12 @@ public class ApplicationUI {
             public void onBeforeContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams params, CefMenuModel model) {
                 model.clear();
 
-                if (Bootstrap.isDev()) {
-                    model.addItem(2, "Reload");
+//                if (Bootstrap.isDev()) {
+                model.addItem(2, "Reload");
 
-                    model.addCheckItem(1, "Inspect Element");
-                    model.setChecked(1, devtools.isOpen());
-                }
+                model.addCheckItem(1, "Inspect Element");
+                model.setChecked(1, devtools.isOpen());
+//                }
             }
 
             @Override
