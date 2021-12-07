@@ -39,7 +39,7 @@
 
 <!-- svelte-ignore a11y-missing-attribute -->
 <div id="account-{platform}" class="box">
-    <div class="platform-logo invert-dark-mode">
+    <div class="platform-logo">
         <img src="/img/services/{platform}/icon.svg" alt="{platformName} Logo" />
     </div>
 

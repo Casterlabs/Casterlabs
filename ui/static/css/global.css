@@ -6,12 +6,12 @@
 	/* This is set elsewhere */
 	--side-bar-width: 0;
 
-	--white-invert-factor: 0;
+	--white-invert-factor: 0.8;
 }
 
 .bulma-dark-mode:root {
 	--background-color: #121212;
-	--white-invert-factor: 0.8;
+	--white-invert-factor: 0.2;
 }
 
 html {
