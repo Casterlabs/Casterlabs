@@ -13,7 +13,6 @@ import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
 import xyz.e3ndr.consoleutil.ipc.IpcChannel;
 import xyz.e3ndr.consoleutil.ipc.MemoryMappedIpc;
-import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class InstanceManager {
     private static File ipcDir = new File(PreferenceFile.userDataDir, "/ipc/");
@@ -86,7 +85,7 @@ public class InstanceManager {
         // Watchdog task
         new AsyncTask(() -> {
             try {
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException ignored) {}
 
             if (!commsPromise.isCompleted()) {
@@ -116,11 +115,15 @@ public class InstanceManager {
             }
         });
 
+        commsPromise.except((e) -> {
+            // Ignored.
+        });
+
         try {
             commsPromise.await();
             return true;
         } catch (Throwable e) {
-            FastLogger.logException(e);
+//            FastLogger.logException(e);
             return false;
         }
     }
