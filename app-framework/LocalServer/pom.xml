@@ -49,15 +49,9 @@
 
 		<!-- Utility packages -->
 		<dependency>
-			<groupId>com.github.casterlabs.rakurai</groupId>
-			<artifactId>Json</artifactId>
-			<version>1.9.2</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.github.casterlabs.sora</groupId>
 			<artifactId>Sora-Framework</artifactId>
-			<version>2.4.1</version>
+			<version>7673e2a</version> <!-- 2.4.2 -->
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
