@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -94,6 +95,7 @@ public class ApplicationWindow {
         this.frame.setLocation(windowPreferences.getX(), windowPreferences.getY());
         this.frame.setState(windowPreferences.getStateFlags());
         this.frame.setResizable(true);
+        this.frame.setMinimumSize(new Dimension(800, 580));
 //      this.frame.setUndecorated(true);
 
         this.cefPanel = new JPanel();
