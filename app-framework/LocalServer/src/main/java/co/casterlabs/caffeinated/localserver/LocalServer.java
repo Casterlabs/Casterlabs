@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.app.networking.localserver;
+package co.casterlabs.caffeinated.localserver;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -6,9 +6,9 @@ import java.io.IOException;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.app.networking.localserver.handlers.RouteLocalServer;
-import co.casterlabs.caffeinated.app.networking.localserver.handlers.RoutePluginApi;
-import co.casterlabs.caffeinated.app.networking.localserver.handlers.RouteWidgetApi;
+import co.casterlabs.caffeinated.localserver.handlers.RouteLocalServer;
+import co.casterlabs.caffeinated.localserver.handlers.RoutePluginApi;
+import co.casterlabs.caffeinated.localserver.handlers.RouteWidgetApi;
 import co.casterlabs.rakurai.io.http.server.HttpServerImplementation;
 import co.casterlabs.sora.Sora;
 import co.casterlabs.sora.SoraFramework;
@@ -20,8 +20,6 @@ import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class LocalServer implements Closeable, HttpProvider {
-    public static final int DEFAULT_PORT = 8092; // Caffeinated <1.2 was 8091.
-
     private SoraFramework framework;
 
     @SneakyThrows

@@ -1,8 +1,8 @@
-package co.casterlabs.caffeinated.app.networking.localserver.handlers;
+package co.casterlabs.caffeinated.localserver.handlers;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.app.networking.localserver.RequestError;
-import co.casterlabs.caffeinated.app.networking.localserver.RouteHelper;
+import co.casterlabs.caffeinated.localserver.RequestError;
+import co.casterlabs.caffeinated.localserver.RouteHelper;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.rakurai.io.http.HttpResponse;

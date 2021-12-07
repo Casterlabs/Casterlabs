@@ -9,6 +9,7 @@ import co.casterlabs.caffeinated.bootstrap.instancing.InstanceManager;
 import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
+import co.casterlabs.caffeinated.localserver.LocalServer;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
@@ -48,6 +49,8 @@ public class Bootstrap implements Runnable {
 
     private static @Getter BuildInfo buildInfo;
     private static @Getter boolean isDev;
+
+    private static LocalServer localServer;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Enable assertions programatically.
@@ -110,6 +113,17 @@ public class Bootstrap implements Runnable {
 
         logger.info("Initializing CEF (it may take some time to extract the natives)");
 
+        // Init and start the local server.
+        try {
+            localServer = new LocalServer(app.getAppPreferences().get().getConductorPort());
+
+            localServer.start();
+        } catch (IOException e) {
+            FastLogger.logStatic(LogLevel.SEVERE, "Unable to start LocalServer (conductor):");
+            FastLogger.logException(e);
+        }
+
+        // Register CEF schemes for the internal app handler.
         CefUtil.registerSchemes();
 
         ApplicationUI.initialize(
@@ -197,6 +211,13 @@ public class Bootstrap implements Runnable {
         if (CaffeinatedApp.getInstance().canCloseUI()) {
             new AsyncTask(() -> {
                 logger.info("Shutting down.");
+
+                // Local Server
+                try {
+                    localServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 // UI
                 TrayHandler.destroy();

@@ -14,6 +14,7 @@
 		<module>PluginSDK</module>
 		<module>Koi</module>
 		<module>BuiltInPlugins</module>
+		<module>LocalServer</module>
 	</modules>
 
 	<properties>

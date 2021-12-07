@@ -87,6 +87,12 @@
 		</dependency>
 		<dependency>
 			<groupId>co.casterlabs</groupId>
+			<artifactId>LocalServer</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>co.casterlabs</groupId>
 			<artifactId>Util</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
@@ -104,19 +110,19 @@
 		<dependency>
 			<groupId>com.github.casterlabs.rakurai</groupId>
 			<artifactId>Json</artifactId>
-			<version>1.9.1</version>
+			<version>1.9.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.casterlabs.rakurai</groupId>
+			<artifactId>Util</artifactId>
+			<version>1.9.2</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
 			<version>4.3.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.casterlabs.rakurai</groupId>
-			<artifactId>Util</artifactId>
-			<version>8649f6d</version> <!-- 1.7.1 -->
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

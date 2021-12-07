@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.app.networking.localserver;
+package co.casterlabs.caffeinated.localserver;
 
 public enum RequestError {
     INTERNAL_ERROR,

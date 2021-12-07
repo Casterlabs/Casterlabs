@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.app.networking.localserver;
+package co.casterlabs.caffeinated.localserver;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.rakurai.io.http.HttpResponse;
