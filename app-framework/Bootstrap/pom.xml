@@ -19,7 +19,6 @@
 			</resource>
 		</resources>
 
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -149,5 +148,6 @@
 			<version>1.6.0</version>
 			<scope>compile</scope>
 		</dependency>
+
 	</dependencies>
 </project>
