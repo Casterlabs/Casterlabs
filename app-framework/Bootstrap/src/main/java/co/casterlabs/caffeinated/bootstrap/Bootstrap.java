@@ -197,12 +197,19 @@ public class Bootstrap implements Runnable {
         if (CaffeinatedApp.getInstance().canCloseUI()) {
             new AsyncTask(() -> {
                 logger.info("Shutting down.");
+
+                // UI
                 TrayHandler.destroy();
-                if (ApplicationUI.getDevtools() != null) ApplicationUI.getDevtools().close();
+                ApplicationUI.getDevtools().close();
                 ApplicationUI.getWindow().dispose();
+
+                // App
                 CaffeinatedApp.getInstance().shutdown();
                 InstanceManager.cleanShutdown();
-                FastLoggingFramework.close(); // Faster shutdown.
+
+                // Exit.
+                FastLoggingFramework.close();
+                System.exit(0);
             });
         } else {
             ApplicationUI.focusAndBeep();
