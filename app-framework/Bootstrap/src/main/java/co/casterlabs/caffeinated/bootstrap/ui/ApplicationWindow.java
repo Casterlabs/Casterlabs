@@ -15,12 +15,18 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
+import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.preferences.WindowPreferences;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
+import lombok.NonNull;
+import xyz.e3ndr.consoleutil.ConsoleUtil;
+import xyz.e3ndr.consoleutil.platform.JavaPlatform;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
@@ -29,6 +35,10 @@ public class ApplicationWindow {
     private JFrame frame;
     private JPanel cefPanel;
     private UILifeCycleListener listener;
+
+    private boolean hasFocus = false;
+    private String icon;
+    private String title;
 
     static {
         LafManager.setupLAF();
@@ -43,6 +53,7 @@ public class ApplicationWindow {
 
         Timer saveTimer = new Timer(500, (e) -> {
             preferenceFile.save();
+            this.updateBridgeData();
         });
         saveTimer.setRepeats(false);
 
@@ -65,11 +76,25 @@ public class ApplicationWindow {
             }
         });
 
+        this.frame.addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                hasFocus = true;
+                updateBridgeData();
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                hasFocus = false;
+                updateBridgeData();
+            }
+        });
+
         this.frame.addComponentListener(new ComponentAdapter() {
 
             @Override
             public void componentResized(ComponentEvent e) {
-                if ((frame.getState() & JFrame.MAXIMIZED_BOTH) == 0) {
+                if (!isMaximized()) {
                     windowPreferences.setWidth(frame.getWidth());
                     windowPreferences.setHeight(frame.getHeight());
                     saveTimer.restart();
@@ -78,7 +103,7 @@ public class ApplicationWindow {
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                if ((frame.getState() & JFrame.MAXIMIZED_BOTH) == 0) {
+                if (!isMaximized()) {
                     windowPreferences.setX(frame.getX());
                     windowPreferences.setY(frame.getY());
                     saveTimer.restart();
@@ -96,12 +121,51 @@ public class ApplicationWindow {
         this.frame.setState(windowPreferences.getStateFlags());
         this.frame.setResizable(true);
         this.frame.setMinimumSize(new Dimension(800, 580));
-//      this.frame.setUndecorated(true);
+
+        if (ConsoleUtil.getPlatform() == JavaPlatform.WINDOWS) {
+            // We implement our own title bar in html, as it can be easily restyled.
+//            this.frame.setUndecorated(true);
+        }
+
+        this.updateBridgeData();
 
         this.cefPanel = new JPanel();
         this.cefPanel.setLayout(new BorderLayout(0, 0));
         this.frame.getContentPane().add(this.cefPanel, BorderLayout.CENTER);
 
+    }
+
+    public boolean isMaximized() {
+        return (this.frame.getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH;
+    }
+
+    public void minmax() {
+        // Toggles maximization
+        this.frame.setExtendedState(this.frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+    }
+
+    public void setTitle(@NonNull String title) {
+        this.title = title;
+        this.frame.setTitle(this.title);
+        this.updateBridgeData();
+    }
+
+    public void updateBridgeData() {
+        new AsyncTask(() -> {
+            AppBridge bridge = ApplicationUI.getBridge();
+
+            if (bridge != null) {
+                JsonObject bridgeData = new JsonObject()
+                    .put("title", this.title)
+                    .put("icon", this.icon)
+                    .put("maximized", this.isMaximized())
+                    .put("platform", ConsoleUtil.getPlatform().name())
+                    .put("hasFocus", this.hasFocus);
+
+                bridge.getQueryData().put("window", bridgeData);
+                bridge.emit("window:update", bridgeData);
+            }
+        });
     }
 
     private void updateAppIcon(PreferenceFile<UIPreferences> uiPreferences) {
@@ -110,9 +174,14 @@ public class ApplicationWindow {
             URL iconUrl = FileUtil.loadResourceAsUrl(String.format("assets/logo/%s.png", icon));
 
             if (iconUrl != null) {
-                FastLogger.logStatic(LogLevel.DEBUG, "Set app icon to %s.", icon);
+                this.icon = icon;
+
                 ImageIcon img = new ImageIcon(iconUrl);
                 this.frame.setIconImage(img.getImage());
+
+                this.updateBridgeData();
+
+                FastLogger.logStatic(LogLevel.DEBUG, "Set app icon to %s.", this.icon);
             }
         } catch (IOException e) {
             e.printStackTrace();

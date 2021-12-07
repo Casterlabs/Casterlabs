@@ -2,6 +2,10 @@
 	--theme: #e94b4b;
 
 	--background-color: #eaeaea;
+	--title-bar-text-color: #070707;
+	--title-bar-faded-color: #a0a0a0;
+	--title-bar-color: #d8d8d8;
+	--title-bar-highlight: rgba(0, 0, 0, 0.1);
 
 	/* This is set elsewhere */
 	--side-bar-width: 0;
@@ -11,6 +15,12 @@
 
 .bulma-dark-mode:root {
 	--background-color: #121212;
+
+	--title-bar-color: #070707;
+	--title-bar-faded-color: #c8c8c8;
+	--title-bar-text-color: #e8e8e8;
+	--title-bar-highlight: rgba(255, 255, 255, 0.1);
+
 	--white-invert-factor: 0.2;
 }
 

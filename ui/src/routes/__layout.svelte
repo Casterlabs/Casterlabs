@@ -45,9 +45,12 @@
 
 <script>
     import SideBar from "../components/side-bar.svelte";
+    import WindowsTitleBar from "../components/titlebar/windows.svelte";
 
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
+
+    let showTitleBar = false;
 
     elementUpdateHandler = update;
 
@@ -74,10 +77,21 @@
         }
     }
 
+    function parseWindowUpdate(data) {
+        console.log("[__layout]", "Window state data: ", data);
+
+        if (data.platform == "WINDOWS") {
+            showTitleBar = true;
+        }
+    }
+
     onMount(async () => {
         window.goto = goto;
 
         Bridge.on("goto", ({ path }) => goto(path));
+
+        Bridge.on("window:update", parseWindowUpdate);
+        parseWindowUpdate((await Bridge.query("window")).data);
 
         Bridge.on("pref-update:ui", updateTheme);
         updateTheme((await Bridge.query("ui")).data);
@@ -85,43 +99,16 @@
 </script>
 
 <!-- Titlebar -->
-<!-- svelte-ignore a11y-missing-attribute -->
-<!-- <section class="title-bar no-select">
-    <div class=" title-bar-title">
-        <img class="app-logo" src="/img/logo/casterlabs.png" alt="Casterlabs" />
-        <span class="current-page title is-6">
-            {#if currentPageAttributes.pageTitle.length > 0}
-                Caffeinated - {currentPageAttributes.pageTitle}
-            {:else}
-                Caffeinated
-            {/if}
-        </span>
-    </div>
-    <div class="title-actions hide">
-        <span class="title is-6">
-            <a class="minimize title-action">
-                <i data-feather="minus" />
-            </a><a class="maximize title-action">
-                <i data-feather="maximize" />
-            </a><a class="close title-action">
-                <i data-feather="x" />
-            </a>
-        </span>
-        <script>
-            document.querySelector(".minimize").addEventListener("click", () => {
-                window.Bridge.emit("window:minimize");
-            });
-
-            document.querySelector(".maximize").addEventListener("click", () => {
-                window.Bridge.emit("window:minmax");
-            });
-
-            document.querySelector(".close").addEventListener("click", () => {
-                window.Bridge.emit("window:close");
-            });
-        </script>
-    </div>
-</section> -->
+{#if showTitleBar}
+    <section class="title-bar no-select">
+        <WindowsTitleBar />
+    </section>
+    <style>
+        :root {
+            --title-bar-height: 32px !important;
+        }
+    </style>
+{/if}
 
 <section id="notifications" class="no-select" />
 
@@ -145,9 +132,13 @@
 </section>
 
 <style>
-    :global(#side-bar) {
+    :root {
+        --title-bar-height: 0px;
+    }
+
+    #side-bar {
         position: absolute;
-        top: 0;
+        top: var(--title-bar-height);
         bottom: 0;
         left: 0;
         width: var(--side-bar-width);
@@ -155,7 +146,7 @@
 
     .svelte-container {
         position: absolute;
-        top: 0;
+        top: var(--title-bar-height);
         bottom: 0;
         left: var(--side-bar-width);
         right: 0;

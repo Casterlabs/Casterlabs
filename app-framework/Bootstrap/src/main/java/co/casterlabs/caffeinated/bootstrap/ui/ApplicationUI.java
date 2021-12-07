@@ -212,7 +212,7 @@ public class ApplicationUI {
             title = "Casterlabs Caffeinated - " + title;
         }
 
-        window.getFrame().setTitle(title);
+        window.setTitle(title);
     }
 
     public static class AppSchemeHandler implements SchemeHandler {
