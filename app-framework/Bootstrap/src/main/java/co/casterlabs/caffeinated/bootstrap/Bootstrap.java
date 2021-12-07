@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.bootstrap.cef.CefUtil;
 import co.casterlabs.caffeinated.bootstrap.instancing.InstanceManager;
 import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
@@ -105,8 +106,11 @@ public class Bootstrap implements Runnable {
         logger.info("buildInfo.author             | %s", buildInfo.getAuthor());
         logger.info("system.platform              | %s", ConsoleUtil.getPlatform().name());
         logger.info("bootstrap.isDev              | %b", isDev);
+        logger.info("");
 
-        logger.info("Initializing CEF (it may take some time to download the natives)");
+        logger.info("Initializing CEF (it may take some time to extract the natives)");
+
+        CefUtil.registerSchemes();
 
         ApplicationUI.initialize(
             isDev ? this.devAddress : appUrl,
@@ -194,7 +198,7 @@ public class Bootstrap implements Runnable {
             new AsyncTask(() -> {
                 logger.info("Shutting down.");
                 TrayHandler.destroy();
-                ApplicationUI.getDevtools().close();
+                if (ApplicationUI.getDevtools() != null) ApplicationUI.getDevtools().close();
                 ApplicationUI.getWindow().dispose();
                 CaffeinatedApp.getInstance().shutdown();
                 InstanceManager.cleanShutdown();

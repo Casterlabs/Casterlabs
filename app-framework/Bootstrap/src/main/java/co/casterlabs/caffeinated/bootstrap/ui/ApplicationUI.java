@@ -3,23 +3,16 @@ package co.casterlabs.caffeinated.bootstrap.ui;
 import java.awt.BorderLayout;
 import java.io.IOException;
 
-import org.cef.CefApp;
-import org.cef.CefApp.CefAppState;
+import org.cef.CefClient;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
-import org.cef.callback.CefCommandLine;
 import org.cef.callback.CefContextMenuParams;
 import org.cef.callback.CefMenuModel;
-import org.cef.callback.CefSchemeRegistrar;
-import org.cef.handler.CefAppHandler;
 import org.cef.handler.CefContextMenuHandler;
 import org.cef.handler.CefLifeSpanHandler;
 import org.cef.handler.CefLoadHandlerAdapter;
-import org.cef.handler.CefPrintHandler;
 import org.cef.network.CefRequest.TransitionType;
 import org.jetbrains.annotations.Nullable;
-import org.panda_lang.pandomium.Pandomium;
-import org.panda_lang.pandomium.wrapper.PandomiumClient;
 
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.caffeinated.bootstrap.cef.CefUtil;
@@ -45,7 +38,7 @@ public class ApplicationUI {
 
     private static @Getter String appAddress;
     private static CefBrowser browser;
-    private static PandomiumClient pandaClient;
+    private static CefClient client;
 
     private static @Getter boolean open = false;
 
@@ -55,15 +48,12 @@ public class ApplicationUI {
         appAddress = addr;
         lifeCycleListener = listener;
 
-        registerSchemes();
-
-        Pandomium panda = CefUtil.createCefApp();
-        pandaClient = panda.createClient();
+        client = CefUtil.createCefClient();
 
         window = new ApplicationWindow(listener);
-        bridge = new JavascriptBridge(pandaClient.getCefClient());
+        bridge = new JavascriptBridge(client);
 
-        pandaClient.getCefClient().addContextMenuHandler(new CefContextMenuHandler() {
+        client.addContextMenuHandler(new CefContextMenuHandler() {
             // ID | Name
             // ---+-------------------------
             // 01 | Inspect Element
@@ -106,7 +96,7 @@ public class ApplicationUI {
 
         logger.debug("Loadstate 0");
         lifeCycleListener.onPreLoad();
-        pandaClient.getCefClient().addLoadHandler(new CefLoadHandlerAdapter() {
+        client.addLoadHandler(new CefLoadHandlerAdapter() {
             // 0 = about:blank (preload)
             // 1 = app://index (load)
             // 2 = ... (completely loaded)
@@ -132,7 +122,7 @@ public class ApplicationUI {
 
         });
 
-        pandaClient.getCefClient().addLifeSpanHandler(new CefLifeSpanHandler() {
+        client.addLifeSpanHandler(new CefLifeSpanHandler() {
 
             @Override
             public boolean doClose(CefBrowser var1) {
@@ -165,8 +155,12 @@ public class ApplicationUI {
 
     public static void showWindow() {
         if (browser == null) {
+            // TODO figure out why disabling OSR locks up swing.
+            final boolean useOsr = true;
+            final boolean isTransparent = false;
+
             // Create browser
-            browser = pandaClient.loadURL(appAddress);
+            browser = client.createBrowser(appAddress, useOsr, isTransparent);
             window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
 
             // CEF needs to be visible in order to load the page.
@@ -189,7 +183,10 @@ public class ApplicationUI {
             window.getCefPanel().removeAll();
 
             // Close the browser
-            ApplicationUI.getDevtools().close();
+            if (ApplicationUI.getDevtools() != null) {
+                ApplicationUI.getDevtools().close();
+            }
+
             browser.close(false);
             browser = null;
 
@@ -200,53 +197,6 @@ public class ApplicationUI {
             // Notify
             lifeCycleListener.onTrayMinimize();
         }
-    }
-
-    public static void registerSchemes() {
-        CefApp.addAppHandler(new CefAppHandler() {
-
-            @Override
-            public void stateHasChanged(CefAppState var1) {}
-
-            @Override
-            public void onScheduleMessagePumpWork(long var1) {}
-
-            @Override
-            public void onRegisterCustomSchemes(CefSchemeRegistrar registrar) {
-                if (!registrar.addCustomScheme(
-                    "app", // Scheme
-                    true, // isStandard
-                    false, // isLocal
-                    false, // isDisplayIsolated
-                    true, // isSecure
-                    false, // isCorsEnabled
-                    false, // isCspBypassing
-                    true // isFetchEnabled
-                )) {
-                    FastLogger.logStatic(LogLevel.SEVERE, "Could not register scheme.");
-                    System.exit(1);
-                }
-            }
-
-            @Override
-            public void onContextInitialized() {
-                CefUtil.registerUrlScheme("app", new AppSchemeHandler());
-            }
-
-            @Override
-            public boolean onBeforeTerminate() {
-                return false;
-            }
-
-            @Override
-            public void onBeforeCommandLineProcessing(String var1, CefCommandLine var2) {}
-
-            @Override
-            public CefPrintHandler getPrintHandler() {
-                return null;
-            }
-
-        });
     }
 
     public static void setTitle(@Nullable String title) {

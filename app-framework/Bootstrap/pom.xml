@@ -19,7 +19,7 @@
 			</resource>
 		</resources>
 
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -57,6 +57,10 @@
 			<id>panda-repository</id>
 			<url>https://repo.panda-lang.org/releases</url>
 		</repository>
+		<repository>
+			<id>jcef-maven</id>
+			<url>https://friwi.me/jcef/maven</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -90,10 +94,9 @@
 
 		<!-- UI packages -->
 		<dependency>
-			<groupId>org.panda-lang</groupId>
-			<artifactId>pandomium</artifactId>
-			<version>1.1.2-JCEF-v1.0.10-84.3.8+gc8a556f+chromium-84.0.4147.105</version>
-			<scope>compile</scope>
+			<groupId>org.cef</groupId>
+			<artifactId>jcef-main</artifactId>
+			<version>84.3.8+gc8a556f+chromium-84.0.4147.105-build-17</version>
 		</dependency>
 
 

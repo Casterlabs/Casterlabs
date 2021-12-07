@@ -10,6 +10,6 @@
 
 # Common
 target/
-natives/
+cef_bundle/
 Bootstrap/src/main/resources/app
 debug.log
