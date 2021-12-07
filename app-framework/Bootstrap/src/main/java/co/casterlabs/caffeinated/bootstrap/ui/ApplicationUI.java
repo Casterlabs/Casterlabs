@@ -69,6 +69,9 @@ public class ApplicationUI {
 
                 model.addCheckItem(1, "Inspect Element");
                 model.setChecked(1, devtools.isOpen());
+
+                model.addSeparator();
+                model.addItem(99, "Close This Popup");
 //                }
             }
 
@@ -117,6 +120,9 @@ public class ApplicationUI {
                 if (browser == _browser) {
                     logger.info("Injected Bridge.");
                     bridge.injectBridgeScript(browser.getMainFrame());
+
+                    // Get that populated. (It's async)
+                    window.updateBridgeData();
                 }
             }
 
