@@ -5,10 +5,13 @@
 
 	/* This is set elsewhere */
 	--side-bar-width: 0;
+
+	--white-invert-factor: 0;
 }
 
 .bulma-dark-mode:root {
 	--background-color: #121212;
+	--white-invert-factor: 0.8;
 }
 
 html {

@@ -39,7 +39,7 @@
 
 <!-- svelte-ignore a11y-missing-attribute -->
 <div id="account-{platform}" class="box">
-    <div class="platform-logo">
+    <div class="platform-logo invert-dark-mode">
         <img src="/img/services/{platform}/icon.svg" alt="{platformName} Logo" />
     </div>
 
@@ -76,8 +76,9 @@
         margin-bottom: 0.9rem !important;
     }
 
-    :global(:not(.bulma-dark-mode)) .platform-logo img {
-        filter: invert(0.8); /* Lazy Way */
+    .platform-logo img {
+        /* Lazy Method */
+        filter: invert(var(--white-invert-factor));
     }
 
     .platform-logo {
