@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
@@ -15,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
+import javax.swing.border.LineBorder;
 
 import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
@@ -32,9 +34,7 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @Getter
 public class ApplicationWindow {
-    // TODO Implement:
-    // https://tips4java.wordpress.com/2009/09/13/resizing-components/
-    public static final boolean ENABLE_CUSTOM_TITLEBARS = false;
+    public static final boolean ENABLE_CUSTOM_TITLEBARS = System.getProperty("caffeinated.window.customtitlebar.enable", "").equals("true");
 
     private JFrame frame;
     private JPanel cefPanel;
@@ -126,11 +126,22 @@ public class ApplicationWindow {
         this.frame.setResizable(true);
         this.frame.setMinimumSize(new Dimension(800, 580));
 
+        this.updateBridgeData();
+
+        this.cefPanel = new JPanel();
+        this.cefPanel.setLayout(new BorderLayout(0, 0));
+        this.frame.getContentPane().add(this.cefPanel, BorderLayout.CENTER);
+
         if (ENABLE_CUSTOM_TITLEBARS) {
             // We implement our own title bar in html, as it can be easily restyled.
             switch (ConsoleUtil.getPlatform()) {
                 case WINDOWS:
-                    this.frame.setUndecorated(!ENABLE_CUSTOM_TITLEBARS);
+                    this.frame.setUndecorated(true);
+                    this.cefPanel.setBorder(new LineBorder(Color.GRAY, 2));
+
+                    new ComponentResizer()
+                        .registerComponent(this.frame);
+
                     break;
 
                 default:
@@ -138,13 +149,6 @@ public class ApplicationWindow {
 
             }
         }
-
-        this.updateBridgeData();
-
-        this.cefPanel = new JPanel();
-        this.cefPanel.setLayout(new BorderLayout(0, 0));
-        this.frame.getContentPane().add(this.cefPanel, BorderLayout.CENTER);
-
     }
 
     public boolean isMaximized() {
