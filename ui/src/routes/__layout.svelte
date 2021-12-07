@@ -80,7 +80,10 @@
     function parseWindowUpdate(data) {
         console.log("[__layout]", "Window state data: ", data);
 
-        if (data.platform == "WINDOWS") {
+        // Incase it's needed elsewhere.
+        document.title = data.title;
+
+        if (data.platform == "WINDOWS" && data.enableTitleBar) {
             showTitleBar = true;
         }
     }

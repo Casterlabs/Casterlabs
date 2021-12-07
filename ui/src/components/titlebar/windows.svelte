@@ -1,8 +1,11 @@
 <script>
     import { onMount } from "svelte";
+    import Draggable from "./drag-listener.mjs";
+
+    let titlebarElement;
 
     let maximized = false;
-    let focused = true;
+    let focused = false;
     let title = "Casterlabs Caffeinated";
     let icon = "casterlabs";
 
@@ -11,7 +14,7 @@
     }
 
     function sendMaximize() {
-        Bridge.emit("window:maximize");
+        Bridge.emit("window:minmax");
     }
 
     function sendClose() {
@@ -28,6 +31,12 @@
     onMount(async () => {
         Bridge.on("window:update", parseWindowUpdate);
         parseWindowUpdate((await Bridge.query("window")).data);
+
+        const draggable = new Draggable(titlebarElement);
+
+        draggable.on("move", (data) => {
+            Bridge.emit("window:move", data);
+        });
     });
 </script>
 
@@ -41,7 +50,7 @@
     </style>
 {/if}
 
-<div class="ui-titlebar">
+<div class="ui-titlebar" bind:this={titlebarElement}>
     <div class="ui-titleicon">
         <img src="/img/logo/{icon}.svg" alt="Casterlabs" />
     </div>

@@ -2,6 +2,7 @@ package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -26,12 +27,15 @@ import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
 import xyz.e3ndr.consoleutil.ConsoleUtil;
-import xyz.e3ndr.consoleutil.platform.JavaPlatform;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @Getter
 public class ApplicationWindow {
+    // TODO Implement:
+    // https://tips4java.wordpress.com/2009/09/13/resizing-components/
+    public static final boolean ENABLE_CUSTOM_TITLEBARS = false;
+
     private JFrame frame;
     private JPanel cefPanel;
     private UILifeCycleListener listener;
@@ -122,9 +126,17 @@ public class ApplicationWindow {
         this.frame.setResizable(true);
         this.frame.setMinimumSize(new Dimension(800, 580));
 
-        if (ConsoleUtil.getPlatform() == JavaPlatform.WINDOWS) {
+        if (ENABLE_CUSTOM_TITLEBARS) {
             // We implement our own title bar in html, as it can be easily restyled.
-//            this.frame.setUndecorated(true);
+            switch (ConsoleUtil.getPlatform()) {
+                case WINDOWS:
+                    this.frame.setUndecorated(!ENABLE_CUSTOM_TITLEBARS);
+                    break;
+
+                default:
+                    break;
+
+            }
         }
 
         this.updateBridgeData();
@@ -160,7 +172,8 @@ public class ApplicationWindow {
                     .put("icon", this.icon)
                     .put("maximized", this.isMaximized())
                     .put("platform", ConsoleUtil.getPlatform().name())
-                    .put("hasFocus", this.hasFocus);
+                    .put("hasFocus", this.hasFocus)
+                    .put("enableTitleBar", ENABLE_CUSTOM_TITLEBARS);
 
                 bridge.getQueryData().put("window", bridgeData);
                 bridge.emit("window:update", bridgeData);
@@ -195,6 +208,19 @@ public class ApplicationWindow {
     public void toFront() {
         this.frame.setState(this.frame.getState() & ~JFrame.ICONIFIED); // State WITHOUT iconified flag.
         this.frame.toFront();
+    }
+
+    public void translate(int moveX, int moveY) {
+        Point pos = this.frame.getLocation();
+
+        pos.x -= moveX;
+        pos.y -= moveY;
+
+        this.frame.setLocation(pos);
+    }
+
+    public void minimize() {
+        this.frame.setState(this.frame.getState() | JFrame.ICONIFIED);
     }
 
 }

@@ -126,6 +126,27 @@ public class Bootstrap implements Runnable {
         // Register CEF schemes for the internal app handler.
         CefUtil.registerSchemes();
 
+        // Window listeners
+        CaffeinatedApp.getInstance().onBridgeEvent("window:move", (json) -> {
+            int moveX = json.getNumber("moveX").intValue();
+            int moveY = json.getNumber("moveY").intValue();
+
+            ApplicationUI.getWindow().translate(moveX, moveY);
+        });
+
+        CaffeinatedApp.getInstance().onBridgeEvent("window:minimize", (json) -> {
+            ApplicationUI.getWindow().minimize();
+        });
+
+        CaffeinatedApp.getInstance().onBridgeEvent("window:minmax", (json) -> {
+            ApplicationUI.getWindow().minmax();
+        });
+
+        CaffeinatedApp.getInstance().onBridgeEvent("window:close ", (json) -> {
+            ApplicationUI.getWindow().getListener().onUICloseAttempt();
+        });
+
+        // Ok, now initialize!
         ApplicationUI.initialize(
             isDev ? this.devAddress : appUrl,
             new UILifeCycleListener() {
