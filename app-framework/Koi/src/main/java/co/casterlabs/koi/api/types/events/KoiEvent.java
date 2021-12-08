@@ -12,6 +12,9 @@ import lombok.ToString;
 public abstract class KoiEvent {
     protected User streamer;
 
+    @JsonField("event_type")
+    protected final KoiEventType type = this.getType(); // For RSON.
+
     @JsonField("event_abilities")
     protected EventAbilities abilities;
 

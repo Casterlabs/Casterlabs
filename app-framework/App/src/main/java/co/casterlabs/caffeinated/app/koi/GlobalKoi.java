@@ -1,7 +1,6 @@
 package co.casterlabs.caffeinated.app.koi;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -31,17 +30,15 @@ import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @Getter
 public class GlobalKoi implements KoiLifeCycleHandler {
-    private static final List<KoiEventType> HISTORY_EVENTS = Arrays.asList();
-
     private List<KoiLifeCycleHandler> koiEventListeners = new LinkedList<>();
 
-    private List<KoiEvent> chatHistory = new LinkedList<>();
+    private List<KoiEvent> eventHistory = new LinkedList<>();
     private Map<String, List<User>> viewers = new HashMap<>();
 
     @SneakyThrows
     public void init() {
         // Set read-only pointers to this instance's chatHistory and viewers fields.
-        ReflectionLib.setStaticValue(Koi.class, "chatHistory", Collections.unmodifiableList(this.chatHistory));
+        ReflectionLib.setStaticValue(Koi.class, "chatHistory", Collections.unmodifiableList(this.eventHistory));
         ReflectionLib.setStaticValue(Koi.class, "viewers", Collections.unmodifiableMap(this.viewers));
     }
 
@@ -69,12 +66,12 @@ public class GlobalKoi implements KoiLifeCycleHandler {
 
     private void updateBridgeData() {
         JsonObject bridgeData = new JsonObject()
-            .put("chatHistory", Rson.DEFAULT.toJson(this.chatHistory))
+            .put("history", Rson.DEFAULT.toJson(this.eventHistory))
             .put("viewers", Rson.DEFAULT.toJson(this.viewers));
 
         AppBridge bridge = CaffeinatedApp.getInstance().getBridge();
 
-        bridge.emit("koi:chatHistory", bridgeData.get("chatHistory"));
+//        bridge.emit("koi:chatHistory", bridgeData.get("chatHistory"));
         bridge.emit("koi:viewers", bridgeData.get("viewers"));
 
         bridge.getQueryData().put("koi", bridgeData);
@@ -98,19 +95,24 @@ public class GlobalKoi implements KoiLifeCycleHandler {
                 }
             }
         } else {
-            if (HISTORY_EVENTS.contains(e.getType())) {
-                this.chatHistory.add(e);
-                this.updateBridgeData();
-            } else if (e.getType() == KoiEventType.VIEWER_LIST) {
+            this.eventHistory.add(e);
+
+            if (e.getType() == KoiEventType.VIEWER_LIST) {
                 this.viewers.put(
                     e.getStreamer().getPlatform().name(),
                     Collections.unmodifiableList(((ViewerListEvent) e).getViewers())
                 );
+
+                this.updateBridgeData();
             }
 
             // Emit the event to Caffeinated.
-            CaffeinatedApp.getInstance().getBridge().emit("koi:event:" + e.getType().name().toLowerCase(), Rson.DEFAULT.toJson(e));
+            JsonElement asJson = Rson.DEFAULT.toJson(e);
 
+            CaffeinatedApp.getInstance().getBridge().emit("koi:event:" + e.getType().name().toLowerCase(), asJson);
+            CaffeinatedApp.getInstance().getBridge().emit("koi:event", asJson);
+
+            // Send to plugins n whatnot.
             for (KoiLifeCycleHandler listener : this.koiEventListeners) {
                 KoiEventUtil.reflectInvoke(listener, e);
             }

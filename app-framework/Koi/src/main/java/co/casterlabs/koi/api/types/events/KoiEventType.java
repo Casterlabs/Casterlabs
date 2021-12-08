@@ -2,7 +2,6 @@ package co.casterlabs.koi.api.types.events;
 
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
-import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.AllArgsConstructor;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
@@ -41,9 +40,10 @@ public enum KoiEventType {
             return event;
         } catch (IllegalArgumentException e) {
             return null;
-        } catch (JsonParseException e) {
+        } catch (Exception e) {
             FastLogger.logStatic(LogLevel.SEVERE, "An error occured while converting an event of type %s", eventType);
             FastLogger.logException(e);
+            FastLogger.logStatic(LogLevel.DEBUG, eventJson);
             return null;
         }
     }

@@ -2,6 +2,7 @@
     import User from "./user.svelte";
 
     export let chatEvent = null;
+    export let isMultiPlatform = false;
 
     function escapeHtml(unsafe) {
         return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -28,12 +29,14 @@
     }
 </script>
 
-<span data-id={chatEvent.id} data-sender={chatEvent.sender.UPID}>
-    <User userData={chatEvent.sender} />
-    {messageHtml}<sup class="upvote-counter upvote-1">
-        {upvotesHtml}
-    </sup>
-</span>
+<li>
+    <span data-id={chatEvent.id} data-sender={chatEvent.sender.UPID}>
+        <User {isMultiPlatform} userData={chatEvent.sender} />
+        {messageHtml}<sup class="upvote-counter upvote-1">
+            {upvotesHtml}
+        </sup>
+    </span>
+</li>
 
 <style>
     :global(.inline-image) {

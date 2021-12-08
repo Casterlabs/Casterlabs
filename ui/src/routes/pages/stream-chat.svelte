@@ -1,7 +1,14 @@
 <script>
     import { setPageProperties } from "../__layout.svelte";
 
-    import { onMount } from "svelte";
+    import ChatMessage from "../../components/chat/chat-message.svelte";
+
+    import { onMount, onDestroy } from "svelte";
+
+    let eventHandler;
+
+    let chatHistory = [];
+    let isMultiPlatform = true;
 
     setPageProperties({
         showSideBar: true,
@@ -9,120 +16,70 @@
         allowNavigateBackwards: true
     });
 
-    onMount(async () => {
-        const ChatMessage = (await import("../../components/chat/chat-message.svelte")).default;
-        // const Draggable = (await import("../../../static/js/util/draggable.mjs")).default;
-        const { appStore } = window.Caffeinated;
-        const Koi = window.Koi;
+    function onMeta(event) {
+        const chatElement = chatBox.querySelector(`[data-id='${event.id}']`);
 
-        const chatBox = document.querySelector("#chat-box>ul");
+        if (event.is_visible) {
+            const counterElement = chatElement.querySelector(".upvote-counter");
 
-        // Chat
-        {
-            function addChatMessage(chatEvent) {
-                const container = document.createElement("li");
+            if (event.upvotes > 0) {
+                counterElement.innerText = event.upvotes;
 
-                chatBox.appendChild(container);
-
-                new ChatMessage({
-                    target: container,
-                    props: {
-                        chatEvent: chatEvent
-                    }
-                });
-            }
-
-            function onMeta(event) {
-                const chatElement = chatBox.querySelector(`[data-id='${event.id}']`);
-
-                if (event.is_visible) {
-                    const counterElement = chatElement.querySelector(".upvote-counter");
-
-                    if (event.upvotes > 0) {
-                        counterElement.innerText = event.upvotes;
-
-                        if (event.upvotes >= 1000) {
-                            counterElement.classList = "upvote-4";
-                        } else if (event.upvotes >= 100) {
-                            counterElement.classList = "upvote-3";
-                        } else if (event.upvotes >= 10) {
-                            counterElement.classList = "upvote-2";
-                        } else if (event.upvotes >= 1) {
-                            counterElement.classList = "upvote-1";
-                        }
-                    }
-                } else {
-                    chatElement.remove();
+                if (event.upvotes >= 1000) {
+                    counterElement.classList = "upvote-4";
+                } else if (event.upvotes >= 100) {
+                    counterElement.classList = "upvote-3";
+                } else if (event.upvotes >= 10) {
+                    counterElement.classList = "upvote-2";
+                } else if (event.upvotes >= 1) {
+                    counterElement.classList = "upvote-1";
                 }
             }
+        } else {
+            chatElement.remove();
+        }
+    }
 
-            Koi.on("chat", addChatMessage);
-            Koi.on("donation", addChatMessage);
+    // TODO better processing of messages, this works for now.
+    function processEvent(event) {
+        console.log(event);
 
-            // TODO implement the others.
+        switch (event.event_type) {
+            case "CHAT":
+            case "DONATION": {
+                chatHistory.push(event);
+                break;
+            }
 
-            Koi.on("meta", onMeta);
-
-            for (const event of Koi.history) {
-                switch (event.event_type) {
-                    case "CHAT":
-                    case "DONATION": {
-                        addChatMessage(event);
-                        break;
-                    }
-
-                    case "META": {
-                        onMeta(event);
-                        break;
-                    }
-                }
+            case "META": {
+                onMeta(event);
+                break;
             }
         }
 
-        // // Add the viewers box and make it draggable
-        // {
-        //     const VIEWERS_BOX_OPTIONS = {
-        //         limit: true,
+        chatHistory = chatHistory; // Svelte update.
+    }
 
-        //         posX: 0,
-        //         posY: 0,
+    onDestroy(() => {
+        eventHandler?.destroy();
+    });
 
-        //         width: 0.05,
-        //         height: 0.05,
+    onMount(async () => {
+        eventHandler = Bridge.createThrowawayEventHandler();
 
-        //         minWidth: 0.15,
-        //         minHeight: 0.15,
-
-        //         maxWidth: 1,
-        //         maxHeight: 1,
-
-        //         ...(appStore.get("page.chat.viewers_box") ?? {}),
-
-        //         zIndex: 15
-        //     };
-
-        //     const draggable = new Draggable(document.querySelector("#viewers-box"), VIEWERS_BOX_OPTIONS);
-
-        //     draggable.enabled = true;
-
-        //     function sendUpdate() {
-        //         const posAndSize = draggable.getPositionAndSize();
-
-        //         appStore.set("page.chat.viewers_box", posAndSize);
-        //     }
-
-        //     document.addEventListener("mouseup", sendUpdate);
-        //     draggable.on("resize", sendUpdate);
-        //     draggable.on("move", sendUpdate);
-        // }
+        eventHandler.on("koi:event", processEvent);
+        (await Bridge.query("koi")).data.history.forEach(processEvent);
     });
 </script>
 
 <div class="stream-chat-container">
     <div class="chat-content">
-        <div id="viewers-box" class="draggable hidden" />
         <div id="chat-box" class="allow-select">
-            <ul />
+            <ul>
+                {#each chatHistory as chatEvent}
+                    <ChatMessage {chatEvent} bind:isMultiPlatform />
+                {/each}
+            </ul>
         </div>
     </div>
     <div id="interact-box" />
@@ -143,15 +100,6 @@
 
     .chat-content {
         height: 100%;
-    }
-
-    .draggable {
-        overflow: hidden;
-        position: sticky;
-    }
-
-    #viewers-box {
-        background-color: blue;
     }
 
     #chat-box {
