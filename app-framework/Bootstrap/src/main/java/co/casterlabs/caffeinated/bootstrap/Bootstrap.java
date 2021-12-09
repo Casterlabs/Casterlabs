@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.bootstrap;
 
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
@@ -58,8 +59,20 @@ public class Bootstrap implements Runnable {
 
         System.out.println(" > System.out.println(\"Hello World!\");\nHello World!\n\n");
 
+        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+               if (e instanceof UnsatisfiedLinkError) {
+                   // TODO show fatal popup detailing the error and let the user know that the program is about to close.
+               }
+            }
+         });
+        
         ConsoleUtil.getPlatform(); // Init ConsoleUtil.
-        new CommandLine(new Bootstrap()).execute(args); // Calls #run()
+        
+        new AsyncTask(() -> {
+            new CommandLine(new Bootstrap()).execute(args); // Calls #run()
+        });
     }
 
     @SneakyThrows
@@ -86,6 +99,8 @@ public class Bootstrap implements Runnable {
         } else {
             logger.info("Starting app.");
         }
+        
+        
 
         // We do this down here because of the IPC.
         if (this.enableTraceLogging) {
