@@ -14,6 +14,7 @@
 
 	<modules>
 		<module>Caffeinated-Windows</module>
+		<module>Caffeinated-MacOS</module>
 	</modules>
 
 </project>
