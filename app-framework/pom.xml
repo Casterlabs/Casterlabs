@@ -15,6 +15,7 @@
 		<module>Koi</module>
 		<module>BuiltInPlugins</module>
 		<module>LocalServer</module>
+		<module>Build</module>
 	</modules>
 
 	<properties>
