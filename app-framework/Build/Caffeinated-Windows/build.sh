@@ -1,7 +1,8 @@
 #!/bin/bash
 
+
 # Let's get it started.
-cd Build/Caffeinated-Windows
+cd app-framework/Build/Caffeinated-Windows
 
 echo "Building for Windows..."
 
@@ -25,10 +26,10 @@ java -jar "../packr.jar" \
      --output target/dist
 
 # Copy the files.
-mkdir -p ../../dist
-cp -r target/dist ../../dist/windows
+cp -r target/dist/* ../../../dist/windows
 
 # Return us back to the root dir.
+cd ..
 cd ..
 cd ..
 

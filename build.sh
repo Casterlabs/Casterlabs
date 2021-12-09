@@ -1,26 +1,39 @@
 #!/bin/bash
 
-# Delete old build stuff.
-rm -rf ./ui/build
-rm -rf ./app-framework/Bootstrap/src/main/resources/app
 
-# Build UI
-cd ./ui
-npm i
-npm run build
+# (Optional) Compile everything
+if [[ $@ != *"nocompile"* ]]; then
+    # Delete old ui build stuff.
+    rm -rf ui/build
+    rm -rf app-framework/Bootstrap/src/main/resources/app
+    
+    # Build UI
+    cd ui
+    npm i
+    npm run build
+    
+    # Copy output to app-framework/Bootstrap/src/main/resources/app
+    cd ..
+    cp -r ui/build app-framework/Bootstrap/src/main/resources/app
+    
+    # Compile the maven project
+	cd app-framework
+    mvn clean package
+    cd ..
+fi
 
-# Copy output to app-framework/Bootstrap/src/main/resources/app
-cd ..
-cp -r ./ui/build ./app-framework/Bootstrap/src/main/resources/app
+# Reset/clear the dist folder
+rm -rf dist/*
+mkdir -p dist
+mkdir dist/windows
+mkdir dist/linux
+mkdir dist/macos
 
-# Build the app jar
-cd app-framework
-mvn install
-
-# Copy framework .jar to the dist/ folder.
-cd ..
-mkdir -p ./dist
-cp ./app-framework/Bootstrap/target/caffeinated.jar ./dist/caffeinated.jar
-
-# Generate executables... (?)
-echo "TODO: Autogenerate executables"
+if [[ $@ != *"nodist"* ]]; then
+    echo ""
+    echo "Completing packaging of application."
+    echo ""
+    
+    sh app-framework/Build/Caffeinated-Windows/build.sh
+    echo ""
+fi
