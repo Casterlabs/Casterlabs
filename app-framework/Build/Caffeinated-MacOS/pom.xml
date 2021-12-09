@@ -77,7 +77,7 @@
 							<bundleCopyright>© Casterlabs 2019-2021</bundleCopyright>
 							<relocations>
 								<relocation>${project.artifactId}-jar-with-dependencies.jar:${project.artifactId}.jar</relocation>
-								<relocation>../app_icon.icns:CefIcons.icns</relocation>
+								<!-- <relocation>../app_icon.icns:../Resources/CefIcon.icns</relocation> -->
 							</relocations>
 						</configuration>
 					</execution>
