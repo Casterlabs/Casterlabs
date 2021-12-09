@@ -69,11 +69,9 @@
 		<dependency>
 			<groupId>com.github.casterlabs.rakurai</groupId>
 			<artifactId>Json</artifactId>
-			<version>1.9.2</version>
+			<version>1.10.0</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- <dependency> <groupId>com.github.casterlabs.sora</groupId> <artifactId>Sora-Framework</artifactId> 
-			<version>2.4.1</version> <scope>compile</scope> </dependency> -->
 		<dependency>
 			<groupId>org.java-websocket</groupId>
 			<artifactId>Java-WebSocket</artifactId>

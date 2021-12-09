@@ -106,13 +106,13 @@
 		<dependency>
 			<groupId>com.github.casterlabs.rakurai</groupId>
 			<artifactId>Json</artifactId>
-			<version>1.9.2</version>
+			<version>1.10.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.casterlabs.rakurai</groupId>
 			<artifactId>Util</artifactId>
-			<version>1.9.2</version>
+			<version>1.10.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

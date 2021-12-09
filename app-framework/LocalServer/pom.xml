@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>com.github.casterlabs.sora</groupId>
 			<artifactId>Sora-Framework</artifactId>
-			<version>7673e2a</version> <!-- 2.4.2 -->
+			<version>2.4.3</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
