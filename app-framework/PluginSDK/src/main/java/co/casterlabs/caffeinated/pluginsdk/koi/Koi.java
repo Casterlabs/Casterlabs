@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.pluginsdk;
+package co.casterlabs.caffeinated.pluginsdk.koi;
 
 import java.util.List;
 import java.util.Map;

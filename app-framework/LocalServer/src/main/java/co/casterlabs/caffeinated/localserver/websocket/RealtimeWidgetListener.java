@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import co.casterlabs.caffeinated.localserver.RouteHelper;
-import co.casterlabs.caffeinated.pluginsdk.Koi;
+import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.util.Pair;
