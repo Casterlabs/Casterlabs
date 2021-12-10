@@ -1,15 +1,15 @@
 package co.casterlabs.caffeinated.pluginsdk;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import co.casterlabs.caffeinated.util.Reflective;
 import co.casterlabs.koi.api.types.events.KoiEvent;
 import co.casterlabs.koi.api.types.user.User;
+import lombok.Getter;
 
 public class Koi {
-    private static List<KoiEvent> chatHistory = new LinkedList<>();
-    private static Map<String, List<User>> viewers = new HashMap<>();
+    private static @Reflective @Getter List<KoiEvent> chatHistory;
+    private static @Reflective @Getter Map<String, List<User>> viewers;
 
 }

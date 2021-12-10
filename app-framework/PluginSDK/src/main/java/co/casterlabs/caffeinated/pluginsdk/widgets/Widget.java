@@ -1,5 +1,12 @@
 package co.casterlabs.caffeinated.pluginsdk.widgets;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
@@ -7,12 +14,18 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsItem;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsLayout;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsSection;
 import co.casterlabs.caffeinated.util.Reflective;
+import co.casterlabs.caffeinated.util.async.Promise;
+import co.casterlabs.koi.api.listener.KoiEventListener;
+import co.casterlabs.koi.api.listener.KoiEventUtil;
+import co.casterlabs.koi.api.types.events.KoiEvent;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @SuppressWarnings("unchecked") // This is for chaining.
 public abstract class Widget {
@@ -21,13 +34,81 @@ public abstract class Widget {
     private String id;
     private String name; // This is mutable by the end user.
     private CaffeinatedPlugin plugin;
-    private @Getter WidgetDetails details;
-    public @Getter WidgetType type = WidgetType.WIDGET; // TODO
+    private WidgetDetails details;
+    private @Getter WidgetType type = WidgetType.WIDGET; // TODO
 
     private Runnable pokeOutside;
 
     private @Nullable WidgetSettingsLayout settingsLayout;
     private @NonNull JsonObject settings;
+
+    private @Reflective Set<KoiEventListener> koiListeners = new HashSet<>();
+
+    private List<WidgetInstance> widgetInstances = new LinkedList<>();
+
+    /* ---------------- */
+    /* Internals        */
+    /* ---------------- */
+
+    @Reflective
+    private void cleanlyDestroy() {
+        this.widgetInstances.forEach((w) -> {
+            try {
+                w.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        this.onDestroy();
+    }
+
+    /* ---------------- */
+    /* Koi              */
+    /* ---------------- */
+
+    /**
+     * @deprecated While this is used internally, plugins can use it as well for
+     *             internal event shenanigans. Though, it is important to note that
+     *             it will <b>NOT</b> bubble to the parent plugin or other plugins.
+     * 
+     * @return     A completion promise, it has no result and is only useful if you
+     *             need to ensure the listeners fire before you continue executing.
+     *             See {@link Promise#await()} or
+     *             {@link Promise#then(java.util.function.Consumer)}
+     */
+    @Deprecated
+    public final Promise<Void> fireKoiEventListeners(@NonNull KoiEvent event) {
+        return new Promise<Void>(() -> {
+            for (KoiEventListener listener : new ArrayList<>(this.koiListeners)) {
+                try {
+                    KoiEventUtil.reflectInvoke(listener, event);
+                } catch (Throwable t) {
+                    FastLogger.logStatic(LogLevel.SEVERE, "An error occurred whilst processing Koi event:");
+                    FastLogger.logException(t);
+                }
+            }
+
+            return null;
+        });
+    }
+
+    /**
+     * @apiNote Calling {@link #addKoiListener(KoiEventListener)} multiple times
+     *          with the same listener won't register it multiple times. The
+     *          internal implementation is a {@link HashSet}.
+     */
+    public final void addKoiListener(@NonNull KoiEventListener listener) {
+        this.koiListeners.add(listener);
+    }
+
+    public final void removeKoiListener(@NonNull KoiEventListener listener) {
+        this.koiListeners.remove(listener);
+    }
+
+    /* ---------------- */
+    /* Settings         */
+    /* ---------------- */
 
     @Reflective
     private void setSettings(@Nullable JsonObject newSettings) {
@@ -37,21 +118,6 @@ public abstract class Widget {
         }
     }
 
-    /**
-     * @deprecated This is used internally.
-     */
-    @Deprecated
-    public final JsonObject toJson() {
-        return new JsonObject()
-            .put("namespace", this.namespace)
-            .put("id", this.id)
-            .put("name", this.name)
-            .put("owner", this.plugin.getId())
-            .put("details", Rson.DEFAULT.toJson(this.details))
-            .put("settingsLayout", Rson.DEFAULT.toJson(this.settingsLayout))
-            .put("settings", this.getSettings());
-    }
-
     /* ---------------- */
     /* Abstract Methods */
     /* ---------------- */
@@ -59,11 +125,13 @@ public abstract class Widget {
     public void onInit() {}
 
     /**
-     * @apiNote By this point the widget will be completely unregistered. You should
-     *          speedily destroy whatever you need inorder for your plugin to
-     *          properly unload and not leak memory.
+     * @apiNote  By this point the widget will be completely unregistered. You
+     *           should speedily destroy whatever you need inorder for your plugin
+     *           to properly unload and not leak memory.
+     * 
+     * @implNote This is called internally, hence the <b>protected</b> modified.
      */
-    public void onDestroy() {}
+    protected void onDestroy() {}
 
     public void onNameUpdate() {}
 
@@ -149,17 +217,46 @@ public abstract class Widget {
         return this.id;
     }
 
+    public final List<WidgetInstance> getWidgetInstances() {
+        return new ArrayList<>(this.widgetInstances);
+    }
+
+    public final WidgetDetails getWidgetDetails() {
+        return this.details;
+    }
+
     /**
      * @apiNote This name is editable by the end-user. Do <b>NOT</b> treat as a
-     *          unique property, use {@link #getId } instead.
+     *          unique property, use {@link #getId() } for that instead.
      */
     public final String getName() {
         return this.name;
     }
 
-    // Auto-cast to whatever class you want.
+    /**
+     * The result is auto-cast to whatever type you want.
+     */
     public final <T extends CaffeinatedPlugin> T getPlugin() {
         return (T) this.plugin;
+    }
+
+    /* ---------------- */
+    /* Misc             */
+    /* ---------------- */
+
+    /**
+     * @deprecated This is used internally.
+     */
+    @Deprecated
+    public final JsonObject toJson() {
+        return new JsonObject()
+            .put("namespace", this.namespace)
+            .put("id", this.id)
+            .put("name", this.name)
+            .put("owner", this.plugin.getId())
+            .put("details", Rson.DEFAULT.toJson(this.details))
+            .put("settingsLayout", Rson.DEFAULT.toJson(this.settingsLayout))
+            .put("settings", this.getSettings());
     }
 
 }

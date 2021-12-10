@@ -2,6 +2,7 @@ package co.casterlabs.caffeinated.localserver;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -9,7 +10,11 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.localserver.handlers.RouteLocalServer;
 import co.casterlabs.caffeinated.localserver.handlers.RoutePluginApi;
 import co.casterlabs.caffeinated.localserver.handlers.RouteWidgetApi;
+import co.casterlabs.caffeinated.localserver.websocket.RealtimeConnection;
+import co.casterlabs.caffeinated.util.Pair;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.io.http.server.HttpServerImplementation;
+import co.casterlabs.rakurai.io.http.websocket.Websocket;
 import co.casterlabs.sora.Sora;
 import co.casterlabs.sora.SoraFramework;
 import co.casterlabs.sora.SoraLauncher;
@@ -20,6 +25,7 @@ import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class LocalServer implements Closeable, HttpProvider {
+    private static final long PING_INTERVAL = TimeUnit.SECONDS.toMillis(15);
     private SoraFramework framework;
 
     @SneakyThrows
@@ -31,38 +37,58 @@ public class LocalServer implements Closeable, HttpProvider {
 
         this.framework
             .getSora()
-            .register(new SoraPlugin() {
+            .register(new LocalServerPluginWrapper());
+    }
 
-                @Override
-                public void onInit(Sora sora) {
-                    sora.addHttpProvider(this, new RouteLocalServer());
-                    sora.addHttpProvider(this, new RoutePluginApi());
-                    sora.addHttpProvider(this, new RouteWidgetApi());
+    private class LocalServerPluginWrapper extends SoraPlugin {
+
+        @Override
+        public void onInit(Sora sora) {
+            sora.addHttpProvider(this, new RouteLocalServer());
+            sora.addHttpProvider(this, new RoutePluginApi());
+            sora.addHttpProvider(this, new RouteWidgetApi());
+
+            new AsyncTask(this::pingHandler);
+        }
+
+        private void pingHandler() {
+            while (true) {
+                try {
+                    for (Websocket websocket : this.getWebsockets()) {
+                        Pair<RealtimeConnection, Object> attachment = websocket.getAttachment();
+
+                        attachment.a.checkExpiryAndPing();
+                    }
+                    Thread.sleep(PING_INTERVAL);
+                } catch (Throwable t) {
+                    t.printStackTrace();
                 }
+            }
+        }
 
-                @Override
-                public void onClose() {}
+        @Override
+        public void onClose() {}
 
-                @Override
-                public @Nullable String getVersion() {
-                    return CaffeinatedApp.getInstance().getBuildInfo().getVersionString();
-                }
+        @Override
+        public @Nullable String getVersion() {
+            return CaffeinatedApp.getInstance().getBuildInfo().getVersionString();
+        }
 
-                @Override
-                public @Nullable String getAuthor() {
-                    return "Casterlabs";
-                }
+        @Override
+        public @Nullable String getAuthor() {
+            return "Casterlabs";
+        }
 
-                @Override
-                public @NonNull String getName() {
-                    return "Caffeinated Conductor (LocalServer)";
-                }
+        @Override
+        public @NonNull String getName() {
+            return "Caffeinated Conductor (LocalServer)";
+        }
 
-                @Override
-                public @NonNull String getId() {
-                    return "co.casterlabs.caffeinated.conductor";
-                }
-            });
+        @Override
+        public @NonNull String getId() {
+            return "co.casterlabs.caffeinated.conductor";
+        }
+
     }
 
     /* ---------------- */

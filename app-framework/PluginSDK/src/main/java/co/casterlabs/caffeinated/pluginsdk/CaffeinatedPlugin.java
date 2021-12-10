@@ -49,6 +49,7 @@ public abstract class CaffeinatedPlugin implements Closeable {
      *             See {@link Promise#await()} or
      *             {@link Promise#then(java.util.function.Consumer)}
      */
+    @SuppressWarnings("deprecation")
     @Deprecated
     public Promise<Void> fireKoiEventListeners(@NonNull KoiEvent event) {
         return new Promise<Void>(() -> {
@@ -59,6 +60,10 @@ public abstract class CaffeinatedPlugin implements Closeable {
                     this.logger.severe("An error occurred whilst processing Koi event:");
                     this.logger.exception(t);
                 }
+            }
+
+            for (Widget widget : this.getWidgets()) {
+                widget.fireKoiEventListeners(event);
             }
 
             return null;

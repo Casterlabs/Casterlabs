@@ -98,7 +98,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
         pluginWidgetsField.remove(widget);
 
         try {
-            widget.onDestroy();
+            ReflectionLib.invokeMethod(widget, "cleanlyDestroy");
         } catch (Throwable ignored) {}
     }
 
