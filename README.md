@@ -49,9 +49,7 @@
 
 ## For developers
 Check each individual folder for the different projects:
-- <a href="./app">The app code.</a>
-- <a href="./default-modules">The default widgets bundled in the app.</a>
-- <a href="./launcher">The auto-updater and launcher for the app.</a>
+- <a href="./app-framework">The app code.</a>
+- <a href="./app-framework/BuiltInPlugins">The default widgets bundled in the app.</a>
+- <a href="./ui">The ui code.</a>
 - <a href="./external">The code for the widget loader and obs dock loader.</a>
-- <a href="./companion">The code for the widget loader and obs dock loader.</a>
-- <a href="./control-deck">The internal plugin that interfaces with the Casterlabs Control Deck via USB.</a>
