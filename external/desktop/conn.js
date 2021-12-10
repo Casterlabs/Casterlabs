@@ -77,6 +77,11 @@ class Conn {
                         return;
                     }
 
+                    case "KOI_STATICS": {
+                        this.broadcast("koi_statics", payload.data);
+                        return;
+                    }
+
                     case "KOI": {
                         this.broadcast("koi", payload.data);
                         return;

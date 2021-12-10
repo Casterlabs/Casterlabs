@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import co.casterlabs.caffeinated.localserver.RouteHelper;
+import co.casterlabs.caffeinated.pluginsdk.Koi;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.util.Pair;
@@ -55,10 +56,16 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
         this.field_widgetInstances.add(this.wInstance);
 
         this.sendMessage(
+            "KOI_STATICS",
+            Koi.toJson() // Exact same.
+        );
+
+        this.sendMessage(
             "INIT",
             new JsonObject()
                 .put("connectionId", this.connectionId)
                 .put("widget", this.widget.toJson())
+                .put("koi", Koi.toJson())
         );
     }
 
@@ -189,6 +196,14 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
                 "UPDATE",
                 new JsonObject()
                     .put("widget", widget.toJson())
+            );
+        }
+
+        @Override
+        public void onKoiStaticsUpdate(@NonNull JsonObject statics) throws IOException {
+            sendMessage(
+                "KOI_STATICS",
+                statics
             );
         }
 

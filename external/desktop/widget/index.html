@@ -18,6 +18,20 @@
 
                 return vars;
             })();
+
+            function deepFreeze(object) {
+                const propNames = Object.getOwnPropertyNames(object);
+
+                for (const name of propNames) {
+                    const value = object[name];
+
+                    if (value && typeof value === "object") {
+                        deepFreeze(value);
+                    }
+                }
+
+                return Object.freeze(object);
+            }
         </script>
         <style>
             iframe {
@@ -42,187 +56,210 @@
             const port = queryParams.port || "8092";
             const address = queryParams.address || "localhost";
 
-            let isDead = false;
-            let conn;
+            const conn = new Conn(`ws://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/realtime?authorization=${authorization}`);;
 
             let sandboxFrame;
 
-            let widgetInstance;
-            let koiInstance;
+            // The `Widget` global.
+            const widgetInstance = {
+                ...new EventHandler(),
 
-            function reset() {
-                if (sandboxFrame) sandboxFrame.remove();
+                get connectionId() {
+                    return conn.connectionId;
+                },
 
-                if (conn) conn.close();
+                get widgetData() {
+                    return conn.widgetData;
+                },
 
-                if (!isDead) {
-                    conn = new Conn(`ws://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/realtime?authorization=${authorization}`);
+                emit(type, data) {
+                    conn.emit(type, data);
+                },
 
-                    // The `Widget` global.
-                    widgetInstance = {
-                        ...new EventHandler(),
+                // getResource(resourceId) {
 
-                        get connectionId() {
-                            return conn.connectionId;
-                        },
+                // }
+            };
 
-                        get widgetData() {
-                            return conn.widgetData;
-                        },
+            // The `Koi` global.
+            let koi_statics = {};
 
-                        emit(type, data) {
-                            conn.emit(type, data);
-                        },
+            const koiInstance = {
+                ...new EventHandler(),
 
-                        // getResource(resourceId) {
+                get eventHistory() {
+                    return koi_statics.history;
+                },
 
-                        // }
-                    };
-                    Object.freeze(widgetInstance);
+                get viewers() {
+                    return koi_statics.viewers;
+                },
 
-                    // The `Koi` global.
-                    koiInstance = {
-                        ...new EventHandler(),
+                get userStates() {
+                    return koi_statics.userStates;
+                },
 
-                        // upvote(messageId) {
-                        //     if (this.isAlive()) {
-                        //         this.ws.send(JSON.stringify({
-                        //             type: "UPVOTE",
-                        //             message_id: messageId
-                        //         }));
-                        //     }
-                        // },
+                get streamStates() {
+                    return koi_statics.streamStates;
+                },
 
-                        // sendMessage(message, event = CAFFEINATED.userdata, chatter = "CLIENT") {
-                        //     if (message.startsWith("/caffeinated")) {
-                        //         this.broadcast("x_caffeinated_command", { text: message });
-                        //     } else {
-                        //         if (!CAFFEINATED.puppetToken) {
-                        //             chatter = "CLIENT";
-                        //         }
+                // upvote(messageId) {
+                //     if (this.isAlive()) {
+                //         this.ws.send(JSON.stringify({
+                //             type: "UPVOTE",
+                //             message_id: messageId
+                //         }));
+                //     }
+                // },
 
-                        //         if (this.isAlive() && event) {
-                        //             if (event.streamer.platform !== "CAFFEINE") {
-                        //                 message = message.replace(/\n/gm, " ");
-                        //             }
+                // sendMessage(message, event = CAFFEINATED.userdata, chatter = "CLIENT") {
+                //     if (message.startsWith("/caffeinated")) {
+                //         this.broadcast("x_caffeinated_command", { text: message });
+                //     } else {
+                //         if (!CAFFEINATED.puppetToken) {
+                //             chatter = "CLIENT";
+                //         }
 
-                        //             this.ws.send(JSON.stringify({
-                        //                 type: "CHAT",
-                        //                 message: message.substring(0, this.getMaxLength(event)),
-                        //                 chatter: chatter
-                        //             }));
-                        //         }
-                        //     }
-                        // },
+                //         if (this.isAlive() && event) {
+                //             if (event.streamer.platform !== "CAFFEINE") {
+                //                 message = message.replace(/\n/gm, " ");
+                //             }
 
-                        getMaxLength(platform) {
-                            switch (platform) {
-                                case "CAFFEINE":
-                                    return 80;
+                //             this.ws.send(JSON.stringify({
+                //                 type: "CHAT",
+                //                 message: message.substring(0, this.getMaxLength(event)),
+                //                 chatter: chatter
+                //             }));
+                //         }
+                //     }
+                // },
 
-                                case "TWITCH":
-                                    return 500;
+                getMaxLength(platform) {
+                    switch (platform) {
+                        case "CAFFEINE":
+                            return 80;
 
-                                case "TROVO":
-                                    return 300;
+                        case "TWITCH":
+                            return 500;
 
-                                case "GLIMESH":
-                                    return 255;
+                        case "TROVO":
+                            return 300;
 
-                                case "BRIME":
-                                    return 300;
+                        case "GLIMESH":
+                            return 255;
 
-                                default:
-                                    console.debug(platform);
-                                    return 100; // ?
-                            }
-                        },
+                        case "BRIME":
+                            return 300;
 
-                        // test(event) {
-                        //     if (this.isAlive()) {
-                        //         this.ws.send(JSON.stringify({
-                        //             type: "TEST",
-                        //             eventType: event.toUpperCase()
-                        //         }));
-                        //     }
-                        // }
+                        default:
+                            console.debug(platform);
+                            return 100; // ?
+                    }
+                },
 
-                    };
-                    Object.freeze(koiInstance);
+                // test(event) {
+                //     if (this.isAlive()) {
+                //         this.ws.send(JSON.stringify({
+                //             type: "TEST",
+                //             eventType: event.toUpperCase()
+                //         }));
+                //     }
+                // }
 
-                    // Listen for events on the conn, fire them off, yeah you get the idea.
-                    conn.on("init", () => {
-                        sandboxFrame = document.createElement("iframe");
-                        sandboxFrame.src = "/desktop/sandbox.html";
+            };;
 
-                        let isLoaded = false;
-                        sandboxFrame.addEventListener("load", async () => {
-                            if (!isLoaded) {
-                                isLoaded = true;
-                                const { contentWindow, contentDocument } = sandboxFrame;
+            deepFreeze(widgetInstance);
+            deepFreeze(koiInstance);
 
-                                // Inject our f a v o r i t e globals.
-                                Object.defineProperty(contentWindow, "Koi", {
-                                    value: koiInstance,
-                                    writable: false,
-                                    configurable: false
-                                });
-                                Object.defineProperty(contentWindow, "Widget", {
-                                    value: widgetInstance,
-                                    writable: false,
-                                    configurable: false
-                                });
+            // Listen for events on the conn, fire them off, yeah you get the idea.
+            conn.on("init", () => {
+                sandboxFrame = document.createElement("iframe");
+                sandboxFrame.src = "/desktop/sandbox.html";
 
-                                // Load the widget html.
-                                const response = await fetch(`http://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/html?authorization=${authorization}`);
+                let isLoaded = false;
+                sandboxFrame.addEventListener("load", async () => {
+                    if (!isLoaded) {
+                        isLoaded = true;
+                        const { contentWindow, contentDocument } = sandboxFrame;
 
-                                if (response.status == 200) {
-                                    const widgetHtml = await response.text();
-
-                                    contentDocument.open();
-                                    contentDocument.write(widgetHtml);
-                                    contentDocument.close();
-
-                                    widgetInstance.broadcast("init");
-                                    widgetInstance.broadcast("update");
-                                } else {
-                                    // We're dead.
-                                    isDead = true;
-                                    reset();
-                                }
-                            }
+                        // Inject our f a v o r i t e globals.
+                        Object.defineProperty(contentWindow, "Koi", {
+                            value: koiInstance,
+                            writable: false,
+                            configurable: false
+                        });
+                        Object.defineProperty(contentWindow, "Widget", {
+                            value: widgetInstance,
+                            writable: false,
+                            configurable: false
                         });
 
-                        // TODO load widget code.
+                        // Load the widget html.
+                        const response = await fetch(`http://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/html?authorization=${authorization}`);
 
-                        document.body.appendChild(sandboxFrame);
-                    });
+                        if (response.status == 200) {
+                            const widgetHtml = await response.text();
 
-                    conn.on("update", () => {
-                        widgetInstance.broadcast("update");
-                    });
+                            contentDocument.open();
+                            contentDocument.write(widgetHtml);
+                            contentDocument.close();
 
-                    conn.on("emission", ({ type, data }) => {
-                        widgetInstance.broadcast(type, data);
-                    });
+                            widgetInstance.broadcast("init");
+                            widgetInstance.broadcast("update");
 
-                    conn.on("koi", (event) => {
-                        koiInstance.broadcast(event.event_type, event);
-                    });
+                            koiInstance.broadcast("koi_statics", koi_statics);
+                        } else {
+                            // We're dead.
+                            isDead = true;
+                            reset();
+                        }
+                    }
+                });
 
-                    // We completely reset the widget everytime it loses connection.
-                    conn.on("close", () => {
-                        setTimeout(() => {
-                            location.reload();
-                        }, 2500);
-                    });
+                // TODO load widget code.
 
-                    // Connect.
-                    conn.connect();
-                }
-            }
+                document.body.appendChild(sandboxFrame);
+            });
 
-            reset();
+            conn.on("update", () => {
+                widgetInstance.broadcast("update");
+            });
+
+            conn.on("emission", ({ type, data }) => {
+                widgetInstance.broadcast(type, data);
+            });
+
+            conn.on("koi", (event) => {
+                koiInstance.broadcast(event.event_type, event);
+            });
+
+            conn.on("koi_statics", (statics) => {
+                deepFreeze(statics);
+                koi_statics = statics;
+                koiInstance.broadcast("koi_statics", koi_statics);
+            });
+
+            // We completely reset the widget everytime it loses connection.
+            conn.on("close", () => {
+                setTimeout(() => {
+                    location.reload();
+                }, 2500);
+            });
+
+            // Connect.
+            conn.connect();
+
+            // Debug
+            Object.defineProperty(window, "Koi", {
+                value: koiInstance,
+                writable: false,
+                configurable: false
+            });
+            Object.defineProperty(window, "Widget", {
+                value: widgetInstance,
+                writable: false,
+                configurable: false
+            });
         </script>
     </footer>
 

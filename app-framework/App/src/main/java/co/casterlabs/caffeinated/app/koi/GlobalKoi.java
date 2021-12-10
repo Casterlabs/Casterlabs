@@ -1,5 +1,6 @@
 package co.casterlabs.caffeinated.app.koi;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,12 +13,17 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AuthInstance;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.Koi;
+import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
+import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
 import co.casterlabs.koi.api.listener.KoiEventUtil;
 import co.casterlabs.koi.api.listener.KoiLifeCycleHandler;
 import co.casterlabs.koi.api.types.events.CatchupEvent;
 import co.casterlabs.koi.api.types.events.KoiEvent;
 import co.casterlabs.koi.api.types.events.KoiEventType;
+import co.casterlabs.koi.api.types.events.StreamStatusEvent;
+import co.casterlabs.koi.api.types.events.UserUpdateEvent;
 import co.casterlabs.koi.api.types.events.ViewerListEvent;
 import co.casterlabs.koi.api.types.user.User;
 import co.casterlabs.rakurai.json.Rson;
@@ -35,12 +41,16 @@ public class GlobalKoi implements KoiLifeCycleHandler {
 
     private List<KoiEvent> eventHistory = new LinkedList<>();
     private Map<String, List<User>> viewers = new HashMap<>();
+    private Map<String, UserUpdateEvent> userStates = new HashMap<>();
+    private Map<String, StreamStatusEvent> streamStates = new HashMap<>();
 
     @SneakyThrows
     public void init() {
         // Set read-only pointers to this instance's chatHistory and viewers fields.
-        ReflectionLib.setStaticValue(Koi.class, "chatHistory", Collections.unmodifiableList(this.eventHistory));
+        ReflectionLib.setStaticValue(Koi.class, "eventHistory", Collections.unmodifiableList(this.eventHistory));
         ReflectionLib.setStaticValue(Koi.class, "viewers", Collections.unmodifiableMap(this.viewers));
+        ReflectionLib.setStaticValue(Koi.class, "userStates", Collections.unmodifiableMap(this.userStates));
+        ReflectionLib.setStaticValue(Koi.class, "streamStates", Collections.unmodifiableMap(this.streamStates));
     }
 
     /**
@@ -59,6 +69,8 @@ public class GlobalKoi implements KoiLifeCycleHandler {
         for (String key : new ArrayList<>(this.viewers.keySet())) {
             if (!validPlatforms.contains(key)) {
                 this.viewers.remove(key);
+                this.userStates.remove(key);
+                this.streamStates.remove(key);
             }
         }
 
@@ -68,14 +80,29 @@ public class GlobalKoi implements KoiLifeCycleHandler {
     private void updateBridgeData() {
         JsonObject bridgeData = new JsonObject()
             .put("history", Rson.DEFAULT.toJson(this.eventHistory))
-            .put("viewers", Rson.DEFAULT.toJson(this.viewers));
+            .put("viewers", Rson.DEFAULT.toJson(this.viewers))
+            .put("userStates", Rson.DEFAULT.toJson(this.userStates))
+            .put("streamStates", Rson.DEFAULT.toJson(this.streamStates));
 
         AppBridge bridge = CaffeinatedApp.getInstance().getBridge();
 
-//        bridge.emit("koi:chatHistory", bridgeData.get("chatHistory"));
         bridge.emit("koi:viewers", bridgeData.get("viewers"));
+        bridge.emit("koi:userStates", bridgeData.get("userStates"));
+        bridge.emit("koi:streamStates", bridgeData.get("streamStates"));
 
         bridge.getQueryData().put("koi", bridgeData);
+
+        new AsyncTask(() -> {
+            for (CaffeinatedPlugin plugin : CaffeinatedApp.getInstance().getPlugins().getPlugins().getPlugins()) {
+                for (Widget widget : plugin.getWidgets()) {
+                    for (WidgetInstance instance : widget.getWidgetInstances()) {
+                        try {
+                            instance.onKoiStaticsUpdate(bridgeData);
+                        } catch (IOException ignored) {}
+                    }
+                }
+            }
+        });
     }
 
     @SuppressWarnings("deprecation")
@@ -99,13 +126,40 @@ public class GlobalKoi implements KoiLifeCycleHandler {
         } else {
             this.eventHistory.add(e);
 
-            if (e.getType() == KoiEventType.VIEWER_LIST) {
-                this.viewers.put(
-                    e.getStreamer().getPlatform().name(),
-                    Collections.unmodifiableList(((ViewerListEvent) e).getViewers())
-                );
+            switch (e.getType()) {
 
-                this.updateBridgeData();
+                case VIEWER_LIST: {
+                    this.viewers.put(
+                        e.getStreamer().getPlatform().name(),
+                        Collections.unmodifiableList(((ViewerListEvent) e).getViewers())
+                    );
+
+                    this.updateBridgeData();
+                    break;
+                }
+
+                case USER_UPDATE: {
+                    this.userStates.put(
+                        e.getStreamer().getPlatform().name(),
+                        (UserUpdateEvent) e
+                    );
+
+                    this.updateBridgeData();
+                    break;
+                }
+
+                case STREAM_STATUS: {
+                    this.streamStates.put(
+                        e.getStreamer().getPlatform().name(),
+                        (StreamStatusEvent) e
+                    );
+
+                    this.updateBridgeData();
+                    break;
+                }
+
+                default:
+                    break;
             }
 
             // Emit the event to Caffeinated.

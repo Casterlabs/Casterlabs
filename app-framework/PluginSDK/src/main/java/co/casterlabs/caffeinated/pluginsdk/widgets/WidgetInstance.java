@@ -11,6 +11,7 @@ import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 import co.casterlabs.koi.api.types.events.KoiEvent;
 import co.casterlabs.rakurai.json.element.JsonElement;
+import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.element.JsonString;
 import lombok.Getter;
 import lombok.NonNull;
@@ -70,5 +71,7 @@ public abstract class WidgetInstance implements Closeable {
     public abstract void onSettingsUpdate();
 
     public abstract void onKoiEvent(@NonNull KoiEvent event) throws IOException;
+
+    public abstract void onKoiStaticsUpdate(@NonNull JsonObject json) throws IOException;
 
 }
