@@ -8,6 +8,7 @@ import java.util.UUID;
 import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences.WidgetSettingsDetails;
+import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCopyWidgetUrlEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCreateWidgetEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationDeleteWidgetEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationEditWidgetSettingsEvent;
@@ -15,9 +16,11 @@ import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationEventTyp
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationRenameWidgetEvent;
 import co.casterlabs.caffeinated.app.plugins.impl.PluginsHandler;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
+import co.casterlabs.caffeinated.app.ui.UIBackgroundColor;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
+import co.casterlabs.caffeinated.util.ClipboardUtil;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonArray;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -128,6 +131,23 @@ public class PluginIntegration {
         }
 
         this.save();
+    }
+
+    @EventListener
+    public void onPluginIntegrationCopyWidgetUrlEvent(AppPluginIntegrationCopyWidgetUrlEvent event) {
+        Widget widget = this.plugins.getWidget(event.getId());
+
+        String conductorKey = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorKey();
+        String url = String.format(
+            "https://widget.casterlabs.co/desktop/widget?pluginId=%s&widgetId=%s&authorization=%s",
+            widget.getPlugin().getId(),
+            widget.getId(),
+            conductorKey
+        );
+
+        ClipboardUtil.copy(url);
+
+        CaffeinatedApp.getInstance().getUI().showToast("Copied link to clipboard", UIBackgroundColor.PRIMARY);
     }
 
     @SuppressWarnings("deprecation")

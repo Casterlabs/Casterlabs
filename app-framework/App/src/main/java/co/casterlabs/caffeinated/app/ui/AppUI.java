@@ -16,10 +16,13 @@ import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.Getter;
+import lombok.NonNull;
 import xyz.e3ndr.eventapi.EventHandler;
 import xyz.e3ndr.eventapi.listeners.EventListener;
 
 public class AppUI {
+    private static final long TOAST_DURATION = 2250; // 2.25s
+
     private static EventHandler<AppUIEventType> handler = new EventHandler<>();
 
     private @Getter boolean uiFinishedLoad = false;
@@ -59,6 +62,31 @@ public class AppUI {
                 .browse(new URI(event.getLink()));
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void showToast(@NonNull String message, @NonNull UIBackgroundColor background) {
+        if (this.uiFinishedLoad) {
+            String line = String.format(
+                "Toastify(%s).showToast();",
+
+                // Build the toastify options.
+                new JsonObject()
+                    .put("text", message)
+                    .put("duration", TOAST_DURATION)
+                    .put("close", true)
+                    .put(
+                        "style", new JsonObject()
+                            .put("background", background.getColor())
+                    )
+            );
+
+            CaffeinatedApp
+                .getInstance()
+                .getBridge()
+                .eval(
+                    line
+                );
         }
     }
 

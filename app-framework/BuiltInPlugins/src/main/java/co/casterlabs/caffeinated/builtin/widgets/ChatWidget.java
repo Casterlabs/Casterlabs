@@ -8,7 +8,6 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails.WidgetDetailsCa
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsItem;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsLayout;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsSection;
-import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class ChatWidget extends Widget {
     public static final WidgetDetails DETAILS = new WidgetDetails()
@@ -36,23 +35,13 @@ public class ChatWidget extends Widget {
     @Override
     public void onInit() {
         this.setSettingsLayout(LAYOUT);
-
-        String conductorKey = "u1rQIQoX8rsLkhSkYGsGupQ9S6ZQauROKdsFjNhop3pLBADZoot2nYLzJKINLgID";
-        FastLogger.logStatic(
-            "?pluginId=%s&widgetId=%s&authorization=%s",
-            this.getPlugin().getId(),
-            this.getId(),
-            conductorKey
-        );
     }
 
     @Override
     public @Nullable String getWidgetHtml() {
         return "<!DOCTYPE html>\n"
             + "<html>"
-            + "<script>"
-            + "alert('I\\'m loaded!')"
-            + "</script>"
+            + "test!"
             + "</html>";
     }
 
