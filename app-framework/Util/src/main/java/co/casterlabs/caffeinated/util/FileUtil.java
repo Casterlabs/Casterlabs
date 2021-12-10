@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.bootstrap;
+package co.casterlabs.caffeinated.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,11 +10,12 @@ import java.nio.charset.StandardCharsets;
 import co.casterlabs.rakurai.io.IOUtil;
 
 public class FileUtil {
+    private static boolean isDev;
 
     public static String loadResource(String path) throws IOException {
         InputStream in;
 
-        if (Bootstrap.isDev()) {
+        if (isDev) {
             in = new FileInputStream(new File("./src/main/resources/", path));
         } else {
             in = FileUtil.class.getClassLoader().getResourceAsStream(path);
@@ -26,7 +27,7 @@ public class FileUtil {
     public static byte[] loadResourceBytes(String path) throws IOException {
         InputStream in;
 
-        if (Bootstrap.isDev()) {
+        if (isDev) {
             in = new FileInputStream(new File("./src/main/resources/", path));
         } else {
             in = FileUtil.class.getClassLoader().getResourceAsStream(path);
@@ -36,7 +37,7 @@ public class FileUtil {
     }
 
     public static URL loadResourceAsUrl(String path) throws IOException {
-        if (Bootstrap.isDev()) {
+        if (isDev) {
             return new File("./src/main/resources/", path).toURI().toURL();
         } else {
             return FileUtil.class.getClassLoader().getResource(path);

@@ -36,6 +36,12 @@
 
 		<!-- Utilities -->
 		<dependency>
+			<groupId>com.github.casterlabs.rakurai</groupId>
+			<artifactId>Util</artifactId>
+			<version>1.10.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
 			<version>4.6.0</version>

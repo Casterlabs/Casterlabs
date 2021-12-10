@@ -11,6 +11,7 @@ import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
 import co.casterlabs.caffeinated.localserver.LocalServer;
+import co.casterlabs.caffeinated.util.FileUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
@@ -23,6 +24,7 @@ import xyz.e3ndr.consoleutil.ConsoleUtil;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @Command(name = "start", mixinStandardHelpOptions = true, version = "Caffeinated", description = "Starts Caffeinated")
 public class Bootstrap implements Runnable {
@@ -82,6 +84,7 @@ public class Bootstrap implements Runnable {
     @Override
     public void run() {
         isDev = this.devAddress != null;
+        ReflectionLib.setStaticValue(FileUtil.class, "isDev", isDev);
         buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
 
         // Check for another instance, and do IPC things.

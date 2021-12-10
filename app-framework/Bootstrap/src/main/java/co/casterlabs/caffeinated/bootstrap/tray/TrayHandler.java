@@ -20,8 +20,8 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
-import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
+import co.casterlabs.caffeinated.util.FileUtil;
 import lombok.NonNull;
 
 public class TrayHandler {

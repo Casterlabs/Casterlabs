@@ -23,7 +23,7 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.preferences.WindowPreferences;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
-import co.casterlabs.caffeinated.bootstrap.FileUtil;
+import co.casterlabs.caffeinated.util.FileUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
