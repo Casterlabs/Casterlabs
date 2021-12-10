@@ -3,6 +3,9 @@ package co.casterlabs.caffeinated.app.music_integration;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.pluginsdk.music.MusicPlaybackState;
+import co.casterlabs.caffeinated.pluginsdk.music.MusicProvider;
+import co.casterlabs.caffeinated.pluginsdk.music.MusicTrack;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -15,7 +18,7 @@ import lombok.ToString;
 @ToString
 @RequiredArgsConstructor
 @JsonClass(exposeAll = true)
-public abstract class MusicProvider<T> {
+public abstract class InternalMusicProvider<T> implements MusicProvider {
     private final String serviceName;
     private final String serviceId;
     private final Class<T> settingsClass;

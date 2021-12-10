@@ -168,8 +168,25 @@
 
             };;
 
+            // The `Music` global.
+            let music_data = {};
+
+            const musicInstance = {
+                ...new EventHandler(),
+
+                get providers() {
+                    return music_data.providers;
+                },
+
+                get activePlayback() {
+                    return music_data.activePlayback;
+                }
+
+            };;
+
             deepFreeze(widgetInstance);
             deepFreeze(koiInstance);
+            deepFreeze(musicInstance);
 
             // Listen for events on the conn, fire them off, yeah you get the idea.
             conn.on("init", () => {
@@ -190,6 +207,11 @@
                         });
                         Object.defineProperty(contentWindow, "Widget", {
                             value: widgetInstance,
+                            writable: false,
+                            configurable: false
+                        });
+                        Object.defineProperty(contentWindow, "Music", {
+                            value: musicInstance,
                             writable: false,
                             configurable: false
                         });
@@ -229,14 +251,20 @@
                 widgetInstance.broadcast(type, data);
             });
 
-            conn.on("koi", (event) => {
-                koiInstance.broadcast(event.event_type, event);
-            });
-
             conn.on("koi_statics", (statics) => {
                 deepFreeze(statics);
                 koi_statics = statics;
                 koiInstance.broadcast("koi_statics", koi_statics);
+            });
+
+            conn.on("koi", (event) => {
+                koiInstance.broadcast(event.event_type, event);
+            });
+
+            conn.on("music", (music) => {
+                deepFreeze(music);
+                music_data = music;
+                musicInstance.broadcast("music", music_data);
             });
 
             // We completely reset the widget everytime it loses connection.
@@ -257,6 +285,11 @@
             });
             Object.defineProperty(window, "Widget", {
                 value: widgetInstance,
+                writable: false,
+                configurable: false
+            });
+            Object.defineProperty(window, "Music", {
+                value: musicInstance,
                 writable: false,
                 configurable: false
             });

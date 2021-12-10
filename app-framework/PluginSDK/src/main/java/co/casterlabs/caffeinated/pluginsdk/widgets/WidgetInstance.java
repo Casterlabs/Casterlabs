@@ -74,4 +74,6 @@ public abstract class WidgetInstance implements Closeable {
 
     public abstract void onKoiStaticsUpdate(@NonNull JsonObject json) throws IOException;
 
+    public abstract void onMusicUpdate(@NonNull JsonObject music) throws IOException;
+
 }

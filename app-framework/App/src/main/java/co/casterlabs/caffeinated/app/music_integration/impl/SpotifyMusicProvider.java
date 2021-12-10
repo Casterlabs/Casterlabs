@@ -7,9 +7,9 @@ import java.util.concurrent.TimeUnit;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
-import co.casterlabs.caffeinated.app.music_integration.MusicProvider;
-import co.casterlabs.caffeinated.app.music_integration.MusicTrack;
+import co.casterlabs.caffeinated.app.music_integration.InternalMusicProvider;
 import co.casterlabs.caffeinated.app.music_integration.impl.SpotifyMusicProvider.SpotifySettings;
+import co.casterlabs.caffeinated.pluginsdk.music.MusicTrack;
 import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
@@ -21,7 +21,7 @@ import lombok.NonNull;
 import okhttp3.Request;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
-public class SpotifyMusicProvider extends MusicProvider<SpotifySettings> {
+public class SpotifyMusicProvider extends InternalMusicProvider<SpotifySettings> {
     private static final String AUTH_PROXY_URL = "https://api.casterlabs.co/v2/natsukashii/spotify";
     private static final long POLL_RATE = TimeUnit.SECONDS.toMillis(20);
 

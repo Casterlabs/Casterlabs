@@ -87,6 +87,11 @@ class Conn {
                         return;
                     }
 
+                    case "MUSIC": {
+                        this.broadcast("music", payload.data);
+                        return;
+                    }
+
                 }
             };
         } catch (e) {

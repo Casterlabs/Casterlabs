@@ -7,9 +7,9 @@ import java.util.concurrent.TimeUnit;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
-import co.casterlabs.caffeinated.app.music_integration.MusicProvider;
-import co.casterlabs.caffeinated.app.music_integration.MusicTrack;
+import co.casterlabs.caffeinated.app.music_integration.InternalMusicProvider;
 import co.casterlabs.caffeinated.app.music_integration.impl.PretzelMusicProvider.PretzelSettings;
+import co.casterlabs.caffeinated.pluginsdk.music.MusicTrack;
 import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
@@ -18,7 +18,7 @@ import lombok.NonNull;
 import okhttp3.Request;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
-public class PretzelMusicProvider extends MusicProvider<PretzelSettings> {
+public class PretzelMusicProvider extends InternalMusicProvider<PretzelSettings> {
     private static final String PRETZEL_ALBUM_ART = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOU3rzkPwAE1gJzt/4W2gAAAABJRU5ErkJggg==";
     private static final String PRETZEL_ENDPOINT = "https://api.pretzel.tv/playing/twitch/%s";
     private static final long POLL_RATE = TimeUnit.SECONDS.toMillis(20);

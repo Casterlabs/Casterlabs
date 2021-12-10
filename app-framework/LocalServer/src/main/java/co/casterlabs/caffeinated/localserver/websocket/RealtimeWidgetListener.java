@@ -5,6 +5,7 @@ import java.util.List;
 
 import co.casterlabs.caffeinated.localserver.RouteHelper;
 import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
+import co.casterlabs.caffeinated.pluginsdk.music.Music;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.util.Pair;
@@ -58,6 +59,11 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
         this.sendMessage(
             "KOI_STATICS",
             Koi.toJson() // Exact same.
+        );
+
+        this.sendMessage(
+            "MUSIC",
+            Music.toJson()
         );
 
         this.sendMessage(
@@ -204,6 +210,14 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
             sendMessage(
                 "KOI_STATICS",
                 statics
+            );
+        }
+
+        @Override
+        public void onMusicUpdate(@NonNull JsonObject music) throws IOException {
+            sendMessage(
+                "MUSIC",
+                music
             );
         }
 

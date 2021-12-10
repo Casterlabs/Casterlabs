@@ -1,6 +1,8 @@
 package co.casterlabs.caffeinated.app.music_integration;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,25 +14,35 @@ import co.casterlabs.caffeinated.app.music_integration.events.AppMusicIntegratio
 import co.casterlabs.caffeinated.app.music_integration.impl.PretzelMusicProvider;
 import co.casterlabs.caffeinated.app.music_integration.impl.SpotifyMusicProvider;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
+import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
+import co.casterlabs.caffeinated.pluginsdk.music.Music;
+import co.casterlabs.caffeinated.pluginsdk.music.MusicPlaybackState;
+import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
+import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import xyz.e3ndr.eventapi.EventHandler;
 import xyz.e3ndr.eventapi.listeners.EventListener;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @Getter
 public class MusicIntegration {
     private static EventHandler<AppMusicIntegrationEventType> handler = new EventHandler<>();
 
-    private MusicProvider<?> activePlayback;
-
-    private Map<String, MusicProvider<?>> providers = new HashMap<>();
+    private Map<String, InternalMusicProvider<?>> providers = new HashMap<>();
+    private InternalMusicProvider<?> activePlayback;
 
     private boolean loaded = false;
 
+    @SneakyThrows
     public MusicIntegration() {
         handler.register(this);
+
+        ReflectionLib.setStaticValue(Music.class, "providers", Collections.unmodifiableMap(this.providers));
     }
 
     public void init() {
@@ -43,8 +55,8 @@ public class MusicIntegration {
         // Load their settings
         PreferenceFile<MusicIntegrationPreferences> prefs = CaffeinatedApp.getInstance().getMusicIntegrationPreferences();
         JsonObject prefsSettings = prefs.get().getSettings();
-        for (Map.Entry<String, MusicProvider<?>> entry : this.providers.entrySet()) {
-            MusicProvider<?> provider = entry.getValue();
+        for (Map.Entry<String, InternalMusicProvider<?>> entry : this.providers.entrySet()) {
+            InternalMusicProvider<?> provider = entry.getValue();
             String providerId = entry.getKey();
 
             // Doesn't matter if it's null, we check for that inside of
@@ -61,7 +73,7 @@ public class MusicIntegration {
             PreferenceFile<MusicIntegrationPreferences> prefs = CaffeinatedApp.getInstance().getMusicIntegrationPreferences();
             JsonObject prefsSettings = prefs.get().getSettings();
 
-            for (MusicProvider<?> provider : this.providers.values()) {
+            for (InternalMusicProvider<?> provider : this.providers.values()) {
                 prefsSettings.put(provider.getServiceId(), Rson.DEFAULT.toJson(provider.getSettings()));
             }
 
@@ -84,10 +96,10 @@ public class MusicIntegration {
     public void updateBridgeData() {
         JsonObject musicServices = new JsonObject();
 
-        MusicProvider<?> pausedTrack = null;
-        MusicProvider<?> playingTrack = null;
+        InternalMusicProvider<?> pausedTrack = null;
+        InternalMusicProvider<?> playingTrack = null;
 
-        for (MusicProvider<?> provider : this.providers.values()) {
+        for (InternalMusicProvider<?> provider : this.providers.values()) {
             musicServices.put(provider.getServiceId(), Rson.DEFAULT.toJson(provider));
 
             if ((pausedTrack == null) && (provider.getPlaybackState() == MusicPlaybackState.PAUSED)) {
@@ -113,6 +125,27 @@ public class MusicIntegration {
 
         bridge.getQueryData().put("music", bridgeData);
         bridge.emit("music:update", bridgeData);
+
+        new AsyncTask(() -> {
+            try {
+                ReflectionLib.setStaticValue(Music.class, "activePlayback", this.activePlayback);
+
+                @SuppressWarnings("deprecation")
+                JsonObject music = Music.toJson();
+
+                for (CaffeinatedPlugin plugin : CaffeinatedApp.getInstance().getPlugins().getPlugins().getPlugins()) {
+                    for (Widget widget : plugin.getWidgets()) {
+                        for (WidgetInstance instance : widget.getWidgetInstances()) {
+                            try {
+                                instance.onMusicUpdate(music);
+                            } catch (IOException ignored) {}
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public static void invokeEvent(JsonObject data, String nestedType) throws InvocationTargetException, JsonParseException {

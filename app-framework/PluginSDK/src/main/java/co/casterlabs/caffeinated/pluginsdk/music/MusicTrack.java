@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.app.music_integration;
+package co.casterlabs.caffeinated.pluginsdk.music;
 
 import java.util.List;
 
