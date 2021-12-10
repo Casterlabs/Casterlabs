@@ -79,6 +79,8 @@ function EventHandler() {
                     });
                 }
             }
+
+            console.debug(`[EventHandler]`, "Processed event:", type, data);
         }
     };
 }

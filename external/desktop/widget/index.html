@@ -197,7 +197,7 @@
                     });
 
                     conn.on("koi", (event) => {
-                        koi.broadcast(event.event_type, event);
+                        koiInstance.broadcast(event.event_type, event);
                     });
 
                     // We completely reset the widget everytime it loses connection.
