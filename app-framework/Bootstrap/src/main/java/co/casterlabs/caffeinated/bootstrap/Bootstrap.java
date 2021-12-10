@@ -62,17 +62,20 @@ public class Bootstrap implements Runnable {
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
-               if (e instanceof UnsatisfiedLinkError) {
-                   // TODO show fatal popup detailing the error and let the user know that the program is about to close.
-               }
+                e.printStackTrace();
+
+                if (e instanceof UnsatisfiedLinkError) {
+                    // TODO show fatal popup detailing the error and let the user know that the
+                    // program is about to close.
+                }
             }
-         });
-        
-        ConsoleUtil.getPlatform(); // Init ConsoleUtil.
-        
-        new AsyncTask(() -> {
-            new CommandLine(new Bootstrap()).execute(args); // Calls #run()
         });
+
+        ConsoleUtil.getPlatform(); // Init ConsoleUtil.
+
+        new Thread(() -> {
+            new CommandLine(new Bootstrap()).execute(args); // Calls #run()
+        }).start();
     }
 
     @SneakyThrows
@@ -86,6 +89,7 @@ public class Bootstrap implements Runnable {
             if (isDev) {
                 logger.info("App is already running, closing it now.");
                 InstanceManager.closeOtherInstance();
+                logger.info("Launching as if nothing happened...");
             } else {
                 logger.info("App is already running, summoning it now.");
 
@@ -99,8 +103,6 @@ public class Bootstrap implements Runnable {
         } else {
             logger.info("Starting app.");
         }
-        
-        
 
         // We do this down here because of the IPC.
         if (this.enableTraceLogging) {
