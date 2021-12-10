@@ -28,11 +28,9 @@ public interface RouteHelper {
     default boolean authorize(SoraHttpSession session) {
         String auth = session.getQueryParameters().get("authorization");
 
-        if ((auth == null) || !auth.startsWith("Key ")) {
+        if (auth == null) {
             return false;
         }
-
-        auth = auth.substring("Key ".length());
 
         String conductorKey = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorKey();
 
@@ -42,11 +40,9 @@ public interface RouteHelper {
     default boolean authorize(SoraWebsocketSession session) {
         String auth = session.getQueryParameters().get("authorization");
 
-        if ((auth == null) || !auth.startsWith("Key ")) {
+        if (auth == null) {
             return false;
         }
-
-        auth = auth.substring("Key ".length());
 
         String conductorKey = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorKey();
 

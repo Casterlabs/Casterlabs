@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Casterlabs Caffeinated Widget</title>
+        <script src="/desktop/eventHandler.js"></script>
+        <script src="/desktop/conn.js"></script>
+        <script>
+            const queryParams = (() => {
+                let vars = {};
+
+                location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
+                    vars[key] = value;
+                });
+
+                return vars;
+            })();
+        </script>
+    </head>
+
+    <body>
+
+    </body>
+
+    <footer>
+        <!-- type="module" helps isolate. -->
+        <script type="module">
+            const { pluginId, widgetId, authorization } = queryParams;
+            const port = queryParams.port || "8092";
+            const address = queryParams.address || "localhost";
+
+            let isDead = false;
+            let conn;
+
+            let sandboxFrame;
+
+            let widgetInstance;
+            let koiInstance;
+
+            function reset() {
+                if (sandboxFrame) sandboxFrame.remove();
+
+                if (conn) conn.close();
+
+                if (!isDead) {
+                    conn = new Conn(`ws://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/realtime?authorization=${authorization}`);
+
+                    // The `Widget` global.
+                    widgetInstance = {
+                        ...new EventHandler(),
+
+                        get connectionId() {
+                            return conn.connectionId;
+                        },
+
+                        get widgetData() {
+                            return conn.widgetData;
+                        },
+
+                        emit(type, data) {
+                            conn.emit(type, data);
+                        },
+
+                        // getResource(resourceId) {
+
+                        // }
+                    };
+                    Object.freeze(widgetInstance);
+
+                    // The `Koi` global.
+                    koiInstance = {
+                        ...new EventHandler(),
+
+                        // upvote(messageId) {
+                        //     if (this.isAlive()) {
+                        //         this.ws.send(JSON.stringify({
+                        //             type: "UPVOTE",
+                        //             message_id: messageId
+                        //         }));
+                        //     }
+                        // },
+
+                        // sendMessage(message, event = CAFFEINATED.userdata, chatter = "CLIENT") {
+                        //     if (message.startsWith("/caffeinated")) {
+                        //         this.broadcast("x_caffeinated_command", { text: message });
+                        //     } else {
+                        //         if (!CAFFEINATED.puppetToken) {
+                        //             chatter = "CLIENT";
+                        //         }
+
+                        //         if (this.isAlive() && event) {
+                        //             if (event.streamer.platform !== "CAFFEINE") {
+                        //                 message = message.replace(/\n/gm, " ");
+                        //             }
+
+                        //             this.ws.send(JSON.stringify({
+                        //                 type: "CHAT",
+                        //                 message: message.substring(0, this.getMaxLength(event)),
+                        //                 chatter: chatter
+                        //             }));
+                        //         }
+                        //     }
+                        // },
+
+                        getMaxLength(platform) {
+                            switch (platform) {
+                                case "CAFFEINE":
+                                    return 80;
+
+                                case "TWITCH":
+                                    return 500;
+
+                                case "TROVO":
+                                    return 300;
+
+                                case "GLIMESH":
+                                    return 255;
+
+                                case "BRIME":
+                                    return 300;
+
+                                default:
+                                    console.debug(platform);
+                                    return 100; // ?
+                            }
+                        },
+
+                        // test(event) {
+                        //     if (this.isAlive()) {
+                        //         this.ws.send(JSON.stringify({
+                        //             type: "TEST",
+                        //             eventType: event.toUpperCase()
+                        //         }));
+                        //     }
+                        // }
+
+                    };
+                    Object.freeze(koiInstance);
+
+                    // Listen for events on the conn, fire them off, yeah you get the idea.
+                    conn.on("init", () => {
+                        sandboxFrame = document.createElement("iframe");
+                        sandboxFrame.src = "/desktop/sandbox.html";
+
+                        let isLoaded = false;
+                        sandboxFrame.addEventListener("load", async () => {
+                            if (!isLoaded) {
+                                isLoaded = true;
+                                const { contentWindow, contentDocument } = sandboxFrame;
+
+                                // Inject our f a v o r i t e globals.
+                                Object.defineProperty(contentWindow, "Koi", {
+                                    value: koiInstance,
+                                    writable: false,
+                                    configurable: false
+                                });
+                                Object.defineProperty(contentWindow, "Widget", {
+                                    value: widgetInstance,
+                                    writable: false,
+                                    configurable: false
+                                });
+
+                                // Load the widget html.
+                                const response = await fetch(`http://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/html?authorization=${authorization}`);
+
+                                if (response.status == 200) {
+                                    const widgetHtml = await response.text();
+
+                                    contentDocument.open();
+                                    contentDocument.write(widgetHtml);
+                                    contentDocument.close();
+
+                                    widgetInstance.broadcast("init");
+                                    widgetInstance.broadcast("update");
+                                } else {
+                                    // We're dead.
+                                    isDead = true;
+                                    reset();
+                                }
+                            }
+                        });
+
+                        // TODO load widget code.
+
+                        document.body.appendChild(sandboxFrame);
+                    });
+
+                    conn.on("update", () => {
+                        widgetInstance.broadcast("update");
+                    });
+
+                    conn.on("emission", ({ type, data }) => {
+                        widgetInstance.broadcast(type, data);
+                    });
+
+                    conn.on("koi", (event) => {
+                        koi.broadcast(event.event_type, event);
+                    });
+
+                    // We completely reset the widget everytime it loses connection.
+                    conn.on("close", () => {
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2500);
+                    });
+
+                    // Connect.
+                    conn.connect();
+                }
+            }
+
+            reset();
+        </script>
+    </footer>
+
+</html>

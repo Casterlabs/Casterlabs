@@ -122,7 +122,7 @@ public class PluginIntegration {
                 settings.put(event.getKey(), value);
             }
 
-            widget.onSettingsUpdate();
+            ReflectionLib.invokeMethod(widget, "setSettings", settings);
         } catch (Throwable t) {
             t.printStackTrace();
         }

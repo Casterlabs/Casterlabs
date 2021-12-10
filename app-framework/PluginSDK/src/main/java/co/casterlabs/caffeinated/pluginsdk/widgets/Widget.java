@@ -89,6 +89,15 @@ public abstract class Widget {
                 }
             }
 
+            for (WidgetInstance widgetInstance : this.getWidgetInstances()) {
+                try {
+                    widgetInstance.onKoiEvent(event);
+                } catch (Throwable t) {
+                    FastLogger.logStatic(LogLevel.SEVERE, "An error occurred whilst processing Koi event:");
+                    FastLogger.logException(t);
+                }
+            }
+
             return null;
         });
     }
@@ -115,6 +124,12 @@ public abstract class Widget {
         if (newSettings != null) {
             this.settings = newSettings;
             this.onSettingsUpdate();
+
+            for (WidgetInstance widgetInstance : this.getWidgetInstances()) {
+                try {
+                    widgetInstance.onSettingsUpdate();
+                } catch (Throwable t) {}
+            }
         }
     }
 
@@ -135,7 +150,7 @@ public abstract class Widget {
 
     public void onNameUpdate() {}
 
-    public void onSettingsUpdate() {}
+    protected void onSettingsUpdate() {}
 
     public @Nullable String getWidgetHtml() {
         return null;

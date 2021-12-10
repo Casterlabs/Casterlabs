@@ -64,8 +64,10 @@ public abstract class WidgetInstance implements Closeable {
     }
 
     /* ------------ */
-    /* Koi          */
+    /* Misc         */
     /* ------------ */
+
+    public abstract void onSettingsUpdate();
 
     public abstract void onKoiEvent(@NonNull KoiEvent event) throws IOException;
 

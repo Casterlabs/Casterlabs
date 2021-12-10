@@ -17,6 +17,8 @@ import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
@@ -39,6 +41,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
         this.field_widgetInstances = ReflectionLib.getValue(this.widget, "widgetInstances");
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onOpen(Websocket websocket) {
         this.websocket = websocket;
@@ -55,6 +58,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
             "INIT",
             new JsonObject()
                 .put("connectionId", this.connectionId)
+                .put("widget", this.widget.toJson())
         );
     }
 
@@ -103,11 +107,15 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
 
     @SneakyThrows
     private void sendMessage(String type, JsonObject payload) {
+        String json = new JsonObject()
+            .put("type", type.toUpperCase())
+            .put("data", payload)
+            .toString();
+
+        FastLogger.logStatic(LogLevel.TRACE, json);
+
         this.websocket.send(
-            new JsonObject()
-                .put("type", type.toUpperCase())
-                .put("data", payload)
-                .toString()
+            json
         );
     }
 
@@ -172,6 +180,16 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
         @Override
         public void onKoiEvent(@NonNull KoiEvent event) throws IOException {
             sendMessage("KOI", Rson.DEFAULT.toJson(event).getAsObject());
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        public void onSettingsUpdate() {
+            sendMessage(
+                "UPDATE",
+                new JsonObject()
+                    .put("widget", widget.toJson())
+            );
         }
 
     }

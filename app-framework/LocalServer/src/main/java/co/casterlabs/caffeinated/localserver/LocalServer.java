@@ -13,6 +13,7 @@ import co.casterlabs.caffeinated.localserver.handlers.RouteWidgetApi;
 import co.casterlabs.caffeinated.localserver.websocket.RealtimeConnection;
 import co.casterlabs.caffeinated.util.Pair;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.rakurai.impl.http.undertow.UndertowHttpServer;
 import co.casterlabs.rakurai.io.http.server.HttpServerImplementation;
 import co.casterlabs.rakurai.io.http.websocket.Websocket;
 import co.casterlabs.sora.Sora;
@@ -23,6 +24,8 @@ import co.casterlabs.sora.api.http.HttpProvider;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class LocalServer implements Closeable, HttpProvider {
     private static final long PING_INTERVAL = TimeUnit.SECONDS.toMillis(15);
@@ -35,6 +38,11 @@ public class LocalServer implements Closeable, HttpProvider {
             .setImplementation(HttpServerImplementation.UNDERTOW)
             .buildWithoutPluginLoader();
 
+        UndertowHttpServer server = ((UndertowHttpServer) this.framework.getServer());
+        FastLogger logger = ReflectionLib.getValue(server, "logger");
+
+        logger.setCurrentLevel(LogLevel.SEVERE);
+
         this.framework
             .getSora()
             .register(new LocalServerPluginWrapper());
@@ -44,9 +52,12 @@ public class LocalServer implements Closeable, HttpProvider {
 
         @Override
         public void onInit(Sora sora) {
+            RouteWidgetApi widgetApi = new RouteWidgetApi();
+
             sora.addHttpProvider(this, new RouteLocalServer());
             sora.addHttpProvider(this, new RoutePluginApi());
-            sora.addHttpProvider(this, new RouteWidgetApi());
+            sora.addHttpProvider(this, widgetApi);
+            sora.addWebsocketProvider(this, widgetApi);
 
             new AsyncTask(this::pingHandler);
         }
@@ -55,9 +66,13 @@ public class LocalServer implements Closeable, HttpProvider {
             while (true) {
                 try {
                     for (Websocket websocket : this.getWebsockets()) {
-                        Pair<RealtimeConnection, Object> attachment = websocket.getAttachment();
+                        try {
+                            Pair<RealtimeConnection, Object> attachment = websocket.getAttachment();
 
-                        attachment.a.checkExpiryAndPing();
+                            if (attachment != null) {
+                                attachment.a.checkExpiryAndPing();
+                            }
+                        } catch (ClassCastException ignored) {}
                     }
                     Thread.sleep(PING_INTERVAL);
                 } catch (Throwable t) {

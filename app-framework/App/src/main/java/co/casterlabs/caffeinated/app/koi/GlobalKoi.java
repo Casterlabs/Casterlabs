@@ -10,6 +10,7 @@ import java.util.Map;
 import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AuthInstance;
+import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.Koi;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
 import co.casterlabs.koi.api.listener.KoiEventUtil;
@@ -77,6 +78,7 @@ public class GlobalKoi implements KoiLifeCycleHandler {
         bridge.getQueryData().put("koi", bridgeData);
     }
 
+    @SuppressWarnings("deprecation")
     @KoiEventHandler
     public void onEvent(KoiEvent e) {
         if (e.getType() == KoiEventType.CATCHUP) {
@@ -112,9 +114,14 @@ public class GlobalKoi implements KoiLifeCycleHandler {
             CaffeinatedApp.getInstance().getBridge().emit("koi:event:" + e.getType().name().toLowerCase(), asJson);
             CaffeinatedApp.getInstance().getBridge().emit("koi:event", asJson);
 
-            // Send to plugins n whatnot.
+            // These are used internally.
             for (KoiLifeCycleHandler listener : this.koiEventListeners) {
                 KoiEventUtil.reflectInvoke(listener, e);
+            }
+
+            // Notify the plugins
+            for (CaffeinatedPlugin pl : CaffeinatedApp.getInstance().getPlugins().getPlugins().getPlugins()) {
+                pl.fireKoiEventListeners(e);
             }
         }
 

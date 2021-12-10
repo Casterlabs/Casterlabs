@@ -5,7 +5,6 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,7 +62,12 @@ public abstract class CaffeinatedPlugin implements Closeable {
             }
 
             for (Widget widget : this.getWidgets()) {
-                widget.fireKoiEventListeners(event);
+                try {
+                    widget.fireKoiEventListeners(event).await();
+                } catch (Throwable t) {
+                    this.logger.severe("An error occurred whilst processing Koi event:");
+                    this.logger.exception(t);
+                }
             }
 
             return null;
@@ -138,7 +142,7 @@ public abstract class CaffeinatedPlugin implements Closeable {
     }
 
     public final List<Widget> getWidgets() {
-        return Collections.unmodifiableList(this.widgets);
+        return new ArrayList<>(this.widgets);
     }
 
     /* ---------------- */
