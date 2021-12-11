@@ -6,8 +6,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AppAuth;
+import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.events.AppUIAppearanceUpdateEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUIEventType;
 import co.casterlabs.caffeinated.app.ui.events.AppUIOpenLinkEvent;
@@ -46,12 +48,21 @@ public class AppUI {
     public void onUIThemeLoadedEvent(AppUIThemeLoadedEvent event) {
         this.uiFinishedLoad = true;
 
-        AppAuth auth = CaffeinatedApp.getInstance().getAuth();
-        if (!auth.isSignedIn()) {
-            this.navigate("/signin");
-        } else if (auth.isAuthorized()) {
-            this.navigate("/home");
-        } // Otherwise AppAuth will automagically move us there :D
+        PreferenceFile<AppPreferences> prefs = CaffeinatedApp.getInstance().getAppPreferences();
+
+        if (prefs.get().isNew()) {
+            prefs.get().setNew(false);
+            prefs.save();
+
+            this.navigate("/welcome/step1");
+        } else {
+            AppAuth auth = CaffeinatedApp.getInstance().getAuth();
+            if (!auth.isSignedIn()) {
+                this.navigate("/signin");
+            } else if (auth.isAuthorized()) {
+                this.navigate("/home");
+            } // Otherwise AppAuth will automagically move us there :D
+        }
     }
 
     @EventListener
