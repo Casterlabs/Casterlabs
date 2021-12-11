@@ -17,7 +17,6 @@
             }
         </style>
         <title>Emoji Rain</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
     </head>
 
     <body>
@@ -53,8 +52,6 @@
             Koi.on("*", (_type, event) => {
                 if (event.message) {
                     let message = event.message.match(EMOJI_REGEX);
-
-                    console.log(event);
 
                     if (event.emotes) {
                         for (const [pattern, link] of Object.entries(event.emotes)) {
