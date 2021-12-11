@@ -97,7 +97,7 @@
 		<dependency>
 			<groupId>com.github.e3ndr</groupId>
 			<artifactId>ConsoleUtil</artifactId>
-			<version>bd6442f</version> <!-- 1.4.0-EXPERIMENTAL -->
+			<version>9d51c20</version> <!-- 1.4.0-EXPERIMENTAL -->
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -115,7 +115,7 @@
 		<dependency>
 			<groupId>com.github.e3ndr</groupId>
 			<artifactId>FastLoggingFramework</artifactId>
-			<version>1.6.0</version>
+			<version>1.7.0</version>
 			<scope>compile</scope>
 		</dependency>
 
