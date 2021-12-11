@@ -64,11 +64,13 @@ public class Bootstrap implements Runnable {
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
-                e.printStackTrace();
+                if (!(e instanceof ThreadDeath)) {
+                    e.printStackTrace();
 
-                if (e instanceof UnsatisfiedLinkError) {
-                    // TODO show fatal popup detailing the error and let the user know that the
-                    // program is about to close.
+                    if (e instanceof UnsatisfiedLinkError) {
+                        // TODO show fatal popup detailing the error and let the user know that the
+                        // program is about to close.
+                    }
                 }
             }
         });
