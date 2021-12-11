@@ -139,7 +139,7 @@ public class PluginIntegration {
 
         String conductorKey = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorKey();
         String url = String.format(
-            "https://widget.casterlabs.co/caffeinated/widget?pluginId=%s&widgetId=%s&authorization=%s",
+            "https://widgets.casterlabs.co/caffeinated/widget?pluginId=%s&widgetId=%s&authorization=%s",
             widget.getPlugin().getId(),
             widget.getId(),
             conductorKey
