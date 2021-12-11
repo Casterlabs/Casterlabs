@@ -97,7 +97,6 @@ public class Bootstrap implements Runnable {
                 logger.info("App is already running, summoning it now.");
 
                 if (InstanceManager.trySummonInstance()) {
-                    FastLoggingFramework.close(); // Faster shutdown.
                     return;
                 } else {
                     logger.warn("Summon failed, launching anyways.");
@@ -270,7 +269,6 @@ public class Bootstrap implements Runnable {
                 InstanceManager.cleanShutdown();
 
                 // Exit.
-                FastLoggingFramework.close();
                 System.exit(0);
             });
         } else {
