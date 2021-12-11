@@ -26,6 +26,7 @@ import co.casterlabs.koi.api.types.events.StreamStatusEvent;
 import co.casterlabs.koi.api.types.events.UserUpdateEvent;
 import co.casterlabs.koi.api.types.events.ViewerListEvent;
 import co.casterlabs.koi.api.types.user.User;
+import co.casterlabs.koi.api.types.user.UserPlatform;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
@@ -40,9 +41,9 @@ public class GlobalKoi implements KoiLifeCycleHandler {
     private List<KoiLifeCycleHandler> koiEventListeners = new LinkedList<>();
 
     private List<KoiEvent> eventHistory = new LinkedList<>();
-    private Map<String, List<User>> viewers = new HashMap<>();
-    private Map<String, UserUpdateEvent> userStates = new HashMap<>();
-    private Map<String, StreamStatusEvent> streamStates = new HashMap<>();
+    private Map<UserPlatform, List<User>> viewers = new HashMap<>();
+    private Map<UserPlatform, UserUpdateEvent> userStates = new HashMap<>();
+    private Map<UserPlatform, StreamStatusEvent> streamStates = new HashMap<>();
 
     @SneakyThrows
     public void init() {
@@ -58,15 +59,15 @@ public class GlobalKoi implements KoiLifeCycleHandler {
      */
     @Deprecated
     public void updateFromAuth() {
-        List<String> validPlatforms = new LinkedList<>();
+        List<UserPlatform> validPlatforms = new LinkedList<>();
 
         for (AuthInstance inst : CaffeinatedApp.getInstance().getAuth().getAuthInstances().values()) {
             if (inst.getUserData() != null) {
-                validPlatforms.add(inst.getUserData().getPlatform().name());
+                validPlatforms.add(inst.getUserData().getPlatform());
             }
         }
 
-        for (String key : new ArrayList<>(this.viewers.keySet())) {
+        for (UserPlatform key : new ArrayList<>(this.viewers.keySet())) {
             if (!validPlatforms.contains(key)) {
                 this.viewers.remove(key);
                 this.userStates.remove(key);
@@ -130,7 +131,7 @@ public class GlobalKoi implements KoiLifeCycleHandler {
 
                 case VIEWER_LIST: {
                     this.viewers.put(
-                        e.getStreamer().getPlatform().name(),
+                        e.getStreamer().getPlatform(),
                         Collections.unmodifiableList(((ViewerListEvent) e).getViewers())
                     );
 
@@ -140,7 +141,7 @@ public class GlobalKoi implements KoiLifeCycleHandler {
 
                 case USER_UPDATE: {
                     this.userStates.put(
-                        e.getStreamer().getPlatform().name(),
+                        e.getStreamer().getPlatform(),
                         (UserUpdateEvent) e
                     );
 
@@ -150,7 +151,7 @@ public class GlobalKoi implements KoiLifeCycleHandler {
 
                 case STREAM_STATUS: {
                     this.streamStates.put(
-                        e.getStreamer().getPlatform().name(),
+                        e.getStreamer().getPlatform(),
                         (StreamStatusEvent) e
                     );
 
