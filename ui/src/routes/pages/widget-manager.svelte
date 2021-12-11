@@ -99,67 +99,71 @@
             </div>
             <div class="dropdown-menu" id="widget-creation-dropdown-content" role="menu">
                 <div class="dropdown-content">
-                    <!-- "Alerts" Dropdown -->
-                    <div class="dropdown-item">
-                        <CreationDropdownCategory name="Alerts" icon="bell">
-                            {#each widgetCategories.alerts as item}
-                                <div class="dropdown-item">
-                                    <button class="button ghost-button" on:click={item.create} style="width: 11rem;">
-                                        {item.name}
-                                    </button>
-                                </div>
-                            {/each}
-                        </CreationDropdownCategory>
-                    </div>
+                    {#if widgetCategories.alerts.length > 0}
+                        <!-- "Alerts" Dropdown -->
+                        <div class="dropdown-item">
+                            <CreationDropdownCategory name="Alerts" icon="bell">
+                                {#each widgetCategories.alerts as item}
+                                    <div class="dropdown-item">
+                                        <button class="button ghost-button" on:click={item.create} style="width: 11rem;">
+                                            {item.name}
+                                        </button>
+                                    </div>
+                                {/each}
+                            </CreationDropdownCategory>
+                        </div>
+                        <hr class="dropdown-divider" />
+                    {/if}
 
-                    <hr class="dropdown-divider" />
+                    {#if widgetCategories.labels.length > 0}
+                        <!-- "Labels" Dropdown -->
+                        <div class="dropdown-item">
+                            <CreationDropdownCategory name="Labels" icon="type">
+                                {#each widgetCategories.labels as item}
+                                    <div class="dropdown-item">
+                                        <button class="button ghost-button" on:click={item.create} style="width: 11rem;">
+                                            {item.name}
+                                        </button>
+                                    </div>
+                                {/each}
+                            </CreationDropdownCategory>
+                        </div>
+                        <hr class="dropdown-divider" />
+                    {/if}
 
-                    <!-- "Labels" Dropdown -->
-                    <div class="dropdown-item">
-                        <CreationDropdownCategory name="Labels" icon="type">
-                            {#each widgetCategories.labels as item}
-                                <div class="dropdown-item">
-                                    <button class="button ghost-button" on:click={item.create} style="width: 11rem;">
-                                        {item.name}
-                                    </button>
-                                </div>
-                            {/each}
-                        </CreationDropdownCategory>
-                    </div>
+                    {#if widgetCategories.interaction.length > 0}
+                        <!-- "Interaction" Dropdown -->
+                        <div class="dropdown-item">
+                            <CreationDropdownCategory name="Interaction" icon="message-circle">
+                                {#each widgetCategories.interaction as item}
+                                    <div class="dropdown-item">
+                                        <button class="button ghost-button" on:click={item.create} style="width: 11rem;">
+                                            {item.name}
+                                        </button>
+                                    </div>
+                                {/each}
+                            </CreationDropdownCategory>
+                        </div>
+                        <hr class="dropdown-divider" />
+                    {/if}
 
-                    <hr class="dropdown-divider" />
-
-                    <!-- "Interaction" Dropdown -->
-                    <div class="dropdown-item">
-                        <CreationDropdownCategory name="Interaction" icon="message-circle">
-                            {#each widgetCategories.interaction as item}
-                                <div class="dropdown-item">
-                                    <button class="button ghost-button" on:click={item.create} style="width: 11rem;">
-                                        {item.name}
-                                    </button>
-                                </div>
-                            {/each}
-                        </CreationDropdownCategory>
-                    </div>
-
-                    <hr class="dropdown-divider" />
-
-                    <!-- "Goals" Dropdown -->
-                    <div class="dropdown-item">
-                        <CreationDropdownCategory name="Goals" icon="bar-chart">
-                            {#each widgetCategories.goals as item}
-                                <div class="dropdown-item">
-                                    <button class="button ghost-button" on:click={item.create} style="width: 11rem;">
-                                        {item.name}
-                                    </button>
-                                </div>
-                            {/each}
-                        </CreationDropdownCategory>
-                    </div>
+                    {#if widgetCategories.goals.length > 0}
+                        <!-- "Goals" Dropdown -->
+                        <div class="dropdown-item">
+                            <CreationDropdownCategory name="Goals" icon="bar-chart">
+                                {#each widgetCategories.goals as item}
+                                    <div class="dropdown-item">
+                                        <button class="button ghost-button" on:click={item.create} style="width: 11rem;">
+                                            {item.name}
+                                        </button>
+                                    </div>
+                                {/each}
+                            </CreationDropdownCategory>
+                        </div>
+                        <hr class="dropdown-divider" />
+                    {/if}
 
                     {#if widgetCategories.other.length > 0}
-                        <hr class="dropdown-divider" />
-
                         <!-- "Other" Dropdown -->
                         <div class="dropdown-item">
                             <CreationDropdownCategory name="Other" icon="droplet">
