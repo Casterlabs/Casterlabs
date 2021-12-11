@@ -1,5 +1,6 @@
 package co.casterlabs.caffeinated.pluginsdk.koi;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,28 @@ public class Koi {
             .put("viewers", Rson.DEFAULT.toJson(viewers))
             .put("userStates", Rson.DEFAULT.toJson(userStates))
             .put("streamStates", Rson.DEFAULT.toJson(streamStates));
+    }
+
+    public static List<UserPlatform> getSignedInPlatforms() {
+        return new LinkedList<>(userStates.keySet());
+    }
+
+    public static boolean isMultiUserMode() {
+        return userStates.size() > 1;
+    }
+
+    public static boolean isSignedOut() {
+        return userStates.size() == 0;
+    }
+
+    /**
+     * It's important to note that this is really only useful outside of multi-user
+     * mode.
+     * 
+     * @throws IndexOutOfBoundsException if no user is signed in.
+     */
+    public static UserPlatform getFirstSignedInPlatform() {
+        return getSignedInPlatforms().get(0);
     }
 
 }
