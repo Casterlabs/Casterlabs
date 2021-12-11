@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.InternalMusicProvider;
+import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.impl.SpotifyMusicProvider.SpotifySettings;
 import co.casterlabs.caffeinated.pluginsdk.music.MusicTrack;
 import co.casterlabs.caffeinated.util.WebUtil;
@@ -112,25 +112,29 @@ public class SpotifyMusicProvider extends InternalMusicProvider<SpotifySettings>
                     }
                 } else {
                     if (response.containsKey("item")) {
-                        JsonObject item = response.getObject("item");
+                        if (response.get("item").isJsonObject()) {
+                            JsonObject item = response.getObject("item");
 
-                        boolean isPlaying = response.getBoolean("is_playing");
-                        String songLink = item.getObject("external_urls").getString("spotify");
-                        String albumArtUrl = item.getObject("album").getArray("images").getObject(0).getString("url");
-                        String album = item.getObject("album").getString("name");
-                        String title = item.getString("name").replace("/(\\(ft.*\\))|(\\(feat.*\\))/gi", ""); // Remove (feat. ...)
-                        List<String> artists = new LinkedList<>();
+                            boolean isPlaying = response.getBoolean("is_playing");
+                            String songLink = item.getObject("external_urls").getString("spotify");
+                            String albumArtUrl = item.getObject("album").getArray("images").getObject(0).getString("url");
+                            String album = item.getObject("album").getString("name");
+                            String title = item.getString("name").replace("/(\\(ft.*\\))|(\\(feat.*\\))/gi", ""); // Remove (feat. ...)
+                            List<String> artists = new LinkedList<>();
 
-                        for (JsonElement artist : item.getArray("artists")) {
-                            artists.add(artist.getAsObject().getString("name"));
-                        }
+                            for (JsonElement artist : item.getArray("artists")) {
+                                artists.add(artist.getAsObject().getString("name"));
+                            }
 
-                        MusicTrack track = new MusicTrack(title, artists, album, albumArtUrl, songLink);
+                            MusicTrack track = new MusicTrack(title, artists, album, albumArtUrl, songLink);
 
-                        if (isPlaying) {
-                            this.setPlaying(track);
+                            if (isPlaying) {
+                                this.setPlaying(track);
+                            } else {
+                                this.setPaused(track);
+                            }
                         } else {
-                            this.setPaused(track);
+                            this.makePaused();
                         }
                     }
                 }
