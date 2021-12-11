@@ -250,8 +250,8 @@
                         // and non-module javascript has executed.
                         loadState++;
                         widgetInstance.broadcast("init");
-
                         koiInstance.broadcast("koi_statics", koi_statics);
+                        conn.send("READY", {});
                     }
                 });
 
@@ -265,7 +265,7 @@
             });
 
             conn.on("emission", ({ type, data }) => {
-                widgetInstance.broadcast(type, data);
+                widgetInstance.broadcast(type, data, false);
             });
 
             conn.on("koi_statics", (statics) => {

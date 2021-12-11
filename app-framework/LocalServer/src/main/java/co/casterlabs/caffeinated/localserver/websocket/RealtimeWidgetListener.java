@@ -56,8 +56,6 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
         websocket.setAttachment(connPair);
         this.field_widgetInstances.add(this.wInstance);
 
-        this.widget.onNewInstance(this.wInstance);
-
         this.sendMessage(
             "KOI_STATICS",
             Koi.toJson() // Exact same.
@@ -85,6 +83,11 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
             String type = message.getString("type").toUpperCase();
 
             switch (type) {
+
+                case "READY": {
+                    this.widget.onNewInstance(this.wInstance);
+                    return;
+                }
 
                 case "KOI": {
                     // TODO proxy koi calls.
