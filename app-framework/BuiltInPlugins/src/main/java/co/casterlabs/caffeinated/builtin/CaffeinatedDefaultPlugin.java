@@ -2,6 +2,9 @@ package co.casterlabs.caffeinated.builtin;
 
 import co.casterlabs.caffeinated.builtin.widgets.ChatWidget;
 import co.casterlabs.caffeinated.builtin.widgets.EmojiRainWidget;
+import co.casterlabs.caffeinated.builtin.widgets.labels.FollowerCountLabel;
+import co.casterlabs.caffeinated.builtin.widgets.labels.SubscriberCountLabel;
+import co.casterlabs.caffeinated.builtin.widgets.labels.ViewersCountLabel;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.PluginImplementation;
 import lombok.NonNull;
@@ -18,14 +21,18 @@ public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
         this.getLogger().info("|   My name is:   |");
         this.getLogger().info("|‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|");
         this.getLogger().info("|   Casterlabs    |");
-        this.getLogger().info("|     Default     |");
-        this.getLogger().info("|     Widgets     |");
+        this.getLogger().info("|                 |");
         this.getLogger().info("|                 |");
         this.getLogger().info(" ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾ ");
 
         // Interaction
         this.getPlugins().registerWidget(this, ChatWidget.DETAILS, ChatWidget.class);
         this.getPlugins().registerWidget(this, EmojiRainWidget.DETAILS, EmojiRainWidget.class);
+
+        // Labels
+        this.getPlugins().registerWidget(this, FollowerCountLabel.DETAILS, FollowerCountLabel.class);
+        this.getPlugins().registerWidget(this, SubscriberCountLabel.DETAILS, SubscriberCountLabel.class);
+        this.getPlugins().registerWidget(this, ViewersCountLabel.DETAILS, ViewersCountLabel.class);
 
         // Alerts
 //        this.getPlugins().registerWidget(this, DonationAlert.DETAILS, DonationAlert.class);
