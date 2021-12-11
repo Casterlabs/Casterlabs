@@ -202,7 +202,7 @@
             // Listen for events on the conn, fire them off, yeah you get the idea.
             conn.on("init", () => {
                 sandboxFrame = document.createElement("iframe");
-                sandboxFrame.src = "/desktop/sandbox.html";
+                sandboxFrame.src = "/caffeinated/sandbox.html";
 
                 let loadState = 0;
                 sandboxFrame.addEventListener("load", async () => {
