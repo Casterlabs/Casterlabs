@@ -67,7 +67,7 @@
         {#each widgets as widget}
             <a class="button widget-tile" href="/pages/edit-widget?widget={widget.id}" title={widget.name}>
                 <i data-feather={widget.details.icon || DEFAULT_MODULE_ICON} aria-hidden="true" />
-                <p>
+                <p class="widget-name">
                     {widget.name}
                 </p>
             </a>
@@ -237,9 +237,11 @@
         height: 4em;
     }
 
-    .widget-tile p {
+    .widget-tile .widget-name {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        font-size: 0.85em;
+        line-height: 2em;
     }
 </style>
