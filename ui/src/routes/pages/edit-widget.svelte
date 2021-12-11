@@ -131,26 +131,28 @@
             </div>
         </div>
 
-        <div class="tabs">
-            <!-- svelte-ignore a11y-missing-attribute -->
-            <ul style="justify-content: center !important;">
-                {#each Object.values(widgetSections) as widgetSection}
-                    {#if widgetSection.id == currentWidgetSection}
-                        <li class="is-active">
-                            <a>
-                                {widgetSection.name}
-                            </a>
-                        </li>
-                    {:else}
-                        <li>
-                            <a on:click={switchCategory(widgetSection.id)}>
-                                {widgetSection.name}
-                            </a>
-                        </li>
-                    {/if}
-                {/each}
-            </ul>
-        </div>
+        {#if Object.keys(widgetSections).length > 1}
+            <div class="tabs">
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <ul style="justify-content: center !important;">
+                    {#each Object.values(widgetSections) as widgetSection}
+                        {#if widgetSection.id == currentWidgetSection}
+                            <li class="is-active">
+                                <a>
+                                    {widgetSection.name}
+                                </a>
+                            </li>
+                        {:else}
+                            <li>
+                                <a on:click={switchCategory(widgetSection.id)}>
+                                    {widgetSection.name}
+                                </a>
+                            </li>
+                        {/if}
+                    {/each}
+                </ul>
+            </div>
+        {/if}
 
         <div class="widget-settings allow-select has-text-left">
             {#if !blanking}
