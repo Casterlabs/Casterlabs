@@ -28,7 +28,7 @@ public class ChatWidget extends Widget {
                 .addItem(WidgetSettingsItem.asDropdown("chat_direction", "Chat Direction", "Down", "Down", "Up"))
                 .addItem(WidgetSettingsItem.asDropdown("chat_animation", "Chat Animation", "None", "None", "Slide", "Slide (Disappearing)", "Disappearing"))
 //                .addItem(WidgetSettingsItem.asUnknown("font", "Font", "Poppins"))
-                .addItem(WidgetSettingsItem.asNumber("font_size", "Font Size", 16, 1, 0, 128))
+                .addItem(WidgetSettingsItem.asNumber("font_size", "Font Size (px)", 16, 1, 0, 128))
                 .addItem(WidgetSettingsItem.asColor("text_color", "Text Color", "#ffffff"))
                 .addItem(WidgetSettingsItem.asDropdown("text_align", "Text Align", "Left", "Left", "Right"))
                 .addItem(WidgetSettingsItem.asCheckbox("show_donations", "Show Donations", true))

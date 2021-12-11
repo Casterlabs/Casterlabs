@@ -61,9 +61,9 @@ public class PluginIntegration {
                     // We can safely ignore it.
                     // TODO let the user know that the widget could not be found.
                     FastLogger.logStatic(LogLevel.WARNING, "Unable to create missing widget: %s (%s)", details.getName(), details.getNamespace());
+                } else {
+                    e.printStackTrace();
                 }
-
-                e.printStackTrace();
             }
         }
 
