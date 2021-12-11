@@ -56,6 +56,8 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
         websocket.setAttachment(connPair);
         this.field_widgetInstances.add(this.wInstance);
 
+        this.widget.onNewInstance(this.wInstance);
+
         this.sendMessage(
             "KOI_STATICS",
             Koi.toJson() // Exact same.

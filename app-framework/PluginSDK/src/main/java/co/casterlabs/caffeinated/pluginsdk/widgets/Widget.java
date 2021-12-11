@@ -152,6 +152,8 @@ public abstract class Widget {
 
     protected void onSettingsUpdate() {}
 
+    public void onNewInstance(@NonNull WidgetInstance instance) {}
+
     public @Nullable String getWidgetHtml() {
         return null;
     }
