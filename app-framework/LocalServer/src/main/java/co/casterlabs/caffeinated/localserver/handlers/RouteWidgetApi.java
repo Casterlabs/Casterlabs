@@ -53,6 +53,7 @@ public class RouteWidgetApi implements HttpProvider, WebsocketProvider, RouteHel
                 return newErrorResponse(StandardHttpStatus.UNAUTHORIZED, RequestError.UNAUTHORIZED);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return newErrorResponse(StandardHttpStatus.INTERNAL_ERROR, RequestError.INTERNAL_ERROR);
         }
     }

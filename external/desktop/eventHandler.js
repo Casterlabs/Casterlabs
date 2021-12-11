@@ -80,7 +80,7 @@ function EventHandler() {
                 }
             }
 
-            console.debug(`[EventHandler]`, "Processed event:", type, data);
+            // console.debug(`[EventHandler]`, "Processed event:", type, data);
         }
     };
 }

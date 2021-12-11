@@ -9,6 +9,7 @@ import lombok.NonNull;
 
 @PluginImplementation
 public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
+    public static final String DEV_ADDRESS = "http://localhost:4088";
 
     @Override
     public void onInit() {

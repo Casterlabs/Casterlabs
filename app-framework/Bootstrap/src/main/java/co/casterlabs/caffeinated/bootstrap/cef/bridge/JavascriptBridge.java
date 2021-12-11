@@ -19,7 +19,6 @@ import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.element.JsonString;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
-import lombok.Getter;
 import lombok.Setter;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
@@ -30,7 +29,7 @@ public class JavascriptBridge implements AppBridge {
     private CefMessageRouter router;
     private CefFrame frame;
 
-    private @Getter JsonObject queryData = new JsonObject();
+    private JsonObject queryData = new JsonObject();
 
     private @Setter DualConsumer<String, JsonObject> onEvent;
 
@@ -96,6 +95,12 @@ public class JavascriptBridge implements AppBridge {
         }, true);
 
         client.addMessageRouter(this.router);
+    }
+
+    @Override
+    public JsonObject getQueryData() {
+        System.gc(); // Invoke a GC, TODO this is temporary.
+        return this.queryData;
     }
 
     public void injectBridgeScript(CefFrame frame) {

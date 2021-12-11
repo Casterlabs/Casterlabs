@@ -11,6 +11,7 @@ import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
 import co.casterlabs.caffeinated.localserver.LocalServer;
+import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.util.FileUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
@@ -88,6 +89,8 @@ public class Bootstrap implements Runnable {
         isDev = this.devAddress != null;
         ReflectionLib.setStaticValue(FileUtil.class, "isDev", isDev);
         buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
+
+        ReflectionLib.setStaticValue(CaffeinatedPlugin.class, "devEnvironment", isDev);
 
         // Check for another instance, and do IPC things.
         if (!InstanceManager.isSingleInstance()) {

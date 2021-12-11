@@ -25,6 +25,8 @@ import lombok.NonNull;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public abstract class CaffeinatedPlugin implements Closeable {
+    private static @Reflective @Getter boolean devEnvironment;
+
     private final @Getter FastLogger logger = new FastLogger(this.getName());
 
     // Helpers so the plugin can interract with the framework.
