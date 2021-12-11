@@ -49,8 +49,9 @@ public class ChatWidget extends Widget {
     public @Nullable String getWidgetHtml() {
         if (CaffeinatedPlugin.isDevEnvironment()) {
             return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + "/chat.html"));
+        } else {
+            return FileUtil.loadResource("widgets/chat.html");
         }
-        return FileUtil.loadResource("widgets/chat.html");
     }
 
 }
