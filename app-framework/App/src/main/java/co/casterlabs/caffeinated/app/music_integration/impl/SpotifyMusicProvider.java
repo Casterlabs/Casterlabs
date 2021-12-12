@@ -23,7 +23,7 @@ import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class SpotifyMusicProvider extends InternalMusicProvider<SpotifySettings> {
     private static final String AUTH_PROXY_URL = "https://api.casterlabs.co/v2/natsukashii/spotify";
-    private static final long POLL_RATE = TimeUnit.SECONDS.toMillis(20);
+    private static final long POLL_RATE = TimeUnit.SECONDS.toMillis(15);
 
     private FastLogger logger = new FastLogger();
 
