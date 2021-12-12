@@ -154,7 +154,7 @@
 
                     artElement.src = Music.activePlayback.currentTrack.albumArtUrl;
 
-                    cardElement.classList = `${Widget.getSetting("style.image_style").toLowerCase()}-image`;
+                    cardElement.classList = `${Widget.getSetting("style.image_style")}-image`.toLowerCase();
                 } else {
                     cardElement.classList.add("hide");
                 }
