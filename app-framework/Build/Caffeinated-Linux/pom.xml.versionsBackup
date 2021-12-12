@@ -2,12 +2,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>Caffeinated-Windows</artifactId>
+	<artifactId>Caffeinated-Linux</artifactId>
 
 	<parent>
 		<groupId>co.casterlabs</groupId>
 		<artifactId>Build</artifactId>
-		<version>1.2.0</version>
+		<version>1.0.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -66,8 +66,8 @@
 					<execution>
 						<id>windows</id>
 						<goals>
-							<!-- <goal>win32</goal> -->
-							<goal>win64</goal>
+							<!-- <goal>linux32</goal> -->
+							<goal>linux64</goal>
 						</goals>
 						<configuration>
 							<exportType>plain</exportType>
