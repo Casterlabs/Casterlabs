@@ -14,6 +14,7 @@ import org.cef.handler.CefLoadHandlerAdapter;
 import org.cef.network.CefRequest.TransitionType;
 import org.jetbrains.annotations.Nullable;
 
+import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.cef.CefUtil;
 import co.casterlabs.caffeinated.bootstrap.cef.bridge.JavascriptBridge;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.SchemeHandler;
@@ -64,15 +65,15 @@ public class ApplicationUI {
             public void onBeforeContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams params, CefMenuModel model) {
                 model.clear();
 
-//                if (Bootstrap.isDev()) {
-                model.addItem(2, "Reload");
+                if (Bootstrap.isDev()) {
+                    model.addItem(2, "Reload");
 
-                model.addCheckItem(1, "Inspect Element");
-                model.setChecked(1, devtools.isOpen());
+                    model.addCheckItem(1, "Inspect Element");
+                    model.setChecked(1, devtools.isOpen());
 
-                model.addSeparator();
-                model.addItem(99, "Close This Popup");
-//                }
+                    model.addSeparator();
+                    model.addItem(99, "Close This Popup");
+                }
             }
 
             @Override
