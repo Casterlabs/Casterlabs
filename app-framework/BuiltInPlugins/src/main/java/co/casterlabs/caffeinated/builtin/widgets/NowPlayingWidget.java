@@ -38,10 +38,12 @@ public class NowPlayingWidget extends Widget {
     @SneakyThrows
     @Override
     public @Nullable String getWidgetHtml() {
+        final String resource = "/now-playing.html";
+
         if (CaffeinatedPlugin.isDevEnvironment()) {
-            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + "/now-playing.html"));
+            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + resource));
         } else {
-            return FileUtil.loadResource("widgets/chat.html");
+            return FileUtil.loadResource("widgets" + resource);
         }
     }
 

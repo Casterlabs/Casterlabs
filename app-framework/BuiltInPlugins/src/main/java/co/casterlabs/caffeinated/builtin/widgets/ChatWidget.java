@@ -47,10 +47,12 @@ public class ChatWidget extends Widget {
     @SneakyThrows
     @Override
     public @Nullable String getWidgetHtml() {
+        final String resource = "/chat.html";
+
         if (CaffeinatedPlugin.isDevEnvironment()) {
-            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + "/chat.html"));
+            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + resource));
         } else {
-            return FileUtil.loadResource("widgets/chat.html");
+            return FileUtil.loadResource("widgets" + resource);
         }
     }
 

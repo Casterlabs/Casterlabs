@@ -85,10 +85,12 @@ public abstract class GenericLabel extends Widget implements KoiEventListener {
     @SneakyThrows
     @Override
     public @Nullable String getWidgetHtml() {
+        final String resource = "/text.html";
+
         if (CaffeinatedPlugin.isDevEnvironment()) {
-            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + "/text.html"));
+            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + resource));
         } else {
-            return FileUtil.loadResource("widgets/text.html");
+            return FileUtil.loadResource("widgets" + resource);
         }
     }
 

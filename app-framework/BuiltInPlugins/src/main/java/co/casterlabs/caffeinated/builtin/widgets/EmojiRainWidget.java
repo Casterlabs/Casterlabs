@@ -39,10 +39,12 @@ public class EmojiRainWidget extends Widget {
     @SneakyThrows
     @Override
     public @Nullable String getWidgetHtml() {
+        final String resource = "/rain.html";
+
         if (CaffeinatedPlugin.isDevEnvironment()) {
-            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + "/rain.html"));
+            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + resource));
         } else {
-            return FileUtil.loadResource("widgets/rain.html");
+            return FileUtil.loadResource("widgets" + resource);
         }
     }
 
