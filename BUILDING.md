@@ -27,7 +27,8 @@ You can either
  - `brew install wget`
  - `brew install maven`
 
-
+# Note for IDEs
+You will need to install [lombok](https://projectlombok.org)
 
 # Building
 1) Clone the repo
