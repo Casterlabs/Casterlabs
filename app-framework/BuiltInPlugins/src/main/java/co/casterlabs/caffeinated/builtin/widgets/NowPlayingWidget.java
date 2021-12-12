@@ -25,6 +25,7 @@ public class NowPlayingWidget extends Widget {
     private static final WidgetSettingsLayout LAYOUT = new WidgetSettingsLayout()
         .addSection(
             new WidgetSettingsSection("style", "Style")
+                .addItem(WidgetSettingsItem.asCheckbox("visible", "Is Visible", true))
                 .addItem(WidgetSettingsItem.asDropdown("background_style", "Background Style", "Blur", "Blur", "Clear", "Solid"))
                 .addItem(WidgetSettingsItem.asDropdown("image_style", "Image Location", "Left", "Left", "Right", "None"))
         );
