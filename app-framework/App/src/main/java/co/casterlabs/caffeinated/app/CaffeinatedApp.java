@@ -73,6 +73,8 @@ public class CaffeinatedApp {
         this.auth.init();
         this.musicIntegration.init();
         this.plugins.init();
+
+        this.bridge.getQueryData().put("build", Rson.DEFAULT.toJson(this.buildInfo));
     }
 
     public boolean canCloseUI() {

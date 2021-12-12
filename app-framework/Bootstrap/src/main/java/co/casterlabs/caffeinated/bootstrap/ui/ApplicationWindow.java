@@ -23,6 +23,7 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.preferences.WindowPreferences;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
+import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.util.FileUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.element.JsonObject;
@@ -177,6 +178,7 @@ public class ApplicationWindow {
                     .put("maximized", this.isMaximized())
                     .put("platform", ConsoleUtil.getPlatform().name())
                     .put("hasFocus", this.hasFocus)
+                    .put("isDev", Bootstrap.isDev())
                     .put("enableTitleBar", ENABLE_CUSTOM_TITLEBARS);
 
                 bridge.getQueryData().put("window", bridgeData);
