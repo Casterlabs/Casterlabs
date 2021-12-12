@@ -162,10 +162,10 @@
             </div>
         </div>
 
-        {#if Object.keys(widgetSections).length > 1}
-            <div class="tabs">
-                <!-- svelte-ignore a11y-missing-attribute -->
-                <ul style="justify-content: center !important;">
+        <div class="tabs">
+            <ul style="justify-content: center !important;">
+                {#if Object.keys(widgetSections).length > 1}
+                    <!-- svelte-ignore a11y-missing-attribute -->
                     {#each Object.values(widgetSections) as widgetSection}
                         {#if widgetSection.id == currentWidgetSection}
                             <li class="is-active">
@@ -181,9 +181,9 @@
                             </li>
                         {/if}
                     {/each}
-                </ul>
-            </div>
-        {/if}
+                {/if}
+            </ul>
+        </div>
 
         <div class="widget-settings allow-select has-text-left">
             {#if !blanking}
