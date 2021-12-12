@@ -155,9 +155,9 @@
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
                         </svg>
                     </span>
-                    <div class="subtitle is-7" style="user-select: text;">
+                    <p class="subtitle is-7" style="user-select: text;">
                         {widget.details.friendlyName}
-                    </div>
+                    </p>
                 </div>
             </div>
         </div>
@@ -278,11 +278,12 @@
         width: fit-content;
         margin: auto;
         height: 3.5em;
-        line-height: 3.5em;
+        padding-top: 1em;
     }
 
     .widget-controls .title {
         padding-bottom: 0;
+        margin-bottom: 0;
     }
 
     .widget-control-buttons {
