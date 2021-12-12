@@ -57,7 +57,7 @@ public class PluginIntegration {
 
                 ReflectionLib.invokeMethod(widget, "setSettings", details.getSettings());
             } catch (AssertionError | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                if (e.getMessage().equals("A factory associated to that widget is not registered.")) {
+                if ("A factory associated to that widget is not registered.".equals(e.getMessage())) {
                     // We can safely ignore it.
                     // TODO let the user know that the widget could not be found.
                     FastLogger.logStatic(LogLevel.WARNING, "Unable to create missing widget: %s (%s)", details.getName(), details.getNamespace());
