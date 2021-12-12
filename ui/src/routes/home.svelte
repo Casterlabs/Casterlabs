@@ -1,32 +1,27 @@
 <script>
+    import { onMount } from "svelte";
+
     import { setPageProperties } from "./__layout.svelte";
+
+    let buildInfo = {};
 
     setPageProperties({
         showSideBar: true,
         pageTitle: "",
         allowNavigateBackwards: false
     });
+
+    onMount(async () => {
+        buildInfo = (await Bridge.query("build")).data;
+    });
 </script>
 
 <div class="has-text-centered">
     <br />
-    <br />
-    <h1 class="title">test page :^)</h1>
-    <br />
+    <h1 class="title">Welcome to Caffeinated!</h1>
+    <h2 class="subtitle">(Alpha {buildInfo.version})</h2>
+</div>
 
-    <a href="/welcome/step1">welcome/step1</a>
-    <br />
-    <a href="/controldeck">controldeck</a>
-    <br />
-    <a href="/settings">settings</a>
-    <br />
-    <a href="/pages/stream-chat">pages/stream-chat</a>
-    <br />
-    <a href="/signin">login</a>
-    <br />
-    <a href="/">index</a>
-
-    <br />
-    <br />
+<div class="has-text-centered" style="position: absolute; bottom: 2em; width: 100%;">
     <a href="https://casterlabs.co" rel="external">casterlabs</a>
 </div>

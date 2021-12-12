@@ -1,9 +1,14 @@
 <script>
 </script>
 
+<!-- svelte-ignore a11y-missing-attribute -->
 <div class="sidebar-container has-text-left">
     <!-- Your Stream -->
-    <!-- svelte-ignore a11y-missing-attribute -->
+    <div class="sidebar-section">
+        <a class="sidebar-category-button" href="/home"> Home </a>
+    </div>
+
+    <!-- Your Stream -->
     <div class="sidebar-section">
         <h1 class="title">Your Stream</h1>
 
@@ -13,7 +18,6 @@
     </div>
 
     <!-- Channel -->
-    <!-- svelte-ignore a11y-missing-attribute -->
     <div class="sidebar-section hidden">
         <h1 class="title">Channel</h1>
 
