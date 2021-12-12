@@ -2,6 +2,7 @@ package co.casterlabs.caffeinated.app.koi;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -38,6 +39,19 @@ import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @Getter
 public class GlobalKoi implements KoiLifeCycleHandler {
+    private static final List<KoiEventType> KEPT_EVENTS = Arrays.asList(
+        KoiEventType.FOLLOW,
+        KoiEventType.CHAT,
+        KoiEventType.DONATION,
+        KoiEventType.SUBSCRIPTION,
+        KoiEventType.META,
+        KoiEventType.VIEWER_JOIN,
+        KoiEventType.VIEWER_LEAVE,
+        KoiEventType.RAID,
+        KoiEventType.CHANNEL_POINTS,
+        KoiEventType.CLEARCHAT
+    );
+
     private List<KoiLifeCycleHandler> koiEventListeners = new LinkedList<>();
 
     private List<KoiEvent> eventHistory = new LinkedList<>();
@@ -125,7 +139,9 @@ public class GlobalKoi implements KoiLifeCycleHandler {
                 }
             }
         } else {
-            this.eventHistory.add(e);
+            if (KEPT_EVENTS.contains(e.getType())) {
+                this.eventHistory.add(e);
+            }
 
             switch (e.getType()) {
 
