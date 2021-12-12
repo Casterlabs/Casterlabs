@@ -181,6 +181,12 @@
                             </li>
                         {/if}
                     {/each}
+                    <style>
+                        /* Add more spacing */
+                        .widget-settings {
+                            top: 140px !important;
+                        }
+                    </style>
                 {/if}
             </ul>
         </div>
@@ -259,7 +265,7 @@
 <style>
     .widget-settings {
         position: absolute;
-        top: 125px;
+        top: 100px;
         bottom: 4.25em;
         left: 3.5em;
         right: 3.5em;
