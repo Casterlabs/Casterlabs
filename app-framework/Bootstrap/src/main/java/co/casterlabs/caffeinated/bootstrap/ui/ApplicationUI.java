@@ -220,23 +220,14 @@ public class ApplicationUI {
 
         @Override
         public HttpResponse onRequest(HttpRequest request) {
-            String uri = '/' + request.getUri().substring("app://".length());
+            String uri = request.getUri().substring(Bootstrap.appUrl.length());
 
-            // Some dumb logic to deal with the uris.
-            if (uri.equals("/index.html/")) {
-                uri = "/index.html";
-            } else {
-                // Chop off some stupid stuff.
-                if (uri.startsWith("/index.html/")) {
-                    uri = uri.substring("/index.html".length());
-                }
-
-                if (!uri.contains(".")) {
-                    if (uri.endsWith("/")) {
-                        uri += "index.html";
-                    } else {
-                        uri += "/index.html";
-                    }
+            // Append `index.html` to the end when required.
+            if (!uri.contains(".")) {
+                if (uri.endsWith("/")) {
+                    uri += "index.html";
+                } else {
+                    uri += "/index.html";
                 }
             }
 

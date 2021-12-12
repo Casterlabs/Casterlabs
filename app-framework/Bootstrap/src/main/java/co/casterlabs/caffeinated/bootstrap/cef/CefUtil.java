@@ -21,8 +21,6 @@ import co.casterlabs.caffeinated.bootstrap.cef.scheme.impl.ResponseResourceHandl
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI.AppSchemeHandler;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import xyz.e3ndr.fastloggingframework.logging.FastLogger;
-import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class CefUtil {
@@ -58,24 +56,33 @@ public class CefUtil {
 
             @Override
             public void onRegisterCustomSchemes(CefSchemeRegistrar registrar) {
-                if (!registrar.addCustomScheme(
-                    "app", // Scheme
+                registrar.addCustomScheme(
+                    "app",
                     true, // isStandard
                     false, // isLocal
                     false, // isDisplayIsolated
-                    true, // isSecure
-                    false, // isCorsEnabled
-                    false, // isCspBypassing
-                    true // isFetchEnabled
-                )) {
-                    FastLogger.logStatic(LogLevel.SEVERE, "Could not register scheme.");
-                    System.exit(1);
-                }
+                    true,  // isSecure
+                    true,  // isCorsEnabled
+                    true,  // isCspBypassing
+                    true   // isFetchEnabled
+                );
+
+                registrar.addCustomScheme(
+                    "proxy",
+                    true,  // isStandard
+                    false, // isLocal
+                    false, // isDisplayIsolated
+                    true,  // isSecure
+                    true,  // isCorsEnabled
+                    true,  // isCspBypassing
+                    true   // isFetchEnabled
+                );
             }
 
             @Override
             public void onContextInitialized() {
                 CefUtil.registerUrlScheme("app", new AppSchemeHandler());
+                CefUtil.registerUrlScheme("proxy", new CorsProxySchemeHandler());
             }
 
             @Override

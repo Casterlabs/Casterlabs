@@ -1,13 +1,24 @@
 package co.casterlabs.caffeinated.bootstrap.cef.scheme.http;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
+import org.cef.network.CefPostDataElement;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.rakurai.collections.HeaderMap;
+import co.casterlabs.rakurai.json.Rson;
+import co.casterlabs.rakurai.json.element.JsonArray;
+import co.casterlabs.rakurai.json.element.JsonElement;
+import co.casterlabs.rakurai.json.element.JsonObject;
+import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @AllArgsConstructor
 public class HttpRequest {
@@ -17,6 +28,7 @@ public class HttpRequest {
     private Map<String, String> queryParameters;
     private String queryString;
     private HttpMethod method;
+    private Vector<CefPostDataElement> postElements;
 
     // Request headers
     public HeaderMap getHeaders() {
@@ -49,49 +61,73 @@ public class HttpRequest {
         return this.getHeader("content-type");
     }
 
-//    public abstract boolean hasBody();
-//
-//    public final @Nullable String getRequestBody() throws IOException {
-//        if (this.hasBody()) {
-//            return new String(this.getRequestBodyBytes(), StandardCharsets.UTF_8);
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    public final @NonNull JsonElement getRequestBodyJson(@Nullable Rson rson) throws IOException, JsonParseException {
-//        if (this.hasBody()) {
-//            if (rson == null) {
-//                rson = Rson.DEFAULT;
-//            }
-//
-//            if ("application/json".equals(this.getBodyMimeType())) {
-//                String body = new String(this.getRequestBodyBytes(), StandardCharsets.UTF_8);
-//
-//                switch (body.charAt(0)) {
-//                    case '{': {
-//                        return rson.fromJson(body, JsonObject.class);
-//                    }
-//
-//                    case '[': {
-//                        return rson.fromJson(body, JsonArray.class);
-//                    }
-//
-//                    default: {
-//                        throw new JsonParseException("Request body must be either a JsonObject or JsonArray.");
-//                    }
-//                }
-//            } else {
-//                throw new JsonParseException("Request body must have a Content-Type of application/json.");
-//            }
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    public abstract @Nullable byte[] getRequestBodyBytes() throws IOException;
-//
-//    public abstract Map<String, String> parseFormBody() throws IOException;
+    public boolean hasBody() {
+        return this.postElements.isEmpty();
+    }
+
+    public final @Nullable String getRequestBody() throws IOException {
+        if (this.hasBody()) {
+            return new String(this.getRequestBodyBytes(), StandardCharsets.UTF_8);
+        } else {
+            return null;
+        }
+    }
+
+    public final @NonNull JsonElement getRequestBodyJson(@Nullable Rson rson) throws IOException, JsonParseException {
+        if (this.hasBody()) {
+            if (rson == null) {
+                rson = Rson.DEFAULT;
+            }
+
+            if ("application/json".equals(this.getBodyMimeType())) {
+                String body = new String(this.getRequestBodyBytes(), StandardCharsets.UTF_8);
+
+                switch (body.charAt(0)) {
+                    case '{': {
+                        return rson.fromJson(body, JsonObject.class);
+                    }
+
+                    case '[': {
+                        return rson.fromJson(body, JsonArray.class);
+                    }
+
+                    default: {
+                        throw new JsonParseException("Request body must be either a JsonObject or JsonArray.");
+                    }
+                }
+            } else {
+                throw new JsonParseException("Request body must have a Content-Type of application/json.");
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public @Nullable byte[] getRequestBodyBytes() throws IOException {
+        int size = 0;
+
+        for (CefPostDataElement el : this.postElements) {
+            size += el.getBytesCount();
+        }
+
+        byte[] body = new byte[size];
+        int pos = 0;
+
+        FastLogger.logStatic(LogLevel.TRACE, "Body Size: %d\nBody Elements:%d", size, this.postElements.size());
+
+        for (CefPostDataElement el : this.postElements) {
+            byte[] data = new byte[el.getBytesCount()];
+            int read = el.getBytes(data.length, data);
+
+            System.arraycopy(data, 0, body, pos, data.length);
+
+            pos += read;
+        }
+
+        return body;
+    }
+
+//    public Map<String, String> parseFormBody() throws IOException;
 
     // Misc
     public HttpMethod getMethod() {

@@ -29,7 +29,7 @@ import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @Command(name = "start", mixinStandardHelpOptions = true, version = "Caffeinated", description = "Starts Caffeinated")
 public class Bootstrap implements Runnable {
-    private static final String appUrl = "app://index.html";
+    public static final String appUrl = "app://app.local";
 
     @Option(names = {
             "-D",

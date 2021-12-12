@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import org.cef.callback.CefCallback;
 import org.cef.handler.CefResourceHandler;
 import org.cef.misc.IntRef;
 import org.cef.misc.StringRef;
+import org.cef.network.CefPostData;
+import org.cef.network.CefPostDataElement;
 import org.cef.network.CefRequest;
 import org.cef.network.CefResponse;
 
@@ -35,8 +38,15 @@ public class ResponseResourceHandler implements CefResourceHandler {
         String uri = request.getURL();
 //        String queryString = uri.split("\\?", 2)[1];
 
-        // TODO parse queryString.
+        // TODO parse queryString...
         // TODO request body(?)
+
+        Vector<CefPostDataElement> elements = new Vector<CefPostDataElement>();
+        CefPostData postData = request.getPostData();
+
+        if (postData != null) {
+            postData.getElements(elements);
+        }
 
         HttpRequest httpRequest = new HttpRequest(
             requestHeaders,
@@ -44,7 +54,8 @@ public class ResponseResourceHandler implements CefResourceHandler {
             null,
             null,
             null,
-            method
+            method,
+            elements
         );
 
         this.response = this.handler.onRequest(httpRequest);

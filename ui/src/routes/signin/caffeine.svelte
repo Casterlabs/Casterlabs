@@ -32,115 +32,153 @@
         <!-- svelte-ignore a11y-missing-attribute -->
         <a onclick="history.back()" style="color: var(--theme);"> Want to go back? </a>
     </div>
-
-    <script type="module">
-        import Auth from "../js/auth.mjs";
-        import Router from "../js/router.mjs";
-
-        const signinContainer = document.querySelector("#signin-container");
-        const usernameInput = signinContainer.querySelector("#username-input");
-        const passwordInput = signinContainer.querySelector("#password-input");
-        const mfaInput = signinContainer.querySelector("#mfa-input");
-        const errorMessage = signinContainer.querySelector("#error-message");
-        const signinSubmit = signinContainer.querySelector("#signin-submit");
-
-        /* ------------ */
-        /* Helpers      */
-        /* ------------ */
-
-        function clearFields() {
-            usernameInput.value = "";
-            passwordInput.value = "";
-            mfaInput.value = "";
-            mfaInput.parentElement.classList.add("hidden");
-            clearError();
-        }
-
-        function clearError() {
-            usernameInput.classList.remove("is-danger");
-            passwordInput.classList.remove("is-danger");
-            mfaInput.classList.remove("is-danger");
-            errorMessage.innerHTML = "";
-            errorMessage.classList.add("hidden");
-        }
-
-        function setErrorMessage(message) {
-            errorMessage.innerHTML = `${message} <br /><br />`;
-            errorMessage.classList.remove("hidden");
-        }
-
-        /* ------------ */
-        /* UX Features  */
-        /* ------------ */
-
-        // Make it so when you hit enter on the username input
-        // it'll automagically take you to the password field.
-        usernameInput.addEventListener("keyup", (e) => {
-            if (e.code == "Enter") {
-                passwordInput.focus();
-            }
-        });
-
-        // Make the password and mfa fields trigger a signin attempt on enter.
+    <script>
         {
-            passwordInput.addEventListener("keyup", (e) => {
+            const signinContainer = document.querySelector("#signin-container");
+            const usernameInput = signinContainer.querySelector("#username-input");
+            const passwordInput = signinContainer.querySelector("#password-input");
+            const mfaInput = signinContainer.querySelector("#mfa-input");
+            const errorMessage = signinContainer.querySelector("#error-message");
+            const signinSubmit = signinContainer.querySelector("#signin-submit");
+
+            /* ------------ */
+            /* Helpers      */
+            /* ------------ */
+
+            function signinCaffeine(username, password, mfa) {
+                return new Promise((resolve, reject) => {
+                    const loginPayload = {
+                        account: {
+                            username: username,
+                            password: password
+                        },
+                        mfa: {
+                            otp: mfa
+                        }
+                    };
+
+                    fetch("proxy://api.caffeine.tv/v1/account/signin", {
+                        method: "POST",
+                        body: JSON.stringify(loginPayload),
+                        headers: new Headers({
+                            "Content-Type": "application/json"
+                        })
+                    })
+                        .then((result) => result.json())
+                        .then((response) => {
+                            if (response.hasOwnProperty("next")) {
+                                reject("CAFFEINE_MFA");
+                            } else if (response.errors) {
+                                reject(response.errors);
+                            } else {
+                                const refreshToken = response.refresh_token;
+
+                                fetch(`proxy://api.casterlabs.co/v2/natsukashii/create?platform=CAFFEINE&token=${refreshToken}`)
+                                    .then((nResult) => nResult.json())
+                                    .then((nResponse) => {
+                                        if (nResponse.data) {
+                                            resolve(nResponse.data.token);
+                                        } else {
+                                            reject(response.errors);
+                                        }
+                                    });
+                            }
+                        })
+                        .catch(reject);
+                });
+            }
+
+            function clearFields() {
+                usernameInput.value = "";
+                passwordInput.value = "";
+                mfaInput.value = "";
+                mfaInput.parentElement.classList.add("hidden");
+                clearError();
+            }
+
+            function clearError() {
+                usernameInput.classList.remove("is-danger");
+                passwordInput.classList.remove("is-danger");
+                mfaInput.classList.remove("is-danger");
+                errorMessage.innerHTML = "";
+                errorMessage.classList.add("hidden");
+            }
+
+            function setErrorMessage(message) {
+                errorMessage.innerHTML = `${message} <br /><br />`;
+                errorMessage.classList.remove("hidden");
+            }
+
+            /* ------------ */
+            /* UX Features  */
+            /* ------------ */
+
+            // Make it so when you hit enter on the username input
+            // it'll automagically take you to the password field.
+            usernameInput.addEventListener("keyup", (e) => {
                 if (e.code == "Enter") {
-                    signinSubmit.click();
+                    passwordInput.focus();
                 }
             });
 
-            mfaInput.addEventListener("keyup", (e) => {
-                if (e.code == "Enter") {
-                    signinSubmit.click();
+            // Make the password and mfa fields trigger a signin attempt on enter.
+            {
+                passwordInput.addEventListener("keyup", (e) => {
+                    if (e.code == "Enter") {
+                        signinSubmit.click();
+                    }
+                });
+
+                mfaInput.addEventListener("keyup", (e) => {
+                    if (e.code == "Enter") {
+                        signinSubmit.click();
+                    }
+                });
+            }
+
+            /* ------------ */
+            /*    *Magic*   */
+            /* ------------ */
+
+            signinSubmit.addEventListener("click", async () => {
+                signinSubmit.classList.add("is-loading");
+                clearError();
+
+                try {
+                    const token = await signinCaffeine(usernameInput.value, passwordInput.value, mfaInput.value);
+
+                    // TODO emit event.
+                    alert(token);
+                } catch (e) {
+                    if (e == "CAFFEINE_MFA") {
+                        clearError();
+                        mfaInput.parentElement.classList.remove("hidden");
+                        mfaInput.focus();
+                    } else {
+                        if (e.otp) {
+                            mfaInput.classList.add("is-danger");
+                            mfaInput.focus();
+                            setErrorMessage("The Two Factor code is expired or incorrect.");
+                        } else if (e._error) {
+                            switch (e._error[0]) {
+                                case "The username or password provided is incorrect": {
+                                    usernameInput.classList.add("is-danger");
+                                    passwordInput.classList.add("is-danger");
+                                    passwordInput.focus();
+                                    setErrorMessage("The username or password is incorrect.");
+                                    break;
+                                }
+                            }
+                        } else {
+                            setErrorMessage(JSON.stringify(e));
+                            console.error(e);
+                        }
+                    }
+                } finally {
+                    signinSubmit.classList.remove("is-loading");
                 }
             });
         }
-
-        /* ------------ */
-        /*    *Magic*   */
-        /* ------------ */
-
-        signinSubmit.addEventListener("click", async () => {
-            clearError();
-
-            try {
-                const token = await Auth.signinCaffeine(usernameInput.value, passwordInput.value, mfaInput.value);
-
-                Auth.addUserAuth("CAFFEINE", token)
-                    .then(() => {
-                        clearFields();
-                        Router.tryHomeGoBack();
-                    })
-                    .catch(() => {
-                        setErrorMessage("An internal Casterlabs error occured, please report this to us.");
-                    });
-            } catch (e) {
-                if (e == "CAFFEINE_MFA") {
-                    clearError();
-                    mfaInput.parentElement.classList.remove("hidden");
-                    mfaInput.focus();
-                } else {
-                    if (e.otp) {
-                        mfaInput.classList.add("is-danger");
-                        mfaInput.focus();
-                        setErrorMessage("The Two Factor code is expired or incorrect.");
-                    } else if (e._error) {
-                        switch (e._error[0]) {
-                            case "The username or password provided is incorrect": {
-                                usernameInput.classList.add("is-danger");
-                                passwordInput.classList.add("is-danger");
-                                passwordInput.focus();
-                                setErrorMessage("The username or password is incorrect.");
-                                break;
-                            }
-                        }
-                    } else {
-                        setErrorMessage(JSON.stringify(e));
-                        console.error(e);
-                    }
-                }
-            }
-        });
     </script>
 </div>
 
