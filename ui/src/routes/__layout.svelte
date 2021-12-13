@@ -78,7 +78,7 @@
     }
 
     function parseWindowUpdate(data) {
-        console.log("[__layout]", "Window state data: ", data);
+        // console.log("[__layout]", "Window state data: ", data);
 
         // Incase it's needed elsewhere.
         document.title = data.title;
