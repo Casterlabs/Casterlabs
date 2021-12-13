@@ -10,5 +10,6 @@ public class AppPreferences {
     private int conductorPort = 8092; // Caffeinated <1.2 was 8091.
     private String conductorKey = new String(Crypto.generateSecureRandomKey());
     private boolean isNew = true;
+    private boolean showDeveloperFeatures = false;
 
 }

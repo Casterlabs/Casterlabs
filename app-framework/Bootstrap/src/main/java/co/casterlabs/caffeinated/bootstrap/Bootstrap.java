@@ -1,10 +1,17 @@
 package co.casterlabs.caffeinated.bootstrap;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.lang.management.ManagementFactory;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 
+import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.bootstrap.cef.CefUtil;
 import co.casterlabs.caffeinated.bootstrap.instancing.InstanceManager;
 import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
@@ -242,8 +249,35 @@ public class Bootstrap implements Runnable {
 
     private void onBridgeEvent(String type, JsonObject data) {
         try {
-            // Pass it to the app.
-            CaffeinatedApp.getInstance().onBridgeEvent(type, data);
+            switch (type) {
+                case "debug:gc": {
+                    System.gc();
+                    return;
+                }
+
+                case "app:reset": {
+                    shutdown(true, true, true);
+                    return;
+                }
+
+                case "app:devfeatures": {
+                    boolean newValue = data.getBoolean("enabled");
+
+                    PreferenceFile<AppPreferences> prefs = CaffeinatedApp.getInstance().getAppPreferences();
+                    prefs.get().setShowDeveloperFeatures(newValue);
+                    prefs.save();
+
+                    shutdown(true, true, false);
+                    return;
+                }
+
+                default: {
+                    // Pass it to the app.
+                    CaffeinatedApp.getInstance().onBridgeEvent(type, data);
+                    return;
+                }
+
+            }
         } catch (Throwable t) {
             logger.severe("Uncaught exception whilst processing bridge event:");
             logger.exception(t);
@@ -251,7 +285,11 @@ public class Bootstrap implements Runnable {
     }
 
     public static void shutdown() {
-        if (CaffeinatedApp.getInstance().canCloseUI()) {
+        shutdown(false, false, false);
+    }
+
+    private static void shutdown(boolean force, boolean relaunch, boolean isReset) {
+        if (CaffeinatedApp.getInstance().canCloseUI() || force) {
             new AsyncTask(() -> {
                 logger.info("Shutting down.");
 
@@ -272,11 +310,48 @@ public class Bootstrap implements Runnable {
                 InstanceManager.cleanShutdown();
 
                 // Exit.
-                System.exit(0);
+                if (isReset) {
+                    try {
+                        Files.walk(new File(PreferenceFile.userDataDir).toPath())
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (relaunch) {
+                    relaunch();
+                } else {
+                    System.exit(0);
+                }
             });
         } else {
             ApplicationUI.focusAndBeep();
         }
+    }
+
+    @SneakyThrows
+    private static void relaunch() {
+        String jvmArgs = String.join(" ", ManagementFactory.getRuntimeMXBean().getInputArguments());
+        String entry = System.getProperty("sun.java.command"); // Tested, present in OpenJDK and Oracle
+        String classpath = System.getProperty("java.class.path");
+        String javaHome = System.getProperty("java.home");
+
+        String[] args = entry.split(" ");
+        File entryFile = new File(args[0]);
+
+        if (entryFile.exists()) { // If the entry is a file, not a main method.
+            args[0] = '"' + entryFile.getCanonicalPath() + '"'; // Use raw file path.
+
+            Runtime.getRuntime().exec(String.format("\"%s/bin/java\" %s -cp \"%s\" -jar %s", javaHome, jvmArgs, classpath, String.join(" ", args)));
+        } else {
+            Runtime.getRuntime().exec(String.format("\"%s/bin/java\" %s -cp \"%s\" %s", javaHome, jvmArgs, classpath, entry));
+        }
+
+        FastLogger.logStatic("Relaunching!");
+        System.exit(0);
     }
 
 }
