@@ -69,7 +69,7 @@
 		<dependency>
 			<groupId>com.github.casterlabs.rakurai</groupId>
 			<artifactId>Json</artifactId>
-			<version>1.10.0</version>
+			<version>1.11.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -99,7 +99,7 @@
 		<dependency>
 			<groupId>com.github.e3ndr</groupId>
 			<artifactId>FastLoggingFramework</artifactId>
-			<version>1.7.0</version>
+			<version>1.7.1</version>
 			<scope>compile</scope>
 		</dependency>
 
