@@ -46,7 +46,7 @@ public class ApplicationWindow {
     private Unsafe_WindowState windowState = CaffeinatedApp.getInstance().getWindowState().unsafe;
 
     static {
-        LafManager.setupLAF();
+        LafManager.setupLaf();
     }
 
     public ApplicationWindow(UILifeCycleListener listener) {

@@ -1,65 +1,122 @@
 package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.lang.reflect.Method;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
+import lombok.NonNull;
+import xyz.e3ndr.consoleutil.ConsoleUtil;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
-@SuppressWarnings({
-        "unused"
-})
 public class LafManager {
 
-    public static void setupLAF() {
+    public static void setupLaf() {
         try {
-            // Doesn't work atm.
-//            if (ConsoleUtil.getPlatform() == JavaPlatform.WINDOWS) {
-//                setWindow10LAF();
-//            } else {
+            // The default.
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//            UIManager.put("swing.boldMetal", Boolean.FALSE);
-//            }
+
+            // Platform specifics.
+            switch (ConsoleUtil.getPlatform()) {
+                case WINDOWS: {
+                    setupWindows();
+                    break;
+                }
+
+                default:
+                    break;
+            }
         } catch (Exception e) {
             FastLogger.logException(e);
         }
     }
 
-    private static void setNimbusDarkLAF() throws Exception {
-        UIManager.put("control", new Color(128, 128, 128));
-        UIManager.put("info", new Color(128, 128, 128));
-        UIManager.put("nimbusBase", new Color(18, 30, 49));
-        UIManager.put("nimbusAlertYellow", new Color(248, 187, 0));
-        UIManager.put("nimbusDisabledText", new Color(128, 128, 128));
-        UIManager.put("nimbusFocus", new Color(115, 164, 209));
-        UIManager.put("nimbusGreen", new Color(176, 179, 50));
-        UIManager.put("nimbusInfoBlue", new Color(66, 139, 221));
-        UIManager.put("nimbusLightBackground", new Color(18, 30, 49));
-        UIManager.put("nimbusOrange", new Color(191, 98, 4));
-        UIManager.put("nimbusRed", new Color(169, 46, 34));
-        UIManager.put("nimbusSelectedText", new Color(255, 255, 255));
-        UIManager.put("nimbusSelectionBackground", new Color(104, 93, 156));
-        UIManager.put("text", new Color(230, 230, 230));
+    public static void frameInit(@NonNull JFrame frame) {
+        try {
+            // Platform specifics.
+            switch (ConsoleUtil.getPlatform()) {
+                case MAC: {
+                    // We need to access properties of the JFrame directly.
+                    setupMac(frame);
+                    break;
+                }
 
-        for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-            if ("Nimbus".equals(info.getName())) {
-                FastLogger.logStatic("Set theme to Nimbus.");
-                UIManager.setLookAndFeel(info.getClassName());
-                break;
+                default:
+                    break;
             }
+        } catch (Exception e) {
+            FastLogger.logException(e);
         }
     }
 
-    private static void setWindow10LAF() throws Exception {
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-        UIDefaults uiDefaults = UIManager.getDefaults();
-        uiDefaults.put("activeCaption", new javax.swing.plaf.ColorUIResource(Color.GRAY));
-        uiDefaults.put("activeCaptionText", new javax.swing.plaf.ColorUIResource(Color.WHITE));
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        FastLogger.logStatic("Set Window10 Darkmode LAF");
+    private static void setupWindows() throws Exception {
+        // Only for Win10
+        if (System.getProperty("os.name").equals("Windows 10")) {
+            UIDefaults uiDefaults = UIManager.getDefaults();
+
+            uiDefaults.put("activeCaption", new javax.swing.plaf.ColorUIResource(Color.GRAY));
+            uiDefaults.put("activeCaptionText", new javax.swing.plaf.ColorUIResource(Color.WHITE));
+
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            JFrame.setDefaultLookAndFeelDecorated(true);
+            FastLogger.logStatic("Set Window10 Darkmode LAF");
+        }
+    }
+
+    private static void setupMac(JFrame frame) throws Exception {
+        // Save location and size.
+        Point prevLoc = frame.getLocation();
+        Dimension prevSize = frame.getSize();
+
+        // Make it tiny and move it offscreen.
+        frame.setSize(0, 0);
+        frame.setLocation(Integer.MAX_VALUE, Integer.MAX_VALUE);
+
+        // Generate the window.
+        frame.setVisible(true);
+        frame.setVisible(false);
+
+        try {
+            final int FULL_WINDOW_CONTENT = 1 << 14;
+            final int TRANSPARENT_TITLE_BAR = 1 << 18;
+
+            @SuppressWarnings("deprecation")
+            Object peer = frame.getPeer();
+            Object platformWindow = ReflectionLib.invokeMethod(peer, "getPlatformWindow");
+
+            if (peer.getClass().getCanonicalName().equals("sun.lwawt.LWWindowPeer") &&
+                platformWindow.getClass().getCanonicalName().equals("sun.lwawt.macosx.CPlatformWindow")) {
+                int MASK = FULL_WINDOW_CONTENT | TRANSPARENT_TITLE_BAR;
+
+                // This is the code that we're mimicking
+                /*
+                CPlatformWindow platformWindow = (CPlatformWindow) ((LWWindowPeer) peer).getPlatformWindow();
+                
+                platformWindow.setStyleBits(MASK, true);
+                 */
+
+                // Grab the method, setAccessible, and invoke.
+                Method setStyleBits = platformWindow.getClass().getDeclaredMethod("setStyleBits", int.class, boolean.class);
+                setStyleBits.setAccessible(true);
+                setStyleBits.invoke(platformWindow, MASK, true);
+
+                // Re-render
+                SwingUtilities.updateComponentTreeUI(frame);
+            } else {
+                FastLogger.logStatic(LogLevel.WARNING, "Unable to initialize a prettier window frame, ignoring.");
+            }
+        } finally {
+            // Move it back.
+            frame.setLocation(prevLoc);
+            frame.setSize(prevSize);
+        }
     }
 
 }
