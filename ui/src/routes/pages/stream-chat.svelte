@@ -108,32 +108,34 @@
 
     <div id="chat-settings" class="box">some settings here.</div>
 
-    <div id="interact-box">
-        <div class="field has-addons">
-            <div class="control is-expanded" style="position: relative;">
-                <input class="input" type="text" placeholder="Send a message" />
+    <div class="interact-box-container">
+        <div id="interact-box">
+            <div class="field has-addons">
+                <div class="control is-expanded" style="position: relative;">
+                    <input class="input" type="text" placeholder="Send a message" />
 
-                <!-- svelte-ignore a11y-missing-attribute -->
-                <a class="chat-settings-button highlight-on-hover" on:click={toggleChatSettings}>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="white"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="feather feather-settings"
-                    >
-                        <circle cx="12" cy="12" r="3" />
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
-                        />
-                    </svg>
-                </a>
-            </div>
-            <div class="control">
-                <button class="button"> Send </button>
+                    <!-- svelte-ignore a11y-missing-attribute -->
+                    <a class="chat-settings-button highlight-on-hover" on:click={toggleChatSettings}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="white"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-settings"
+                        >
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                            />
+                        </svg>
+                    </a>
+                </div>
+                <div class="control">
+                    <button class="button"> Send </button>
+                </div>
             </div>
         </div>
     </div>
@@ -142,8 +144,7 @@
 <style>
     :root {
         --interact-height: 40.5px;
-        --interact-top-margin: 12px;
-        --interact-bottom-margin: 25px;
+        --interact-margin: 15px;
     }
 
     .stream-chat-container {
@@ -157,7 +158,7 @@
     #chat-box {
         position: absolute;
         top: 0;
-        bottom: calc(var(--interact-top-margin) + var(--interact-height) + var(--interact-bottom-margin));
+        bottom: calc(var(--interact-margin) + var(--interact-height) + var(--interact-margin));
         left: 0;
         right: 0;
         font-size: 1.05em;
@@ -166,11 +167,43 @@
         overflow-x: hidden;
     }
 
+    .stream-chat-container::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+        z-index: 5;
+    }
+
+    .stream-chat-container::after {
+        content: "";
+        position: absolute;
+        bottom: calc(var(--interact-margin) + var(--interact-height) + var(--interact-margin) - 10px);
+        left: 0;
+        width: 100%;
+        height: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        z-index: 5;
+    }
+
+    .interact-box-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: calc(var(--interact-margin) + var(--interact-height) + var(--interact-margin));
+        background-color: var(--background-color);
+        z-index: 10;
+    }
+
     #interact-box {
         position: absolute;
-        bottom: var(--interact-bottom-margin);
-        left: 15px;
-        right: 15px;
+        bottom: var(--interact-margin);
+        left: var(--interact-margin);
+        right: var(--interact-margin);
         height: var(--interact-height);
     }
 
@@ -202,8 +235,8 @@
 
     #chat-settings {
         position: absolute;
-        right: 25px;
-        bottom: calc(var(--interact-top-margin) + var(--interact-height));
+        right: 20px;
+        bottom: calc(var(--interact-margin) + var(--interact-height));
         height: 0px;
         width: 200px;
         visibility: hidden;
