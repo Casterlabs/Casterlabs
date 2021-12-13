@@ -83,5 +83,9 @@ html {
 }
 
 .highlight-on-hover:hover {
-	background-color: rgba(0.5, 0.5, 0.5, 0.75);
+	background-color: rgba(0.5, 0.5, 0.5, 0.15) !important;
+}
+
+.heavy-highlight-on-hover:hover {
+	background-color: rgba(0.5, 0.5, 0.5, 0.75) !important;
 }

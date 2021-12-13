@@ -12,8 +12,12 @@
     let chatHistory = {};
     let isMultiPlatform = true;
     let chatbox;
+    let signedInPlatforms = ["TWITCH", "CAFFEINE"];
 
     let chatSettingsOpen = false;
+
+    let chatSendPlatform = "TWITCH";
+    let chatSendPlatformOpen = false;
 
     setPageProperties({
         showSideBar: true,
@@ -64,8 +68,7 @@
             const message = new ChatMessage({
                 target: elem,
                 props: {
-                    koiEvent: event,
-                    isMultiPlatform: isMultiPlatform
+                    koiEvent: event
                 }
             });
 
@@ -83,8 +86,28 @@
         console.log("[StreamChat]", "Processed event:", event);
     }
 
+    function changeSendPlatform(platform) {
+        return () => {
+            chatSendPlatform = platform;
+            chatSendPlatformOpen = false;
+        };
+    }
+
+    function openChatSendPlatformDropdown() {
+        chatSendPlatformOpen = true;
+    }
+
     function toggleChatSettings() {
         chatSettingsOpen = !chatSettingsOpen;
+    }
+
+    function onAuthUpdate({ koiAuth }) {
+        signedInPlatforms = Object.keys(koiAuth);
+        isMultiPlatform = signedInPlatforms.length > 1;
+
+        if (!signedInPlatforms.includes(chatSendPlatform)) {
+            chatSendPlatform = signedInPlatforms[0];
+        }
     }
 
     onDestroy(() => {
@@ -95,6 +118,9 @@
         eventHandler = Bridge.createThrowawayEventHandler();
 
         window.test = chatHistory;
+
+        eventHandler.on("auth:update", onAuthUpdate);
+        onAuthUpdate((await Bridge.query("auth")).data);
 
         eventHandler.on("koi:event", processEvent);
         (await Bridge.query("koi:history")).data.forEach(processEvent);
@@ -111,11 +137,44 @@
     <div class="interact-box-container">
         <div id="interact-box">
             <div class="field has-addons">
+                {#if isMultiPlatform}
+                    <div class="control">
+                        <div class="dropdown is-up {chatSendPlatformOpen ? 'is-active' : ''}">
+                            <div class="dropdown-trigger">
+                                <button class="button" aria-haspopup="true" aria-controls="chat-send-platform" on:click={openChatSendPlatformDropdown}>
+                                    <span>
+                                        <img
+                                            src="/img/services/{chatSendPlatform.toLowerCase()}/icon.svg"
+                                            alt={chatSendPlatform}
+                                            style="height: 18px; width: 18px; filter: invert(var(--white-invert-factor)); margin-top: 8px;"
+                                        />
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu" id="chat-send-platform" role="menu">
+                                <div class="dropdown-content" style="width: 52px;">
+                                    {#each signedInPlatforms as platform}
+                                        <!-- svelte-ignore a11y-missing-attribute -->
+                                        <a class="highlight-on-hover is-block" style="height: 30px;" on:click={changeSendPlatform(platform)}>
+                                            <div class="dropdown-item">
+                                                <img
+                                                    src="/img/services/{platform.toLowerCase()}/icon.svg"
+                                                    alt={platform}
+                                                    style="height: 18px; width: 18px; filter: invert(var(--white-invert-factor));"
+                                                />
+                                            </div>
+                                        </a>
+                                    {/each}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {/if}
                 <div class="control is-expanded" style="position: relative;">
                     <input class="input" type="text" placeholder="Send a message" />
 
                     <!-- svelte-ignore a11y-missing-attribute -->
-                    <a class="chat-settings-button highlight-on-hover" on:click={toggleChatSettings}>
+                    <a class="chat-settings-button heavy-highlight-on-hover" on:click={toggleChatSettings}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"

@@ -3,16 +3,38 @@
 <script>
     import User from "./user.svelte";
 
+    import { onMount, onDestroy } from "svelte";
+
+    let eventHandler;
+
     export let koiEvent = null;
-    export let isMultiPlatform = false;
     export let isDeleted = false;
     export let upvotes = koiEvent.upvotes || 0;
     export const timestamp = Date.now();
 
     export let sender = null; // We set this.
+    let isMultiPlatform = false;
     let messageHtml = "";
 
     let highlight = false;
+
+    // This all is for handling multiPlatform mode.
+    {
+        function onAuthUpdate({ koiAuth }) {
+            isMultiPlatform = Object.keys(koiAuth).length > 1;
+        }
+
+        onDestroy(() => {
+            eventHandler?.destroy();
+        });
+
+        onMount(async () => {
+            eventHandler = Bridge.createThrowawayEventHandler();
+
+            eventHandler.on("auth:update", onAuthUpdate);
+            onAuthUpdate((await Bridge.query("auth")).data);
+        });
+    }
 
     function escapeHtml(unsafe) {
         return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
