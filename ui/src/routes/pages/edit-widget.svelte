@@ -199,15 +199,18 @@
         <div class="widget-settings allow-select has-text-left">
             {#if !blanking}
                 {#each widgetSections[currentWidgetSection].items as widgetSettingsOption}
-                    <div class="columns">
-                        <div class="column" style="max-width: 260px; min-width: 260px;">
+                    <div style="display: flex; margin-bottom: 1em;">
+                        <div class="has-text-right" style="flex: 1; margin-right: 1.5em;">
                             <span class="has-text-weight-medium">
                                 {widgetSettingsOption.name}
                             </span>
                         </div>
-                        <div class="column">
+
+                        <div class="has-text-center" style="width: 200px;">
                             <FormElement {widget} {widgetSettingsOption} widgetSettingsSection={widgetSections[currentWidgetSection]} />
                         </div>
+
+                        <div style="flex: 1;" />
                     </div>
                 {/each}
             {/if}
