@@ -81,3 +81,7 @@ html {
 .fade-on-hover:hover {
 	color: #7a7a7a !important;
 }
+
+.highlight-on-hover:hover {
+	background-color: rgba(0.5, 0.5, 0.5, 0.75);
+}
