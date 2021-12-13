@@ -33,7 +33,10 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 public class ApplicationUI {
     private static UILifeCycleListener lifeCycleListener = null;
 
+    // This is the real meat and potatoes.
+    // This is auto injected into the GloballyAcessible AppBridge helper.
     private static @Getter JavascriptBridge bridge;
+
     private static @Getter ApplicationWindow window;
     private static @Getter ApplicationDevTools devtools;
 

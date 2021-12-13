@@ -70,7 +70,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
             "INIT",
             new JsonObject()
                 .put("connectionId", this.connectionId)
-                .put("widget", this.widget.toJson())
+                .put("widget", Rson.DEFAULT.toJson(this.widget))
                 .put("koi", Koi.toJson())
         );
     }
@@ -200,13 +200,12 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
             sendMessage("KOI", Rson.DEFAULT.toJson(event).getAsObject());
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public void onSettingsUpdate() {
             sendMessage(
                 "UPDATE",
                 new JsonObject()
-                    .put("widget", widget.toJson())
+                    .put("widget", Rson.DEFAULT.toJson(widget))
             );
         }
 

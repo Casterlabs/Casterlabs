@@ -19,7 +19,11 @@ import co.casterlabs.caffeinated.util.async.Promise;
 import co.casterlabs.koi.api.listener.KoiEventListener;
 import co.casterlabs.koi.api.listener.KoiEventUtil;
 import co.casterlabs.koi.api.types.events.KoiEvent;
-import co.casterlabs.rakurai.json.element.JsonObject;
+import co.casterlabs.rakurai.json.Rson;
+import co.casterlabs.rakurai.json.annotating.JsonSerializationMethod;
+import co.casterlabs.rakurai.json.element.JsonElement;
+import co.casterlabs.rakurai.json.validation.JsonValidate;
+import co.casterlabs.rakurai.json.validation.JsonValidationException;
 import lombok.Getter;
 import lombok.NonNull;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
@@ -40,40 +44,33 @@ public abstract class CaffeinatedPlugin implements Closeable {
 
     private @Reflective Set<KoiEventListener> koiListeners = new HashSet<>();
 
-    /**
-     * @deprecated While this is used internally, plugins can use it as well for
-     *             internal event shenanigans. Though, it is important to note that
-     *             it will <b>NOT</b> bubble to other plugins.
-     * 
-     * @return     A completion promise, it has no result and is only useful if you
-     *             need to ensure the listeners fire before you continue executing.
-     *             See {@link Promise#await()} or
-     *             {@link Promise#then(java.util.function.Consumer)}
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public Promise<Void> fireKoiEventListeners(@NonNull KoiEvent event) {
-        return new Promise<Void>(() -> {
-            for (KoiEventListener listener : new ArrayList<>(this.koiListeners)) {
-                try {
-                    KoiEventUtil.reflectInvoke(listener, event);
-                } catch (Throwable t) {
-                    this.logger.severe("An error occurred whilst processing Koi event:");
-                    this.logger.exception(t);
-                }
-            }
+    /* ---------------- */
+    /* Serialization    */
+    /* ---------------- */
 
-            for (Widget widget : this.getWidgets()) {
-                try {
-                    widget.fireKoiEventListeners(event).await();
-                } catch (Throwable t) {
-                    this.logger.severe("An error occurred whilst processing Koi event:");
-                    this.logger.exception(t);
-                }
-            }
+    @JsonSerializationMethod("version")
+    private JsonElement $serialize_version() {
+        return Rson.DEFAULT.toJson(this.getVersion());
+    }
 
-            return null;
-        });
+    @JsonSerializationMethod("author")
+    private JsonElement $serialize_author() {
+        return Rson.DEFAULT.toJson(this.getAuthor());
+    }
+
+    @JsonSerializationMethod("name")
+    private JsonElement $serialize_name() {
+        return Rson.DEFAULT.toJson(this.getName());
+    }
+
+    @JsonSerializationMethod("id")
+    private JsonElement $serialize_id() {
+        return Rson.DEFAULT.toJson(this.getId());
+    }
+
+    @JsonValidate
+    private void validate() throws JsonValidationException {
+        throw new JsonValidationException("You cannot deserialize into a CaffeinatedPlugin.");
     }
 
     /* ---------------- */
@@ -148,19 +145,43 @@ public abstract class CaffeinatedPlugin implements Closeable {
     }
 
     /* ---------------- */
-    /* Don't use these, lol */
+    /* Framework        */
     /* ---------------- */
 
     /**
-     * @deprecated This is used internally.
+     * @deprecated While this is used internally, plugins can use it as well for
+     *             internal event shenanigans. Though, it is important to note that
+     *             it will <b>NOT</b> bubble to other plugins.
+     * 
+     * @return     A completion promise, it has no result and is only useful if you
+     *             need to ensure the listeners fire before you continue executing.
+     *             See {@link Promise#await()} or
+     *             {@link Promise#then(java.util.function.Consumer)}
      */
+    @SuppressWarnings("deprecation")
     @Deprecated
-    public final JsonObject toJson() {
-        return new JsonObject()
-            .put("version", this.getVersion())
-            .put("author", this.getAuthor())
-            .put("name", this.getName())
-            .put("id", this.getId());
+    public Promise<Void> fireKoiEventListeners(@NonNull KoiEvent event) {
+        return new Promise<Void>(() -> {
+            for (KoiEventListener listener : new ArrayList<>(this.koiListeners)) {
+                try {
+                    KoiEventUtil.reflectInvoke(listener, event);
+                } catch (Throwable t) {
+                    this.logger.severe("An error occurred whilst processing Koi event:");
+                    this.logger.exception(t);
+                }
+            }
+
+            for (Widget widget : this.getWidgets()) {
+                try {
+                    widget.fireKoiEventListeners(event).await();
+                } catch (Throwable t) {
+                    this.logger.severe("An error occurred whilst processing Koi event:");
+                    this.logger.exception(t);
+                }
+            }
+
+            return null;
+        });
     }
 
     /**

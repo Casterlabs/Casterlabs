@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.app.preferences;
+package co.casterlabs.caffeinated.app.window;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;

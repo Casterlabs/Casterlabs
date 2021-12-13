@@ -11,6 +11,7 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.rakurai.io.http.HttpResponse;
 import co.casterlabs.rakurai.io.http.StandardHttpStatus;
 import co.casterlabs.rakurai.io.http.websocket.WebsocketListener;
+import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonArray;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.sora.api.http.HttpProvider;
@@ -95,7 +96,6 @@ public class RouteWidgetApi implements HttpProvider, WebsocketProvider, RouteHel
         }
     }
 
-    @SuppressWarnings("deprecation")
     @HttpEndpoint(uri = "/api/plugin/:pluginId/widgets")
     public HttpResponse onGetWidgetsRequest(SoraHttpSession session) {
         try {
@@ -111,7 +111,7 @@ public class RouteWidgetApi implements HttpProvider, WebsocketProvider, RouteHel
                 JsonArray widgetsJson = new JsonArray();
 
                 for (Widget widget : owningPlugin.getWidgets()) {
-                    JsonObject widgetJson = widget.toJson();
+                    JsonObject widgetJson = Rson.DEFAULT.toJson(widget).getAsObject();
 
                     widgetJson.remove("settings");
                     widgetJson.remove("settingsLayout");

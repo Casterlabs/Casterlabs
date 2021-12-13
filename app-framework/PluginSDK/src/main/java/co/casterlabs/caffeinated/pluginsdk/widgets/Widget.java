@@ -19,8 +19,12 @@ import co.casterlabs.koi.api.listener.KoiEventListener;
 import co.casterlabs.koi.api.listener.KoiEventUtil;
 import co.casterlabs.koi.api.types.events.KoiEvent;
 import co.casterlabs.rakurai.json.Rson;
+import co.casterlabs.rakurai.json.annotating.JsonField;
+import co.casterlabs.rakurai.json.annotating.JsonSerializationMethod;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
+import co.casterlabs.rakurai.json.validation.JsonValidate;
+import co.casterlabs.rakurai.json.validation.JsonValidationException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -29,22 +33,39 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @SuppressWarnings("unchecked") // This is for chaining.
 public abstract class Widget {
-    // These are all set via reflection.
-    private String namespace;
-    private String id;
-    private String name; // This is mutable by the end user.
+    // <All set by reflection>
+    private @JsonField String namespace;
+    private @JsonField String id;
+    private @JsonField String name; // This is mutable by the end user.
+
     private CaffeinatedPlugin plugin;
-    private WidgetDetails details;
-    private @Getter WidgetType type = WidgetType.WIDGET; // TODO
 
-    private Runnable pokeOutside;
+    private @JsonField @Getter WidgetType type = WidgetType.WIDGET; // TODO Add more.
+    private @JsonField WidgetDetails details;
 
-    private @Nullable WidgetSettingsLayout settingsLayout;
-    private @NonNull JsonObject settings;
+    private @Reflective Runnable pokeOutside;
+    // </All set by reflection>
+
+    private @JsonField @Nullable WidgetSettingsLayout settingsLayout;
+    private @JsonField @NonNull JsonObject settings;
 
     private @Reflective Set<KoiEventListener> koiListeners = new HashSet<>();
 
     private List<WidgetInstance> widgetInstances = new LinkedList<>();
+
+    /* ---------------- */
+    /* Serialization    */
+    /* ---------------- */
+
+    @JsonSerializationMethod("owner")
+    private JsonElement $serialize_owner() {
+        return Rson.DEFAULT.toJson(this.plugin.getId());
+    }
+
+    @JsonValidate
+    private void validate() throws JsonValidationException {
+        throw new JsonValidationException("You cannot deserialize into a widget.");
+    }
 
     /* ---------------- */
     /* Internals        */
@@ -64,7 +85,7 @@ public abstract class Widget {
     }
 
     /* ---------------- */
-    /* Koi              */
+    /* Framework        */
     /* ---------------- */
 
     /**
@@ -101,6 +122,10 @@ public abstract class Widget {
             return null;
         });
     }
+
+    /* ---------------- */
+    /* Koi              */
+    /* ---------------- */
 
     /**
      * @apiNote Calling {@link #addKoiListener(KoiEventListener)} multiple times
@@ -255,25 +280,6 @@ public abstract class Widget {
      */
     public final <T extends CaffeinatedPlugin> T getPlugin() {
         return (T) this.plugin;
-    }
-
-    /* ---------------- */
-    /* Misc             */
-    /* ---------------- */
-
-    /**
-     * @deprecated This is used internally.
-     */
-    @Deprecated
-    public final JsonObject toJson() {
-        return new JsonObject()
-            .put("namespace", this.namespace)
-            .put("id", this.id)
-            .put("name", this.name)
-            .put("owner", this.plugin.getId())
-            .put("details", Rson.DEFAULT.toJson(this.details))
-            .put("settingsLayout", Rson.DEFAULT.toJson(this.settingsLayout))
-            .put("settings", this.getSettings());
     }
 
 }

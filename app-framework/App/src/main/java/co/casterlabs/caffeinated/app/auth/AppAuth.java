@@ -14,6 +14,7 @@ import co.casterlabs.caffeinated.app.auth.events.AppAuthCancelSigninEvent;
 import co.casterlabs.caffeinated.app.auth.events.AppAuthEventType;
 import co.casterlabs.caffeinated.app.auth.events.AppAuthRequestOAuthSigninEvent;
 import co.casterlabs.caffeinated.app.auth.events.AppAuthSignoutEvent;
+import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.networking.kinoko.AuthCallback;
 import co.casterlabs.koi.api.types.user.UserPlatform;
 import co.casterlabs.rakurai.json.Rson;
@@ -30,11 +31,12 @@ public class AppAuth {
 
     private FastLogger logger = new FastLogger();
 
+    private @Getter Map<String, AuthInstance> authInstances = new HashMap<>();
     private AuthCallback currentAuthCallback;
 
-    private @Getter Map<String, AuthInstance> authInstances = new HashMap<>();
-
     private @Getter boolean isAuthorized = false;
+
+    private BridgeValue<JsonObject> bridge = new BridgeValue<>("auth");
 
     public AppAuth() {
         handler.register(this);
@@ -121,9 +123,9 @@ public class AppAuth {
             .put("isAuthorized", this.isAuthorized)
             .put("koiAuth", koiAuth);
 
+        this.bridge.set(bridgeData);
+
         CaffeinatedApp.getInstance().emitAppEvent("auth:platforms", bridgeData);
-        CaffeinatedApp.getInstance().getBridge().emit("auth:platforms", bridgeData);
-        CaffeinatedApp.getInstance().getBridge().getQueryData().put("auth", bridgeData);
         CaffeinatedApp.getInstance().getKoi().updateFromAuth();
     }
 

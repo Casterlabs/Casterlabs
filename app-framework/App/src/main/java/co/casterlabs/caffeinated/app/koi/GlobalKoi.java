@@ -9,9 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AuthInstance;
+import co.casterlabs.caffeinated.app.bridge.AppBridge;
+import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
@@ -59,13 +60,18 @@ public class GlobalKoi implements KoiLifeCycleHandler {
     private Map<UserPlatform, UserUpdateEvent> userStates = new HashMap<>();
     private Map<UserPlatform, StreamStatusEvent> streamStates = new HashMap<>();
 
+    private BridgeValue<List<KoiEvent>> historyBridge = new BridgeValue<>("koi:history", Collections.unmodifiableList(this.eventHistory), false);
+    private BridgeValue<Map<UserPlatform, List<User>>> viewersBridge = new BridgeValue<>("koi:viewers", Collections.unmodifiableMap(this.viewers));
+    private BridgeValue<Map<UserPlatform, UserUpdateEvent>> userStatesBridge = new BridgeValue<>("koi:userStates", Collections.unmodifiableMap(this.userStates));
+    private BridgeValue<Map<UserPlatform, StreamStatusEvent>> streamStatesBridge = new BridgeValue<>("koi:streamStates", Collections.unmodifiableMap(this.streamStates));
+
     @SneakyThrows
     public void init() {
         // Set read-only pointers to this instance's chatHistory and viewers fields.
-        ReflectionLib.setStaticValue(Koi.class, "eventHistory", Collections.unmodifiableList(this.eventHistory));
-        ReflectionLib.setStaticValue(Koi.class, "viewers", Collections.unmodifiableMap(this.viewers));
-        ReflectionLib.setStaticValue(Koi.class, "userStates", Collections.unmodifiableMap(this.userStates));
-        ReflectionLib.setStaticValue(Koi.class, "streamStates", Collections.unmodifiableMap(this.streamStates));
+        ReflectionLib.setStaticValue(Koi.class, "eventHistory", this.historyBridge.get());
+        ReflectionLib.setStaticValue(Koi.class, "viewers", this.viewersBridge.get());
+        ReflectionLib.setStaticValue(Koi.class, "userStates", this.userStatesBridge.get());
+        ReflectionLib.setStaticValue(Koi.class, "streamStates", this.streamStatesBridge.get());
     }
 
     /**
@@ -93,26 +99,24 @@ public class GlobalKoi implements KoiLifeCycleHandler {
     }
 
     private void updateBridgeData() {
-        JsonObject bridgeData = new JsonObject()
-            .put("history", Rson.DEFAULT.toJson(this.eventHistory))
-            .put("viewers", Rson.DEFAULT.toJson(this.viewers))
-            .put("userStates", Rson.DEFAULT.toJson(this.userStates))
-            .put("streamStates", Rson.DEFAULT.toJson(this.streamStates));
+        // History has updates disabled.
+        this.viewersBridge.update();
+        this.userStatesBridge.update();
+        this.streamStatesBridge.update();
 
-        AppBridge bridge = CaffeinatedApp.getInstance().getBridge();
-
-        bridge.emit("koi:viewers", bridgeData.get("viewers"));
-        bridge.emit("koi:userStates", bridgeData.get("userStates"));
-        bridge.emit("koi:streamStates", bridgeData.get("streamStates"));
-
-        bridge.getQueryData().put("koi", bridgeData);
-
+        // Send update to the widget instances.
         new AsyncTask(() -> {
+            JsonObject statistics = new JsonObject()
+                .put("history", Rson.DEFAULT.toJson(this.eventHistory))
+                .put("viewers", Rson.DEFAULT.toJson(this.viewers))
+                .put("userStates", Rson.DEFAULT.toJson(this.userStates))
+                .put("streamStates", Rson.DEFAULT.toJson(this.streamStates));
+
             for (CaffeinatedPlugin plugin : CaffeinatedApp.getInstance().getPlugins().getPlugins().getPlugins()) {
                 for (Widget widget : plugin.getWidgets()) {
                     for (WidgetInstance instance : widget.getWidgetInstances()) {
                         try {
-                            instance.onKoiStaticsUpdate(bridgeData);
+                            instance.onKoiStaticsUpdate(statistics);
                         } catch (IOException ignored) {}
                     }
                 }
@@ -182,8 +186,8 @@ public class GlobalKoi implements KoiLifeCycleHandler {
             // Emit the event to Caffeinated.
             JsonElement asJson = Rson.DEFAULT.toJson(e);
 
-            CaffeinatedApp.getInstance().getBridge().emit("koi:event:" + e.getType().name().toLowerCase(), asJson);
-            CaffeinatedApp.getInstance().getBridge().emit("koi:event", asJson);
+            AppBridge.emit("koi:event:" + e.getType().name().toLowerCase(), asJson);
+            AppBridge.emit("koi:event", asJson);
 
             // These are used internally.
             for (KoiLifeCycleHandler listener : this.koiEventListeners) {

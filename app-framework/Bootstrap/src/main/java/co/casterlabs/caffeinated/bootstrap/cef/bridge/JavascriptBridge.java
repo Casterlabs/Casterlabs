@@ -9,31 +9,32 @@ import org.cef.browser.CefMessageRouter;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
 
-import co.casterlabs.caffeinated.app.AppBridge;
+import co.casterlabs.caffeinated.app.bridge.AppBridge;
+import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.util.DualConsumer;
 import co.casterlabs.caffeinated.util.FileUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
+import co.casterlabs.rakurai.json.element.JsonNull;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.element.JsonString;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
+import lombok.NonNull;
 import lombok.Setter;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class JavascriptBridge implements AppBridge {
+public class JavascriptBridge extends AppBridge {
     private static String bridgeScript = "";
 
     private CefMessageRouter router;
     private CefFrame frame;
 
-    private JsonObject queryData = new JsonObject();
+    private Promise<Void> loadPromise = new Promise<>();
 
     private @Setter DualConsumer<String, JsonObject> onEvent;
-
-    private Promise<Void> loadPromise = new Promise<>();
 
     static {
         try {
@@ -43,7 +44,7 @@ public class JavascriptBridge implements AppBridge {
         }
     }
 
-    public JavascriptBridge(CefClient client) {
+    public JavascriptBridge(@NonNull CefClient client) {
         this.router = CefMessageRouter.create();
 
         this.router.addHandler(new CefMessageRouterHandlerAdapter() {
@@ -69,9 +70,16 @@ public class JavascriptBridge implements AppBridge {
                                 String queryField = query.getString("field");
                                 String queryNonce = query.getString("nonce");
 
-                                JsonElement data = queryData.get(queryField);
+                                BridgeValue<?> bv = queryData.get(queryField);
+                                JsonElement el = JsonNull.INSTANCE;
 
-                                emit("querynonce:" + queryNonce, new JsonObject().put("data", data));
+                                FastLogger.logStatic(queryData);
+
+                                if (bv != null) {
+                                    el = bv.getAsJson();
+                                }
+
+                                emit("querynonce:" + queryNonce, new JsonObject().put("data", el));
                             }
                             break;
                         }
@@ -98,20 +106,7 @@ public class JavascriptBridge implements AppBridge {
     }
 
     @Override
-    public JsonObject getQueryData() {
-        System.gc(); // Invoke a GC, TODO this is temporary.
-        return this.queryData;
-    }
-
-    public void injectBridgeScript(CefFrame frame) {
-        // Inject the bridge script.
-        this.frame = frame;
-        this.frame.executeJavaScript(bridgeScript, "", 1);
-        this.loadPromise.fulfill(null);
-    }
-
-    @Override
-    public void emit(String type, JsonElement data) {
+    protected void emit0(@NonNull String type, @NonNull JsonElement data) {
         new AsyncTask(() -> {
             try {
                 this.loadPromise.await();
@@ -123,7 +118,25 @@ public class JavascriptBridge implements AppBridge {
         });
     }
 
-    private void handleEmission(JsonObject query) {
+    @Override
+    protected void eval0(@NonNull String script) {
+        new AsyncTask(() -> {
+            try {
+                this.loadPromise.await();
+            } catch (Throwable e) {}
+
+            this.frame.executeJavaScript(script, "", 1);
+        });
+    }
+
+    public void injectBridgeScript(@NonNull CefFrame frame) {
+        // Inject the bridge script.
+        this.frame = frame;
+        this.frame.executeJavaScript(bridgeScript, "", 1);
+        this.loadPromise.fulfill(null);
+    }
+
+    private void handleEmission(@NonNull JsonObject query) {
         JsonObject emission = query.getObject("data");
         String type = emission.getString("type");
         JsonObject data = emission.getObject("data");
@@ -133,17 +146,6 @@ public class JavascriptBridge implements AppBridge {
         if (this.onEvent != null) {
             this.onEvent.accept(type, data);
         }
-    }
-
-    @Override
-    public void eval(String script) {
-        new AsyncTask(() -> {
-            try {
-                this.loadPromise.await();
-            } catch (Throwable e) {}
-
-            this.frame.executeJavaScript(script, "", 1);
-        });
     }
 
 }

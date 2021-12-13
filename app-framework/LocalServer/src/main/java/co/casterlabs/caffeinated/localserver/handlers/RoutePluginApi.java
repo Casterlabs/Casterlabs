@@ -8,6 +8,7 @@ import co.casterlabs.caffeinated.localserver.RouteHelper;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.rakurai.io.http.HttpResponse;
 import co.casterlabs.rakurai.io.http.StandardHttpStatus;
+import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonArray;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.sora.api.http.HttpProvider;
@@ -44,7 +45,6 @@ public class RoutePluginApi implements HttpProvider, RouteHelper {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @HttpEndpoint(uri = "/api/plugins")
     public HttpResponse onGetPluginsListRequest(SoraHttpSession session) {
         try {
@@ -54,7 +54,7 @@ public class RoutePluginApi implements HttpProvider, RouteHelper {
                 JsonArray pluginJson = new JsonArray();
 
                 for (CaffeinatedPlugin plugin : plugins) {
-                    pluginJson.add(plugin.toJson());
+                    pluginJson.add(Rson.DEFAULT.toJson(plugin));
                 }
 
                 return newResponse(StandardHttpStatus.OK, new JsonObject().put("plugins", pluginJson));

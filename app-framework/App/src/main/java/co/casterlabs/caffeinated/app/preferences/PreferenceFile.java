@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
@@ -33,6 +34,8 @@ public class PreferenceFile<T> {
     private String name;
     private @Getter(AccessLevel.NONE) T data;
 
+    private @Getter(AccessLevel.NONE) BridgeValue<T> bridge;
+
     static {
         AppDirs appDirs = AppDirsFactory.getInstance();
         userDataDir = appDirs.getUserDataDir("casterlabs-caffeinated", null, null, true);
@@ -53,6 +56,13 @@ public class PreferenceFile<T> {
         this.data = clazz.newInstance();
 
         this.load();
+    }
+
+    public PreferenceFile<T> bridge() {
+        this.bridge = new BridgeValue<T>(this.name)
+            .set(this.data);
+
+        return this;
     }
 
     public T get() {
@@ -80,6 +90,10 @@ public class PreferenceFile<T> {
     }
 
     public PreferenceFile<T> save() {
+        if (this.bridge != null) {
+            this.bridge.update();
+        }
+
         try {
             this.file.createNewFile();
 

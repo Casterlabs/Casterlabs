@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences.WidgetSettingsDetails;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCopyWidgetUrlEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCreateWidgetEvent;
@@ -22,7 +22,7 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.util.ClipboardUtil;
 import co.casterlabs.rakurai.json.Rson;
-import co.casterlabs.rakurai.json.element.JsonArray;
+import co.casterlabs.rakurai.json.annotating.JsonClass;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
@@ -39,6 +39,17 @@ public class PluginIntegration {
     private static EventHandler<AppPluginIntegrationEventType> handler = new EventHandler<>();
 
     private PluginsHandler plugins = new PluginsHandler();
+
+    private BridgeValue<PluginsBridgeObject> bridge = new BridgeValue<>("plugins", new PluginsBridgeObject());
+
+    @SuppressWarnings("unused")
+    @JsonClass(exposeAll = true)
+    private static class PluginsBridgeObject {
+        private List<CaffeinatedPlugin> loadedPlugins;
+        private List<WidgetDetails> creatableWidgets;
+        private List<Widget> widgets;
+
+    }
 
     public PluginIntegration() {
         handler.register(this);
@@ -150,32 +161,11 @@ public class PluginIntegration {
         CaffeinatedApp.getInstance().getUI().showToast("Copied link to clipboard", UIBackgroundColor.PRIMARY);
     }
 
-    @SuppressWarnings("deprecation")
     public void updateBridgeData() {
-        JsonObject widgets = new JsonObject();
-        for (Widget widget : this.plugins.getWidgets()) {
-            widgets.put(widget.getId(), widget.toJson());
-        }
-
-        JsonArray creatableWidgets = new JsonArray();
-        for (WidgetDetails details : this.plugins.getCreatableWidgets()) {
-            creatableWidgets.add(Rson.DEFAULT.toJson(details));
-        }
-
-        JsonArray loadedPlugins = new JsonArray();
-        for (CaffeinatedPlugin plugin : this.plugins.getPlugins()) {
-            loadedPlugins.add(plugin.toJson());
-        }
-
-        JsonObject bridgeData = new JsonObject()
-            .put("widgets", widgets)
-            .put("creatableWidgets", creatableWidgets)
-            .put("loadedPlugins", loadedPlugins);
-
-        AppBridge bridge = CaffeinatedApp.getInstance().getBridge();
-
-        bridge.getQueryData().put("plugins", bridgeData);
-        bridge.emit("plugins:update", bridgeData);
+        this.bridge.get().loadedPlugins = this.plugins.getPlugins();
+        this.bridge.get().creatableWidgets = this.plugins.getCreatableWidgets();
+        this.bridge.get().widgets = this.plugins.getWidgets();
+        this.bridge.update();
     }
 
     public static void invokeEvent(JsonObject data, String nestedType) throws InvocationTargetException, JsonParseException {

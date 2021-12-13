@@ -179,8 +179,6 @@ public class Bootstrap implements Runnable {
                 public void onPreLoad() {
                     logger.debug("onPreLoad");
 
-                    // This is the real meat and potatoes.
-                    app.setBridge(ApplicationUI.getBridge());
                     ApplicationUI.getBridge().setOnEvent((t, d) -> onBridgeEvent(t, d));
 
                     app.init();

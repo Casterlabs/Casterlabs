@@ -41,7 +41,7 @@
 
     onMount(async () => {
         eventHandler = Bridge.createThrowawayEventHandler();
-        eventHandler.on("auth:platforms", parseBridgeData);
+        eventHandler.on("auth:update", parseBridgeData);
         parseBridgeData((await Bridge.query("auth")).data);
 
         Bridge.emit("auth:cancel-signin");

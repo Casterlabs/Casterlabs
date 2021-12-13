@@ -8,21 +8,20 @@ import java.util.function.Consumer;
 
 import co.casterlabs.caffeinated.app.auth.AppAuth;
 import co.casterlabs.caffeinated.app.auth.AuthPreferences;
+import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.koi.GlobalKoi;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegrationPreferences;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegration;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
-import co.casterlabs.caffeinated.app.preferences.WindowPreferences;
 import co.casterlabs.caffeinated.app.ui.AppUI;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
-import co.casterlabs.rakurai.json.Rson;
-import co.casterlabs.rakurai.json.element.JsonElement;
+import co.casterlabs.caffeinated.app.window.WindowPreferences;
+import co.casterlabs.caffeinated.app.window.WindowState;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.SneakyThrows;
 
 @Getter
@@ -41,7 +40,6 @@ public class CaffeinatedApp {
 
     private final BuildInfo buildInfo;
     private final boolean isDev;
-    private @Setter AppBridge bridge;
 
     private AppAuth auth = new AppAuth();
     private MusicIntegration musicIntegration = new MusicIntegration();
@@ -49,15 +47,19 @@ public class CaffeinatedApp {
     private AppUI UI = new AppUI();
     private PluginIntegration plugins = new PluginIntegration();
 
-    private PreferenceFile<AppPreferences> appPreferences = new PreferenceFile<>("app", AppPreferences.class);
-    private PreferenceFile<WindowPreferences> windowPreferences = new PreferenceFile<>("window", WindowPreferences.class);
-    private PreferenceFile<UIPreferences> uiPreferences = new PreferenceFile<>("ui", UIPreferences.class);
-    private PreferenceFile<AuthPreferences> authPreferences = new PreferenceFile<>("auth", AuthPreferences.class);
-    private PreferenceFile<MusicIntegrationPreferences> musicIntegrationPreferences = new PreferenceFile<>("music", MusicIntegrationPreferences.class);
+    // @formatter:off
     private PreferenceFile<PluginIntegrationPreferences> pluginIntegrationPreferences = new PreferenceFile<>("plugins", PluginIntegrationPreferences.class);
+    private PreferenceFile<MusicIntegrationPreferences>  musicIntegrationPreferences  = new PreferenceFile<>("music",   MusicIntegrationPreferences.class);
+    private PreferenceFile<WindowPreferences>            windowPreferences            = new PreferenceFile<>("window",  WindowPreferences.class);
+    private PreferenceFile<AuthPreferences>              authPreferences              = new PreferenceFile<>("auth",    AuthPreferences.class);
+    private PreferenceFile<AppPreferences>               appPreferences               = new PreferenceFile<>("app",     AppPreferences.class).bridge();
+    private PreferenceFile<UIPreferences>                uiPreferences                = new PreferenceFile<>("ui",      UIPreferences.class).bridge();
+    // @formatter:on
 
     private Map<String, List<Consumer<JsonObject>>> bridgeEventListeners = new HashMap<>();
     private Map<String, List<Consumer<JsonObject>>> appEventListeners = new HashMap<>();
+
+    private WindowState windowState = new WindowState();
 
     public CaffeinatedApp(@NonNull BuildInfo buildInfo, boolean isDev) {
         this.buildInfo = buildInfo;
@@ -66,15 +68,13 @@ public class CaffeinatedApp {
     }
 
     public void init() {
-        this.uiPreferences.addSaveListener(this::saveListener);
-        this.appPreferences.addSaveListener(this::saveListener);
-
         this.koi.init();
         this.auth.init();
         this.musicIntegration.init();
         this.plugins.init();
 
-        this.bridge.getQueryData().put("build", Rson.DEFAULT.toJson(this.buildInfo));
+        // This doesn't update, so we register it and leave it be.
+        new BridgeValue<BuildInfo>("build").set(this.buildInfo);
     }
 
     public boolean canCloseUI() {
@@ -158,15 +158,6 @@ public class CaffeinatedApp {
             }
 
         }
-    }
-
-    // This pretty much emits & updates the query data every time a
-    // preference is saved.
-    public void saveListener(PreferenceFile<?> pref) {
-        JsonElement json = Rson.DEFAULT.toJson(pref.get());
-
-        this.bridge.getQueryData().put(pref.getName(), json);
-        this.bridge.emit("pref-update:" + pref.getName(), json);
     }
 
 }

@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AppAuth;
+import co.casterlabs.caffeinated.app.bridge.AppBridge;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.events.AppUIAppearanceUpdateEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUIEventType;
@@ -92,30 +93,19 @@ public class AppUI {
                     )
             );
 
-            CaffeinatedApp
-                .getInstance()
-                .getBridge()
-                .eval(
-                    line
-                );
+            AppBridge.eval(line);
         }
     }
 
     public void goBack() {
         if (this.uiFinishedLoad) {
-            CaffeinatedApp
-                .getInstance()
-                .getBridge()
-                .eval("history.back()");
+            AppBridge.eval("history.back()");
         }
     }
 
     public void navigate(String path) {
         if (this.uiFinishedLoad) {
-            CaffeinatedApp
-                .getInstance()
-                .getBridge()
-                .emit("goto", JsonObject.singleton("path", path));
+            AppBridge.emit("goto", JsonObject.singleton("path", path));
         }
     }
 

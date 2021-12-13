@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import co.casterlabs.caffeinated.app.AppBridge;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.music_integration.events.AppMusicIntegrationEventType;
 import co.casterlabs.caffeinated.app.music_integration.events.AppMusicIntegrationSettingsUpdateEvent;
 import co.casterlabs.caffeinated.app.music_integration.events.AppMusicIntegrationSignoutEvent;
@@ -37,6 +37,8 @@ public class MusicIntegration {
     private InternalMusicProvider<?> activePlayback;
 
     private boolean loaded = false;
+
+    private BridgeValue<JsonObject> bridge = new BridgeValue<>("music");
 
     @SneakyThrows
     public MusicIntegration() {
@@ -121,18 +123,17 @@ public class MusicIntegration {
             .put("activePlayback", Rson.DEFAULT.toJson(this.activePlayback))
             .put("musicServices", musicServices);
 
-        AppBridge bridge = CaffeinatedApp.getInstance().getBridge();
-
-        bridge.getQueryData().put("music", bridgeData);
-        bridge.emit("music:update", bridgeData);
+        this.bridge.set(bridgeData);
 
         new AsyncTask(() -> {
             try {
+                // Update the pluginsdk Music class.
                 ReflectionLib.setStaticValue(Music.class, "activePlayback", this.activePlayback);
 
                 @SuppressWarnings("deprecation")
                 JsonObject music = Music.toJson();
 
+                // Send the events to the widget instances.
                 for (CaffeinatedPlugin plugin : CaffeinatedApp.getInstance().getPlugins().getPlugins().getPlugins()) {
                     for (Widget widget : plugin.getWidgets()) {
                         for (WidgetInstance instance : widget.getWidgetInstances()) {

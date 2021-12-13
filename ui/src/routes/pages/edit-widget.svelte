@@ -60,7 +60,12 @@
     function parseBridgeData({ widgets }) {
         const widgetId = location.href.split("?widget=")[1];
 
-        widget = widgets[widgetId];
+        for (const w of widgets) {
+            if (w.id == widgetId) {
+                widget = w;
+                break;
+            }
+        }
 
         if (!objectEquals(settingsLayout, widget.settingsLayout)) {
             blanking = true;
