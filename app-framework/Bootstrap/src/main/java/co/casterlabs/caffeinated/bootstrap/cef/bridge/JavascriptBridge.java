@@ -73,8 +73,6 @@ public class JavascriptBridge extends AppBridge {
                                 BridgeValue<?> bv = queryData.get(queryField);
                                 JsonElement el = JsonNull.INSTANCE;
 
-                                FastLogger.logStatic(queryData);
-
                                 if (bv != null) {
                                     el = bv.getAsJson();
                                 }
