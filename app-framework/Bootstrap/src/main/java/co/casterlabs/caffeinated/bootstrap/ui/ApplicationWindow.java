@@ -45,13 +45,9 @@ public class ApplicationWindow {
     @SuppressWarnings("deprecation")
     private Unsafe_WindowState windowState = CaffeinatedApp.getInstance().getWindowState().unsafe;
 
-    static {
-        LafManager.setupLaf();
-    }
-
     public ApplicationWindow(UILifeCycleListener listener) {
         this.listener = listener;
-        this.frame = new JFrame();
+        this.frame = LafManager.getFrame();
 
         PreferenceFile<WindowPreferences> preferenceFile = CaffeinatedApp.getInstance().getWindowPreferences();
         WindowPreferences windowPreferences = preferenceFile.get();

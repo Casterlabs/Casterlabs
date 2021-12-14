@@ -7,7 +7,7 @@ cd app-framework/Build/Caffeinated-Windows
 echo "Building for Windows..."
 
 JRE_DOWNLOAD_URL="https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u312-b07/OpenJDK8U-jre_x64_windows_hotspot_8u312b07.zip"
-MAIN_CLASS="co.casterlabs.caffeinated.bootstrap.Bootstrap"
+MAIN_CLASS="co.casterlabs.caffeinated.bootstrap.windows.WindowsBootstrap"
 
 rm -rf target/dist
 
