@@ -472,7 +472,7 @@
                     <input class="input" type="text" placeholder="Send a message" bind:value={chatSendMessage} on:keydown={commandPaletteListener} on:keypress={sendChatMessage} />
 
                     <!-- svelte-ignore a11y-missing-attribute -->
-                    <a class="chat-settings-button heavy-highlight-on-hover" on:click={toggleChatSettings}>
+                    <a class="chat-settings-button heavy-highlight-on-hover" on:click={toggleChatSettings} style="display: none;">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
