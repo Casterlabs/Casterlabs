@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.events.AppAuthCancelSigninEvent;
 import co.casterlabs.caffeinated.app.auth.events.AppAuthEventType;
@@ -234,6 +236,16 @@ public class AppAuth {
                     .getEventClass()
             )
         );
+    }
+
+    public @Nullable AuthInstance getAuthInstance(UserPlatform platform) {
+        for (AuthInstance inst : this.authInstances.values()) {
+            if (inst.getUserData().getPlatform() == platform) {
+                return inst;
+            }
+        }
+
+        return null;
     }
 
 }

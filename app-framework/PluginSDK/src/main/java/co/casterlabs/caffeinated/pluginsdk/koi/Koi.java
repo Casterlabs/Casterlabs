@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import co.casterlabs.caffeinated.util.Reflective;
+import co.casterlabs.koi.api.KoiChatterType;
 import co.casterlabs.koi.api.types.events.KoiEvent;
 import co.casterlabs.koi.api.types.events.StreamStatusEvent;
 import co.casterlabs.koi.api.types.events.UserUpdateEvent;
@@ -13,12 +14,15 @@ import co.casterlabs.koi.api.types.user.UserPlatform;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
+import lombok.NonNull;
 
 public class Koi {
     private static @Reflective @Getter List<KoiEvent> eventHistory;
     private static @Reflective @Getter Map<UserPlatform, List<User>> viewers;
     private static @Reflective @Getter Map<UserPlatform, UserUpdateEvent> userStates;
     private static @Reflective @Getter Map<UserPlatform, StreamStatusEvent> streamStates;
+
+    private static @Reflective KoiHandle HANDLE;
 
     /**
      * @deprecated This is used internally.
@@ -44,6 +48,36 @@ public class Koi {
         return userStates.size() == 0;
     }
 
+    public static int getMaxMessageLength(@NonNull UserPlatform platform) {
+        switch (platform) {
+            case CAFFEINE:
+                return 80;
+
+            case TWITCH:
+                return 500;
+
+            case TROVO:
+                return 300;
+
+            case GLIMESH:
+                return 255;
+
+            case BRIME:
+                return 300;
+
+            default:
+                return 100; // ?
+        }
+    }
+
+    public static void sendChat(@NonNull UserPlatform platform, @NonNull String message, @NonNull KoiChatterType chatter) {
+        HANDLE.sendChat(platform, message, chatter);
+    }
+
+    public static void upvote(@NonNull UserPlatform platform, @NonNull String messageId) {
+        HANDLE.upvote(platform, messageId);
+    }
+
     /**
      * It's important to note that this is really only useful outside of multi-user
      * mode.
@@ -52,6 +86,15 @@ public class Koi {
      */
     public static UserPlatform getFirstSignedInPlatform() {
         return getSignedInPlatforms().get(0);
+    }
+
+    @Deprecated
+    public static interface KoiHandle {
+
+        public void sendChat(@NonNull UserPlatform platform, @NonNull String message, @NonNull KoiChatterType chatter);
+
+        public void upvote(@NonNull UserPlatform platform, @NonNull String messageId);
+
     }
 
 }

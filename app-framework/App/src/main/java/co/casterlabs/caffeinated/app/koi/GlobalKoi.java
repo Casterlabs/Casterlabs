@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.app.koi;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,11 +14,15 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AuthInstance;
 import co.casterlabs.caffeinated.app.bridge.AppBridge;
 import co.casterlabs.caffeinated.app.bridge.BridgeValue;
+import co.casterlabs.caffeinated.app.koi.events.AppKoiChatSendEvent;
+import co.casterlabs.caffeinated.app.koi.events.AppKoiEventType;
+import co.casterlabs.caffeinated.app.koi.events.AppKoiUpvoteEvent;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.koi.api.KoiChatterType;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
 import co.casterlabs.koi.api.listener.KoiEventUtil;
 import co.casterlabs.koi.api.listener.KoiLifeCycleHandler;
@@ -32,14 +37,19 @@ import co.casterlabs.koi.api.types.user.UserPlatform;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
+import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.SneakyThrows;
+import xyz.e3ndr.eventapi.EventHandler;
+import xyz.e3ndr.eventapi.listeners.EventListener;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @Getter
-public class GlobalKoi implements KoiLifeCycleHandler {
+@SuppressWarnings("deprecation")
+public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
     private static final List<KoiEventType> KEPT_EVENTS = Arrays.asList(
         KoiEventType.FOLLOW,
         KoiEventType.CHAT,
@@ -52,6 +62,8 @@ public class GlobalKoi implements KoiLifeCycleHandler {
         KoiEventType.CHANNEL_POINTS,
         KoiEventType.CLEARCHAT
     );
+
+    private static EventHandler<AppKoiEventType> handler = new EventHandler<>();
 
     private List<KoiLifeCycleHandler> koiEventListeners = new LinkedList<>();
 
@@ -72,6 +84,8 @@ public class GlobalKoi implements KoiLifeCycleHandler {
         ReflectionLib.setStaticValue(Koi.class, "viewers", this.viewersBridge.get());
         ReflectionLib.setStaticValue(Koi.class, "userStates", this.userStatesBridge.get());
         ReflectionLib.setStaticValue(Koi.class, "streamStates", this.streamStatesBridge.get());
+
+        handler.register(this);
     }
 
     /**
@@ -124,7 +138,6 @@ public class GlobalKoi implements KoiLifeCycleHandler {
         });
     }
 
-    @SuppressWarnings("deprecation")
     @KoiEventHandler
     public void onEvent(KoiEvent e) {
         if (e.getType() == KoiEventType.CATCHUP) {
@@ -205,6 +218,45 @@ public class GlobalKoi implements KoiLifeCycleHandler {
             "Processed %s event for %s.",
             e.getType().name().toLowerCase().replace('_', ' '),
             e.getStreamer().getDisplayname()
+        );
+    }
+
+    @EventListener
+    public void onKoiChatSendEvent(AppKoiChatSendEvent event) {
+        this.sendChat(event.getPlatform(), event.getMessage(), KoiChatterType.CLIENT);
+    }
+
+    @EventListener
+    public void onKoiUpvoteEvent(AppKoiUpvoteEvent event) {
+        this.upvote(event.getPlatform(), event.getMessageId());
+    }
+
+    @Override
+    public void sendChat(@NonNull UserPlatform platform, @NonNull String message, @NonNull KoiChatterType chatter) {
+        AuthInstance inst = CaffeinatedApp.getInstance().getAuth().getAuthInstance(platform);
+
+        if (inst != null) {
+            inst.sendChat(message, chatter);
+        }
+    }
+
+    @Override
+    public void upvote(@NonNull UserPlatform platform, @NonNull String messageId) {
+        AuthInstance inst = CaffeinatedApp.getInstance().getAuth().getAuthInstance(platform);
+
+        if (inst != null) {
+            inst.upvote(messageId);
+        }
+    }
+
+    public static void invokeEvent(JsonObject data, String nestedType) throws InvocationTargetException, JsonParseException {
+        handler.call(
+            Rson.DEFAULT.fromJson(
+                data,
+                AppKoiEventType
+                    .valueOf(nestedType)
+                    .getEventClass()
+            )
         );
     }
 

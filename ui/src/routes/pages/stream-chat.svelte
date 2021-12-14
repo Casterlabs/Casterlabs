@@ -309,7 +309,7 @@
             // The keyboard event is from the input itself.
             if (e instanceof KeyboardEvent) {
                 // If the user presses enter then we should send the message and clear everything.
-                if (e.key == "Enter") {
+                if (e.keyCode == 10) {
                     showCommandPalette = false;
                     selectedCommandIndex = -1;
 
@@ -330,7 +330,12 @@
                 }
             }
 
-            console.log(chatSendPlatform, ">", chatSendMessage);
+            Bridge.emit("koi:chatsend", {
+                platform: chatSendPlatform,
+                message: chatSendMessage
+            });
+
+            console.log("[StreamChat]", "Sending chat message:", chatSendPlatform, ">", chatSendMessage);
             chatSendMessage = "";
         }, 0);
     }

@@ -160,6 +160,11 @@ public class CaffeinatedApp {
                 return;
             }
 
+            case "koi": {
+                GlobalKoi.invokeEvent(data, nestedType);
+                return;
+            }
+
         }
     }
 

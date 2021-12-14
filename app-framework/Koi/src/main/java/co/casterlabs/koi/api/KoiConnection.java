@@ -170,4 +170,23 @@ public class KoiConnection implements Closeable {
 
     }
 
+    public void sendChat(@NonNull String message, @NonNull KoiChatterType chatter) {
+        this.socket.send(
+            new JsonObject()
+                .put("type", "CHAT")
+                .put("message", message)
+                .put("chatter", chatter.name())
+                .toString()
+        );
+    }
+
+    public void upvote(@NonNull String messageId) {
+        this.socket.send(
+            new JsonObject()
+                .put("type", "UPVOTE")
+                .put("message_id", messageId)
+                .toString()
+        );
+    }
+
 }
