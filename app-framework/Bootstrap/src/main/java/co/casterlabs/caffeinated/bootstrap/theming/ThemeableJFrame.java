@@ -1,5 +1,6 @@
 package co.casterlabs.caffeinated.bootstrap.theming;
 
+import java.awt.BorderLayout;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public abstract class ThemeableJFrame extends JFrame {
 
     public ThemeableJFrame() {
         frames.add(this._$);
+        this.setLayout(new BorderLayout(0, 0));
     }
 
     /**

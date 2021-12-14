@@ -114,8 +114,6 @@ public class ApplicationWindow {
             }
         });
 
-        this.frame.setLayout(new BorderLayout(0, 0));
-
         this.updateAppIcon(CaffeinatedApp.getInstance().getUiPreferences());
         CaffeinatedApp.getInstance().getUiPreferences().addSaveListener(this::updateAppIcon);
 
