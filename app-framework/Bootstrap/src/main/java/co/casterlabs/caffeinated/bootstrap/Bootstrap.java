@@ -19,7 +19,6 @@ import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
 import co.casterlabs.caffeinated.localserver.LocalServer;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
-import co.casterlabs.caffeinated.util.FileUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;

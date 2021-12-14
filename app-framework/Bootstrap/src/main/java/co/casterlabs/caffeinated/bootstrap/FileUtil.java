@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.util;
+package co.casterlabs.caffeinated.bootstrap;
 
 import java.io.File;
 import java.io.FileInputStream;
