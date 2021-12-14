@@ -7,7 +7,7 @@ import lombok.Data;
 @JsonClass(exposeAll = true)
 public class UIPreferences {
     private String icon = "casterlabs";
-    private String theme = "light";
+    private String theme = "co.casterlabs.dark";
     private boolean closeToTray = true;
     private boolean minimizeToTray = false;
 

@@ -1,7 +1,7 @@
 package co.casterlabs.caffeinated.bootstrap.macos;
 
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
-import co.casterlabs.caffeinated.bootstrap.ui.LafManager;
+import co.casterlabs.caffeinated.bootstrap.theming.LafManager;
 
 public class MacOSBootstrap {
 

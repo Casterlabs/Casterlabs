@@ -12,8 +12,11 @@ import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
+import co.casterlabs.caffeinated.app.theming.Theme;
+import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.bootstrap.cef.CefUtil;
 import co.casterlabs.caffeinated.bootstrap.instancing.InstanceManager;
+import co.casterlabs.caffeinated.bootstrap.theming.ThemeHandleImpl;
 import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
@@ -128,7 +131,27 @@ public class Bootstrap implements Runnable {
         // Update the log level.
         logger.setCurrentLevel(FastLoggingFramework.getDefaultLevel());
 
+        this.registerThemes();
         this.startApp();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void registerThemes() {
+        ThemeManager.setHandle(new ThemeHandleImpl());
+
+        // Light theme
+        ThemeManager.registerTheme(
+            new Theme("co.casterlabs.light", "Light")
+                .withCssFiles(false, "/css/bulma.min.css")
+        );
+
+        // Dark theme
+        ThemeManager.registerTheme(
+            new Theme("co.casterlabs.dark", "Dark")
+                .withCssFiles(false, "/css/bulma.min.css", "/css/bulma-prefers-dark.min.css")
+                .withClasses("bulma-dark-mode")
+                .withDark(true)
+        );
     }
 
     private void startApp() {

@@ -11,6 +11,7 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AppAuth;
 import co.casterlabs.caffeinated.app.bridge.AppBridge;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
+import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.app.ui.events.AppUIAppearanceUpdateEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUIEventType;
 import co.casterlabs.caffeinated.app.ui.events.AppUIOpenLinkEvent;
@@ -43,6 +44,8 @@ public class AppUI {
         uiPrefs.setCloseToTray(event.isCloseToTray());
         uiPrefs.setMinimizeToTray(event.isMinimizeToTray());
         CaffeinatedApp.getInstance().getUiPreferences().save();
+
+        ThemeManager.setTheme(event.getTheme(), "co.casterlabs.dark");
     }
 
     @EventListener

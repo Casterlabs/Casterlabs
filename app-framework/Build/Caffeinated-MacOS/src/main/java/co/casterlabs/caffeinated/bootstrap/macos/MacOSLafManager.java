@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 
 import javax.swing.SwingUtilities;
 
-import co.casterlabs.caffeinated.bootstrap.ui.LafManager;
-import co.casterlabs.caffeinated.bootstrap.ui.ThemeableJFrame;
+import co.casterlabs.caffeinated.bootstrap.theming.LafManager;
+import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class MacOSLafManager extends LafManager {

@@ -1,7 +1,7 @@
 package co.casterlabs.caffeinated.bootstrap.windows;
 
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
-import co.casterlabs.caffeinated.bootstrap.ui.LafManager;
+import co.casterlabs.caffeinated.bootstrap.theming.LafManager;
 
 public class WindowsBootstrap {
 

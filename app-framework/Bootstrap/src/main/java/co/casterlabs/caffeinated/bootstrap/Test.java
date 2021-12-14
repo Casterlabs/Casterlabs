@@ -6,8 +6,8 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import co.casterlabs.caffeinated.bootstrap.ui.LafManager;
-import co.casterlabs.caffeinated.bootstrap.ui.ThemeableJFrame;
+import co.casterlabs.caffeinated.bootstrap.theming.LafManager;
+import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
 
 public class Test {
 
@@ -20,7 +20,6 @@ public class Test {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout(0, 0));
         frame.setSize(400, 400);
-        frame.setDarkMode(true);
 
         JLabel text = new JLabel("Test!");
         text.setForeground(Color.WHITE);

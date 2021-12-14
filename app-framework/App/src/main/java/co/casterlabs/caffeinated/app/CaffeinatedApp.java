@@ -15,6 +15,7 @@ import co.casterlabs.caffeinated.app.music_integration.MusicIntegrationPreferenc
 import co.casterlabs.caffeinated.app.plugins.PluginIntegration;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
+import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.app.ui.AppUI;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.app.window.WindowPreferences;
@@ -65,6 +66,8 @@ public class CaffeinatedApp {
         this.buildInfo = buildInfo;
         this.isDev = isDev;
         instance = this;
+
+        ThemeManager.setTheme(this.uiPreferences.get().getTheme(), "co.casterlabs.dark");
     }
 
     public void init() {

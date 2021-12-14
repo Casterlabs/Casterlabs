@@ -4,8 +4,8 @@ import com.sun.jna.platform.win32.WinDef.BOOL;
 import com.sun.jna.platform.win32.WinDef.BOOLByReference;
 import com.sun.jna.platform.win32.WinDef.HWND;
 
-import co.casterlabs.caffeinated.bootstrap.ui.LafManager;
-import co.casterlabs.caffeinated.bootstrap.ui.ThemeableJFrame;
+import co.casterlabs.caffeinated.bootstrap.theming.LafManager;
+import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
@@ -37,7 +37,7 @@ public class WindowsLafManager extends LafManager {
              */
 
             HWND hwnd = DWM.getHWND(this);
-            BOOLByReference pvAttribute = new BOOLByReference(new BOOL(this.darkModeEnabled));
+            BOOLByReference pvAttribute = new BOOLByReference(new BOOL(ThemeableJFrame.isDarkModeEnabled()));
 
             DWM.INSTANCE.DwmSetWindowAttribute(
                 hwnd,
@@ -56,7 +56,7 @@ public class WindowsLafManager extends LafManager {
             FastLogger.logStatic(
                 LogLevel.DEBUG,
                 "Set IMMERSIVE_DARK_MODE and DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 to %b.",
-                this.darkModeEnabled
+                ThemeableJFrame.isDarkModeEnabled()
             );
 
             // Trick windows into repainting the window.

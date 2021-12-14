@@ -60,21 +60,22 @@
         currentPageAttributes = val;
     }
 
-    function updateTheme({ theme }) {
-        const htmlElement = document.querySelector("html");
+    function updateTheme(theme) {
+        let html = [];
 
-        switch (theme) {
-            case "light": {
-                htmlElement.classList.remove("bulma-dark-mode");
-                return;
-            }
-
-            case "dark":
-            default: {
-                htmlElement.classList.add("bulma-dark-mode");
-                return;
+        for (const css of theme.css) {
+            if (theme.isInlineCss) {
+                html.push(`<style>${css}</style>`);
+            } else {
+                html.push(`<link rel="stylesheet" href="${css}" />`);
             }
         }
+
+        html = html.join("");
+
+        console.info("[__layout__] Updated theme:", theme, "\n", html);
+        document.documentElement.classList = theme.classes;
+        document.querySelector("#styles").innerHTML = html;
     }
 
     function parseWindowUpdate(data) {
@@ -96,8 +97,8 @@
         Bridge.on("window:update", parseWindowUpdate);
         parseWindowUpdate((await Bridge.query("window")).data);
 
-        Bridge.on("pref-update:ui", updateTheme);
-        updateTheme((await Bridge.query("ui")).data);
+        Bridge.on("theme:update", updateTheme);
+        updateTheme((await Bridge.query("theme")).data);
     });
 </script>
 

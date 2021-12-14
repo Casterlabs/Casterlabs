@@ -9,6 +9,8 @@
     let appearanceCloseToTray;
     let appearanceMinimizeToTray;
 
+    let themes = [];
+
     function sendUpdatedPreferences() {
         Bridge.emit("ui:appearance-update", {
             theme: appearanceTheme,
@@ -25,12 +27,20 @@
         appearanceMinimizeToTray = data.minimizeToTray;
     }
 
+    function onThemesUpdate(t) {
+        themes = t;
+    }
+
     onDestroy(() => {
         eventHandler?.destroy();
     });
 
     onMount(async () => {
         eventHandler = Bridge.createThrowawayEventHandler();
+
+        eventHandler.on("themes:update", onThemesUpdate);
+        onThemesUpdate((await Bridge.query("themes")).data);
+
         eventHandler.on("pref-update:ui", loadPreferences);
         loadPreferences((await Bridge.query("ui")).data);
     });
@@ -44,8 +54,9 @@
             <br />
             <div class="select">
                 <select id="appearance-theme" bind:value={appearanceTheme} on:change={sendUpdatedPreferences}>
-                    <option value="dark">Dark</option>
-                    <option value="light">Light</option>
+                    {#each themes as theme}
+                        <option value={theme.id}>{theme.name}</option>
+                    {/each}
                     <!-- <option value="system">Match System Preference</option> -->
                 </select>
             </div>

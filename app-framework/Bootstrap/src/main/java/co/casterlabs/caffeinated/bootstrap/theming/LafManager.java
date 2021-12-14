@@ -1,8 +1,8 @@
-package co.casterlabs.caffeinated.bootstrap.ui;
+package co.casterlabs.caffeinated.bootstrap.theming;
 
 import org.jetbrains.annotations.Nullable;
 
-import co.casterlabs.caffeinated.bootstrap.ui.ThemeableJFrame.UnimplementedThemeableFrame;
+import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame.UnimplementedThemeableFrame;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
