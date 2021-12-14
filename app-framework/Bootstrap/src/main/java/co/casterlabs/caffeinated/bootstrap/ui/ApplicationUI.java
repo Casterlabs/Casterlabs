@@ -15,7 +15,6 @@ import org.cef.network.CefRequest.TransitionType;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
-import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.caffeinated.bootstrap.cef.CefUtil;
 import co.casterlabs.caffeinated.bootstrap.cef.bridge.JavascriptBridge;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.SchemeHandler;
@@ -24,6 +23,7 @@ import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpResponse;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.MimeTypes;
 import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.StandardHttpStatus;
 import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
+import co.casterlabs.caffeinated.util.FileUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import xyz.e3ndr.consoleutil.ConsoleUtil;

@@ -23,7 +23,7 @@ import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.app.window.WindowPreferences;
 import co.casterlabs.caffeinated.app.window.WindowState.Unsafe_WindowState;
-import co.casterlabs.caffeinated.bootstrap.FileUtil;
+import co.casterlabs.caffeinated.util.FileUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import xyz.e3ndr.consoleutil.ConsoleUtil;
