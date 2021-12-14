@@ -16,7 +16,7 @@ public class FileUtil {
         InputStream in;
 
         if (isDev) {
-            in = new FileInputStream(new File("./src/main/resources/", path));
+            in = new FileInputStream(new File("../../Bootstrap/src/main/resources/", path));
         } else {
             in = FileUtil.class.getClassLoader().getResourceAsStream(path);
         }
@@ -28,7 +28,7 @@ public class FileUtil {
         InputStream in;
 
         if (isDev) {
-            in = new FileInputStream(new File("./src/main/resources/", path));
+            in = new FileInputStream(new File("../../Bootstrap/src/main/resources/", path));
         } else {
             in = FileUtil.class.getClassLoader().getResourceAsStream(path);
         }
@@ -38,7 +38,7 @@ public class FileUtil {
 
     public static URL loadResourceAsUrl(String path) throws IOException {
         if (isDev) {
-            return new File("./src/main/resources/", path).toURI().toURL();
+            return new File("../../Bootstrap/src/main/resources/", path).toURI().toURL();
         } else {
             return FileUtil.class.getClassLoader().getResource(path);
         }
