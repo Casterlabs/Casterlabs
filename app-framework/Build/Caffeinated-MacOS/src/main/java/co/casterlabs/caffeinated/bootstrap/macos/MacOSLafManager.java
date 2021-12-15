@@ -18,9 +18,8 @@ import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class MacOSLafManager extends LafManager {
-    private static final int FULL_WINDOW_CONTENT = 1 << 14;
-    private static final int TRANSPARENT_TITLE_BAR = 1 << 18;
-    private static final int TITLED = 1 << 0;
+    private static final int NSWINDOW_STYLEMASK_FULL_WINDOW_CONTENT = 1 << 14;
+    private static final int NSWINDOW_STYLEMASK_TRANSPARENT_TITLE_BAR = 1 << 18;
 
     // These colors were obtained by screenshotting an app and grabbing the color
     // values. (They might be *slightly* off)
@@ -44,9 +43,17 @@ public class MacOSLafManager extends LafManager {
         private JLabel titleBarLabel = new JLabel("", SwingConstants.CENTER);
         private JPanel titleBar;
 
+        public MacOSThemeableJFrame() {
+            // We set the title to BLANK because we cannot hide the
+            // native NSWindow titlebar without some Obj-C code.
+            // (Setting NSWINDOW_STYLEMASK_TITLED to false does NOT work.)
+            // This also doesn't affect us since MacOS uses the executable's
+            // app manifest for the app title and not the window's name.
+            this.setTitle("");
+        }
+
         @Override
         public void setTitle(String newTitle) {
-            super.setTitle(newTitle);
             this.titleBarLabel.setText(newTitle);
             this.updateTitleBar();
         }
@@ -98,15 +105,15 @@ public class MacOSLafManager extends LafManager {
                         /*
                         CPlatformWindow platformWindow = (CPlatformWindow) ((LWWindowPeer) peer).getPlatformWindow();
                         
-                        platformWindow.setStyleBits(MASK, true);
+                        platformWindow.setStyleBits(NSWINDOW_STYLEMASK_FULL_WINDOW_CONTENT | NSWINDOW_STYLEMASK_TRANSPARENT_TITLE_BAR, true);
                          */
 
                         // Grab the method, setAccessible, and invoke.
                         Method setStyleBits = platformWindow.getClass().getDeclaredMethod("setStyleBits", int.class, boolean.class);
                         setStyleBits.setAccessible(true);
-                        setStyleBits.invoke(platformWindow, FULL_WINDOW_CONTENT | TRANSPARENT_TITLE_BAR, true);
-                        setStyleBits.invoke(platformWindow, TITLED, false);
+                        setStyleBits.invoke(platformWindow, NSWINDOW_STYLEMASK_FULL_WINDOW_CONTENT | NSWINDOW_STYLEMASK_TRANSPARENT_TITLE_BAR, true);
 
+                        // Make the titlebar and add it.
                         this.titleBarLabel.setFont(this.titleBarLabel.getFont().deriveFont(Font.BOLD));
 
                         this.titleBar = new JPanel();
