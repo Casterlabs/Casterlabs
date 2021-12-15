@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.Method;
 
 import javax.swing.JLabel;
@@ -27,9 +29,17 @@ public class MacOSLafManager extends LafManager {
     private static final Color LIGHT_TITLEBAR_FOREGROUND_ENABLED = new Color(71, 72, 71);
     private static final Color LIGHT_TITLEBAR_BORDER_ENABLED = new Color(217, 217, 217);
 
+    private static final Color LIGHT_TITLEBAR_BACKGROUND_DISABLED = new Color(228, 229, 230);
+    private static final Color LIGHT_TITLEBAR_FOREGROUND_DISABLED = new Color(164, 165, 166);
+    private static final Color LIGHT_TITLEBAR_BORDER_DISABLED = new Color(217, 217, 217);
+
     private static final Color DARK_TITLEBAR_BACKGROUND_ENABLED = new Color(55, 57, 57);
     private static final Color DARK_TITLEBAR_FOREGROUND_ENABLED = new Color(179, 181, 181);
     private static final Color DARK_TITLEBAR_BORDER_ENABLED = new Color(0, 0, 0);
+
+    private static final Color DARK_TITLEBAR_BACKGROUND_DISABLED = new Color(37, 40, 43);
+    private static final Color DARK_TITLEBAR_FOREGROUND_DISABLED = new Color(102, 105, 108);
+    private static final Color DARK_TITLEBAR_BORDER_DISABLED = new Color(0, 0, 0);
 
     @Override
     protected ThemeableJFrame getFrame0() throws Exception {
@@ -43,6 +53,12 @@ public class MacOSLafManager extends LafManager {
         private JLabel titleBarLabel = new JLabel("", SwingConstants.CENTER);
         private JPanel titleBar;
 
+        // TODO the faded control buttons match the background when you unfocus the
+        // window on MacOS (system = dark, frame = light).
+        //
+        // The only way around this would be to implement our own buttons, which I don't
+        // feel like doing as it's probably something you're not going to notice.
+
         public MacOSThemeableJFrame() {
             // We set the title to BLANK because we cannot hide the
             // native NSWindow titlebar without some Obj-C code.
@@ -50,6 +66,19 @@ public class MacOSLafManager extends LafManager {
             // This also doesn't affect us since MacOS uses the executable's
             // app manifest for the app title and not the window's name.
             this.setTitle("");
+
+            // We need to switch color palettes when we get and lose focus.
+            this.addWindowFocusListener(new WindowAdapter() {
+                @Override
+                public void windowGainedFocus(WindowEvent e) {
+                    updateTitleBar();
+                }
+
+                @Override
+                public void windowLostFocus(WindowEvent e) {
+                    updateTitleBar();
+                }
+            });
         }
 
         @Override
@@ -65,9 +94,19 @@ public class MacOSLafManager extends LafManager {
                 if (this.titleBar != null) {
                     boolean dark = ThemeableJFrame.isDarkModeEnabled();
 
-                    Color backgroundColor = dark ? DARK_TITLEBAR_BACKGROUND_ENABLED : LIGHT_TITLEBAR_BACKGROUND_ENABLED;
-                    Color foregroundColor = dark ? DARK_TITLEBAR_FOREGROUND_ENABLED : LIGHT_TITLEBAR_FOREGROUND_ENABLED;
-                    Color borderColor = dark ? DARK_TITLEBAR_BORDER_ENABLED : LIGHT_TITLEBAR_BORDER_ENABLED;
+                    Color backgroundColor;
+                    Color foregroundColor;
+                    Color borderColor;
+
+                    if (this.isFocused()) {
+                        backgroundColor = dark ? DARK_TITLEBAR_BACKGROUND_ENABLED : LIGHT_TITLEBAR_BACKGROUND_ENABLED;
+                        foregroundColor = dark ? DARK_TITLEBAR_FOREGROUND_ENABLED : LIGHT_TITLEBAR_FOREGROUND_ENABLED;
+                        borderColor = dark ? DARK_TITLEBAR_BORDER_ENABLED : LIGHT_TITLEBAR_BORDER_ENABLED;
+                    } else {
+                        backgroundColor = dark ? DARK_TITLEBAR_BACKGROUND_DISABLED : LIGHT_TITLEBAR_BACKGROUND_DISABLED;
+                        foregroundColor = dark ? DARK_TITLEBAR_FOREGROUND_DISABLED : LIGHT_TITLEBAR_FOREGROUND_DISABLED;
+                        borderColor = dark ? DARK_TITLEBAR_BORDER_DISABLED : LIGHT_TITLEBAR_BORDER_DISABLED;
+                    }
 
                     this.getContentPane().setBackground(dark ? Color.GRAY : Color.WHITE);
                     this.getContentPane().setForeground(dark ? Color.WHITE : Color.BLACK);
