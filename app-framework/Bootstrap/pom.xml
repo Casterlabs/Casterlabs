@@ -25,10 +25,6 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-		<repository>
-			<id>jcef-maven</id>
-			<url>https://friwi.me/jcef/maven</url>
-		</repository>
 	</repositories>
 
 	<dependencies>
@@ -68,9 +64,9 @@
 
 		<!-- UI packages -->
 		<dependency>
-			<groupId>org.cef</groupId>
-			<artifactId>jcef-main</artifactId>
-			<version>84.3.8+gc8a556f+chromium-84.0.4147.105-build-17</version>
+			<groupId>me.friwi</groupId>
+			<artifactId>jcefmaven</artifactId>
+			<version>v1.0.0+jcef-544024e+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
 			<scope>compile</scope>
 		</dependency>
 

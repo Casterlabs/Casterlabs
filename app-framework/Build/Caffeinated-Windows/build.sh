@@ -20,9 +20,8 @@ java -jar "../packr.jar" \
      --platform windows64 \
      --jdk runtime.zip \
      --executable Casterlabs-Caffeinated \
-     --classpath target/jcef-bundle-win64/Caffeinated-Windows.jar \
+     --classpath target/Caffeinated-Windows.jar \
      --mainclass $MAIN_CLASS \
-     --resources target/jcef-bundle-win64/cef_bundle \
      --output target/dist
 
 # Copy the files.

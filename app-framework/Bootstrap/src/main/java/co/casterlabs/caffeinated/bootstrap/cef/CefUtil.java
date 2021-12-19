@@ -1,18 +1,14 @@
 package co.casterlabs.caffeinated.bootstrap.cef;
 
+import java.io.File;
+
 import org.cef.CefApp;
-import org.cef.CefApp.CefAppState;
 import org.cef.CefClient;
-import org.cef.CefSettings;
 import org.cef.CefSettings.LogSeverity;
-import org.cef.JCefLoader;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
-import org.cef.callback.CefCommandLine;
 import org.cef.callback.CefSchemeHandlerFactory;
 import org.cef.callback.CefSchemeRegistrar;
-import org.cef.handler.CefAppHandler;
-import org.cef.handler.CefPrintHandler;
 import org.cef.handler.CefResourceHandler;
 import org.cef.network.CefRequest;
 
@@ -21,84 +17,82 @@ import co.casterlabs.caffeinated.bootstrap.cef.scheme.impl.ResponseResourceHandl
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI.AppSchemeHandler;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import xyz.e3ndr.reflectionlib.ReflectionLib;
+import me.friwi.jcefmaven.CefAppBuilder;
+import me.friwi.jcefmaven.EnumProgress;
+import me.friwi.jcefmaven.IProgressHandler;
+import me.friwi.jcefmaven.MavenCefAppHandlerAdapter;
+import xyz.e3ndr.consoleutil.consolewindow.BarStyle;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class CefUtil {
 
     static {
         try {
-            CefApp app = JCefLoader.installAndLoadCef("--disable-http-cache");
+            CefAppBuilder builder = new CefAppBuilder();
 
-            // The default settings has broken defaults.
-            CefSettings settings = ReflectionLib.getValue(app, "settings_");
+            builder.addJcefArgs("--disable-http-cache");
+            builder.setInstallDir(new File("./cef_bundle"));
+            builder.getCefSettings().windowless_rendering_enabled = true;
+            builder.getCefSettings().log_severity = LogSeverity.LOGSEVERITY_DISABLE;
 
-            settings.log_severity = LogSeverity.LOGSEVERITY_DISABLE;
+            builder.setAppHandler(new MavenCefAppHandlerAdapter() {
 
-            app.setSettings(settings);
+                @Override
+                public void onRegisterCustomSchemes(CefSchemeRegistrar registrar) {
+                    registrar.addCustomScheme(
+                        "app",
+                        true, // isStandard
+                        false, // isLocal
+                        false, // isDisplayIsolated
+                        true,  // isSecure
+                        true,  // isCorsEnabled
+                        true,  // isCspBypassing
+                        true   // isFetchEnabled
+                    );
+
+                    registrar.addCustomScheme(
+                        "proxy",
+                        true,  // isStandard
+                        false, // isLocal
+                        false, // isDisplayIsolated
+                        true,  // isSecure
+                        true,  // isCorsEnabled
+                        true,  // isCspBypassing
+                        true   // isFetchEnabled
+                    );
+                }
+
+                @Override
+                public void onContextInitialized() {
+                    CefUtil.registerUrlScheme("app", new AppSchemeHandler());
+                    CefUtil.registerUrlScheme("proxy", new CorsProxySchemeHandler());
+                }
+
+            });
+
+            builder.setProgressHandler(new IProgressHandler() {
+                private FastLogger logger = new FastLogger("Cef Bundle");
+
+                @Override
+                public void handleProgress(EnumProgress state, float percent) {
+                    percent = Math.max(0, percent) / 100;
+
+                    this.logger.info(
+                        "%-13s %s",
+                        state,
+                        BarStyle.ANGLE.format(percent, 30, true)
+                    );
+                }
+            });
+
+            builder.build();
         } catch (Throwable t) {
             t.printStackTrace();
         }
     }
 
     public static void registerSchemes() {
-        // This had to be moved before the first createClient call.
-        CefApp.addAppHandler(new CefAppHandler() {
-
-            @Override
-            public void stateHasChanged(CefAppState var1) {}
-
-            @Override
-            public void onScheduleMessagePumpWork(long delay_ms) {
-                // For some reason the default implementation is not smart enough to do this on
-                // it's own. So we manually do it.
-                CefApp.getInstance().doMessageLoopWork(delay_ms);
-            }
-
-            @Override
-            public void onRegisterCustomSchemes(CefSchemeRegistrar registrar) {
-                registrar.addCustomScheme(
-                    "app",
-                    true, // isStandard
-                    false, // isLocal
-                    false, // isDisplayIsolated
-                    true,  // isSecure
-                    true,  // isCorsEnabled
-                    true,  // isCspBypassing
-                    true   // isFetchEnabled
-                );
-
-                registrar.addCustomScheme(
-                    "proxy",
-                    true,  // isStandard
-                    false, // isLocal
-                    false, // isDisplayIsolated
-                    true,  // isSecure
-                    true,  // isCorsEnabled
-                    true,  // isCspBypassing
-                    true   // isFetchEnabled
-                );
-            }
-
-            @Override
-            public void onContextInitialized() {
-                CefUtil.registerUrlScheme("app", new AppSchemeHandler());
-                CefUtil.registerUrlScheme("proxy", new CorsProxySchemeHandler());
-            }
-
-            @Override
-            public boolean onBeforeTerminate() {
-                return false;
-            }
-
-            @Override
-            public void onBeforeCommandLineProcessing(String var1, CefCommandLine var2) {}
-
-            @Override
-            public CefPrintHandler getPrintHandler() {
-                return null;
-            }
-
-        });
+        // This is a blank method that'll automatically call static {} once.
     }
 
     @SneakyThrows

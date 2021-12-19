@@ -20,9 +20,8 @@ java -jar "../packr.jar" \
      --platform linux64 \
      --jdk runtime.tar.gz \
      --executable Casterlabs-Caffeinated \
-     --classpath target/jcef-bundle-linux64/Caffeinated-Linux.jar \
+     --classpath target/Caffeinated-Linux.jar \
      --mainclass $MAIN_CLASS \
-     --resources target/jcef-bundle-linux64/cef_bundle \
      --output target/dist
 
 # Copy the files.
