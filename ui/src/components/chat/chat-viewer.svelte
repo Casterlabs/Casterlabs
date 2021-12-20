@@ -24,9 +24,10 @@
     let maxCommandIndex = 0;
 
     // Preferences
+    let showChatTimestamps = true;
     let enableModActions = true;
-    let showProfilePictures = true;
-    let showBadges = true;
+    let showProfilePictures = false;
+    let showBadges = false;
 
     function onMeta(event) {
         const chatElement = chatHistory[event.id];
@@ -436,17 +437,18 @@
 
 <div
     class="stream-chat-container 
+
+        {showChatTimestamps ? 'show-timestamps' : ''} 
+        {enableModActions ? 'enable-mod-actions' : ''} 
+        {showProfilePictures ? 'show-profile-pictures' : ''} 
+        {showBadges ? 'show-badges' : ''} 
+
         {showChatSettings ? 'chat-settings-open' : ''} 
         {isMultiPlatform ? 'is-multi-platform' : ''} 
-        {showCommandPalette && commandPalette.length > 0 ? 'chat-command-palette-open' : ''}"
+        {showCommandPalette && commandPalette.length > 0 ? 'chat-command-palette-open' : ''} 
+    "
 >
-    <div
-        id="chat-box"
-        class="allow-select 
-            {enableModActions ? 'enable-mod-actions' : ''} 
-            {showProfilePictures ? 'show-profile-pictures' : ''} 
-            {showBadges ? 'show-badges' : ''}"
-    >
+    <div id="chat-box">
         <ul bind:this={chatbox} />
     </div>
 
@@ -524,7 +526,7 @@
                     <input class="input" type="text" placeholder="Send a message" bind:value={chatSendMessage} on:keydown={commandPaletteListener} on:keypress={sendChatMessage} />
 
                     <!-- svelte-ignore a11y-missing-attribute -->
-                    <a class="chat-settings-button heavy-highlight-on-hover" on:click={toggleChatSettings} style="display: none;">
+                    <a class="chat-settings-button heavy-highlight-on-hover" on:click={toggleChatSettings}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"

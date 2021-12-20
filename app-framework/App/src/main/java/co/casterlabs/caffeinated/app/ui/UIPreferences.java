@@ -10,5 +10,12 @@ public class UIPreferences {
     private String theme = "co.casterlabs.dark";
     private boolean closeToTray = true;
     private boolean minimizeToTray = false;
+    private ChatViewerPreferences viewerPreferences = new ChatViewerPreferences();
+
+    @Data
+    @JsonClass(exposeAll = true)
+    public static class ChatViewerPreferences {
+
+    }
 
 }
