@@ -309,14 +309,14 @@
             // The keyboard event is from the input itself.
             if (e instanceof KeyboardEvent) {
                 // If the user presses enter then we should send the message and clear everything.
-                if (e.keyCode == 10) {
+                if (e.key == "Enter") {
                     showCommandPalette = false;
                     selectedCommandIndex = -1;
 
                     // Fall out of the if statement.
                 } else {
                     // Shows the commands popup when you start your message with '/'.
-                    showCommandPalette = chatSendMessage.startsWith("/");
+                    // showCommandPalette = chatSendMessage.startsWith("/"); // TODO Fix.
 
                     // Reset the index.
                     if (showCommandPalette) {
