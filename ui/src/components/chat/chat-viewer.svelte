@@ -362,13 +362,16 @@
                 }
             }
 
-            dispatch("chatsend", {
-                platform: chatSendPlatform,
-                message: chatSendMessage
-            });
+            // We don't want to send empty messages.
+            if (chatSendMessage.length > 0) {
+                dispatch("chatsend", {
+                    platform: chatSendPlatform,
+                    message: chatSendMessage
+                });
 
-            console.log("[StreamChat]", "Sending chat message:", chatSendPlatform, ">", chatSendMessage);
-            chatSendMessage = "";
+                console.log("[StreamChat]", "Sending chat message:", chatSendPlatform, ">", chatSendMessage);
+                chatSendMessage = "";
+            }
         }, 0);
     }
 

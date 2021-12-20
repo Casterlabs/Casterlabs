@@ -23,6 +23,10 @@
         viewerElement.onAuthUpdate(data);
     }
 
+    function onChatSend({ detail }) {
+        Bridge.emit("koi:chatsend", detail);
+    }
+
     onDestroy(() => {
         eventHandler?.destroy();
     });
@@ -38,4 +42,4 @@
     });
 </script>
 
-<ChatViewer bind:this={viewerElement} />
+<ChatViewer bind:this={viewerElement} on:chatsend={onChatSend} />
