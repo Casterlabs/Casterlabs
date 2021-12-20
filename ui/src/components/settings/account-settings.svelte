@@ -66,16 +66,15 @@
 
 <div class="no-select">
     <div id="accounts">
-        <!-- <AccountBox
+        <AccountBox
             platform="caffeine"
             platformName="Caffeine"
             signInLink="/signin/caffeine"
             bind:accountName={accounts.caffeine.accountName}
             bind:accountLink={accounts.caffeine.accountLink}
             bind:isSignedIn={accounts.caffeine.isSignedIn}
-            bind:isLoading={isLoading}
             on:signout={signout}
-        /> -->
+        />
         <AccountBox
             platform="twitch"
             platformName="Twitch"

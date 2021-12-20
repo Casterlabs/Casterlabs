@@ -12,6 +12,7 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.app.auth.events.AppAuthCaffeineSigninEvent;
 import co.casterlabs.caffeinated.app.auth.events.AppAuthCancelSigninEvent;
 import co.casterlabs.caffeinated.app.auth.events.AppAuthEventType;
 import co.casterlabs.caffeinated.app.auth.events.AppAuthRequestOAuthSigninEvent;
@@ -187,6 +188,17 @@ public class AppAuth {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @EventListener
+    public void onCaffeineSigninEvent(AppAuthCaffeineSigninEvent event) {
+        String tokenId = CaffeinatedApp
+            .getInstance()
+            .getAuthPreferences()
+            .get()
+            .addKoiToken(event.getToken());
+
+        this.startAuthInstance(tokenId);
     }
 
     @EventListener

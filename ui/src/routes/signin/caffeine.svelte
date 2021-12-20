@@ -57,7 +57,7 @@
                         }
                     };
 
-                    fetch("proxy://api.caffeine.tv/v1/account/signin", {
+                    fetch("https://api.caffeine.tv/v1/account/signin", {
                         method: "POST",
                         body: JSON.stringify(loginPayload),
                         headers: new Headers({
@@ -73,7 +73,7 @@
                             } else {
                                 const refreshToken = response.refresh_token;
 
-                                fetch(`proxy://api.casterlabs.co/v2/natsukashii/create?platform=CAFFEINE&token=${refreshToken}`)
+                                fetch(`https://api.casterlabs.co/v2/natsukashii/create?platform=CAFFEINE&token=${refreshToken}`)
                                     .then((nResult) => nResult.json())
                                     .then((nResponse) => {
                                         if (nResponse.data) {
@@ -147,8 +147,7 @@
                 try {
                     const token = await signinCaffeine(usernameInput.value, passwordInput.value, mfaInput.value);
 
-                    // TODO emit event.
-                    alert(token);
+                    Bridge.emit("auth:caffeine_signin", { token: token });
                 } catch (e) {
                     if (e == "CAFFEINE_MFA") {
                         clearError();

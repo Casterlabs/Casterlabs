@@ -5,6 +5,7 @@ import xyz.e3ndr.eventapi.events.AbstractEvent;
 
 public enum AppAuthEventType {
     REQUEST_OAUTH_SIGNIN(AppAuthRequestOAuthSigninEvent.class),
+    CAFFEINE_SIGNIN(AppAuthCaffeineSigninEvent.class),
     SIGNOUT(AppAuthSignoutEvent.class),
     CANCEL_SIGNIN(AppAuthCancelSigninEvent.class);
 
