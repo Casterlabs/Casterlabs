@@ -25,14 +25,17 @@ import xyz.e3ndr.consoleutil.consolewindow.BarStyle;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class CefUtil {
+    public static final boolean enableOSR = false;
+    public static final boolean enableTransparency = false;
 
     static {
         try {
             CefAppBuilder builder = new CefAppBuilder();
 
-            builder.addJcefArgs("--disable-http-cache");
+            builder.addJcefArgs("--disable-http-cache", "--disable-web-security");
             builder.setInstallDir(new File("./cef_bundle"));
-            builder.getCefSettings().windowless_rendering_enabled = true;
+
+            builder.getCefSettings().windowless_rendering_enabled = enableOSR;
             builder.getCefSettings().log_severity = LogSeverity.LOGSEVERITY_DISABLE;
 
             builder.setAppHandler(new MavenCefAppHandlerAdapter() {
