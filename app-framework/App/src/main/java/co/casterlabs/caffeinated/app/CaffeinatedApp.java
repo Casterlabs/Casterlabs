@@ -71,6 +71,7 @@ public class CaffeinatedApp {
     }
 
     public void init() {
+        this.UI.init();
         this.koi.init();
         this.auth.init();
         this.musicIntegration.init();

@@ -18,17 +18,27 @@
     /* Bridge Events    */
     /* ---------------- */
 
-    function processEvent(event) {
+    function bridge_processEvent(event) {
         viewerElement.processEvent(event);
     }
 
-    function onAuthUpdate(data) {
+    function bridge_onAuthUpdate(data) {
         viewerElement.onAuthUpdate(data);
+    }
+
+    function bridge_onChatViewerPreferencesUpdate(data) {
+        viewerElement.loadConfig(data);
     }
 
     /* ---------------- */
     /* Event Handlers   */
     /* ---------------- */
+
+    function onSavePreferences({ detail: data }) {
+        Bridge.emit("ui:save_chat_viewer_preferences", {
+            preferences: data
+        });
+    }
 
     function onChatSend({ detail: data }) {
         Bridge.emit("koi:chat_send", data);
@@ -141,12 +151,15 @@
     onMount(async () => {
         eventHandler = Bridge.createThrowawayEventHandler();
 
-        eventHandler.on("auth:update", onAuthUpdate);
-        onAuthUpdate((await Bridge.query("auth")).data);
+        eventHandler.on("auth:update", bridge_onAuthUpdate);
+        bridge_onAuthUpdate((await Bridge.query("auth")).data);
 
-        eventHandler.on("koi:event", processEvent);
-        (await Bridge.query("koi:history")).data.forEach(processEvent);
+        eventHandler.on("ui:chatViewerPreferences:update", bridge_onChatViewerPreferencesUpdate);
+        bridge_onChatViewerPreferencesUpdate((await Bridge.query("ui:chatViewerPreferences")).data);
+
+        eventHandler.on("koi:event", bridge_processEvent);
+        (await Bridge.query("koi:history")).data.forEach(bridge_processEvent);
     });
 </script>
 
-<ChatViewer bind:this={viewerElement} on:chatsend={onChatSend} on:modaction={onModAction} />
+<ChatViewer bind:this={viewerElement} on:chatsend={onChatSend} on:modaction={onModAction} on:savepreferences={onSavePreferences} />

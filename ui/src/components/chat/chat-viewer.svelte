@@ -25,7 +25,7 @@
 
     // Preferences
     let showChatTimestamps = true;
-    let enableModActions = true;
+    let showModActions = true;
     let showProfilePictures = false;
     let showBadges = false;
 
@@ -34,6 +34,22 @@
 
         chatElement.upvotes = event.upvotes;
         chatElement.isDeleted = !event.is_visible;
+    }
+
+    function savePreferences() {
+        dispatch("savepreferences", {
+            showChatTimestamps: showChatTimestamps,
+            showModActions: showModActions,
+            showProfilePictures: showProfilePictures,
+            showBadges: showBadges
+        });
+    }
+
+    export function loadConfig(config) {
+        showChatTimestamps = config.showChatTimestamps;
+        showModActions = config.showModActions;
+        showProfilePictures = config.showProfilePictures;
+        showBadges = config.showBadges;
     }
 
     // TODO better processing of messages, this works for now.
@@ -439,7 +455,7 @@
     class="stream-chat-container 
 
         {showChatTimestamps ? 'show-timestamps' : ''} 
-        {enableModActions ? 'enable-mod-actions' : ''} 
+        {showModActions ? 'enable-mod-actions' : ''} 
         {showProfilePictures ? 'show-profile-pictures' : ''} 
         {showBadges ? 'show-badges' : ''} 
 
@@ -452,7 +468,27 @@
         <ul bind:this={chatbox} />
     </div>
 
-    <div id="chat-settings" class="box">some settings here.</div>
+    <div id="chat-settings" class="box">
+        <span class="is-size-6" style="font-weight: 700;"> Chat Preferences </span>
+        <div>
+            <label class="checkbox">
+                <span class="label-text"> Show Timestamps </span>
+                <input type="checkbox" bind:checked={showChatTimestamps} on:change={savePreferences} />
+            </label>
+            <label class="checkbox">
+                <span class="label-text">Show Mod Actions</span>
+                <input type="checkbox" bind:checked={showModActions} on:change={savePreferences} />
+            </label>
+            <label class="checkbox">
+                <span class="label-text">Show Avatars</span>
+                <input type="checkbox" bind:checked={showProfilePictures} on:change={savePreferences} />
+            </label>
+            <label class="checkbox">
+                <span class="label-text">Show Badges</span>
+                <input type="checkbox" bind:checked={showBadges} on:change={savePreferences} />
+            </label>
+        </div>
+    </div>
 
     <div id="chat-command-palette" class="box">
         {#each commandPalette as commandSection}
@@ -653,12 +689,23 @@
         visibility: hidden;
         opacity: 0;
         transition: 0.35s;
+        overflow: hidden;
     }
 
     .chat-settings-open #chat-settings {
         visibility: visible;
-        height: 300px;
+        height: 175px;
         opacity: 1;
+    }
+
+    #chat-settings .label-text {
+        float: left;
+        width: 145px;
+    }
+
+    #chat-settings label {
+        display: block;
+        padding-bottom: 2px;
     }
 
     /* Command Palette */

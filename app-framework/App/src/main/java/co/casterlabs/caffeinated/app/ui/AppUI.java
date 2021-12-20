@@ -10,11 +10,14 @@ import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AppAuth;
 import co.casterlabs.caffeinated.app.bridge.AppBridge;
+import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.theming.ThemeManager;
+import co.casterlabs.caffeinated.app.ui.UIPreferences.ChatViewerPreferences;
 import co.casterlabs.caffeinated.app.ui.events.AppUIAppearanceUpdateEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUIEventType;
 import co.casterlabs.caffeinated.app.ui.events.AppUIOpenLinkEvent;
+import co.casterlabs.caffeinated.app.ui.events.AppUISaveChatViewerPreferencesEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUIThemeLoadedEvent;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
@@ -28,11 +31,25 @@ public class AppUI {
     private static final long TOAST_DURATION = 2250; // 2.25s
 
     private static EventHandler<AppUIEventType> handler = new EventHandler<>();
+    private static BridgeValue<ChatViewerPreferences> bridge_ChatViewerPreferences = new BridgeValue<>("ui:chatViewerPreferences");
 
     private @Getter boolean uiFinishedLoad = false;
 
     public AppUI() {
         handler.register(this);
+    }
+
+    public void init() {
+        bridge_ChatViewerPreferences.set(CaffeinatedApp.getInstance().getUiPreferences().get().getChatViewerPreferences());
+    }
+
+    @EventListener
+    public void onUISaveChatViewerPreferencesEvent(AppUISaveChatViewerPreferencesEvent event) {
+        ChatViewerPreferences preferences = event.getPreferences();
+
+        bridge_ChatViewerPreferences.set(preferences);
+        CaffeinatedApp.getInstance().getUiPreferences().get().setChatViewerPreferences(preferences);
+        CaffeinatedApp.getInstance().getUiPreferences().save();
     }
 
     @EventListener
