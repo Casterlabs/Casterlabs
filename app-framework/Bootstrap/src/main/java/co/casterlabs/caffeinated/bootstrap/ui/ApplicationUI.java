@@ -165,9 +165,8 @@ public class ApplicationUI {
 
     public static void showWindow() {
         if (browser == null) {
-            // TODO figure out why disabling OSR locks up swing.
-            final boolean useOsr = true;
-            final boolean isTransparent = false;
+            final boolean useOsr = CefUtil.enableOSR;
+            final boolean isTransparent = CefUtil.enableTransparency;
 
             // Create browser
             browser = client.createBrowser(appAddress, useOsr, isTransparent);
