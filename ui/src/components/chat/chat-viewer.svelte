@@ -726,6 +726,10 @@
         transition: 0.35s;
     }
 
+    .command-section {
+        margin-bottom: 10px !important;
+    }
+
     .chat-command-palette-open #chat-command-palette {
         visibility: visible;
         height: 200px;
