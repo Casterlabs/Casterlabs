@@ -29,6 +29,7 @@ import co.casterlabs.koi.api.listener.KoiLifeCycleHandler;
 import co.casterlabs.koi.api.types.events.CatchupEvent;
 import co.casterlabs.koi.api.types.events.KoiEvent;
 import co.casterlabs.koi.api.types.events.KoiEventType;
+import co.casterlabs.koi.api.types.events.RoomstateEvent;
 import co.casterlabs.koi.api.types.events.StreamStatusEvent;
 import co.casterlabs.koi.api.types.events.UserUpdateEvent;
 import co.casterlabs.koi.api.types.events.ViewerListEvent;
@@ -71,11 +72,13 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
     private Map<UserPlatform, List<User>> viewers = new HashMap<>();
     private Map<UserPlatform, UserUpdateEvent> userStates = new HashMap<>();
     private Map<UserPlatform, StreamStatusEvent> streamStates = new HashMap<>();
+    private Map<UserPlatform, RoomstateEvent> roomStates = new HashMap<>();
 
     private BridgeValue<List<KoiEvent>> historyBridge = new BridgeValue<>("koi:history", Collections.unmodifiableList(this.eventHistory), false);
     private BridgeValue<Map<UserPlatform, List<User>>> viewersBridge = new BridgeValue<>("koi:viewers", Collections.unmodifiableMap(this.viewers));
     private BridgeValue<Map<UserPlatform, UserUpdateEvent>> userStatesBridge = new BridgeValue<>("koi:userStates", Collections.unmodifiableMap(this.userStates));
     private BridgeValue<Map<UserPlatform, StreamStatusEvent>> streamStatesBridge = new BridgeValue<>("koi:streamStates", Collections.unmodifiableMap(this.streamStates));
+    private BridgeValue<Map<UserPlatform, RoomstateEvent>> roomStatesBridge = new BridgeValue<>("koi:roomStates", Collections.unmodifiableMap(this.roomStates));
 
     @SneakyThrows
     public void init() {
@@ -84,6 +87,7 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
         ReflectionLib.setStaticValue(Koi.class, "viewers", this.viewersBridge.get());
         ReflectionLib.setStaticValue(Koi.class, "userStates", this.userStatesBridge.get());
         ReflectionLib.setStaticValue(Koi.class, "streamStates", this.streamStatesBridge.get());
+        ReflectionLib.setStaticValue(Koi.class, "roomStates", this.roomStatesBridge.get());
 
         handler.register(this);
     }
@@ -124,7 +128,8 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
                 .put("history", Rson.DEFAULT.toJson(this.eventHistory))
                 .put("viewers", Rson.DEFAULT.toJson(this.viewers))
                 .put("userStates", Rson.DEFAULT.toJson(this.userStates))
-                .put("streamStates", Rson.DEFAULT.toJson(this.streamStates));
+                .put("streamStates", Rson.DEFAULT.toJson(this.streamStates))
+                .put("roomStates", Rson.DEFAULT.toJson(this.roomStates));
 
             for (CaffeinatedPlugin plugin : CaffeinatedApp.getInstance().getPlugins().getPlugins().getPlugins()) {
                 for (Widget widget : plugin.getWidgets()) {
@@ -186,6 +191,16 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
                     this.streamStates.put(
                         e.getStreamer().getPlatform(),
                         (StreamStatusEvent) e
+                    );
+
+                    this.updateBridgeData();
+                    break;
+                }
+
+                case ROOMSTATE: {
+                    this.roomStates.put(
+                        e.getStreamer().getPlatform(),
+                        (RoomstateEvent) e
                     );
 
                     this.updateBridgeData();

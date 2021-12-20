@@ -13,6 +13,7 @@ import co.casterlabs.koi.api.listener.KoiEventHandler;
 import co.casterlabs.koi.api.listener.KoiEventUtil;
 import co.casterlabs.koi.api.listener.KoiLifeCycleHandler;
 import co.casterlabs.koi.api.types.events.KoiEvent;
+import co.casterlabs.koi.api.types.events.RoomstateEvent;
 import co.casterlabs.koi.api.types.events.StreamStatusEvent;
 import co.casterlabs.koi.api.types.events.UserUpdateEvent;
 import co.casterlabs.koi.api.types.events.ViewerListEvent;
@@ -33,6 +34,7 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
     private @Getter @Nullable User userData;
     private @Getter @Nullable StreamStatusEvent streamData;
     private @Getter @Nullable List<User> viewers;
+    private @Getter @Nullable RoomstateEvent roomstate;
 
     public AuthInstance(String tokenId) {
         this.tokenId = tokenId;
@@ -87,11 +89,20 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
     /* Event Listeners  */
     /* ---------------- */
 
+    @SuppressWarnings("deprecation")
     @KoiEventHandler
     public void onUserUpdate(UserUpdateEvent e) {
         // Update the logger with the streamer's name.
         this.logger = new FastLogger(String.format("AuthInstance (%d) %s", this.tokenId.hashCode(), e.getStreamer().getDisplayname()));
         this.userData = e.getStreamer();
+
+        if (this.roomstate == null) {
+            // TODO get rid of this by broadcasting roomstates across all platforms on
+            // connect. (KOI)
+            this.roomstate = new RoomstateEvent(e.getStreamer());
+            CaffeinatedApp.getInstance().getKoi().onEvent(this.roomstate);
+        }
+
         CaffeinatedApp.getInstance().getAuth().updateBridgeData();
     }
 
@@ -104,6 +115,12 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
     @KoiEventHandler
     public void onViewerList(ViewerListEvent e) {
         this.viewers = e.getViewers();
+        CaffeinatedApp.getInstance().getAuth().updateBridgeData();
+    }
+
+    @KoiEventHandler
+    public void onRoomState(RoomstateEvent e) {
+        this.roomstate = e;
         CaffeinatedApp.getInstance().getAuth().updateBridgeData();
     }
 

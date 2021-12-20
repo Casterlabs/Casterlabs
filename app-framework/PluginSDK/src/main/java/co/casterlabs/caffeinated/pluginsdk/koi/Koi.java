@@ -7,6 +7,7 @@ import java.util.Map;
 import co.casterlabs.caffeinated.util.Reflective;
 import co.casterlabs.koi.api.KoiChatterType;
 import co.casterlabs.koi.api.types.events.KoiEvent;
+import co.casterlabs.koi.api.types.events.RoomstateEvent;
 import co.casterlabs.koi.api.types.events.StreamStatusEvent;
 import co.casterlabs.koi.api.types.events.UserUpdateEvent;
 import co.casterlabs.koi.api.types.user.User;
@@ -21,6 +22,7 @@ public class Koi {
     private static @Reflective @Getter Map<UserPlatform, List<User>> viewers;
     private static @Reflective @Getter Map<UserPlatform, UserUpdateEvent> userStates;
     private static @Reflective @Getter Map<UserPlatform, StreamStatusEvent> streamStates;
+    private static @Reflective @Getter Map<UserPlatform, RoomstateEvent> roomStates;
 
     private static @Reflective KoiHandle HANDLE;
 
@@ -33,7 +35,8 @@ public class Koi {
             .put("history", Rson.DEFAULT.toJson(eventHistory))
             .put("viewers", Rson.DEFAULT.toJson(viewers))
             .put("userStates", Rson.DEFAULT.toJson(userStates))
-            .put("streamStates", Rson.DEFAULT.toJson(streamStates));
+            .put("streamStates", Rson.DEFAULT.toJson(streamStates))
+            .put("roomStates", Rson.DEFAULT.toJson(roomStates));
     }
 
     public static List<UserPlatform> getSignedInPlatforms() {
