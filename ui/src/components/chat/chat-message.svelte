@@ -3,11 +3,11 @@
 <script>
     import User from "./user.svelte";
 
-    const PLATFORMS_WITH_BAN = ["TWITCH", "TROVO"];
-    const PLATFORMS_WITH_TIMEOUT = ["TWITCH", "TROVO"];
+    const PLATFORMS_WITH_BAN = ["TWITCH"];
+    const PLATFORMS_WITH_TIMEOUT = ["TWITCH"];
     const PLATFORMS_WITH_DELETE = ["TWITCH" /*, "BRIME" */];
     const PLATFORMS_WITH_UPVOTE = ["CAFFEINE"];
-    const PLATFORMS_WITH_RAID = ["CAFFEINE"];
+    const PLATFORMS_WITH_RAID = ["CAFFEINE", "TWITCH"];
 
     export const timestamp = Date.now();
 
@@ -31,9 +31,7 @@
     if (koiEvent.event_type == "CLEARCHAT") {
         highlight = true;
         messageHtml = `<i>Chat was cleared.</i>`;
-    } else if (["CHAT", "DONATION"].includes(koiEvent.event_type) /* Normal chat messages */) {
-        eventHasModIcons = true; // Enables the mod-icons lock.
-
+    } else if (["CHAT", "DONATION", "PLATFORM_MESSAGE"].includes(koiEvent.event_type) /* Normal chat messages */) {
         messageHtml = escapeHtml(koiEvent.message);
         sender = koiEvent.sender;
 
@@ -53,7 +51,14 @@
                 messageHtml += ` <img class="inline-image" src="${donation.image}" />`;
             }
         }
-    } else if (koiEvent.event_type == "CLEARCHAT") {
+
+        if (koiEvent.event_type == "PLATFORM_MESSAGE") {
+            eventHasModIcons = false;
+            messageHtml = `<small class="platform-message"><i>${messageHtml}</i></small>`;
+            sender = null; // We just want the text.
+        } else {
+            eventHasModIcons = true; // Enables the mod-icons.
+        }
     }
 </script>
 
@@ -159,7 +164,7 @@
     }
 
     .is-deleted {
-        filter: grayscale(0.45);
+        filter: grayscale(0.65);
         transition: 0.15s;
     }
 
@@ -194,6 +199,12 @@
             height: 18px;
             margin-right: 4px;
         }
+    }
+
+    :global(.platform-message) {
+        font-weight: 500;
+        font-size: 0.75em !important;
+        line-height: 3em !important;
     }
 
     /* Upvotes */
