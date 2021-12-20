@@ -3,47 +3,37 @@
 <script>
     import User from "./user.svelte";
 
-    import { onMount, onDestroy } from "svelte";
+    const PLATFORMS_WITH_BAN = ["TWITCH", "TROVO"];
+    const PLATFORMS_WITH_TIMEOUT = ["TWITCH", "TROVO"];
+    const PLATFORMS_WITH_DELETE = ["TWITCH" /*, "BRIME" */];
+    const PLATFORMS_WITH_UPVOTE = ["CAFFEINE"];
+    const PLATFORMS_WITH_RAID = ["CAFFEINE"];
 
-    let eventHandler;
+    export const timestamp = Date.now();
 
     export let koiEvent = null;
     export let isDeleted = false;
     export let upvotes = koiEvent.upvotes || 0;
-    export const timestamp = Date.now();
-
+    export let modAction = () => {};
     export let sender = null; // We set this.
+
     let isMultiPlatform = false;
     let messageHtml = "";
 
     let highlight = false;
 
-    // This all is for handling multiPlatform mode.
-    {
-        function onAuthUpdate({ koiAuth }) {
-            isMultiPlatform = Object.keys(koiAuth).length > 1;
-        }
-
-        onDestroy(() => {
-            eventHandler?.destroy();
-        });
-
-        onMount(async () => {
-            eventHandler = Bridge.createThrowawayEventHandler();
-
-            eventHandler.on("auth:update", onAuthUpdate);
-            onAuthUpdate((await Bridge.query("auth")).data);
-        });
-    }
-
     function escapeHtml(unsafe) {
         return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
+
+    let eventHasModIcons = false;
 
     if (koiEvent.event_type == "CLEARCHAT") {
         highlight = true;
         messageHtml = `<i>Chat was cleared.</i>`;
     } else if (["CHAT", "DONATION"].includes(koiEvent.event_type) /* Normal chat messages */) {
+        eventHasModIcons = true; // Enables the mod-icons lock.
+
         messageHtml = escapeHtml(koiEvent.message);
         sender = koiEvent.sender;
 
@@ -67,9 +57,71 @@
     }
 </script>
 
+<!-- svelte-ignore a11y-missing-attribute -->
 <span class="chat-message {isDeleted ? 'is-deleted' : ''} {highlight ? 'highlighted' : ''}">
+    {#if eventHasModIcons}
+        <span class="mod-actions">
+            <a on:click={() => modAction("ban", koiEvent)} title="Ban">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--text-color)"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-slash"
+                >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                </svg>
+            </a>
+            <a on:click={() => modAction("timeout", koiEvent)} title="Timeout">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--text-color)"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-clock"
+                >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
+            </a>
+            <a on:click={() => modAction("delete", koiEvent)} title="Delete Message">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--text-color)"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-trash-2"
+                >
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    <line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+            </a>
+        </span>
+    {/if}
+
     {#if sender}
-        <User {isMultiPlatform} userData={sender} />
+        <!-- The &gt; is to help for copy pasting the chat. -->
+        <!-- ItzLcyx test -->
+        <!-- becomes: -->
+        <!-- ItzLcyx > test -->
+        <User {isMultiPlatform} userData={sender} /><span style="opacity: 0; font-size: 0;"> &gt; </span>
     {/if}
 
     {@html messageHtml}{#if upvotes > 0}
@@ -118,6 +170,30 @@
 
     .upvote-counter {
         text-shadow: 1px 1px rgba(0, 0, 0, 0.75);
+    }
+
+    .mod-actions {
+        display: none;
+        user-select: none;
+        padding-right: 5px;
+    }
+
+    :global(.enable-mod-actions) .mod-actions {
+        display: inline;
+    }
+
+    .mod-actions svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    /* Make the mod actions larger on mobile. */
+    @media screen and (max-width: 768px) {
+        .mod-actions svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 4px;
+        }
     }
 
     /* Upvotes */

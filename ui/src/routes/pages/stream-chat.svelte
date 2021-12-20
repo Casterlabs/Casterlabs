@@ -25,6 +25,11 @@
     let commandPalette = [];
     let maxCommandIndex = 0;
 
+    // Preferences
+    let enableModActions = true;
+    let showProfilePictures = true;
+    let showBadges = true;
+
     setPageProperties({
         showSideBar: true,
         pageTitle: "",
@@ -74,7 +79,10 @@
             const message = new ChatMessage({
                 target: elem,
                 props: {
-                    koiEvent: event
+                    koiEvent: event,
+                    modAction: (type, event) => {
+                        console.log(type, event);
+                    }
                 }
             });
 
@@ -399,7 +407,7 @@
 </script>
 
 <div class="stream-chat-container {showChatSettings ? 'chat-settings-open' : ''} {showCommandPalette && generateCommandPalette().length > 0 ? 'chat-command-palette-open' : ''}">
-    <div id="chat-box" class="allow-select">
+    <div id="chat-box" class="allow-select {enableModActions ? 'enable-mod-actions' : ''} {showProfilePictures ? 'show-profile-pictures' : ''} {showBadges ? 'show-badges' : ''}">
         <ul bind:this={chatbox} />
     </div>
 

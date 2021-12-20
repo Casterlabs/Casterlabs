@@ -1,6 +1,7 @@
 :root {
 	--theme: #e94b4b;
 
+	--text-color: #363636;
 	--background-color: #eaeaea;
 	--title-bar-text-color: #070707;
 	--title-bar-faded-color: #a0a0a0;
@@ -16,6 +17,7 @@
 .bulma-dark-mode:root {
 	--background-color: #121212;
 
+	--text-color: #dbdbdb;
 	--title-bar-color: #070707;
 	--title-bar-faded-color: #c8c8c8;
 	--title-bar-text-color: #e8e8e8;

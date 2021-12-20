@@ -7,18 +7,19 @@
     }
 </script>
 
-<span style="color: {userData.color}">
-    <a href={userData.link} rel="external">
+<span>
+    <a href={userData.link} rel="external" style="user-select: none;" target="_blank">
         <img src={userData.image_link} class="inline-image profile-picture" alt={userData.displayname} />
-    </a><span title={prettifyString(userData.platform)}>
-        {userData.displayname}
+        <span title={prettifyString(userData.platform)} style="color: {userData.color}">
+            {userData.displayname}
 
-        {#if isMultiPlatform}
-            ({prettifyString(userData.platform)})
-        {/if}
-    </span><span>
+            {#if isMultiPlatform}
+                ({prettifyString(userData.platform)})
+            {/if}
+        </span></a
+    ><span style="user-select: none;">
         {#each userData.badges as badge}
-            <img src={badge} class="inline-image badge" alt="Badge" />
+            <img src={badge} class="inline-image badge" alt="" title={badge.name || ""} />
         {/each}
     </span>
 </span>
@@ -30,7 +31,20 @@
     }
 
     .profile-picture {
+        display: none;
         border-radius: 50%;
+    }
+
+    :global(.show-profile-pictures) .profile-picture {
+        display: inline-block;
+    }
+
+    .badge {
+        display: none;
+    }
+
+    :global(.show-badges) .badge {
+        display: inline-block;
     }
 
     .badge:not(:first-child) {
