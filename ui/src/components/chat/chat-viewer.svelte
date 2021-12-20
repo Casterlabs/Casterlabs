@@ -73,7 +73,10 @@
                 props: {
                     koiEvent: event,
                     modAction: (type, event) => {
-                        console.log(type, event);
+                        dispatch("modaction", {
+                            type: type,
+                            event: event
+                        });
                     }
                 }
             });
@@ -89,7 +92,7 @@
             return;
         }
 
-        console.log("[StreamChat]", "Processed event:", event);
+        console.log("[ChatViewer]", "Processed event:", event);
     }
 
     function generateCommandPalette() {
@@ -319,16 +322,23 @@
             } else if (e.key == "Enter" || e.key == "Tab") {
                 // Auto-complete the command.
                 if (selectedCommandIndex != -1) {
-                    const hasCommandFilled = chatSendMessage.startsWith(getSelectedCurrentCommand().command);
+                    const currentCommand = getSelectedCurrentCommand();
 
-                    if (hasCommandFilled) {
-                        // If they completed a command and it's still filled
-                        // we shouldn't try to complete it again and should just send.
+                    if (!currentCommand) {
+                        // We go ahead and send it anyways.
                         sendChatMessage();
                     } else {
-                        e.preventDefault();
-                        completeCommandPalette(selectedCommandIndex);
-                        return;
+                        const hasCommandFilled = chatSendMessage.startsWith(currentCommand.command);
+
+                        if (hasCommandFilled) {
+                            // If they completed a command and it's still filled
+                            // we shouldn't try to complete it again and should just send.
+                            sendChatMessage();
+                        } else {
+                            e.preventDefault();
+                            completeCommandPalette(selectedCommandIndex);
+                            return;
+                        }
                     }
                 }
             }
@@ -369,7 +379,7 @@
                     message: chatSendMessage
                 });
 
-                console.log("[StreamChat]", "Sending chat message:", chatSendPlatform, ">", chatSendMessage);
+                console.log("[ChatViewer]", "Sending chat message:", chatSendPlatform, ">", chatSendMessage);
                 chatSendMessage = "";
             }
         }, 0);

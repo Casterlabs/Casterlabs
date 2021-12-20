@@ -180,10 +180,19 @@ public class KoiConnection implements Closeable {
         );
     }
 
-    public void upvote(@NonNull String messageId) {
+    public void upvoteChat(@NonNull String messageId) {
         this.socket.send(
             new JsonObject()
                 .put("type", "UPVOTE")
+                .put("message_id", messageId)
+                .toString()
+        );
+    }
+
+    public void deleteChat(@NonNull String messageId) {
+        this.socket.send(
+            new JsonObject()
+                .put("type", "DELETE")
                 .put("message_id", messageId)
                 .toString()
         );

@@ -14,9 +14,10 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AuthInstance;
 import co.casterlabs.caffeinated.app.bridge.AppBridge;
 import co.casterlabs.caffeinated.app.bridge.BridgeValue;
+import co.casterlabs.caffeinated.app.koi.events.AppKoiChatDeleteEvent;
 import co.casterlabs.caffeinated.app.koi.events.AppKoiChatSendEvent;
+import co.casterlabs.caffeinated.app.koi.events.AppKoiChatUpvoteEvent;
 import co.casterlabs.caffeinated.app.koi.events.AppKoiEventType;
-import co.casterlabs.caffeinated.app.koi.events.AppKoiUpvoteEvent;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
@@ -61,7 +62,8 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
         KoiEventType.VIEWER_LEAVE,
         KoiEventType.RAID,
         KoiEventType.CHANNEL_POINTS,
-        KoiEventType.CLEARCHAT
+        KoiEventType.CLEARCHAT,
+        KoiEventType.PLATFORM_MESSAGE
     );
 
     private static EventHandler<AppKoiEventType> handler = new EventHandler<>();
@@ -242,8 +244,13 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
     }
 
     @EventListener
-    public void onKoiUpvoteEvent(AppKoiUpvoteEvent event) {
-        this.upvote(event.getPlatform(), event.getMessageId());
+    public void onKoiChatUpvoteEvent(AppKoiChatUpvoteEvent event) {
+        this.upvoteChat(event.getPlatform(), event.getMessageId());
+    }
+
+    @EventListener
+    public void onKoiChatDeleteEvent(AppKoiChatDeleteEvent event) {
+        this.deleteChat(event.getPlatform(), event.getMessageId());
     }
 
     @Override
@@ -256,11 +263,20 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
     }
 
     @Override
-    public void upvote(@NonNull UserPlatform platform, @NonNull String messageId) {
+    public void upvoteChat(@NonNull UserPlatform platform, @NonNull String messageId) {
         AuthInstance inst = CaffeinatedApp.getInstance().getAuth().getAuthInstance(platform);
 
         if (inst != null) {
-            inst.upvote(messageId);
+            inst.upvoteChat(messageId);
+        }
+    }
+
+    @Override
+    public void deleteChat(@NonNull UserPlatform platform, @NonNull String messageId) {
+        AuthInstance inst = CaffeinatedApp.getInstance().getAuth().getAuthInstance(platform);
+
+        if (inst != null) {
+            inst.deleteChat(messageId);
         }
     }
 

@@ -8,18 +8,18 @@ import xyz.e3ndr.eventapi.events.AbstractCancellableEvent;
 
 @Getter
 @JsonClass(exposeAll = true)
-public class AppKoiChatSendEvent extends AbstractCancellableEvent<AppKoiEventType> {
+public class AppKoiChatDeleteEvent extends AbstractCancellableEvent<AppKoiEventType> {
     private UserPlatform platform;
-    private String message;
+    private String messageId;
 
-    public AppKoiChatSendEvent() {
-        super(AppKoiEventType.CHAT_SEND);
+    public AppKoiChatDeleteEvent() {
+        super(AppKoiEventType.CHAT_DELETE);
     }
 
     @JsonValidate
     private void validate() {
         assert this.platform != null;
-        assert this.message != null;
+        assert this.messageId != null;
     }
 
 }

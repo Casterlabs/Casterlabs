@@ -3,11 +3,11 @@
 <script>
     import User from "./user.svelte";
 
-    const PLATFORMS_WITH_BAN = ["TWITCH"];
-    const PLATFORMS_WITH_TIMEOUT = ["TWITCH"];
-    const PLATFORMS_WITH_DELETE = ["TWITCH" /*, "BRIME" */];
+    const PLATFORMS_WITH_BAN = ["TWITCH", "TROVO"];
+    const PLATFORMS_WITH_TIMEOUT = ["TWITCH", "TROVO"];
+    const PLATFORMS_WITH_DELETE = ["TWITCH" /*, "BRIME" */, "TROVO"];
     const PLATFORMS_WITH_UPVOTE = ["CAFFEINE"];
-    const PLATFORMS_WITH_RAID = ["CAFFEINE", "TWITCH"];
+    const PLATFORMS_WITH_RAID = ["CAFFEINE", "TWITCH", "TROVO"];
 
     export const timestamp = Date.now();
 
@@ -17,9 +17,9 @@
     export let modAction = () => {};
     export let sender = null; // We set this.
 
+    let isMessageFromSelf = false;
     let isMultiPlatform = false;
     let messageHtml = "";
-
     let highlight = false;
 
     function escapeHtml(unsafe) {
@@ -34,6 +34,7 @@
     } else if (["CHAT", "DONATION", "PLATFORM_MESSAGE"].includes(koiEvent.event_type) /* Normal chat messages */) {
         messageHtml = escapeHtml(koiEvent.message);
         sender = koiEvent.sender;
+        isMessageFromSelf = sender.UPID == koiEvent.streamer.UPID;
 
         for (const [name, image] of Object.entries(koiEvent.emotes)) {
             messageHtml = messageHtml.split(name).join(`<img class="inline-image" title="${name}" src="${image}" />`);
@@ -66,7 +67,7 @@
 <span class="chat-message {isDeleted ? 'is-deleted' : ''} {highlight ? 'highlighted' : ''}">
     {#if eventHasModIcons}
         <span class="mod-actions">
-            {#if PLATFORMS_WITH_BAN.includes(koiEvent.streamer.platform)}
+            {#if PLATFORMS_WITH_BAN.includes(koiEvent.streamer.platform) && !isMessageFromSelf}
                 <a on:click={() => modAction("ban", koiEvent)} title="Ban">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +87,7 @@
                 </a>
             {/if}
 
-            {#if PLATFORMS_WITH_TIMEOUT.includes(koiEvent.streamer.platform)}
+            {#if PLATFORMS_WITH_TIMEOUT.includes(koiEvent.streamer.platform) && !isMessageFromSelf}
                 <a on:click={() => modAction("timeout", koiEvent)} title="Timeout">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

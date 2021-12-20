@@ -77,8 +77,12 @@ public class Koi {
         HANDLE.sendChat(platform, message, chatter);
     }
 
-    public static void upvote(@NonNull UserPlatform platform, @NonNull String messageId) {
-        HANDLE.upvote(platform, messageId);
+    public static void upvoteChat(@NonNull UserPlatform platform, @NonNull String messageId) {
+        HANDLE.upvoteChat(platform, messageId);
+    }
+
+    public static void deleteChat(@NonNull UserPlatform platform, @NonNull String messageId) {
+        HANDLE.deleteChat(platform, messageId);
     }
 
     /**
@@ -96,7 +100,9 @@ public class Koi {
 
         public void sendChat(@NonNull UserPlatform platform, @NonNull String message, @NonNull KoiChatterType chatter);
 
-        public void upvote(@NonNull UserPlatform platform, @NonNull String messageId);
+        public void upvoteChat(@NonNull UserPlatform platform, @NonNull String messageId);
+
+        public void deleteChat(@NonNull UserPlatform platform, @NonNull String messageId);
 
     }
 

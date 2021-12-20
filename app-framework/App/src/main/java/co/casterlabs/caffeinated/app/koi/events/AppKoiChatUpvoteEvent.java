@@ -8,12 +8,12 @@ import xyz.e3ndr.eventapi.events.AbstractCancellableEvent;
 
 @Getter
 @JsonClass(exposeAll = true)
-public class AppKoiUpvoteEvent extends AbstractCancellableEvent<AppKoiEventType> {
+public class AppKoiChatUpvoteEvent extends AbstractCancellableEvent<AppKoiEventType> {
     private UserPlatform platform;
     private String messageId;
 
-    public AppKoiUpvoteEvent() {
-        super(AppKoiEventType.UPVOTE);
+    public AppKoiChatUpvoteEvent() {
+        super(AppKoiEventType.CHAT_UPVOTE);
     }
 
     @JsonValidate

@@ -79,9 +79,15 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
         }
     }
 
-    public void upvote(@NonNull String messageId) {
+    public void upvoteChat(@NonNull String messageId) {
         if (this.isConnected()) {
-            this.koi.upvote(messageId);
+            this.koi.upvoteChat(messageId);
+        }
+    }
+
+    public void deleteChat(@NonNull String messageId) {
+        if (this.isConnected()) {
+            this.koi.deleteChat(messageId);
         }
     }
 
