@@ -47,7 +47,7 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
             .getString(this.tokenId);
 
         FastLogger koiLogger = new FastLogger("AuthInstance Koi");
-        koiLogger.setCurrentLevel(LogLevel.SEVERE);
+        koiLogger.setCurrentLevel(LogLevel.INFO);
         this.koi = new KoiConnection(
             KoiConnection.KOI_URL,
             koiLogger,
@@ -119,6 +119,16 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
     @SneakyThrows
     private void reconnect() {
         this.koi.login(this.token);
+    }
+
+    @Override
+    public void onError(String errorCode) {
+        switch (errorCode) {
+            case "USER_AUTH_INVALID": {
+                this.invalidate();
+                return;
+            }
+        }
     }
 
     @Override

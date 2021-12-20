@@ -218,7 +218,7 @@ public class AppAuth {
             try {
                 Desktop
                     .getDesktop()
-                    .browse(new URI(oauthLink + callback.getStateString()));
+                    .browse(new URI(oauthLink + "?state=" + callback.getStateString()));
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -240,7 +240,8 @@ public class AppAuth {
 
     public @Nullable AuthInstance getAuthInstance(UserPlatform platform) {
         for (AuthInstance inst : this.authInstances.values()) {
-            if (inst.getUserData().getPlatform() == platform) {
+            if ((inst.getUserData() != null) &&
+                (inst.getUserData().getPlatform() == platform)) {
                 return inst;
             }
         }
