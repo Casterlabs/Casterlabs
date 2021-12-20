@@ -4,7 +4,6 @@
     import ChatViewer from "../../components/chat/chat-viewer.svelte";
 
     import { onMount, onDestroy } from "svelte";
-    import { bind } from "svelte/internal";
 
     let eventHandler;
     let viewerElement = {};

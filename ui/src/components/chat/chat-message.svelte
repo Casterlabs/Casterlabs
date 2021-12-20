@@ -18,9 +18,9 @@
     export let sender = null; // We set this.
 
     let isMessageFromSelf = false;
-    let isMultiPlatform = false;
     let messageHtml = "";
     let highlight = false;
+    let isPlatformMessage = koiEvent.event_type == "PLATFORM_MESSAGE";
 
     function escapeHtml(unsafe) {
         return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -56,7 +56,6 @@
         if (koiEvent.event_type == "PLATFORM_MESSAGE") {
             eventHasModIcons = false;
             messageHtml = `<small class="platform-message"><i>${messageHtml}</i></small>`;
-            sender = null; // We just want the text.
         } else {
             eventHasModIcons = true; // Enables the mod-icons.
         }
@@ -131,11 +130,21 @@
     {/if}
 
     {#if sender}
-        <!-- The &gt; is to help for copy pasting the chat. -->
-        <!-- ItzLcyx test -->
-        <!-- becomes: -->
-        <!-- ItzLcyx > test -->
-        <User {isMultiPlatform} userData={sender} /><span style="opacity: 0; font-size: 0;"> &gt; </span>
+        {#if isPlatformMessage}
+            <!-- Only show the little icon if multiplatform, otherwise it's left out. -->
+            <small class="platform-message-user">
+                <span class="platform-logo">
+                    <img src="/img/services/{koiEvent.sender.username.toLowerCase()}/icon.svg" alt="{koiEvent.sender.displayname} Logo" />
+                </span>
+                >
+            </small>
+        {:else}
+            <!-- The &gt; is to help for copy pasting the chat. -->
+            <!-- ItzLcyx test -->
+            <!-- becomes: -->
+            <!-- ItzLcyx > test -->
+            <User userData={sender} /><span style="opacity: 0; font-size: 0;"> &gt; </span>
+        {/if}
     {/if}
 
     {@html messageHtml}{#if upvotes > 0}
@@ -213,10 +222,23 @@
         }
     }
 
+    .platform-message-user {
+        display: none;
+    }
+
+    :global(.is-multi-platform) .platform-message-user {
+        display: inline-block;
+    }
+
     :global(.platform-message) {
         font-weight: 500;
         font-size: 0.75em !important;
         line-height: 3em !important;
+    }
+
+    .platform-logo img {
+        height: 16px;
+        transform: translateY(2px);
     }
 
     /* Upvotes */

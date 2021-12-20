@@ -434,8 +434,19 @@
     }
 </script>
 
-<div class="stream-chat-container {showChatSettings ? 'chat-settings-open' : ''} {showCommandPalette && commandPalette.length > 0 ? 'chat-command-palette-open' : ''}">
-    <div id="chat-box" class="allow-select {enableModActions ? 'enable-mod-actions' : ''} {showProfilePictures ? 'show-profile-pictures' : ''} {showBadges ? 'show-badges' : ''}">
+<div
+    class="stream-chat-container 
+        {showChatSettings ? 'chat-settings-open' : ''} 
+        {isMultiPlatform ? 'is-multi-platform' : ''} 
+        {showCommandPalette && commandPalette.length > 0 ? 'chat-command-palette-open' : ''}"
+>
+    <div
+        id="chat-box"
+        class="allow-select 
+            {enableModActions ? 'enable-mod-actions' : ''} 
+            {showProfilePictures ? 'show-profile-pictures' : ''} 
+            {showBadges ? 'show-badges' : ''}"
+    >
         <ul bind:this={chatbox} />
     </div>
 

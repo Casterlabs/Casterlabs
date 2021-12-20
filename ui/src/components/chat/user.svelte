@@ -1,6 +1,5 @@
 <script>
     export let userData;
-    export let isMultiPlatform = false;
 
     function prettifyString(str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
@@ -13,9 +12,9 @@
         <span title={prettifyString(userData.platform)} style="color: {userData.color}">
             {userData.displayname}
 
-            {#if isMultiPlatform}
+            <span class="user-platform">
                 ({prettifyString(userData.platform)})
-            {/if}
+            </span>
         </span></a
     ><span style="user-select: none;">
         {#each userData.badges as badge}
@@ -36,6 +35,14 @@
     }
 
     :global(.show-profile-pictures) .profile-picture {
+        display: inline-block;
+    }
+
+    .user-platform {
+        display: none;
+    }
+
+    :global(.is-multi-platform) .user-platform {
         display: inline-block;
     }
 
