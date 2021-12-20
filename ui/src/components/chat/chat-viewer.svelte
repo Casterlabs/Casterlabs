@@ -391,8 +391,8 @@
         chatSendPlatformOpen = false;
     }
 
-    function openChatSendPlatformDropdown() {
-        chatSendPlatformOpen = true;
+    function toggleChatSendPlatformDropdown() {
+        chatSendPlatformOpen = !chatSendPlatformOpen;
     }
 
     function toggleChatSettings() {
@@ -493,7 +493,7 @@
                     <div class="control">
                         <div class="dropdown is-up {chatSendPlatformOpen ? 'is-active' : ''}">
                             <div class="dropdown-trigger">
-                                <button class="button" aria-haspopup="true" aria-controls="chat-send-platform" on:click={openChatSendPlatformDropdown}>
+                                <button class="button" aria-haspopup="true" aria-controls="chat-send-platform" on:click={toggleChatSendPlatformDropdown}>
                                     <span>
                                         <img
                                             src="/img/services/{chatSendPlatform.toLowerCase()}/icon.svg"
