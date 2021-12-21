@@ -1,3 +1,4 @@
+
 # Casterlabs Caffeinated
 
 <p align="center">
@@ -9,9 +10,6 @@
     </a>
     <a href="https://casterlabs.co/discord">
         <img src="https://img.shields.io/discord/702178064075063427" />
-    </a>
-    <a href="https://casterlabs.co">
-        <img src="https://img.shields.io/website?url=https%3A%2F%2Fcasterlabs.co" />
     </a>
     <a href="#">
         <img src="https://img.shields.io/tokei/lines/github/Casterlabs/casterlabs-caffeinated" />
@@ -42,14 +40,17 @@
 <br />
 
 <p align="center">
-    <img width="70%" src="https://i.imgur.com/cWDET5z.png" />
+    <img width="80%" src="https://i.imgur.com/4xAITRA.png" />
+	<br />
+	<sup>In-development image</sup>
 </p>
 
 <br />
 
+##  The one-stop shop for stream widgets & alerts.
+Casterlabs is a simple to use, free, and feature-rich application for streamers.
+
+**CURRENTLY IN ALPHA**
+
 ## For developers
-Check each individual folder for the different projects:
-- <a href="./app-framework">The app code.</a>
-- <a href="./app-framework/BuiltInPlugins">The default widgets bundled in the app.</a>
-- <a href="./ui">The ui code.</a>
-- <a href="./external">The code for the widget loader and obs dock loader.</a>
+We have a <a href="https://casterlabs.github.io/caffeinated-sdk/" target="_blank">plugin sdk</a>.
