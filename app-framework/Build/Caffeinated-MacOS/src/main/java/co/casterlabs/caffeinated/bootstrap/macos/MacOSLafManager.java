@@ -132,8 +132,7 @@ public class MacOSLafManager extends LafManager {
                 this.isFirstTimeSetup = false;
 
                 try {
-                    @SuppressWarnings("deprecation")
-                    Object peer = this.getPeer();
+                    Object peer = ReflectionLib.invokeMethod(this, "getPeer");
                     Object platformWindow = ReflectionLib.invokeMethod(peer, "getPlatformWindow");
 
                     boolean isValidPeer = Class.forName("sun.lwawt.LWWindowPeer").isAssignableFrom(peer.getClass()) &&
