@@ -19,7 +19,7 @@
 <div class="has-text-centered">
     <br />
     <h1 class="title">Welcome to Caffeinated!</h1>
-    <h2 class="subtitle">(Alpha {buildInfo.version})</h2>
+    <h2 class="subtitle">(Alpha {buildInfo.version}-{buildInfo.commit})</h2>
 </div>
 
 <div class="has-text-centered" style="position: absolute; bottom: 2em; width: 100%;">
