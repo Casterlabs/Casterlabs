@@ -1,4 +1,5 @@
 
+// https://help.twitch.tv/s/article/chat-commands?language=en_US
 const TWITCH_COMMANDS = {
     title: "Twitch",
     platform: "TWITCH",
@@ -138,7 +139,8 @@ const TWITCH_COMMANDS = {
     ]
 };
 
-// TODO There's still more but I can't be arsed.
+// https://trovo.live/support?lang=en&topicid=CA08264516974D9F%2FE3D657FFFFDE0929
+// Also see the command popup in chat.
 const TROVO_COMMANDS = {
     title: "Trovo",
     platform: "TROVO",
