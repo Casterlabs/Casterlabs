@@ -9,6 +9,7 @@ import lombok.Getter;
 public class BuildInfo {
     private String author;
     private String version;
+    private String commit;
     private String buildChannel;
     private String versionString;
     private boolean isDev = false;
@@ -17,12 +18,12 @@ public class BuildInfo {
     private void validate() {
         if (this.version.startsWith("${")) {
             this.buildChannel = "dev";
-            this.version = "0.0.0";
-            this.versionString = "dev-build";
+            this.version = "0.0";
+            this.version = "?";
             this.isDev = true;
-        } else {
-            this.versionString = String.format("%s-%s", this.version, this.buildChannel);
         }
+
+        this.versionString = String.format("%s-%s-%s", this.version, this.commit, this.buildChannel);
     }
 
 }
