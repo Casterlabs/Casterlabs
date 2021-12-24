@@ -6,20 +6,16 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.builtin.CaffeinatedDefaultPlugin;
-import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsItem;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsLayout;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsSection;
-import co.casterlabs.caffeinated.util.FileUtil;
-import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
 import co.casterlabs.koi.api.listener.KoiEventListener;
 import co.casterlabs.koi.api.types.events.UserUpdateEvent;
 import co.casterlabs.koi.api.types.user.UserPlatform;
 import lombok.SneakyThrows;
-import okhttp3.Request;
 
 public abstract class GenericLabel extends Widget implements KoiEventListener {
     private static String[] platforms;
@@ -85,13 +81,7 @@ public abstract class GenericLabel extends Widget implements KoiEventListener {
     @SneakyThrows
     @Override
     public @Nullable String getWidgetHtml() {
-        final String resource = "/text.html";
-
-        if (CaffeinatedPlugin.isDevEnvironment()) {
-            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + resource));
-        } else {
-            return FileUtil.loadResource("widgets" + resource);
-        }
+        return CaffeinatedDefaultPlugin.resolveResource("/text.html");
     }
 
     @KoiEventHandler

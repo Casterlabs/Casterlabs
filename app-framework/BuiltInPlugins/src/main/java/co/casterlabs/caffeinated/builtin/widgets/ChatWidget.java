@@ -3,17 +3,13 @@ package co.casterlabs.caffeinated.builtin.widgets;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.builtin.CaffeinatedDefaultPlugin;
-import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails.WidgetDetailsCategory;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsItem;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsLayout;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsSection;
-import co.casterlabs.caffeinated.util.FileUtil;
-import co.casterlabs.caffeinated.util.WebUtil;
 import lombok.SneakyThrows;
-import okhttp3.Request;
 
 public class ChatWidget extends Widget {
     public static final WidgetDetails DETAILS = new WidgetDetails()
@@ -47,13 +43,7 @@ public class ChatWidget extends Widget {
     @SneakyThrows
     @Override
     public @Nullable String getWidgetHtml() {
-        final String resource = "/chat.html";
-
-        if (CaffeinatedPlugin.isDevEnvironment()) {
-            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + resource));
-        } else {
-            return FileUtil.loadResource("widgets" + resource);
-        }
+        return CaffeinatedDefaultPlugin.resolveResource("/chat.html");
     }
 
 }

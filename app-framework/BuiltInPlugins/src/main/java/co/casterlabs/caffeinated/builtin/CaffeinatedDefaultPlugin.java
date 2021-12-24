@@ -1,12 +1,13 @@
 package co.casterlabs.caffeinated.builtin;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.jetbrains.annotations.Nullable;
 
-import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.caffeinated.builtin.widgets.ChatWidget;
 import co.casterlabs.caffeinated.builtin.widgets.EmojiRainWidget;
 import co.casterlabs.caffeinated.builtin.widgets.NowPlayingWidget;
@@ -15,14 +16,11 @@ import co.casterlabs.caffeinated.builtin.widgets.labels.SubscriberCountLabel;
 import co.casterlabs.caffeinated.builtin.widgets.labels.ViewersCountLabel;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.PluginImplementation;
-import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.rakurai.io.IOUtil;
 import lombok.NonNull;
-import okhttp3.Request;
 
 @PluginImplementation
 public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
-    public static final String DEV_ADDRESS = "http://localhost:4088";
 
     @Override
     public void onInit() {
@@ -75,15 +73,15 @@ public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
     // 2) Grab resources from the dev environment, since we're bundled in a
     // different way from the typical plugin setup.
     public static @Nullable String resolveResource(@NonNull String path) throws IOException {
-        final String resource = "/chat.html";
+        InputStream in;
 
         if (CaffeinatedPlugin.isDevEnvironment()) {
-            return WebUtil.sendHttpRequest(new Request.Builder().url(CaffeinatedDefaultPlugin.DEV_ADDRESS + resource));
+            in = new FileInputStream(new File("../../BuiltInPlugins/src/main/resources/widgets", path));
         } else {
-            InputStream in = FileUtil.class.getClassLoader().getResourceAsStream("widgets" + path);
-
-            return IOUtil.readInputStreamString(in, StandardCharsets.UTF_8);
+            in = CaffeinatedDefaultPlugin.class.getClassLoader().getResourceAsStream("widgets" + path);
         }
+
+        return IOUtil.readInputStreamString(in, StandardCharsets.UTF_8);
     }
 
 }
