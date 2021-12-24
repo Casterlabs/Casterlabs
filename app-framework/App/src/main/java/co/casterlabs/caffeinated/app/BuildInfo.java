@@ -19,7 +19,7 @@ public class BuildInfo {
         if (this.version.startsWith("${")) {
             this.buildChannel = "dev";
             this.version = "0.0";
-            this.version = "?";
+            this.commit = "?";
             this.isDev = true;
         }
 
