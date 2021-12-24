@@ -62,6 +62,7 @@
             const { pluginId, widgetId, authorization } = queryParams;
             const port = queryParams.port || "8092";
             const address = queryParams.address || "localhost";
+            const isWidgetDemo = queryParams.isWidgetDemo == "true";
 
             const conn = new Conn(`ws://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/realtime?authorization=${authorization}`);;
 
@@ -77,6 +78,10 @@
 
                 get widgetData() {
                     return conn.widgetData;
+                },
+
+                get isWidgetDemo() {
+                    return isWidgetDemo;
                 },
 
                 getSetting(key) {
