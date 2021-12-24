@@ -28,7 +28,7 @@
 
     .select::after {
         border-width: 2.5px !important;
-        top: 100% !important;
+        top: 135% !important;
         right: 15px !important;
         width: 0.5em !important;
         height: 0.5em !important;
