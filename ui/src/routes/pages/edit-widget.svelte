@@ -14,6 +14,7 @@
     });
 
     let widget = null;
+    let widgetUrl = null;
     let nameEditorTextContent;
     let nameEditor;
 
@@ -66,6 +67,10 @@
                 break;
             }
         }
+
+        Bridge.query("app:preferences").then(({ data }) => {
+            widgetUrl = `https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=${widget.owner}&widgetId=${widget.id}&authorization=${data.conductorKey}`;
+        });
 
         if (!objectEquals(settingsLayout, widget.settingsLayout)) {
             blanking = true;
@@ -214,6 +219,12 @@
                     </div>
                 {/each}
             {/if}
+
+            {#if widget.details.showDemo && widgetUrl}
+                <div class="widget-demo">
+                    <iframe src={widgetUrl} title="Preview" />
+                </div>
+            {/if}
         </div>
 
         <button class="button back-button" onclick="history.back();">
@@ -309,5 +320,19 @@
 
     .widget-control-buttons .button {
         margin: auto;
+    }
+
+    .widget-demo {
+        position: relative;
+        width: 75%;
+        max-width: 800px;
+        margin: auto;
+    }
+
+    .widget-demo iframe {
+        margin-top: 30px;
+        position: absolute;
+        width: 100%;
+        height: auto;
     }
 </style>

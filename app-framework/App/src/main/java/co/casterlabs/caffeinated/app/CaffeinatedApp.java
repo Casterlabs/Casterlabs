@@ -60,6 +60,8 @@ public class CaffeinatedApp {
     private Map<String, List<Consumer<JsonObject>>> bridgeEventListeners = new HashMap<>();
     private Map<String, List<Consumer<JsonObject>>> appEventListeners = new HashMap<>();
 
+    private static BridgeValue<AppPreferences> bridge_AppPreferences = new BridgeValue<>("app:preferences");
+
     private WindowState windowState = new WindowState();
 
     public CaffeinatedApp(@NonNull BuildInfo buildInfo, boolean isDev) {
@@ -76,6 +78,11 @@ public class CaffeinatedApp {
         this.auth.init();
         this.musicIntegration.init();
         this.plugins.init();
+
+        bridge_AppPreferences.set(this.appPreferences.get());
+        this.appPreferences.addSaveListener((pref) -> {
+            bridge_AppPreferences.update();
+        });
 
         // This doesn't update, so we register it and leave it be.
         new BridgeValue<BuildInfo>("build").set(this.buildInfo);

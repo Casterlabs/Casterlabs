@@ -16,7 +16,8 @@ public class NowPlayingWidget extends Widget {
         .withNamespace("co.casterlabs.now_playing")
         .withIcon("music")
         .withCategory(WidgetDetailsCategory.OTHER)
-        .withFriendlyName("Now Playing Widget");
+        .withFriendlyName("Now Playing Widget")
+        .withShowDemo(true);
 
     private static final WidgetSettingsLayout LAYOUT = new WidgetSettingsLayout()
         .addSection(

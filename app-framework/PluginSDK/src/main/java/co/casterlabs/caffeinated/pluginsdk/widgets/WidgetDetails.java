@@ -17,12 +17,14 @@ public class WidgetDetails {
     private @With String icon;
     private @With String friendlyName;
     private @With WidgetDetailsCategory category;
+    private @With boolean showDemo;
 
     public WidgetDetails() {
         this.namespace = null;
         this.icon = "grid";
         this.friendlyName = null;
         this.category = WidgetDetailsCategory.OTHER;
+        this.showDemo = false;
     }
 
     public void validate() {
