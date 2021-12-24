@@ -20,6 +20,7 @@
             /* Style: Horizontal Card */
 
             .style-horizontal-card #card {
+                --unit: 3vw;
                 margin: 1px;
                 position: absolute;
                 left: 0;
@@ -27,14 +28,14 @@
                 right: 0;
                 overflow: hidden;
                 width: auto;
-                height: calc(35vw - 30px);
-                border-radius: 15px;
+                height: calc(35vw - var(--unit));
+                border-radius: calc(var(--unit) / 2);
                 background-color: white;
             }
 
             .style-horizontal-card #text {
                 position: absolute;
-                top: 30px;
+                top: var(--unit);
                 font-size: 6.5vw;
                 line-height: 1.15em;
                 word-break: break-word;
@@ -43,37 +44,37 @@
             }
 
             .style-horizontal-card .right-image #text {
-                left: 30px;
+                left: var(--unit);
                 width: 60vw;
             }
 
             .style-horizontal-card .left-image #text {
-                left: calc(35vw - 30px);
+                left: calc(35vw - var(--unit));
                 width: 60vw;
             }
 
             .style-horizontal-card .none-image #text {
-                left: 30px;
-                right: 30px;
+                left: var(--unit);
+                right: var(--unit);
                 width: auto;
             }
 
             .style-horizontal-card #art {
                 position: absolute;
-                border-radius: 15px;
-                height: calc(35vw - 90px);
-                width: calc(35vw - 90px);
-                top: 30px;
+                border-radius: calc(var(--unit) / 2);
+                height: calc(35vw - (var(--unit) * 3));
+                width: calc(35vw - (var(--unit) * 3));
+                top: var(--unit);
                 object-fit: cover;
                 box-shadow: 0px 0px 25px black;
             }
 
             .style-horizontal-card .right-image #art {
-                right: 30px;
+                right: var(--unit);
             }
 
             .style-horizontal-card .left-image #art {
-                left: 30px;
+                left: var(--unit);
             }
 
             .style-horizontal-card .none-image #art {
