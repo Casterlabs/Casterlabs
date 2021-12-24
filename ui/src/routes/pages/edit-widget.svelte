@@ -325,7 +325,8 @@
     .widget-demo {
         position: relative;
         width: 75%;
-        max-width: 800px;
+        padding-bottom: 25%;
+        max-width: 400px;
         margin: auto;
     }
 
@@ -333,6 +334,6 @@
         margin-top: 30px;
         position: absolute;
         width: 100%;
-        height: auto;
+        height: 100%;
     }
 </style>
