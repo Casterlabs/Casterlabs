@@ -7,6 +7,9 @@ import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.JFrame;
 
 import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.BuildInfo;
@@ -290,6 +293,28 @@ public class Bootstrap implements Runnable {
                     prefs.save();
 
                     shutdown(true, true, false);
+                    return;
+                }
+
+                case "ui:theme-loaded": {
+                    new AsyncTask(() -> {
+                        JFrame frame = ApplicationUI.getWindow().getFrame();
+
+                        // If we enable osr, we want to only open the window when it's fully loaded.
+                        if (CefUtil.enableOSR) {
+                            frame.setVisible(true);
+                            frame.toFront();
+                        }
+
+                        // We also want to wait a bit for the app to initialize further (and to make the
+                        // ux less jarring since it loads too fast.)
+                        try {
+                            TimeUnit.SECONDS.sleep(5);
+                        } catch (InterruptedException ignored) {}
+
+                        // Forward the event, after the timeout.
+                        CaffeinatedApp.getInstance().onBridgeEvent(type, data);
+                    });
                     return;
                 }
 

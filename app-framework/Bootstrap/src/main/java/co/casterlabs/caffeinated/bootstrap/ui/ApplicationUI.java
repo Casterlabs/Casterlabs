@@ -173,8 +173,9 @@ public class ApplicationUI {
             window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
 
             // CEF needs to be visible in order to load the page.
-            window.getFrame().setVisible(true);
-            window.toFront();
+            if (!useOsr) {
+                window.getFrame().setVisible(true);
+            }
 
             // Update state
             open = true;
