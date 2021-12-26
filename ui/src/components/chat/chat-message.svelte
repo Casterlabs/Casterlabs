@@ -64,7 +64,7 @@
 
 <!-- svelte-ignore a11y-missing-attribute -->
 <span class="chat-message {isDeleted ? 'is-deleted' : ''} {highlight ? 'highlighted' : ''} {isPlatformMessage ? 'no-select' : ''}">
-    <span class="message-timestamp"> 4:55 </span>
+    <span class="message-timestamp"> {new Date(timestamp).toLocaleTimeString()} </span>
     <span class="message-container">
         {#if eventHasModIcons}
             <span class="mod-actions">
