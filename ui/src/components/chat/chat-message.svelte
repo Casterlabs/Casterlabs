@@ -136,7 +136,11 @@
                 <!-- Only show the little icon if multiplatform, otherwise it's left out. -->
                 <small class="platform-message-user">
                     <span class="platform-logo">
-                        <img src="/img/services/{koiEvent.sender.username.toLowerCase()}/icon.svg" alt="{koiEvent.sender.displayname} Logo" />
+                        <img
+                            src="/img/services/{koiEvent.sender.username.toLowerCase()}/icon.svg"
+                            alt="{koiEvent.sender.displayname} Logo"
+                            style="filter: invert(var(--white-invert-factor));"
+                        />
                     </span>
                     >
                 </small>
