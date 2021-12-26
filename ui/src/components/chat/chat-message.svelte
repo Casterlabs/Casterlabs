@@ -139,7 +139,7 @@
                         <img
                             src="/img/services/{koiEvent.sender.username.toLowerCase()}/icon.svg"
                             alt="{koiEvent.sender.displayname} Logo"
-                            style="filter: invert(var(--white-invert-factor));"
+                            style={koiEvent.sender.username != "casterlabs" ? "filter: invert(var(--white-invert-factor));" : ""}
                         />
                     </span>
                     >
