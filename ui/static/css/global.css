@@ -15,7 +15,7 @@
 	--white-invert-factor: 0.8;
 }
 
-.bulma-dark-mode:root {
+.app-is-dark:root {
 	--background-color: #121212;
 
 	--text-color: #dbdbdb;
@@ -52,7 +52,7 @@ html {
 	cursor: url(/cursors/edit-dark.svg) 0 16, auto;
 }
 
-.bulma-dark-mode .cursor-edit {
+.app-is-dark .cursor-edit {
 	cursor: url(/cursors/edit-light.svg) 0 16, auto;
 }
 
@@ -74,11 +74,11 @@ html {
 	display: unset;
 }
 
-.bulma-dark-mode .dark-show {
+.app-is-dark .dark-show {
 	display: unset !important;
 }
 
-.bulma-dark-mode .light-show {
+.app-is-dark .light-show {
 	display: none !important;
 }
 

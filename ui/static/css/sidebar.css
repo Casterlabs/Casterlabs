@@ -3,7 +3,7 @@
     background-color: #fdfdfd;
 }
 
-.bulma-dark-mode .side-bar,
-.bulma-dark-mode #side-bar {
+.app-is-dark .side-bar,
+.app-is-dark #side-bar {
     background-color: #171717 !important;
 }
