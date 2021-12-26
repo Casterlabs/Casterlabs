@@ -119,7 +119,7 @@ public class SpotifyMusicProvider extends InternalMusicProvider<SpotifySettings>
 
                             final boolean PARSE_FT = true;
                             final boolean CLEANSE_TITLE = true;
-                            final String FT_REGEX = "(\\(ft.*\\))|(\\(feat.*\\))";
+                            final String FT_REGEX = "(\\(ft.*\\))|(\\(feat.*\\))|(\\(avec.*\\))";
                             final String CT_REGEX = "(- [0-9]* Remaster)|(- Remastered [0-9]*)|(- Radio Version)|(- Radio Edit)|(\\(Remastered\\))";
 
                             boolean isPlaying = response.getBoolean("is_playing");
@@ -142,7 +142,7 @@ public class SpotifyMusicProvider extends InternalMusicProvider<SpotifySettings>
                                     String group = m.group().split(" ", 2)[1]; // Remove the (ft.
                                     group = group.substring(0, group.length() - 1); // Remove the ending brace.
 
-                                    String[] found = group.split("[,&]");
+                                    String[] found = group.split("(et)|[,&]");
 
                                     for (String artist : found) {
                                         artist = artist.trim();
