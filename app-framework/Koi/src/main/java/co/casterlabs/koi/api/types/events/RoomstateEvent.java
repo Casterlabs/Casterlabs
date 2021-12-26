@@ -12,13 +12,8 @@ import lombok.ToString;
 @JsonClass(exposeAll = true)
 public class RoomstateEvent extends KoiEvent {
 
-    static {
-        // So the compilier doesn't remove it.
-        new RoomstateEvent();
-    }
-
-    // This is reflected on.
-    private RoomstateEvent() {}
+    @Deprecated
+    public RoomstateEvent() {}
 
     @Deprecated
     public RoomstateEvent(@NonNull User user) {
