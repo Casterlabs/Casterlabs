@@ -5,10 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AuthInstance;
@@ -71,10 +71,10 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
     private List<KoiLifeCycleHandler> koiEventListeners = new LinkedList<>();
 
     private List<KoiEvent> eventHistory = new LinkedList<>();
-    private Map<UserPlatform, List<User>> viewers = new HashMap<>();
-    private Map<UserPlatform, UserUpdateEvent> userStates = new HashMap<>();
-    private Map<UserPlatform, StreamStatusEvent> streamStates = new HashMap<>();
-    private Map<UserPlatform, RoomstateEvent> roomStates = new HashMap<>();
+    private Map<UserPlatform, List<User>> viewers = new ConcurrentHashMap<>();
+    private Map<UserPlatform, UserUpdateEvent> userStates = new ConcurrentHashMap<>();
+    private Map<UserPlatform, StreamStatusEvent> streamStates = new ConcurrentHashMap<>();
+    private Map<UserPlatform, RoomstateEvent> roomStates = new ConcurrentHashMap<>();
 
     private BridgeValue<List<KoiEvent>> historyBridge = new BridgeValue<>("koi:history", Collections.unmodifiableList(this.eventHistory), false);
     private BridgeValue<Map<UserPlatform, List<User>>> viewersBridge = new BridgeValue<>("koi:viewers", Collections.unmodifiableMap(this.viewers));
