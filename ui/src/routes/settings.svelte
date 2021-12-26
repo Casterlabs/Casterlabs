@@ -2,12 +2,14 @@
     // Meta
     import { setPageProperties } from "./__layout.svelte";
 
-    // Settings Content
     import SettingsContainer from "../components/settings/settings-container.svelte";
+
+    // Settings Content
     import AccountSettings from "../components/settings/account-settings.svelte";
     import MusicServicesSettings from "../components/settings/music-services-settings.svelte";
     import AppearanceSettings from "../components/settings/appearance-settings.svelte";
     // import StatusIntegrationSettings from "../components/settings/status-integration-settings.svelte";
+    import AboutSettings from "../components/settings/about-settings.svelte";
 
     setPageProperties({
         showSideBar: false,
@@ -38,11 +40,16 @@
             name: "Music Services",
             id: "music_services",
             type: "category"
+        },
+        {
+            name: "Other",
+            type: "section"
+        },
+        {
+            name: "About",
+            id: "about",
+            type: "category"
         }
-        // {
-        //     name: "Other",
-        //     type: "section"
-        // },
         // {
         //     name: "Status Integration",
         //     id: "status_integration",
@@ -86,6 +93,9 @@
             <!-- <section class="hidden" data-id="status_integration">
                 <StatusIntegrationSettings />
             </section> -->
+            <section class="hidden" data-id="about">
+                <AboutSettings />
+            </section>
         </SettingsContainer>
     </div>
 </div>
