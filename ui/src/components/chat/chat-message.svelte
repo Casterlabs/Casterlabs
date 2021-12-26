@@ -28,7 +28,48 @@
 
     let eventHasModIcons = false;
 
-    if (koiEvent.event_type == "CLEARCHAT") {
+    if (koiEvent.event_type == "RAID") {
+        const { host, viewers } = koiEvent;
+
+        highlight = true;
+        messageHtml = `${host.displayname} just raided with ${viewers} ${viewers == 1 ? "viewer" : "viewers"}`;
+    } else if (koiEvent.event_type == "SUBSCRIPTION") {
+        const { gift_recipient, subscriber, months } = koiEvent;
+
+        switch (event.sub_type) {
+            case "SUB":
+                messageHtml = `${subscriber.displayname} just subscribed for ${months} ${months == 1 ? "month" : "months"}`;
+                break;
+
+            case "RESUB":
+                messageHtml = `${subscriber.displayname} just resubscribed for ${months} ${months == 1 ? "month" : "months"}`;
+                break;
+
+            case "SUBGIFT":
+                messageHtml = `${subscriber.displayname} just gifted ${gift_recipient.displayname} a ${months} month subscription`;
+                break;
+
+            case "RESUBGIFT":
+                messageHtml = `${subscriber.displayname} just gifted ${gift_recipient.displayname} a ${months} month resubscription`;
+                break;
+
+            case "ANONSUBGIFT":
+                messageHtml = `Anonymous just gifted ${gift_recipient.displayname} a ${months} month subscription`;
+                break;
+
+            case "ANONRESUBGIFT":
+                messageHtml = `Anonymous just gifted ${gift_recipient.displayname} a ${months} month resubscription`;
+                break;
+        }
+
+        highlight = true;
+    } else if (koiEvent.event_type == "CHANNEL_POINTS") {
+        const reward = koiEvent.reward;
+        const imageHtml = `<img class="vcimage" src = "${reward.reward_image ?? reward.default_reward_image}" /> `;
+
+        highlight = true;
+        messageHtml = `${koiEvent.sender.displayname} just redeemed ${imageHtml}${reward.title}`;
+    } else if (koiEvent.event_type == "CLEARCHAT") {
         highlight = true;
         messageHtml = `<i>Chat was cleared.</i>`;
     } else if (["CHAT", "DONATION", "PLATFORM_MESSAGE"].includes(koiEvent.event_type) /* Normal chat messages */) {
@@ -153,7 +194,9 @@
             {/if}
         {/if}
 
-        {@html messageHtml}{#if upvotes > 0}
+        <span>
+            {@html messageHtml}
+        </span>{#if upvotes > 0}
             <sup class="upvote-counter">
                 {#if upvotes < 10}
                     <span class="upvote-1">{upvotes}</span>

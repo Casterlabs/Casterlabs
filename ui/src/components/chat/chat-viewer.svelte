@@ -6,7 +6,7 @@
 
     const dispatch = createEventDispatcher();
 
-    const DISPLAYABLE_EVENTS = ["FOLLOW", "CHAT", "DONATION", "SUBSCRIPTION", "VIEWER_JOIN", "VIEWER_LEAVE", "RAID", "CHANNEL_POINTS", "CLEARCHAT", "PLATFORM_MESSAGE"];
+    const DISPLAYABLE_EVENTS = ["FOLLOW", "CHAT", "DONATION", "SUBSCRIPTION", /*"VIEWER_JOIN",*/ /*"VIEWER_LEAVE",*/ "RAID", "CHANNEL_POINTS", "CLEARCHAT", "PLATFORM_MESSAGE"];
 
     let chatHistory = {};
     let isMultiPlatform = true;
