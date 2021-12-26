@@ -63,7 +63,7 @@ html {
 }
 
 .allow-select {
-	user-select: auto;
+	user-select: all;
 }
 
 .dark-show {
