@@ -1,48 +1,28 @@
-<div class="lds-ring">
-    <div />
-    <div />
-    <div />
-    <div />
-</div>
+<span class="loader" />
 
 <style>
-    .lds-ring {
-        display: inline-block;
-        position: relative;
-        width: 100%;
-        height: 100%;
-    }
-
-    * {
-        -webkit-app-region: no-drag !important;
-    }
-
-    .lds-ring div {
-        box-sizing: border-box;
-        display: block;
-        position: absolute;
-        width: 80%;
-        height: 80%;
-        margin: 4px;
-        border: 4px solid #dbdbdb;
+    .loader {
+        width: 48px;
+        height: 48px;
         border-radius: 50%;
-        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        border-color: #dbdbdb transparent transparent transparent;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
     }
 
-    .lds-ring div:nth-child(1) {
-        animation-delay: -0.45s;
+    :global(.app-is-dark) .loader {
+        border-color: white;
+        border-top: 3px solid white;
+        border-right: 3px solid transparent;
     }
 
-    .lds-ring div:nth-child(2) {
-        animation-delay: -0.3s;
+    :global(.app-is-light) .loader {
+        border-color: black;
+        border-top: 3px solid black;
+        border-right: 3px solid transparent;
     }
 
-    .lds-ring div:nth-child(3) {
-        animation-delay: -0.15s;
-    }
-
-    @keyframes lds-ring {
+    @keyframes rotation {
         0% {
             transform: rotate(0deg);
         }

@@ -73,9 +73,17 @@
 
         html = html.join("");
 
+        const documentElement = document.documentElement;
+
         console.info("[__layout__] Updated theme:", theme, "\n", html);
-        document.documentElement.classList = theme.classes;
+        documentElement.classList = theme.classes;
         document.querySelector("#styles").innerHTML = html;
+
+        if (theme.isDark) {
+            documentElement.classList.add("app-is-dark");
+        } else {
+            documentElement.classList.add("app-is-light");
+        }
     }
 
     function parseWindowUpdate(data) {
