@@ -12,6 +12,10 @@ import lombok.ToString;
 @JsonClass(exposeAll = true)
 public class RoomstateEvent extends KoiEvent {
 
+    // This is reflected on.
+    @SuppressWarnings("unused")
+    private RoomstateEvent() {}
+
     @Deprecated
     public RoomstateEvent(@NonNull User user) {
         this.streamer = user;
