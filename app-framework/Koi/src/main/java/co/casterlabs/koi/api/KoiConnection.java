@@ -1,6 +1,7 @@
 package co.casterlabs.koi.api;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.net.URI;
 
 import org.java_websocket.client.WebSocketClient;
@@ -165,7 +166,11 @@ public class KoiConnection implements Closeable {
 
         @Override
         public void onError(Exception e) {
-            listener.onException(e);
+            if ((e instanceof IOException) && e.getMessage().isEmpty() && !this.isOpen()) {
+                this.onClose(0, null, true);
+            } else {
+                logger.exception(e);
+            }
         }
 
     }
