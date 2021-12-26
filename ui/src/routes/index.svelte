@@ -14,11 +14,12 @@
     let color = "white";
 
     onMount(async () => {
-        const { icon, theme } = (await Bridge.query("ui")).data;
+        const { icon } = (await Bridge.query("ui")).data;
+        const { isDark } = (await Bridge.query("theme")).data;
 
         logo = icon;
 
-        if (["dark"].includes(theme)) {
+        if (isDark) {
             color = "white";
         } else {
             color = "black";
