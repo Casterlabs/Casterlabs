@@ -288,14 +288,6 @@
         }
     }
 
-    .platform-message-user {
-        display: none;
-    }
-
-    :global(.is-multi-platform) .platform-message-user {
-        display: inline-block;
-    }
-
     :global(.platform-message) {
         font-weight: 500;
         font-size: 0.75em !important;
