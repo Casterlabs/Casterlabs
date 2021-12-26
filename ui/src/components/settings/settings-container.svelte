@@ -46,7 +46,7 @@
             }
 
             // Show the first option
-            setTimeout(() => buttons[0].click(), 50); // Next js tick.
+            setTimeout(() => buttons[0].click(), 0); // Next js tick.
         </script>
     </div>
 
