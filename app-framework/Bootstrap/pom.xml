@@ -89,7 +89,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-
 		<!-- Utility packages -->
 		<dependency>
 			<groupId>com.github.casterlabs.rakurai</groupId>
