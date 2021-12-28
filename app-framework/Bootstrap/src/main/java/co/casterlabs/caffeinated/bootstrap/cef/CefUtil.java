@@ -25,8 +25,8 @@ import xyz.e3ndr.consoleutil.consolewindow.BarStyle;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class CefUtil {
-    public static final boolean enableOSR = false;
-    public static final boolean enableTransparency = false;
+    public static final boolean enableOSR = System.getProperty("caffeinated.cef.offscreenrendering.enable", "").equals("true"); // Defaults to false
+    public static final boolean enableTransparency = System.getProperty("caffeinated.cef.transparency.enable", "").equals("true"); // Defaults to false
 
     static {
         try {
