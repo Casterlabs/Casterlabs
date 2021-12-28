@@ -28,7 +28,7 @@ java -jar "../packr.jar" \
      --output target/dist
 
 # Copy the files.
-cp -r target/dist/* ../../../dist/macOS/Casterlabs-Caffeinated.app
+cp -r target/dist/* ../../../dist/macos/Casterlabs-Caffeinated.app
 
 # Return us back to the root dir.
 cd ..
