@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>me.friwi</groupId>
 			<artifactId>jcef-natives-macosx-amd64</artifactId>
-			<version>jcef-544024e+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
+			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
