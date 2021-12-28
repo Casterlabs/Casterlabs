@@ -14,6 +14,7 @@ import lombok.NonNull;
 @JsonClass(exposeAll = true)
 public class WidgetSettingsLayout {
     private List<WidgetSettingsSection> sections = new LinkedList<>();
+    private List<WidgetSettingsButton> buttons = new LinkedList<>();
     private boolean allowWidgetPreview;
 
     /**
@@ -32,8 +33,18 @@ public class WidgetSettingsLayout {
         return this;
     }
 
+    public WidgetSettingsLayout addButton(@NonNull WidgetSettingsButton button) {
+        button.validate();
+        this.buttons.add(button);
+        return this;
+    }
+
     public List<WidgetSettingsSection> getSections() {
         return Collections.unmodifiableList(this.sections);
+    }
+
+    public List<WidgetSettingsButton> getButtons() {
+        return Collections.unmodifiableList(this.buttons);
     }
 
     public WidgetSettingsLayout setSections(@NonNull WidgetSettingsSection... section) {

@@ -173,6 +173,28 @@ public class PluginIntegration {
     }
 
     @EventListener
+    public void onPluginIntegrationClickSettingsButtonEvent(AppPluginIntegrationClickSettingsButtonEvent event) {
+        Widget widget = this.plugins.getWidget(event.getId());
+
+        try {
+            WidgetSettingsButton button = null;
+
+            for (WidgetSettingsButton b : widget.getSettingsLayout().getButtons()) {
+                if (b.getId().equals(event.getButtonId())) {
+                    button = b;
+                    break;
+                }
+            }
+
+            if (button != null) {
+                new AsyncTask(button.getOnClick());
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    @EventListener
     public void onPluginIntegrationCopyWidgetUrlEvent(AppPluginIntegrationCopyWidgetUrlEvent event) {
         Widget widget = this.plugins.getWidget(event.getId());
 

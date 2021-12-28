@@ -1,12 +1,15 @@
 package co.casterlabs.caffeinated.builtin.widgets.labels;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails.WidgetDetailsCategory;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
+import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsButton;
 import co.casterlabs.caffeinated.util.HtmlEscape;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
 import co.casterlabs.koi.api.listener.KoiEventListener;
@@ -44,6 +47,24 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
     }
 
     @Override
+    protected List<WidgetSettingsButton> getButtons() {
+        return Arrays.asList(
+            new WidgetSettingsButton("reset")
+                .withIcon("x-circle")
+                .withIconTitle("Reset Text")
+                .withOnClick(() -> {
+                    this.recentSubscriber = null;
+                    this.setSettings(
+                        this.getSettings()
+                            .putNull("recent_subscriber")
+                    );
+
+                    this.updateText();
+                })
+        );
+    }
+
+    @Override
     protected void onSettingsUpdate() {
         this.updateText();
     }
@@ -56,13 +77,18 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
             this.recentSubscriber = event.getSubscriber();
         }
 
-        this.getSettings().put("recent_subscriber", Rson.DEFAULT.toJson(this.recentSubscriber));
+        this.setSettings(
+            this.getSettings()
+                .put("recent_subscriber", Rson.DEFAULT.toJson(this.recentSubscriber))
+        );
 
         this.updateText();
     }
 
     private void updateText() {
-        if (this.recentSubscriber != null) {
+        if (this.recentSubscriber == null) {
+            this.currHtml = "";
+        } else {
             String html = String.valueOf(this.recentSubscriber.getDisplayname());
             String prefix = HtmlEscape.escapeHtml(this.getSettings().getString("text.prefix")).replace(" ", "&nbsp;");
             String suffix = HtmlEscape.escapeHtml(this.getSettings().getString("text.suffix")).replace(" ", "&nbsp;");
@@ -76,12 +102,12 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
             }
 
             this.currHtml = html;
+        }
 
-            for (WidgetInstance instance : this.getWidgetInstances()) {
-                try {
-                    instance.emit("html", JsonObject.singleton("html", this.currHtml));
-                } catch (IOException ignored) {}
-            }
+        for (WidgetInstance instance : this.getWidgetInstances()) {
+            try {
+                instance.emit("html", JsonObject.singleton("html", this.currHtml));
+            } catch (IOException ignored) {}
         }
     }
 

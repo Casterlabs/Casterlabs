@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.builtin.widgets.labels;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import co.casterlabs.caffeinated.builtin.CaffeinatedDefaultPlugin;
 import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
+import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsButton;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsItem;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsLayout;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsSection;
@@ -75,6 +77,10 @@ public abstract class GenericLabel extends Widget implements KoiEventListener {
             );
         }
 
+        for (WidgetSettingsButton button : this.getButtons()) {
+            layout.addButton(button);
+        }
+
         this.setSettingsLayout(layout, true); // Preserve
     }
 
@@ -118,6 +124,10 @@ public abstract class GenericLabel extends Widget implements KoiEventListener {
     }
 
     protected abstract boolean hasHighlight();
+
+    protected List<WidgetSettingsButton> getButtons() {
+        return Collections.emptyList();
+    }
 
     protected boolean isMultiPlatform() {
         return Koi.getUserStates().size() > 1;
