@@ -172,10 +172,7 @@ public class ApplicationUI {
             browser = client.createBrowser(appAddress, useOsr, isTransparent);
             window.getCefPanel().add(browser.getUIComponent(), BorderLayout.CENTER);
 
-            // CEF needs to be visible in order to load the page.
-            if (!useOsr) {
-                window.getFrame().setVisible(true);
-            }
+            window.getFrame().setVisible(true);
 
             // Update state
             open = true;
