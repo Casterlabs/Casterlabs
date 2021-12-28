@@ -43,8 +43,10 @@ public class RouteWidgetApi implements HttpProvider, WebsocketProvider, RouteHel
                         if (html == null) {
                             return newErrorResponse(StandardHttpStatus.NOT_FOUND, RequestError.RESOURCE_NOT_FOUND);
                         } else {
-                            return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, html)
-                                .setMimeType("text/html");
+                            return this.addCors(
+                                session, HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, html)
+                                    .setMimeType("text/html")
+                            );
                         }
                     }
                 }

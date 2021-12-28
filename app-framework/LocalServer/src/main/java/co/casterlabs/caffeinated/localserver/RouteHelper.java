@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.io.http.HttpResponse;
+import co.casterlabs.rakurai.io.http.HttpSession;
 import co.casterlabs.rakurai.io.http.HttpStatus;
 import co.casterlabs.rakurai.io.http.websocket.Websocket;
 import co.casterlabs.rakurai.io.http.websocket.WebsocketCloseCode;
@@ -66,6 +67,23 @@ public interface RouteHelper {
         HttpResponse response = HttpResponse.newFixedLengthResponse(status, "{\"data\":null,\"errors\":[\"" + error + "\"]}");
 
         response.setMimeType("application/json");
+
+        return response;
+    }
+
+    default HttpResponse addCors(HttpSession session, HttpResponse response) {
+        String originHeader = session.getHeader("Origin");
+
+        if (originHeader != null) {
+            String[] split = originHeader.split("://");
+            String protocol = split[0];
+            String referer = split[1].split("/")[0]; // Strip protocol and uri
+
+            response.putHeader("Access-Control-Allow-Origin", protocol + "://" + referer);
+            response.putHeader("Access-Control-Allow-Methods", LocalServer.ALLOWED_METHODS);
+            response.putHeader("Access-Control-Allow-Headers", "Authorization, *");
+            FastLogger.logStatic(LogLevel.DEBUG, "Set CORS headers for %s", referer);
+        }
 
         return response;
     }

@@ -2,6 +2,8 @@ package co.casterlabs.caffeinated.localserver;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +16,7 @@ import co.casterlabs.caffeinated.localserver.websocket.RealtimeConnection;
 import co.casterlabs.caffeinated.util.Pair;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.impl.http.undertow.UndertowHttpServer;
+import co.casterlabs.rakurai.io.http.HttpMethod;
 import co.casterlabs.rakurai.io.http.server.HttpServerImplementation;
 import co.casterlabs.rakurai.io.http.websocket.Websocket;
 import co.casterlabs.sora.Sora;
@@ -28,8 +31,19 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class LocalServer implements Closeable, HttpProvider {
+    public static final String ALLOWED_METHODS;
+
     private static final long PING_INTERVAL = TimeUnit.SECONDS.toMillis(15);
     private SoraFramework framework;
+
+    static {
+        List<String> methods = new ArrayList<>();
+        for (HttpMethod method : HttpMethod.values()) {
+            methods.add(method.name());
+        }
+
+        ALLOWED_METHODS = String.join(", ", methods);
+    }
 
     @SneakyThrows
     public LocalServer(int port) {
