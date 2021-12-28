@@ -22,6 +22,10 @@
         Bridge.emit("plugins:rename-widget", { id: widget.id, newName: nameEditorTextContent });
     }
 
+    function clickButton(buttonId) {
+        Bridge.emit("plugins:click-widget-settings-button", { id: widget.id, buttonId: buttonId });
+    }
+
     function deleteWidget() {
         Bridge.emit("plugins:delete-widget", { id: widget.id });
         history.back();
@@ -80,6 +84,8 @@
                 blanking = false;
             }, 75);
         }
+
+        console.log(widget);
 
         settingsLayout = widget.settingsLayout || {};
         nameEditorTextContent = widget.name;
@@ -243,6 +249,19 @@
         </button>
 
         <div class="widget-control-buttons is-inline-block are-small">
+            {#each settingsLayout.buttons as buttonLayout}
+                <button on:click={() => clickButton(buttonLayout.id)} class="button" title={buttonLayout.iconTitle ? buttonLayout.iconTitle : ""}>
+                    {#if buttonLayout.icon}
+                        <i data-feather={buttonLayout.icon} aria-hidden="true" />
+                        <script>
+                            feather.replace();
+                        </script>
+                    {/if}
+                    {#if buttonLayout.text}
+                        {buttonLayout.text}
+                    {/if}
+                </button>
+            {/each}
             <button on:click={copyWidgetUrl} class="button">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

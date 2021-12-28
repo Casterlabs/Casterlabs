@@ -19,6 +19,7 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.util.Producer;
 import co.casterlabs.caffeinated.util.Triple;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
@@ -58,7 +59,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
     /* ---------------- */
 
     @SneakyThrows
-    public Widget createWidget(@NonNull String namespace, @NonNull String id, @NonNull String name) {
+    public Widget createWidget(@NonNull String namespace, @NonNull String id, @NonNull String name, @Nullable JsonObject settings) {
         Triple<CaffeinatedPlugin, Producer<Widget>, WidgetDetails> factory = this.widgetFactories.get(namespace);
 
         assert factory != null : "A factory associated to that widget is not registered.";
@@ -72,7 +73,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
         ReflectionLib.setValue(widget, "plugin", factory.a);
         ReflectionLib.setValue(widget, "details", factory.c);
         ReflectionLib.setValue(widget, "pokeOutside", (Runnable) (() -> {
-            CaffeinatedApp.getInstance().getPlugins().updateBridgeData();
+            CaffeinatedApp.getInstance().getPlugins().save();
         }));
 
         // Register it, update it, and return it.
@@ -80,6 +81,12 @@ public class PluginsHandler implements CaffeinatedPlugins {
         pluginWidgetsField.add(widget);
 
         new AsyncTask(() -> {
+            if (settings != null) {
+                try {
+                    ReflectionLib.setValue(widget, "settings", settings);
+                } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ignored) {}
+            }
+
             widget.onInit();
             widget.onNameUpdate();
         });

@@ -92,10 +92,8 @@ public class PluginIntegration {
         for (WidgetSettingsDetails details : CaffeinatedApp.getInstance().getPluginIntegrationPreferences().get().getWidgetSettings()) {
             try {
                 // Reconstruct the widget.
-                Widget widget = this.plugins.createWidget(details.getNamespace(), details.getId(), details.getName());
-
-                ReflectionLib.invokeMethod(widget, "$onSettingsUpdate", details.getSettings());
-            } catch (AssertionError | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                this.plugins.createWidget(details.getNamespace(), details.getId(), details.getName(), details.getSettings());
+            } catch (AssertionError | SecurityException | IllegalArgumentException e) {
                 if ("A factory associated to that widget is not registered.".equals(e.getMessage())) {
                     // We can safely ignore it.
                     // TODO let the user know that the widget could not be found.
@@ -125,7 +123,7 @@ public class PluginIntegration {
 
     @EventListener
     public void onPluginIntegrationCreateWidgetEvent(AppPluginIntegrationCreateWidgetEvent event) {
-        Widget widget = this.plugins.createWidget(event.getNamespace(), UUID.randomUUID().toString(), event.getName());
+        Widget widget = this.plugins.createWidget(event.getNamespace(), UUID.randomUUID().toString(), event.getName(), null);
 
         this.save();
         CaffeinatedApp.getInstance().getUI().navigate("/pages/edit-widget?widget=" + widget.getId());

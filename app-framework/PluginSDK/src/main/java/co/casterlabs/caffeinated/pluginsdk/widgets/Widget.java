@@ -47,7 +47,7 @@ public abstract class Widget {
     // </All set by reflection>
 
     private @JsonField @Nullable WidgetSettingsLayout settingsLayout;
-    private @JsonField @NonNull JsonObject settings;
+    private @Reflective @JsonField @NonNull JsonObject settings;
 
     private @Reflective Set<KoiEventListener> koiListeners = new HashSet<>();
 
