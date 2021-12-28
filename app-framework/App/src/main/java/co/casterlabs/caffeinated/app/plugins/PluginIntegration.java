@@ -10,7 +10,7 @@ import java.util.UUID;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences.WidgetSettingsDetails;
-import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationClickSettingsButtonEvent;
+import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationClickWidgetSettingsButtonEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCopyWidgetUrlEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCreateWidgetEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationDeleteWidgetEvent;
@@ -173,7 +173,7 @@ public class PluginIntegration {
     }
 
     @EventListener
-    public void onPluginIntegrationClickSettingsButtonEvent(AppPluginIntegrationClickSettingsButtonEvent event) {
+    public void onPluginIntegrationClickSettingsButtonEvent(AppPluginIntegrationClickWidgetSettingsButtonEvent event) {
         Widget widget = this.plugins.getWidget(event.getId());
 
         try {

@@ -7,12 +7,12 @@ import xyz.e3ndr.eventapi.events.AbstractCancellableEvent;
 
 @Getter
 @JsonClass(exposeAll = true)
-public class AppPluginIntegrationClickSettingsButtonEvent extends AbstractCancellableEvent<AppPluginIntegrationEventType> {
+public class AppPluginIntegrationClickWidgetSettingsButtonEvent extends AbstractCancellableEvent<AppPluginIntegrationEventType> {
     private String id;
     private String buttonId;
 
-    public AppPluginIntegrationClickSettingsButtonEvent() {
-        super(AppPluginIntegrationEventType.CLICK_SETTINGS_BUTTON);
+    public AppPluginIntegrationClickWidgetSettingsButtonEvent() {
+        super(AppPluginIntegrationEventType.CLICK_WIDGET_SETTINGS_BUTTON);
     }
 
     @JsonValidate

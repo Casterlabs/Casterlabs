@@ -9,7 +9,7 @@ public enum AppPluginIntegrationEventType {
     DELETE_WIDGET(AppPluginIntegrationDeleteWidgetEvent.class),
     EDIT_WIDGET_SETTINGS(AppPluginIntegrationEditWidgetSettingsEvent.class),
     COPY_WIDGET_URL(AppPluginIntegrationCopyWidgetUrlEvent.class),
-    CLICK_SETTINGS_BUTTON(AppPluginIntegrationClickSettingsButtonEvent.class);
+    CLICK_WIDGET_SETTINGS_BUTTON(AppPluginIntegrationClickWidgetSettingsButtonEvent.class);
 
     private @Getter Class<AbstractEvent<AppPluginIntegrationEventType>> eventClass;
 
