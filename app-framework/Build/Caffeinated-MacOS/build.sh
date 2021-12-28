@@ -2,7 +2,7 @@
 
 
 # Let's get it started.
-mkdir dist/macOS/Casterlabs-Caffeinated.app
+mkdir dist/macos/Casterlabs-Caffeinated.app
 cd app-framework/Build/Caffeinated-MacOS
 
 echo "Building for MacOS..."
