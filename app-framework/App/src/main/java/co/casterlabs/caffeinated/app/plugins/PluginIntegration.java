@@ -1,6 +1,8 @@
 package co.casterlabs.caffeinated.app.plugins;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +16,7 @@ import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationDeleteWi
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationEditWidgetSettingsEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationEventType;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationRenameWidgetEvent;
+import co.casterlabs.caffeinated.app.plugins.impl.PluginContext;
 import co.casterlabs.caffeinated.app.plugins.impl.PluginsHandler;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.UIBackgroundColor;
@@ -37,8 +40,10 @@ import xyz.e3ndr.reflectionlib.ReflectionLib;
 @Getter
 public class PluginIntegration {
     private static EventHandler<AppPluginIntegrationEventType> handler = new EventHandler<>();
+    private static final File pluginsDir = new File(CaffeinatedApp.appDataDir, "plugins");
 
     private PluginsHandler plugins = new PluginsHandler();
+    private List<PluginContext> contexts = new ArrayList<>();
 
     private BridgeValue<PluginsBridgeObject> bridge = new BridgeValue<>("plugins", new PluginsBridgeObject());
 
@@ -53,13 +58,33 @@ public class PluginIntegration {
 
     public PluginIntegration() {
         handler.register(this);
+
+        pluginsDir.mkdir();
     }
 
     public void init() {
         // Load the built-in widgets.
-        this.plugins.loadPluginsFromClassLoader(this.getClass().getClassLoader());
+        this.contexts.add(
+            this.plugins.loadPluginsFromClassLoader(this.getClass().getClassLoader())
+        );
 
-        // TODO load external jars
+        for (File file : pluginsDir.listFiles()) {
+            String fileName = file.getName();
+
+            if (file.isFile() &&
+                fileName.endsWith(".jar") &&
+                !fileName.startsWith("__")) {
+                try {
+                    this.contexts.add(
+                        this.plugins.loadPluginsFromFile(file)
+                    );
+                    FastLogger.logStatic(LogLevel.INFO, "Loaded %s", fileName);
+                } catch (Exception e) {
+                    FastLogger.logStatic(LogLevel.WARNING, "Unable to load %s as a plugin, make sure that it's *actually* a plugin!", fileName);
+                    FastLogger.logStatic(LogLevel.WARNING, e);
+                }
+            }
+        }
 
         for (WidgetSettingsDetails details : CaffeinatedApp.getInstance().getPluginIntegrationPreferences().get().getWidgetSettings()) {
             try {
