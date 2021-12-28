@@ -203,4 +203,13 @@ public class KoiConnection implements Closeable {
         );
     }
 
+    public void sendTest(@NonNull String eventType) {
+        this.socket.send(
+            new JsonObject()
+                .put("type", "TEST")
+                .put("eventType", eventType.toUpperCase())
+                .toString()
+        );
+    }
+
 }

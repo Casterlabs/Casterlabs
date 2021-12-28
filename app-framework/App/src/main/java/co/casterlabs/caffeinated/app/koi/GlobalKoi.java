@@ -240,7 +240,14 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
 
     @EventListener
     public void onKoiChatSendEvent(AppKoiChatSendEvent event) {
-        this.sendChat(event.getPlatform(), event.getMessage(), KoiChatterType.CLIENT);
+        if (event.getMessage().startsWith("/koi test ")) {
+            this.sendTest(
+                event.getPlatform(),
+                event.getMessage().substring("/koi test ".length())
+            );
+        } else {
+            this.sendChat(event.getPlatform(), event.getMessage(), KoiChatterType.CLIENT);
+        }
     }
 
     @EventListener
@@ -259,6 +266,14 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
 
         if (inst != null) {
             inst.sendChat(message, chatter);
+        }
+    }
+
+    public void sendTest(@NonNull UserPlatform platform, @NonNull String eventType) {
+        AuthInstance inst = CaffeinatedApp.getInstance().getAuth().getAuthInstance(platform);
+
+        if (inst != null) {
+            inst.sendTest(eventType);
         }
     }
 

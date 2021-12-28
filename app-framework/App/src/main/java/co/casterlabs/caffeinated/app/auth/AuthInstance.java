@@ -91,6 +91,9 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
         }
     }
 
+    public void sendTest(@NonNull String eventType) {
+        this.koi.sendTest(eventType);
+    }
     /* ---------------- */
     /* Event Listeners  */
     /* ---------------- */
