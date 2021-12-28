@@ -2,6 +2,7 @@
 
 
 # Let's get it started.
+mkdir dist/macOS/Casterlabs-Caffeinated.app
 cd app-framework/Build/Caffeinated-MacOS
 
 echo "Building for MacOS..."
@@ -27,7 +28,7 @@ java -jar "../packr.jar" \
      --output target/dist
 
 # Copy the files.
-cp -r target/dist/* ../../../dist/macOS/Casterlabs-Caffeinated.app/
+cp -r target/dist/* ../../../dist/macOS/Casterlabs-Caffeinated.app
 
 # Return us back to the root dir.
 cd ..
