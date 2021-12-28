@@ -6,14 +6,16 @@
  - [JDK 8](https://adoptium.net) (You _can_ use JDK 11 to compile the project since it has a built in JDK 8 mode)
 
 ## Windows
-You can either
- a) Use WSL and follow the linux compilation instructions
- b) Follow these directions:
-     - You will need a bash terminal, I recommend [git desktop](https://git-scm.com/). 
-     - [Install NodeJS](https://nodejs.org/en/download/)  
-     - [Install wget](http://gnuwin32.sourceforge.net/packages/wget.htm)
-     - [Download maven, extract it somewhere, add the /bin folder to your path](https://maven.apache.org/download.cgi) (Download the binary zip)
-     - Make sure to restart the bash terminal after everything gets added to your path.
+You can either  
+a) Use WSL and follow the linux compilation instructions  
+b) Follow these directions:
+  - You will need a bash terminal, I recommend [git desktop](https://git-scm.com/).
+  - [Install NodeJS](https://nodejs.org/en/download/)
+  - [Install wget](http://gnuwin32.sourceforge.net/packages/wget.htm)
+  - [Download maven, extract it somewhere, add the /bin folder to your path](https://maven.apache.org/download.cgi) (Download the binary zip)
+  - Make sure to restart the bash terminal after everything gets added to your path.
+  
+  
 
 ## Linux
 (Convert these commands to work for your packagemanager of choice, these work for most Debian based distros (like Ubuntu))
