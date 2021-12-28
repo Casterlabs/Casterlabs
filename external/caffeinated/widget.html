@@ -59,6 +59,8 @@
     <footer>
         <!-- type="module" helps isolate. -->
         <script type="module">
+            import * as Currencies from "./currencies.mjs";
+
             const { pluginId, widgetId, authorization } = queryParams;
             const port = queryParams.port || "8092";
             const address = queryParams.address || "localhost";
@@ -240,6 +242,11 @@
                             writable: false,
                             configurable: false
                         });
+                        Object.defineProperty(contentWindow, "Currencies", {
+                            value: Currencies,
+                            writable: false,
+                            configurable: false
+                        });
 
                         // Load the widget html.
                         const response = await fetch(`http://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/html?authorization=${authorization}`);
@@ -316,6 +323,16 @@
             });
             Object.defineProperty(window, "Music", {
                 value: musicInstance,
+                writable: false,
+                configurable: false
+            });
+            Object.defineProperty(window, "escapeHtml", {
+                value: escapeHtml,
+                writable: false,
+                configurable: false
+            });
+            Object.defineProperty(window, "Currencies", {
+                value: Currencies,
                 writable: false,
                 configurable: false
             });
