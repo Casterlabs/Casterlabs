@@ -145,7 +145,7 @@ public abstract class Widget {
     /* ---------------- */
 
     @Reflective
-    private void setSettings(@Nullable JsonObject newSettings) {
+    private void $onSettingsUpdate(@Nullable JsonObject newSettings) {
         if (newSettings != null) {
             this.settings = newSettings;
             this.onSettingsUpdate();
@@ -223,9 +223,7 @@ public abstract class Widget {
 
         this.settings = newSettings;
 
-        if (this.pokeOutside != null)
-
-        {
+        if (this.pokeOutside != null) {
             this.pokeOutside.run();
         }
 
@@ -249,6 +247,16 @@ public abstract class Widget {
         } else {
             return Rson.DEFAULT.fromJson(this.settings.toString(), JsonObject.class);
         }
+    }
+
+    public final <T extends Widget> T setSettings(@NonNull JsonObject newSettings) {
+        this.settings = newSettings;
+
+        if (this.pokeOutside != null) {
+            this.pokeOutside.run();
+        }
+
+        return (T) this;
     }
 
     public final String getNamespace() {

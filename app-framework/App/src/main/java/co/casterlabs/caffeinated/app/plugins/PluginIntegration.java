@@ -10,6 +10,7 @@ import java.util.UUID;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences.WidgetSettingsDetails;
+import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationClickSettingsButtonEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCopyWidgetUrlEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCreateWidgetEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationDeleteWidgetEvent;
@@ -23,7 +24,9 @@ import co.casterlabs.caffeinated.app.ui.UIBackgroundColor;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
+import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsButton;
 import co.casterlabs.caffeinated.util.ClipboardUtil;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -91,7 +94,7 @@ public class PluginIntegration {
                 // Reconstruct the widget.
                 Widget widget = this.plugins.createWidget(details.getNamespace(), details.getId(), details.getName());
 
-                ReflectionLib.invokeMethod(widget, "setSettings", details.getSettings());
+                ReflectionLib.invokeMethod(widget, "$onSettingsUpdate", details.getSettings());
             } catch (AssertionError | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 if ("A factory associated to that widget is not registered.".equals(e.getMessage())) {
                     // We can safely ignore it.
@@ -161,7 +164,7 @@ public class PluginIntegration {
                 settings.put(event.getKey(), value);
             }
 
-            ReflectionLib.invokeMethod(widget, "setSettings", settings);
+            ReflectionLib.invokeMethod(widget, "$onSettingsUpdate", settings);
         } catch (Throwable t) {
             t.printStackTrace();
         }
