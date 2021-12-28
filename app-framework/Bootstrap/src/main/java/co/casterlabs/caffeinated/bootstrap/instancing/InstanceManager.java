@@ -6,7 +6,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 import java.util.concurrent.TimeUnit;
 
-import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
+import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
@@ -15,7 +15,7 @@ import xyz.e3ndr.consoleutil.ipc.IpcChannel;
 import xyz.e3ndr.consoleutil.ipc.MemoryMappedIpc;
 
 public class InstanceManager {
-    private static File ipcDir = new File(PreferenceFile.userDataDir, "/ipc/");
+    private static File ipcDir = new File(CaffeinatedApp.appDataDir, "/ipc/");
     private static File lockFile = new File(ipcDir, "instance.lock");
 
     static {

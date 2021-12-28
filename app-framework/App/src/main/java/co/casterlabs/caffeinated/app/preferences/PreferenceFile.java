@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -16,14 +17,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import net.harawata.appdirs.AppDirs;
-import net.harawata.appdirs.AppDirsFactory;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @Getter
 public class PreferenceFile<T> {
-    public static final String userDataDir;
 
     private FastLogger logger;
     private Class<T> clazz;
@@ -36,13 +34,6 @@ public class PreferenceFile<T> {
 
     private @Getter(AccessLevel.NONE) BridgeValue<T> bridge;
 
-    static {
-        AppDirs appDirs = AppDirsFactory.getInstance();
-        userDataDir = appDirs.getUserDataDir("casterlabs-caffeinated", null, null, true);
-
-        new File(userDataDir, "preferences").mkdirs();
-    }
-
     /**
      * @param clazz required to deserialize from json.
      */
@@ -51,7 +42,7 @@ public class PreferenceFile<T> {
         this.name = name;
         this.clazz = clazz;
         this.logger = new FastLogger(String.format("PreferenceFile (%s)", this.name));
-        this.file = new File(userDataDir, String.format("preferences/%s.json", this.name));
+        this.file = new File(CaffeinatedApp.appDataDir, String.format("preferences/%s.json", this.name));
 
         this.data = clazz.newInstance();
 

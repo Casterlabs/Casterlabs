@@ -1,5 +1,6 @@
 package co.casterlabs.caffeinated.app;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,10 +25,13 @@ import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import net.harawata.appdirs.AppDirs;
+import net.harawata.appdirs.AppDirsFactory;
 
 @Getter
 public class CaffeinatedApp {
     public static final String caffeinatedClientId = "LmHG2ux992BxqQ7w9RJrfhkW";
+    public static final String appDataDir;
 
     // I chose JsonObject because of the builder syntax.
     public static final JsonObject AUTH_URLS = new JsonObject()
@@ -63,6 +67,13 @@ public class CaffeinatedApp {
     private static BridgeValue<AppPreferences> bridge_AppPreferences = new BridgeValue<>("app:preferences");
 
     private WindowState windowState = new WindowState();
+
+    static {
+        AppDirs appDirs = AppDirsFactory.getInstance();
+        appDataDir = appDirs.getUserDataDir("casterlabs-caffeinated", null, null, true);
+
+        new File(appDataDir, "preferences").mkdirs();
+    }
 
     public CaffeinatedApp(@NonNull BuildInfo buildInfo, boolean isDev) {
         this.buildInfo = buildInfo;

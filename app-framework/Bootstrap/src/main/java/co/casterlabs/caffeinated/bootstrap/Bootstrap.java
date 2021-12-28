@@ -359,7 +359,7 @@ public class Bootstrap implements Runnable {
                 // Exit.
                 if (isReset) {
                     try {
-                        Files.walk(new File(PreferenceFile.userDataDir).toPath())
+                        Files.walk(new File(CaffeinatedApp.appDataDir).toPath())
                             .sorted(Comparator.reverseOrder())
                             .map(Path::toFile)
                             .forEach(File::delete);
