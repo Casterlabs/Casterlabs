@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.pluginsdk.widgets.settings;
 
 import co.casterlabs.rakurai.json.annotating.JsonClass;
+import co.casterlabs.rakurai.json.annotating.JsonExclude;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
@@ -20,7 +21,7 @@ public class WidgetSettingsButton {
 
     private @With String text;
 
-    private @With Runnable onClick;
+    private @JsonExclude @With Runnable onClick;
 
     public WidgetSettingsButton(@NonNull String id) {
         this.id = id;
