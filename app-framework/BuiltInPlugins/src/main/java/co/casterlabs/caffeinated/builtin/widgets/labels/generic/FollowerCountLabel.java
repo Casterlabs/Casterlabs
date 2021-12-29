@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.builtin.widgets.labels;
+package co.casterlabs.caffeinated.builtin.widgets.labels.generic;
 
 import java.io.IOException;
 

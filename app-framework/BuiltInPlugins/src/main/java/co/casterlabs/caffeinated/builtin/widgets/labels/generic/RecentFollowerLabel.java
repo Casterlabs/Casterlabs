@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.builtin.widgets.labels;
+package co.casterlabs.caffeinated.builtin.widgets.labels.generic;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -13,21 +13,21 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsButton
 import co.casterlabs.caffeinated.util.HtmlEscape;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
 import co.casterlabs.koi.api.listener.KoiEventListener;
-import co.casterlabs.koi.api.types.events.SubscriptionEvent;
+import co.casterlabs.koi.api.types.events.FollowEvent;
 import co.casterlabs.koi.api.types.user.User;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.NonNull;
 
-public class RecentSubscriberLabel extends GenericLabel implements KoiEventListener {
+public class RecentFollowerLabel extends GenericLabel implements KoiEventListener {
     public static final WidgetDetails DETAILS = new WidgetDetails()
-        .withNamespace("co.casterlabs.recent_subscriber_label")
+        .withNamespace("co.casterlabs.recent_follower_label")
         .withIcon("users")
         .withCategory(WidgetDetailsCategory.LABELS)
-        .withFriendlyName("Recent Subscriber Label");
+        .withFriendlyName("Recent Follower Label");
 
-    private User recentSubscriber;
+    private User recentFollower;
     private String currHtml = "";
 
     @Override
@@ -38,9 +38,9 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
 
         // If this fails then we don't care.
         try {
-            JsonElement recentSubscriber = this.getSettings().get("recent_subscriber");
+            JsonElement recentSubscriber = this.getSettings().get("recent_follower");
 
-            this.recentSubscriber = Rson.DEFAULT.fromJson(recentSubscriber, User.class);
+            this.recentFollower = Rson.DEFAULT.fromJson(recentSubscriber, User.class);
         } catch (Exception ignored) {}
 
         this.updateText();
@@ -53,10 +53,10 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
                 .withIcon("x-circle")
                 .withIconTitle("Reset Text")
                 .withOnClick(() -> {
-                    this.recentSubscriber = null;
+                    this.recentFollower = null;
                     this.setSettings(
                         this.getSettings()
-                            .putNull("recent_subscriber")
+                            .putNull("recent_follower")
                     );
 
                     this.updateText();
@@ -70,26 +70,22 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
     }
 
     @KoiEventHandler
-    public void onSubscription(@Nullable SubscriptionEvent event) {
-        if (event.getGiftRecipient() != null) {
-            this.recentSubscriber = event.getGiftRecipient();
-        } else {
-            this.recentSubscriber = event.getSubscriber();
-        }
+    public void onFollow(@Nullable FollowEvent event) {
+        this.recentFollower = event.getFollower();
 
         this.setSettings(
             this.getSettings()
-                .put("recent_subscriber", Rson.DEFAULT.toJson(this.recentSubscriber))
+                .put("recent_follower", Rson.DEFAULT.toJson(this.recentFollower))
         );
 
         this.updateText();
     }
 
     private void updateText() {
-        if (this.recentSubscriber == null) {
+        if (this.recentFollower == null) {
             this.currHtml = "";
         } else {
-            String html = String.valueOf(this.recentSubscriber.getDisplayname());
+            String html = String.valueOf(this.recentFollower.getDisplayname());
             String prefix = HtmlEscape.escapeHtml(this.getSettings().getString("text.prefix")).replace(" ", "&nbsp;");
             String suffix = HtmlEscape.escapeHtml(this.getSettings().getString("text.suffix")).replace(" ", "&nbsp;");
 

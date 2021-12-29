@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.builtin.widgets.labels;
+package co.casterlabs.caffeinated.builtin.widgets.labels.generic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +48,15 @@ public abstract class GenericLabel extends Widget implements KoiEventListener {
     }
 
     private void renderSettingsLayout() {
+        WidgetSettingsLayout layout = this.generateSettingsLayout();
+
+        this.setSettingsLayout(layout, true); // Preserve
+    }
+
+    /**
+     * Override as neeeded.
+     */
+    protected WidgetSettingsLayout generateSettingsLayout() {
         WidgetSettingsLayout layout = new WidgetSettingsLayout();
 
         {
@@ -81,7 +90,7 @@ public abstract class GenericLabel extends Widget implements KoiEventListener {
             layout.addButton(button);
         }
 
-        this.setSettingsLayout(layout, true); // Preserve
+        return layout;
     }
 
     @SneakyThrows
