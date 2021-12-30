@@ -74,7 +74,7 @@ public class Currencies {
             String response = WebUtil.sendHttpRequest(
                 new Request.Builder()
                     .url(
-                        String.format("https://api.casterlabs.co/v3/currencies/format?currency=%s&amount=%d", currency, amount)
+                        String.format("https://api.casterlabs.co/v3/currencies/format?currency=%s&amount=%f", currency, amount)
                     )
             );
 
@@ -96,7 +96,7 @@ public class Currencies {
             String response = WebUtil.sendHttpRequest(
                 new Request.Builder()
                     .url(
-                        String.format("https://api.casterlabs.co/v3/currencies/convert?from=%s&to=%s&amount=%d&formatResult=false", from, to, amount)
+                        String.format("https://api.casterlabs.co/v3/currencies/convert?from=%s&to=%s&amount=%f&formatResult=false", from, to, amount)
                     )
             );
 
@@ -121,7 +121,7 @@ public class Currencies {
             String response = WebUtil.sendHttpRequest(
                 new Request.Builder()
                     .url(
-                        String.format("https://api.casterlabs.co/v3/currencies/convert?from=%s&to=%s&amount=%d&formatResult=true", from, to, amount)
+                        String.format("https://api.casterlabs.co/v3/currencies/convert?from=%s&to=%s&amount=%f&formatResult=true", from, to, amount)
                     )
             );
 
