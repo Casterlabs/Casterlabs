@@ -24,7 +24,7 @@ public class Currencies {
 
     private static List<CurrencyInfo> currencies = new ArrayList<>();
     private static List<String> psuedoCurrencies = new ArrayList<>();
-    private static @Getter String baseCurrency = "USD";
+    public static final String baseCurrency = "USD";
 
     static {
         new AsyncTask(() -> {
@@ -41,7 +41,7 @@ public class Currencies {
                     currencies = Rson.DEFAULT.fromJson(response.get("currencies"), new TypeToken<List<CurrencyInfo>>() {
                     });
 
-                    baseCurrency = response.getString("baseCurrency");
+//                    baseCurrency = response.getString("baseCurrency");
 
                     FastLogger.logStatic(LogLevel.DEBUG, "Successfully updated currency info.");
 
