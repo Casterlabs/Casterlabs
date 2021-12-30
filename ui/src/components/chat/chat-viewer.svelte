@@ -1,6 +1,7 @@
 <script>
-    import ChatMessage from "./chat-message.svelte";
     import * as CommandPaletteGenerator from "./commandPaletteGenerator.js";
+    import ChatMessage from "./chat-message.svelte";
+    import Viewers from "./viewers.svelte";
 
     import { createEventDispatcher } from "svelte";
 
@@ -24,11 +25,15 @@
     let commandPalette = [];
     let maxCommandIndex = 0;
 
+    let viewersListElement = null;
+
     // Preferences
     let showChatTimestamps = true;
     let showModActions = true;
     let showProfilePictures = false;
     let showBadges = false;
+    let showViewers = false;
+    let showViewersList = false;
 
     function onMeta(event) {
         const chatElement = chatHistory[event.id];
@@ -42,7 +47,9 @@
             showChatTimestamps: showChatTimestamps,
             showModActions: showModActions,
             showProfilePictures: showProfilePictures,
-            showBadges: showBadges
+            showBadges: showBadges,
+            showViewers: showViewers,
+            showViewersList: showViewersList
         });
     }
 
@@ -51,11 +58,15 @@
         showModActions = config.showModActions;
         showProfilePictures = config.showProfilePictures;
         showBadges = config.showBadges;
+        showViewers = config.showViewers;
+        showViewersList = config.showViewersList;
     }
 
     // TODO better processing of messages, this works for now.
     export function processEvent(event) {
-        if (event.event_type == "META") {
+        if (event.event_type == "VIEWER_LIST") {
+            viewersListElement.onViewersList(event);
+        } else if (event.event_type == "META") {
             onMeta(event);
         }
 
@@ -290,6 +301,8 @@
         if (!signedInPlatforms.includes(chatSendPlatform)) {
             chatSendPlatform = signedInPlatforms[0];
         }
+
+        viewersListElement.onAuthUpdate(signedInPlatforms);
     }
 </script>
 
@@ -310,11 +323,15 @@
         <ul bind:this={chatbox} />
     </div>
 
+    <div id="viewers-list" style="display: {showViewersList ? 'block' : 'none'}">
+        <Viewers bind:this={viewersListElement} />
+    </div>
+
     <div id="chat-settings" class="box">
         <span class="is-size-6" style="font-weight: 700;"> Chat Preferences </span>
         <div>
             <label class="checkbox">
-                <span class="label-text"> Show Timestamps </span>
+                <span class="label-text">Show Timestamps</span>
                 <input type="checkbox" bind:checked={showChatTimestamps} on:change={savePreferences} />
             </label>
             <label class="checkbox">
@@ -328,6 +345,10 @@
             <label class="checkbox">
                 <span class="label-text">Show Badges</span>
                 <input type="checkbox" bind:checked={showBadges} on:change={savePreferences} />
+            </label>
+            <label class="checkbox">
+                <span class="label-text">Show Viewers List</span>
+                <input type="checkbox" bind:checked={showViewersList} on:change={savePreferences} />
             </label>
         </div>
     </div>
@@ -536,7 +557,7 @@
 
     .chat-settings-open #chat-settings {
         visibility: visible;
-        height: 175px;
+        height: 195px;
         opacity: 1;
     }
 
@@ -548,6 +569,15 @@
     #chat-settings label {
         display: block;
         padding-bottom: 2px;
+    }
+
+    /* Viewers List */
+    #viewers-list {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 200px;
+        height: 275px;
     }
 
     /* Command Palette */

@@ -19,6 +19,8 @@ public class UIPreferences {
         private boolean showModActions = true;
         private boolean showProfilePictures = false;
         private boolean showBadges = false;
+        private boolean showViewers = false;
+        private boolean showViewersList = true;
 
     }
 

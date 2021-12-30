@@ -159,6 +159,16 @@
 
         eventHandler.on("koi:event", bridge_processEvent);
         (await Bridge.query("koi:history")).data.forEach(bridge_processEvent);
+
+        for (const [platform, viewers] of Object.entries((await Bridge.query("koi:viewers")).data)) {
+            bridge_processEvent({
+                streamer: {
+                    platform: platform
+                },
+                viewers: viewers,
+                event_type: "VIEWER_LIST"
+            });
+        }
     });
 </script>
 
