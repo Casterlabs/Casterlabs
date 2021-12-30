@@ -19,8 +19,6 @@ import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import xyz.e3ndr.fastloggingframework.logging.FastLogger;
-import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
@@ -130,7 +128,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
             .put("data", payload)
             .toString();
 
-        FastLogger.logStatic(LogLevel.TRACE, json);
+//        FastLogger.logStatic(LogLevel.TRACE, json);
 
         this.websocket.send(
             json
