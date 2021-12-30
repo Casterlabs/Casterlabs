@@ -8,8 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
+
+import org.jnativehook.GlobalScreen;
 
 import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.BuildInfo;
@@ -90,6 +94,21 @@ public class Bootstrap implements Runnable {
         });
 
         ConsoleUtil.getPlatform(); // Init ConsoleUtil.
+
+        // This dependency is found in PluginSDK.
+        try {
+            // Mute it's logger.
+            Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+
+            logger.setLevel(Level.WARNING);
+            logger.setUseParentHandlers(false);
+
+            // Enable it.
+            GlobalScreen.registerNativeHook();
+        } catch (Throwable t) {
+            FastLogger.logStatic(LogLevel.SEVERE, "An error occurred whilst enabling the global keyboard hook.");
+            FastLogger.logException(t);
+        }
 
         new Thread(() -> {
             new CommandLine(new Bootstrap()).execute(args); // Calls #run()

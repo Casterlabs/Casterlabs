@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.builtin.widgets.ChatWidget;
 import co.casterlabs.caffeinated.builtin.widgets.EmojiRainWidget;
+import co.casterlabs.caffeinated.builtin.widgets.KeyboardWidget;
 import co.casterlabs.caffeinated.builtin.widgets.NowPlayingWidget;
 import co.casterlabs.caffeinated.builtin.widgets.labels.DonationTotalLabel;
 import co.casterlabs.caffeinated.builtin.widgets.labels.RecentDonationLabel;
@@ -57,6 +58,7 @@ public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
 
         // Other
         this.getPlugins().registerWidget(this, NowPlayingWidget.DETAILS, NowPlayingWidget.class);
+        this.getPlugins().registerWidget(this, KeyboardWidget.DETAILS, KeyboardWidget.class);
 
         // Alerts
 //        this.getPlugins().registerWidget(this, DonationAlert.DETAILS, DonationAlert.class);
