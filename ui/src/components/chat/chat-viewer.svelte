@@ -346,6 +346,10 @@
                 <span class="label-text">Show Badges</span>
                 <input type="checkbox" bind:checked={showBadges} on:change={savePreferences} />
             </label>
+            <!-- <label class="checkbox">
+                <span class="label-text">Show Viewers</span>
+                <input type="checkbox" bind:checked={showViewers} on:change={savePreferences} />
+            </label> -->
             <label class="checkbox">
                 <span class="label-text">Show Viewers List</span>
                 <input type="checkbox" bind:checked={showViewersList} on:change={savePreferences} />
