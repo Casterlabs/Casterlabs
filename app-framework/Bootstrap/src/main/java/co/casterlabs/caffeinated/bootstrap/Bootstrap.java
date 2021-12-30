@@ -25,6 +25,7 @@ import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
 import co.casterlabs.caffeinated.localserver.LocalServer;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
+import co.casterlabs.caffeinated.pluginsdk.Currencies;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
@@ -132,6 +133,8 @@ public class Bootstrap implements Runnable {
 
         // Update the log level.
         logger.setCurrentLevel(FastLoggingFramework.getDefaultLevel());
+
+        Currencies.getBaseCurrency(); // Load the class.
 
         this.registerThemes();
         this.startApp();
