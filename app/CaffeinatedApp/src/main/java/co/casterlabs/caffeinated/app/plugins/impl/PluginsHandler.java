@@ -162,7 +162,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
         }
     }
 
-    public PluginContext loadPluginsFromFile(@NonNull File file) {
+    public PluginContext loadPluginsFromFile(@NonNull File file) throws Exception {
         try {
             List<CaffeinatedPlugin> toLoad = PluginLoader.loadFile(this, file);
             PluginContext ctx = unsafe_loadPlugins(toLoad, file.getName());
@@ -171,9 +171,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
 
             return ctx;
         } catch (Exception e) {
-            logger.severe("Failed to load plugins from %s", file.getName());
-            logger.exception(e);
-            return new PluginContext(Collections.emptyList(), false);
+            throw e;
         }
     }
 

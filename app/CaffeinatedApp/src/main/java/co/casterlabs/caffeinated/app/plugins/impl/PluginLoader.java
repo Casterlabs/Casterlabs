@@ -15,7 +15,7 @@ import java.util.Set;
 import org.reflections8.Reflections;
 
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
-import co.casterlabs.caffeinated.pluginsdk.PluginImplementation;
+import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPluginImplementation;
 import lombok.NonNull;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
@@ -24,20 +24,21 @@ public class PluginLoader {
 
     public static List<CaffeinatedPlugin> loadFile(@NonNull PluginsHandler pluginsInst, @NonNull File file) throws IOException {
         if (file.isFile()) {
-            Closeable err = null;
+            URLClassLoader classLoader = null;
 
             try {
                 URL url = file.toURI().toURL();
 
-                FastLogger.logStatic(url);
-                URLClassLoader classLoader = new URLClassLoader(new URL[] {
+                FastLogger.logStatic(file);
+                classLoader = new URLClassLoader(new URL[] {
                         url
                 });
-                err = classLoader;
 
                 return loadFromClassLoader(pluginsInst, classLoader);
-            } catch (MalformedURLException e) {
-                if (err != null) err.close();
+            } catch (Exception e) {
+                if (classLoader != null) {
+                    classLoader.close();
+                }
 
                 throw new IOException("Unable to load file", e);
             }
@@ -49,7 +50,7 @@ public class PluginLoader {
     public static List<CaffeinatedPlugin> loadFromClassLoader(@NonNull PluginsHandler pluginsInst, ClassLoader classLoader) throws IOException {
         try {
             Reflections reflections = new Reflections(classLoader);
-            Set<Class<?>> types = reflections.getTypesAnnotatedWith(PluginImplementation.class);
+            Set<Class<?>> types = reflections.getTypesAnnotatedWith(CaffeinatedPluginImplementation.class);
             List<CaffeinatedPlugin> plugins = new LinkedList<>();
 
             FastLogger.logStatic(types);

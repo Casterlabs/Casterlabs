@@ -87,8 +87,8 @@ public class PluginIntegration {
                     );
                     FastLogger.logStatic(LogLevel.INFO, "Loaded %s", fileName);
                 } catch (Exception e) {
-                    FastLogger.logStatic(LogLevel.WARNING, "Unable to load %s as a plugin, make sure that it's *actually* a plugin!", fileName);
-                    FastLogger.logStatic(LogLevel.WARNING, e);
+                    FastLogger.logStatic(LogLevel.SEVERE, "Unable to load %s as a plugin, make sure that it's *actually* a plugin!", fileName);
+                    FastLogger.logException(e);
                 }
             }
         }
