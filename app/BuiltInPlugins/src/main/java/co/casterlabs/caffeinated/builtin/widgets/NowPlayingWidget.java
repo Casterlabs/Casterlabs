@@ -17,7 +17,7 @@ public class NowPlayingWidget extends Widget {
         .withIcon("music")
         .withCategory(WidgetDetailsCategory.OTHER)
         .withFriendlyName("Now Playing Widget")
-        .withShowDemo(true);
+        .withShowDemo(true, 64 / 199d);
 
     private static final WidgetSettingsLayout LAYOUT = new WidgetSettingsLayout()
         .addSection(

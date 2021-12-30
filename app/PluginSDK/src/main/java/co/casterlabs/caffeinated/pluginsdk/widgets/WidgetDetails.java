@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.pluginsdk.widgets;
 
 import co.casterlabs.rakurai.json.annotating.JsonClass;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.With;
@@ -17,7 +18,9 @@ public class WidgetDetails {
     private @With String icon;
     private @With String friendlyName;
     private @With WidgetDetailsCategory category;
-    private @With boolean showDemo;
+
+    private @With(AccessLevel.PRIVATE) boolean showDemo;
+    private @With(AccessLevel.PRIVATE) double demoAspectRatio;
 
     public WidgetDetails() {
         this.namespace = null;
@@ -25,6 +28,12 @@ public class WidgetDetails {
         this.friendlyName = null;
         this.category = WidgetDetailsCategory.OTHER;
         this.showDemo = false;
+        this.demoAspectRatio = 0;
+    }
+
+    public WidgetDetails withShowDemo(boolean showDemo, double aspectRatio) {
+        return this.withShowDemo(showDemo)
+            .withDemoAspectRatio(aspectRatio);
     }
 
     public void validate() {

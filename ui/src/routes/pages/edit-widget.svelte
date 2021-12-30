@@ -227,8 +227,10 @@
             {/if}
 
             {#if widget.details.showDemo && widgetUrl}
-                <div class="widget-demo">
-                    <iframe src={widgetUrl} title="Preview" />
+                <div class="widget-demo-container">
+                    <div class="widget-demo" style="padding-bottom: {widget.details.demoAspectRatio * 100}%;">
+                        <iframe src={widgetUrl} title="Preview" />
+                    </div>
                 </div>
             {/if}
         </div>
@@ -341,16 +343,19 @@
         margin: auto;
     }
 
-    .widget-demo {
+    .widget-demo-container {
         position: relative;
+        margin-top: 30px;
         width: 75%;
-        padding-bottom: 25%;
         max-width: 400px;
         margin: auto;
     }
 
+    .widget-demo {
+        width: 100%;
+    }
+
     .widget-demo iframe {
-        margin-top: 30px;
         position: absolute;
         width: 100%;
         height: 100%;
