@@ -22,11 +22,9 @@ import co.casterlabs.caffeinated.builtin.widgets.labels.generic.StreamUptimeLabe
 import co.casterlabs.caffeinated.builtin.widgets.labels.generic.SubscriberCountLabel;
 import co.casterlabs.caffeinated.builtin.widgets.labels.generic.ViewersCountLabel;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
-import co.casterlabs.caffeinated.pluginsdk.PluginImplementation;
 import co.casterlabs.rakurai.io.IOUtil;
 import lombok.NonNull;
 
-@PluginImplementation
 public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
 
     @Override

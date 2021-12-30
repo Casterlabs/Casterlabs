@@ -3,7 +3,6 @@ package co.casterlabs.caffeinated.app.plugins.impl;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -18,7 +17,8 @@ import org.reflections8.Reflections;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.PluginImplementation;
 import lombok.NonNull;
-import xyz.e3ndr.reflectionlib.helpers.AccessHelper;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class PluginLoader {
 
@@ -29,9 +29,10 @@ public class PluginLoader {
             try {
                 URL url = file.toURI().toURL();
 
+                FastLogger.logStatic(url);
                 URLClassLoader classLoader = new URLClassLoader(new URL[] {
                         url
-                }, PluginLoader.class.getClassLoader());
+                });
                 err = classLoader;
 
                 return loadFromClassLoader(pluginsInst, classLoader);
@@ -47,10 +48,11 @@ public class PluginLoader {
 
     public static List<CaffeinatedPlugin> loadFromClassLoader(@NonNull PluginsHandler pluginsInst, ClassLoader classLoader) throws IOException {
         try {
-
             Reflections reflections = new Reflections(classLoader);
             Set<Class<?>> types = reflections.getTypesAnnotatedWith(PluginImplementation.class);
             List<CaffeinatedPlugin> plugins = new LinkedList<>();
+
+            FastLogger.logStatic(types);
 
             // Frees an ungodly amount of ram, Reflections seems to be inefficient.
             reflections = null;
@@ -71,17 +73,9 @@ public class PluginLoader {
                             CaffeinatedPlugin plugin = (CaffeinatedPlugin) clazz.newInstance();
                             ServiceLoader<Driver> sqlDrivers = ServiceLoader.load(java.sql.Driver.class, classLoader);
 
-                            Field classLoaderField = CaffeinatedPlugin.class.getDeclaredField("classLoader");
-                            Field sqlDriversField = CaffeinatedPlugin.class.getDeclaredField("sqlDrivers");
-                            Field pluginsField = CaffeinatedPlugin.class.getDeclaredField("plugins");
-
-                            AccessHelper.makeAccessible(classLoaderField);
-                            AccessHelper.makeAccessible(sqlDriversField);
-                            AccessHelper.makeAccessible(pluginsField);
-
-                            classLoaderField.set(plugin, classLoader);
-                            sqlDriversField.set(plugin, sqlDrivers);
-                            pluginsField.set(plugin, pluginsInst);
+                            ReflectionLib.setValue(plugin, "classLoader", classLoader);
+                            ReflectionLib.setValue(plugin, "sqlDrivers", sqlDrivers);
+                            ReflectionLib.setValue(plugin, "plugins", pluginsInst);
 
                             // Load in the sql drivers.
                             for (Driver driver : sqlDrivers) {

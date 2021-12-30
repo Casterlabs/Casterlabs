@@ -3,6 +3,7 @@ package co.casterlabs.caffeinated.app.plugins;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import co.casterlabs.caffeinated.app.plugins.impl.PluginContext;
 import co.casterlabs.caffeinated.app.plugins.impl.PluginsHandler;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.UIBackgroundColor;
+import co.casterlabs.caffeinated.builtin.CaffeinatedDefaultPlugin;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
@@ -65,11 +67,13 @@ public class PluginIntegration {
         pluginsDir.mkdir();
     }
 
+    @SneakyThrows
     public void init() {
         // Load the built-in widgets.
-        this.contexts.add(
-            this.plugins.loadPluginsFromClassLoader(this.getClass().getClassLoader())
-        );
+        CaffeinatedPlugin defaultPlugin = new CaffeinatedDefaultPlugin();
+
+        ReflectionLib.setValue(defaultPlugin, "plugins", this.plugins);
+        this.contexts.add(this.plugins.unsafe_loadPlugins(Arrays.asList(defaultPlugin), "Caffeinated"));
 
         for (File file : pluginsDir.listFiles()) {
             String fileName = file.getName();

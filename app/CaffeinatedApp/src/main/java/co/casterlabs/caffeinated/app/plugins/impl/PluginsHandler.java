@@ -154,7 +154,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
         try {
             List<CaffeinatedPlugin> toLoad = PluginLoader.loadFromClassLoader(this, loader);
 
-            return loadPlugins0(toLoad, loader.toString());
+            return unsafe_loadPlugins(toLoad, loader.toString());
         } catch (Exception e) {
             logger.severe("Failed to load plugins from %s", loader);
             logger.exception(e);
@@ -165,7 +165,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
     public PluginContext loadPluginsFromFile(@NonNull File file) {
         try {
             List<CaffeinatedPlugin> toLoad = PluginLoader.loadFile(this, file);
-            PluginContext ctx = loadPlugins0(toLoad, file.getName());
+            PluginContext ctx = unsafe_loadPlugins(toLoad, file.getName());
 
             ctx.setFile(file);
 
@@ -177,7 +177,7 @@ public class PluginsHandler implements CaffeinatedPlugins {
         }
     }
 
-    private PluginContext loadPlugins0(List<CaffeinatedPlugin> toLoad, String source) {
+    public PluginContext unsafe_loadPlugins(List<CaffeinatedPlugin> toLoad, String source) {
         List<String> pluginIds = new LinkedList<>();
         boolean hasSucceeded = false;
 
@@ -217,11 +217,13 @@ public class PluginsHandler implements CaffeinatedPlugins {
     public void registerPlugin(@NonNull CaffeinatedPlugin plugin) {
         String id = plugin.getId();
 
-        assert !this.plugins.containsKey(id) : "A plugin with that id is already registered.";
-
-        logger.info("Loaded plugin %s (%s)", plugin.getName(), id);
-        plugin.onInit();
-        this.plugins.put(id, plugin);
+        if (this.plugins.containsKey(id)) {
+            logger.warn("A plugin with an id of '%s' is already registered.", plugin.getId());
+        } else {
+            logger.info("Loaded plugin %s (%s)", plugin.getName(), id);
+            plugin.onInit();
+            this.plugins.put(id, plugin);
+        }
     }
 
     @SneakyThrows
