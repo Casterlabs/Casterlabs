@@ -11,7 +11,15 @@
 		<script src="/init.js"></script>
 		<script type="module" src="/js/interceptAnchors.js"></script>
 
-		<script>
+		<script type="module">
+			import Currencies from "/js/currencies.mjs";
+
+			Object.defineProperty(window, "Currencies", {
+				value: Currencies,
+				writable: false,
+				configurable: false
+			});
+
 			// if (location.pathname != "/") {
 			// 	console.warn("[app.html]", "Reload detected, redirecting to /");
 			// 	location.href = "/";
