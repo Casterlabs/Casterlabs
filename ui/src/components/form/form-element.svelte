@@ -10,7 +10,7 @@
     import FormText from "./elements/text.svelte";
     import FormTextArea from "./elements/textarea.svelte";
     import FormPassword from "./elements/password.svelte";
-    // import FormCurrency from "./elements/currency.svelte";
+    import FormCurrency from "./elements/currency.svelte";
     // import FormFont from "./elements/font.svelte";
     // import FormDynamic from "./elements/dynamic.svelte";
     // import FormFile from "./elements/file.svelte";
@@ -66,6 +66,8 @@
         <FormTextArea {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else if type === "password"}
         <FormPassword {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
+    {:else if type === "currency"}
+        <FormCurrency {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else}
         ... {type}
     {/if}
