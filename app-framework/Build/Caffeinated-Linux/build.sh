@@ -2,7 +2,7 @@
 
 
 # Let's get it started.
-cd app-framework/Build/Caffeinated-Linux
+cd app/Build/Caffeinated-Linux
 
 echo "Building for Linux..."
 

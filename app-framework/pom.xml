@@ -9,7 +9,7 @@
 
 	<modules>
 		<module>Bootstrap</module>
-		<module>App</module>
+		<module>CaffeinatedApp</module>
 		<module>Util</module>
 		<module>PluginSDK</module>
 		<module>Koi</module>

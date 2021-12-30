@@ -5,19 +5,19 @@
 if [[ $@ != *"nocompile"* ]]; then
     # Delete old ui build stuff.
     rm -rf ui/build
-    rm -rf app-framework/Bootstrap/src/main/resources/app
+    rm -rf app/Bootstrap/src/main/resources/app
     
     # Build UI
     cd ui
     npm i
     npm run build
     
-    # Copy output to app-framework/Bootstrap/src/main/resources/app
+    # Copy output to app/Bootstrap/src/main/resources/app
     cd ..
-    cp -r ui/build app-framework/Bootstrap/src/main/resources/app
+    cp -r ui/build app/Bootstrap/src/main/resources/app
     
     # Compile the maven project
-	cd app-framework
+	cd app
     mvn clean package
     cd ..
 fi
@@ -34,13 +34,13 @@ if [[ $@ != *"nodist"* ]]; then
     echo "Completing packaging of application."
     echo ""
     
-    sh app-framework/Build/Caffeinated-Windows/build.sh
+    sh app/Build/Caffeinated-Windows/build.sh
     echo ""
 
-    #sh app-framework/Build/Caffeinated-Linux/build.sh
+    #sh app/Build/Caffeinated-Linux/build.sh
     #echo ""
 
-    sh app-framework/Build/Caffeinated-MacOS/build.sh
+    sh app/Build/Caffeinated-MacOS/build.sh
     echo ""
 
 fi

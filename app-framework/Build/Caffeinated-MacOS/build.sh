@@ -3,7 +3,7 @@
 
 # Let's get it started.
 mkdir dist/macos/Casterlabs-Caffeinated.app
-cd app-framework/Build/Caffeinated-MacOS
+cd app/Build/Caffeinated-MacOS
 
 echo "Building for MacOS..."
 

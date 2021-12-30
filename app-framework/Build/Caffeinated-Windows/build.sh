@@ -2,7 +2,7 @@
 
 
 # Let's get it started.
-cd app-framework/Build/Caffeinated-Windows
+cd app/Build/Caffeinated-Windows
 
 echo "Building for Windows..."
 
