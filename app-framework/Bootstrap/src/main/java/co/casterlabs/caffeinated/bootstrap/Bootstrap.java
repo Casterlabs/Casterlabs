@@ -134,7 +134,7 @@ public class Bootstrap implements Runnable {
         // Update the log level.
         logger.setCurrentLevel(FastLoggingFramework.getDefaultLevel());
 
-        Currencies.getBaseCurrency(); // Load the class.
+        Currencies.getCurrencies(); // Load the class.
 
         this.registerThemes();
         this.startApp();
