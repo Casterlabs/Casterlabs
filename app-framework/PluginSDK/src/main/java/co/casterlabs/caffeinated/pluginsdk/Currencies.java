@@ -1,6 +1,5 @@
 package co.casterlabs.caffeinated.pluginsdk;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -92,7 +91,7 @@ public class Currencies {
         });
     }
 
-    public static Promise<Double> convertCurrency(double amount, @NonNull String from, @NonNull String to) throws IOException, ApiException {
+    public static Promise<Double> convertCurrency(double amount, @NonNull String from, @NonNull String to) {
         return new Promise<>(() -> {
             String response = WebUtil.sendHttpRequest(
                 new Request.Builder()
@@ -117,7 +116,7 @@ public class Currencies {
     /**
      * @return An HTML formatted string to be displayed to the user.
      */
-    public static Promise<String> convertAndFormatCurrency(double amount, @NonNull String from, @NonNull String to) throws IOException, ApiException {
+    public static Promise<String> convertAndFormatCurrency(double amount, @NonNull String from, @NonNull String to) {
         return new Promise<>(() -> {
             String response = WebUtil.sendHttpRequest(
                 new Request.Builder()
