@@ -46,6 +46,13 @@ public class RecentFollowerLabel extends GenericLabel implements KoiEventListene
         this.updateText();
     }
 
+    private void save() {
+        this.setSettings(
+            this.getSettings()
+                .put("recent_follower", Rson.DEFAULT.toJson(this.recentFollower))
+        );
+    }
+
     @Override
     protected List<WidgetSettingsButton> getButtons() {
         return Arrays.asList(
@@ -54,11 +61,8 @@ public class RecentFollowerLabel extends GenericLabel implements KoiEventListene
                 .withIconTitle("Reset Text")
                 .withOnClick(() -> {
                     this.recentFollower = null;
-                    this.setSettings(
-                        this.getSettings()
-                            .putNull("recent_follower")
-                    );
 
+                    this.save();
                     this.updateText();
                 })
         );
@@ -73,11 +77,7 @@ public class RecentFollowerLabel extends GenericLabel implements KoiEventListene
     public void onFollow(@Nullable FollowEvent event) {
         this.recentFollower = event.getFollower();
 
-        this.setSettings(
-            this.getSettings()
-                .put("recent_follower", Rson.DEFAULT.toJson(this.recentFollower))
-        );
-
+        this.save();
         this.updateText();
     }
 

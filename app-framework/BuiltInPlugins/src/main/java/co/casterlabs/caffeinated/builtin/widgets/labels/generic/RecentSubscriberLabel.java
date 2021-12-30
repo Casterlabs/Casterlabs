@@ -46,6 +46,13 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
         this.updateText();
     }
 
+    private void save() {
+        this.setSettings(
+            this.getSettings()
+                .put("recent_subscriber", Rson.DEFAULT.toJson(this.recentSubscriber))
+        );
+    }
+
     @Override
     protected List<WidgetSettingsButton> getButtons() {
         return Arrays.asList(
@@ -54,11 +61,8 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
                 .withIconTitle("Reset Text")
                 .withOnClick(() -> {
                     this.recentSubscriber = null;
-                    this.setSettings(
-                        this.getSettings()
-                            .putNull("recent_subscriber")
-                    );
 
+                    this.save();
                     this.updateText();
                 })
         );
@@ -77,11 +81,7 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
             this.recentSubscriber = event.getSubscriber();
         }
 
-        this.setSettings(
-            this.getSettings()
-                .put("recent_subscriber", Rson.DEFAULT.toJson(this.recentSubscriber))
-        );
-
+        this.save();
         this.updateText();
     }
 
