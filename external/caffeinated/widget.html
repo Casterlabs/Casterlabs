@@ -59,7 +59,7 @@
     <footer>
         <!-- type="module" helps isolate. -->
         <script type="module">
-            import * as Currencies from "./currencies.mjs";
+            import Currencies from "./currencies.mjs";
 
             const { pluginId, widgetId, authorization } = queryParams;
             const port = queryParams.port || "8092";
