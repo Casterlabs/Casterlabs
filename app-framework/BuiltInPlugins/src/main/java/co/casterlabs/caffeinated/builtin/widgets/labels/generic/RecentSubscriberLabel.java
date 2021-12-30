@@ -89,7 +89,8 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
         if (this.recentSubscriber == null) {
             this.currHtml = "";
         } else {
-            String html = String.valueOf(this.recentSubscriber.getDisplayname());
+            String html = this.recentSubscriber.getDisplayname();
+
             String prefix = HtmlEscape.escapeHtml(this.getSettings().getString("text.prefix")).replace(" ", "&nbsp;");
             String suffix = HtmlEscape.escapeHtml(this.getSettings().getString("text.suffix")).replace(" ", "&nbsp;");
 

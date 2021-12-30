@@ -53,6 +53,7 @@ public class SubscriberCountLabel extends GenericLabel implements KoiEventListen
         }
 
         String html = String.valueOf(subscriberCount);
+
         String prefix = HtmlEscape.escapeHtml(this.getSettings().getString("text.prefix")).replace(" ", "&nbsp;");
         String suffix = HtmlEscape.escapeHtml(this.getSettings().getString("text.suffix")).replace(" ", "&nbsp;");
 

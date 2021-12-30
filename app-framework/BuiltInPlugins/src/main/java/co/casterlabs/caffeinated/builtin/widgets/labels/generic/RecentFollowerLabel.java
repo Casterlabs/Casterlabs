@@ -85,7 +85,8 @@ public class RecentFollowerLabel extends GenericLabel implements KoiEventListene
         if (this.recentFollower == null) {
             this.currHtml = "";
         } else {
-            String html = String.valueOf(this.recentFollower.getDisplayname());
+            String html = this.recentFollower.getDisplayname();
+
             String prefix = HtmlEscape.escapeHtml(this.getSettings().getString("text.prefix")).replace(" ", "&nbsp;");
             String suffix = HtmlEscape.escapeHtml(this.getSettings().getString("text.suffix")).replace(" ", "&nbsp;");
 
