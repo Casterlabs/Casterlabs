@@ -124,4 +124,9 @@ public class RecentSubscriberLabel extends GenericLabel implements KoiEventListe
         return false;
     }
 
+    @Override
+    protected boolean enablePlatformOption() {
+        return false;
+    }
+
 }

@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import co.casterlabs.caffeinated.builtin.widgets.ChatWidget;
 import co.casterlabs.caffeinated.builtin.widgets.EmojiRainWidget;
 import co.casterlabs.caffeinated.builtin.widgets.NowPlayingWidget;
+import co.casterlabs.caffeinated.builtin.widgets.labels.DonationTotalLabel;
 import co.casterlabs.caffeinated.builtin.widgets.labels.generic.FollowerCountLabel;
 import co.casterlabs.caffeinated.builtin.widgets.labels.generic.RecentFollowerLabel;
 import co.casterlabs.caffeinated.builtin.widgets.labels.generic.RecentSubscriberLabel;
@@ -48,6 +49,7 @@ public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
         this.getPlugins().registerWidget(this, StreamUptimeLabel.DETAILS, StreamUptimeLabel.class);
         this.getPlugins().registerWidget(this, RecentSubscriberLabel.DETAILS, RecentSubscriberLabel.class);
         this.getPlugins().registerWidget(this, RecentFollowerLabel.DETAILS, RecentFollowerLabel.class);
+        this.getPlugins().registerWidget(this, DonationTotalLabel.DETAILS, DonationTotalLabel.class);
 
         // Other
         this.getPlugins().registerWidget(this, NowPlayingWidget.DETAILS, NowPlayingWidget.class);

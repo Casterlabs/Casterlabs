@@ -30,4 +30,9 @@ public class StreamUptimeLabel extends GenericLabel {
         return CaffeinatedDefaultPlugin.resolveResource("/streamuptime.html");
     }
 
+    @Override
+    protected boolean enablePlatformOption() {
+        return false;
+    }
+
 }

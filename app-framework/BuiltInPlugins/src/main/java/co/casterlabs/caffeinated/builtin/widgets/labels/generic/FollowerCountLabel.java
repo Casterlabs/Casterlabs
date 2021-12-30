@@ -86,4 +86,9 @@ public class FollowerCountLabel extends GenericLabel implements KoiEventListener
         return false;
     }
 
+    @Override
+    protected boolean enablePlatformOption() {
+        return true;
+    }
+
 }

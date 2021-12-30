@@ -120,4 +120,9 @@ public class RecentFollowerLabel extends GenericLabel implements KoiEventListene
         return false;
     }
 
+    @Override
+    protected boolean enablePlatformOption() {
+        return false;
+    }
+
 }

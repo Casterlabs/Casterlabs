@@ -86,4 +86,9 @@ public class SubscriberCountLabel extends GenericLabel implements KoiEventListen
         return false;
     }
 
+    @Override
+    protected boolean enablePlatformOption() {
+        return true;
+    }
+
 }

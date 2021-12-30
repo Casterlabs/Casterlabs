@@ -79,7 +79,7 @@ public abstract class GenericLabel extends Widget implements KoiEventListener {
                 .addItem(WidgetSettingsItem.asText("suffix", "Suffix", "", ""))
         );
 
-        if (this.isMultiPlatform()) {
+        if (this.enablePlatformOption() && this.isMultiPlatform()) {
             layout.addSection(
                 new WidgetSettingsSection("platform", "Platform")
                     .addItem(WidgetSettingsItem.asDropdown("platform", "Platform", platforms[0], platforms))
@@ -133,6 +133,8 @@ public abstract class GenericLabel extends Widget implements KoiEventListener {
     }
 
     protected abstract boolean hasHighlight();
+
+    protected abstract boolean enablePlatformOption();
 
     protected List<WidgetSettingsButton> getButtons() {
         return Collections.emptyList();

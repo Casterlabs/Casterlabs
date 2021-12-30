@@ -151,6 +151,19 @@ public class WidgetSettingsItem {
         );
     }
 
+    /* Currency */
+
+    public static WidgetSettingsItem asCurrency(@NonNull String id, @NonNull String name, @NonNull String defaultValue, boolean allowDefault) {
+        return new WidgetSettingsItem(
+            id,
+            name,
+            WidgetSettingsItemType.CURRENCY,
+            new JsonObject()
+                .put("defaultValue", defaultValue)
+                .put("allowDefault", allowDefault)
+        );
+    }
+
     public static enum WidgetSettingsItemType {
         UNKNOWN,
 
@@ -161,6 +174,7 @@ public class WidgetSettingsItem {
         TEXT,
         TEXTAREA,
         PASSWORD,
+        CURRENCY,
 //        HTML,
 
     }
