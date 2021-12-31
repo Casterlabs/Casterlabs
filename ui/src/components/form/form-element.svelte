@@ -12,11 +12,10 @@
     import FormPassword from "./elements/password.svelte";
     import FormCurrency from "./elements/currency.svelte";
     import FormFont from "./elements/font.svelte";
+    import FormRange from "./elements/range.svelte";
     // import FormDynamic from "./elements/dynamic.svelte";
     // import FormFile from "./elements/file.svelte";
-    // import FormRange from "./elements/range.svelte";
     // import FormSearch from "./elements/search.svelte";
-    // import FormButton from "./elements/button.svelte";
     // import FormIframe from "./elements/iframe.svelte";
 
     const type = widgetSettingsOption.type.toLowerCase();
@@ -70,6 +69,8 @@
         <FormCurrency {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else if type === "font"}
         <FormFont {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
+    {:else if type === "range"}
+        <FormRange {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else}
         ... {type}
     {/if}

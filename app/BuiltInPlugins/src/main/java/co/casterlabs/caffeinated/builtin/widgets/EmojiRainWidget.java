@@ -24,7 +24,7 @@ public class EmojiRainWidget extends Widget {
                 .addItem(WidgetSettingsItem.asNumber("life_time", "Time on Screen (Seconds)", 15, 1, 0, 128))
                 .addItem(WidgetSettingsItem.asNumber("max_emojis", "Max Emojis on Screen", 1000, 1, 2, 10000))
                 .addItem(WidgetSettingsItem.asNumber("size", "Emoji Size (px)", 32, 1, 0, 128))
-                .addItem(WidgetSettingsItem.asNumber("speed", "Fall Speed", 25, 1, 0, 100)) // TODO make this a slider.
+                .addItem(WidgetSettingsItem.asRange("speed", "Fall Speed", 25, 1, 0, 100))
         );
 
     @Override

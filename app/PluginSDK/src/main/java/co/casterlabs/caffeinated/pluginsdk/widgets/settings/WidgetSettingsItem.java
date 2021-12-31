@@ -176,6 +176,21 @@ public class WidgetSettingsItem {
         );
     }
 
+    /* Range */
+
+    public static WidgetSettingsItem asRange(@NonNull String id, @NonNull String name, @NonNull Number defaultValue, @NonNull Number step, @NonNull Number min, @NonNull Number max) {
+        return new WidgetSettingsItem(
+            id,
+            name,
+            WidgetSettingsItemType.RANGE,
+            new JsonObject()
+                .put("defaultValue", defaultValue)
+                .put("step", step)
+                .put("min", min)
+                .put("max", max)
+        );
+    }
+
     public static enum WidgetSettingsItemType {
         UNKNOWN,
 
@@ -188,6 +203,7 @@ public class WidgetSettingsItem {
         PASSWORD,
         CURRENCY,
         FONT,
+        RANGE,
 
     }
 
