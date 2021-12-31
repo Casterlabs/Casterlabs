@@ -4,6 +4,8 @@
 
     import { createEventDispatcher } from "svelte";
 
+    const { step, min, max } = widgetSettingsOption.extraData;
+
     const dispatch = createEventDispatcher();
 
     function onChange() {
@@ -19,4 +21,4 @@
     }
 </script>
 
-<input class="number" type="number" bind:value on:change={onChange} on:input={onInput} />
+<input class="number" type="number" bind:value on:change={onChange} on:input={onInput} {step} {min} {max} />
