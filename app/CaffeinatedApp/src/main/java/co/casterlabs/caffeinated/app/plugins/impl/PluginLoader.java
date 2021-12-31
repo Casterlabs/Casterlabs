@@ -17,7 +17,6 @@ import org.reflections8.Reflections;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPluginImplementation;
 import lombok.NonNull;
-import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class PluginLoader {
@@ -29,10 +28,9 @@ public class PluginLoader {
             try {
                 URL url = file.toURI().toURL();
 
-                FastLogger.logStatic(file);
                 classLoader = new URLClassLoader(new URL[] {
                         url
-                });
+                }, PluginLoader.class.getClassLoader());
 
                 return loadFromClassLoader(pluginsInst, classLoader);
             } catch (Exception e) {
@@ -52,8 +50,6 @@ public class PluginLoader {
             Reflections reflections = new Reflections(classLoader);
             Set<Class<?>> types = reflections.getTypesAnnotatedWith(CaffeinatedPluginImplementation.class);
             List<CaffeinatedPlugin> plugins = new LinkedList<>();
-
-            FastLogger.logStatic(types);
 
             // Frees an ungodly amount of ram, Reflections seems to be inefficient.
             reflections = null;
