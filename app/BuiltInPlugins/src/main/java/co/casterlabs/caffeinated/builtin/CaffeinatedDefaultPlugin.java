@@ -12,6 +12,9 @@ import co.casterlabs.caffeinated.builtin.widgets.ChatWidget;
 import co.casterlabs.caffeinated.builtin.widgets.EmojiRainWidget;
 import co.casterlabs.caffeinated.builtin.widgets.KeyboardWidget;
 import co.casterlabs.caffeinated.builtin.widgets.NowPlayingWidget;
+import co.casterlabs.caffeinated.builtin.widgets.goals.CustomGoal;
+import co.casterlabs.caffeinated.builtin.widgets.goals.FollowersGoal;
+import co.casterlabs.caffeinated.builtin.widgets.goals.SubscribersGoal;
 import co.casterlabs.caffeinated.builtin.widgets.labels.DonationTotalLabel;
 import co.casterlabs.caffeinated.builtin.widgets.labels.RecentDonationLabel;
 import co.casterlabs.caffeinated.builtin.widgets.labels.TopDonationLabel;
@@ -57,6 +60,11 @@ public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
         // Other
         this.getPlugins().registerWidget(this, NowPlayingWidget.DETAILS, NowPlayingWidget.class);
         this.getPlugins().registerWidget(this, KeyboardWidget.DETAILS, KeyboardWidget.class);
+
+        // Goals
+        this.getPlugins().registerWidget(this, FollowersGoal.DETAILS, FollowersGoal.class);
+        this.getPlugins().registerWidget(this, SubscribersGoal.DETAILS, SubscribersGoal.class);
+        this.getPlugins().registerWidget(this, CustomGoal.DETAILS, CustomGoal.class);
 
         // Alerts
 //        this.getPlugins().registerWidget(this, DonationAlert.DETAILS, DonationAlert.class);
