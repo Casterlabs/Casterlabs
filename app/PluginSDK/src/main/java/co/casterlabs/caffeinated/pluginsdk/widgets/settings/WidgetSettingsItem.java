@@ -164,6 +164,18 @@ public class WidgetSettingsItem {
         );
     }
 
+    /* Font */
+
+    public static @NonNull WidgetSettingsItem asFont(String id, String name, String defaultValue) {
+        return new WidgetSettingsItem(
+            id,
+            name,
+            WidgetSettingsItemType.FONT,
+            new JsonObject()
+                .put("defaultValue", defaultValue)
+        );
+    }
+
     public static enum WidgetSettingsItemType {
         UNKNOWN,
 
@@ -175,7 +187,7 @@ public class WidgetSettingsItem {
         TEXTAREA,
         PASSWORD,
         CURRENCY,
-//        HTML,
+        FONT,
 
     }
 

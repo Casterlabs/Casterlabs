@@ -61,7 +61,7 @@ public abstract class GenericLabel extends Widget implements KoiEventListener {
 
         {
             WidgetSettingsSection textStyle = new WidgetSettingsSection("text_style", "Style")
-//              .addItem(WidgetSettingsItem.asUnknown("font", "Font", "Poppins"))
+                .addItem(WidgetSettingsItem.asFont("font", "Font", "Poppins"))
                 .addItem(WidgetSettingsItem.asNumber("font_size", "Font Size (px)", 16, 1, 0, 128))
                 .addItem(WidgetSettingsItem.asDropdown("text_align", "Text Align", "Left", "Left", "Right", "Center"))
                 .addItem(WidgetSettingsItem.asColor("text_color", "Text Color", "#ffffff"));
