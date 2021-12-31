@@ -65,6 +65,8 @@
         height: 100%;
         margin: 5px;
         position: relative;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     #total-count {
