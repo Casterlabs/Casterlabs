@@ -66,7 +66,7 @@ public class AppUI {
                 Set<String> systemFonts = new HashSet<>(allFonts.length);
 
                 for (Font font : allFonts) {
-                    systemFonts.add(font.getFamily());
+                    systemFonts.add(font.getFamily().trim());
                 }
 
                 List<String> listOfSystemFonts = new ArrayList<>(systemFonts);
@@ -91,7 +91,7 @@ public class AppUI {
                     for (JsonElement e : items) {
                         JsonObject font = e.getAsObject();
 
-                        googleFonts.add(font.getString("family"));
+                        googleFonts.add(font.getString("family").trim());
                     }
 
                     Collections.sort(googleFonts);
