@@ -22,3 +22,9 @@
 </script>
 
 <input class="number" type="number" bind:value on:change={onChange} on:input={onInput} {step} {min} {max} />
+
+<style>
+    .number {
+        color: var(--text-color);
+    }
+</style>
