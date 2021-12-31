@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.bootstrap.theming;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,12 @@ public abstract class ThemeableJFrame extends JFrame {
      * Used to trick some platforms into re-rendering the frame.
      */
     protected final void flashVisibility() {
+        List<Image> images = this.getIconImages();
+
         super.setVisible(false);
         super.setVisible(true);
+
+        this.setIconImages(images);
     }
 
     @Override
