@@ -1,10 +1,17 @@
 package co.casterlabs.caffeinated.app.ui;
 
 import java.awt.Desktop;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
@@ -19,15 +26,23 @@ import co.casterlabs.caffeinated.app.ui.events.AppUIEventType;
 import co.casterlabs.caffeinated.app.ui.events.AppUIOpenLinkEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUISaveChatViewerPreferencesEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUIThemeLoadedEvent;
+import co.casterlabs.caffeinated.util.WebUtil;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
+import co.casterlabs.rakurai.json.element.JsonArray;
+import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.Getter;
 import lombok.NonNull;
+import okhttp3.Request;
 import xyz.e3ndr.eventapi.EventHandler;
 import xyz.e3ndr.eventapi.listeners.EventListener;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class AppUI {
+    private static final String GOOGLE_FONTS_API_KEY = "AIzaSyBuFeOYplWvsOlgbPeW8OfPUejzzzTCITM";
+
     private static final long TOAST_DURATION = 2250; // 2.25s
 
     private static EventHandler<AppUIEventType> handler = new EventHandler<>();
@@ -35,8 +50,72 @@ public class AppUI {
 
     private @Getter boolean uiFinishedLoad = false;
 
+    private @Getter List<String> systemFonts = Collections.emptyList();
+    private @Getter List<String> googleFonts = Collections.emptyList();
+    private @Getter List<String> allFonts = Collections.emptyList();
+
     public AppUI() {
         handler.register(this);
+
+        new AsyncTask(() -> {
+            try {
+                GraphicsEnvironment ge = GraphicsEnvironment
+                    .getLocalGraphicsEnvironment();
+
+                Font[] allFonts = ge.getAllFonts();
+                Set<String> systemFonts = new HashSet<>(allFonts.length);
+
+                for (Font font : allFonts) {
+                    systemFonts.add(font.getFamily());
+                }
+
+                List<String> listOfSystemFonts = new ArrayList<>(systemFonts);
+
+                Collections.sort(listOfSystemFonts);
+
+                this.systemFonts = Collections.unmodifiableList(listOfSystemFonts);
+            } catch (Exception e) {
+                FastLogger.logException(e);
+            }
+
+            try {
+                JsonObject response = Rson.DEFAULT.fromJson(
+                    WebUtil.sendHttpRequest(new Request.Builder().url("https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=" + GOOGLE_FONTS_API_KEY)),
+                    JsonObject.class
+                );
+
+                if (response.containsKey("items")) {
+                    JsonArray items = response.getArray("items");
+                    List<String> googleFonts = new ArrayList<>(items.size());
+
+                    for (JsonElement e : items) {
+                        JsonObject font = e.getAsObject();
+
+                        googleFonts.add(font.getString("family"));
+                    }
+
+                    Collections.sort(googleFonts);
+
+                    this.googleFonts = Collections.unmodifiableList(googleFonts);
+                }
+            } catch (Exception e) {
+                FastLogger.logException(e);
+            }
+
+            Set<String> combined = new HashSet<>(this.systemFonts.size() + this.googleFonts.size());
+
+            combined.addAll(this.systemFonts);
+            combined.addAll(this.googleFonts);
+
+            List<String> allFonts = new ArrayList<>(combined);
+
+            Collections.sort(allFonts);
+
+            this.allFonts = Collections.unmodifiableList(allFonts);
+
+            // This doesn't update, so we register it and leave it be.
+            new BridgeValue<List<String>>("ui:fonts").set(this.allFonts);
+        });
     }
 
     public void init() {
