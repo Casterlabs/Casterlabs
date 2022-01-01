@@ -201,11 +201,13 @@ public class PluginIntegration {
         Widget widget = this.plugins.getWidget(event.getId());
 
         String conductorKey = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorKey();
+        int conductorPort = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorPort();
         String url = String.format(
-            "https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=%s&widgetId=%s&authorization=%s",
+            "https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=%s&widgetId=%s&authorization=%s&port=%d",
             widget.getPlugin().getId(),
             widget.getId(),
-            conductorKey
+            conductorKey,
+            conductorPort
         );
 
         ClipboardUtil.copy(url);
