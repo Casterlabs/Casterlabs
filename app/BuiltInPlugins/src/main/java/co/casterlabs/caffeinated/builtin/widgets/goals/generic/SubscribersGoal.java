@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.builtin.widgets.goals;
+package co.casterlabs.caffeinated.builtin.widgets.goals.generic;
 
 import org.jetbrains.annotations.Nullable;
 
