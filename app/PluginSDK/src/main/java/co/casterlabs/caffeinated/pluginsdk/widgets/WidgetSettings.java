@@ -27,7 +27,7 @@ public class WidgetSettings {
     }
 
     public boolean has(@NonNull String key) {
-        return this.widget.settings().has(key);
+        return this.widget.settings.containsKey(key);
     }
 
     /* ---------------- */
