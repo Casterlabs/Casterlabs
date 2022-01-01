@@ -29,8 +29,8 @@ public class CustomGoal extends Widget {
     public void onInit() {
         this.renderSettingsLayout();
 
-        if (this.getSettings().containsKey("goal.value")) {
-            this.update(this.getSettings().getNumber("goal.value").doubleValue());
+        if (this.settings().has("goal.value")) {
+            this.update(this.settings().getNumber("goal.value").doubleValue());
         }
     }
 
@@ -38,7 +38,7 @@ public class CustomGoal extends Widget {
     protected void onSettingsUpdate() {
         this.renderSettingsLayout();
 
-        this.update(this.getSettings().getNumber("goal.value").doubleValue());
+        this.update(this.settings().getNumber("goal.value").doubleValue());
     }
 
     private void renderSettingsLayout() {
@@ -53,7 +53,7 @@ public class CustomGoal extends Widget {
     protected WidgetSettingsLayout generateSettingsLayout() {
         WidgetSettingsLayout layout = new WidgetSettingsLayout();
 
-        String currentStyle = this.getSettings().containsKey("style.style") ? this.getSettings().getString("style.style") : "Text";
+        String currentStyle = this.settings().has("style.style") ? this.settings().getString("style.style") : "Text";
 
         {
             WidgetSettingsSection barStyle = new WidgetSettingsSection("style", "Style")

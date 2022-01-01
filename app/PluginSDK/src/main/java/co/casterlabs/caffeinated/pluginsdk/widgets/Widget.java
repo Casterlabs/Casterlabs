@@ -47,7 +47,14 @@ public abstract class Widget {
     // </All set by reflection>
 
     private @JsonField @Nullable WidgetSettingsLayout settingsLayout;
-    private @Reflective @JsonField @NonNull JsonObject settings;
+
+    // Package visiblity.
+    @Reflective
+    @JsonField
+    @NonNull
+    JsonObject settings;
+
+    private WidgetSettings widgetSettings = new WidgetSettings(this);
 
     private @Reflective Set<KoiEventListener> koiListeners = new HashSet<>();
 
@@ -206,8 +213,8 @@ public abstract class Widget {
     public final synchronized <T extends Widget> T setSettingsLayout(@NonNull WidgetSettingsLayout newSettingsLayout, boolean preserveExtraSettings) {
         this.settingsLayout = newSettingsLayout;
 
-        JsonObject oldSettings = this.getSettings();
-        JsonObject newSettings = preserveExtraSettings ? this.getSettings() : new JsonObject(); // Clone.
+        JsonObject oldSettings = this.settings().getJson();
+        JsonObject newSettings = preserveExtraSettings ? this.settings().getJson() : new JsonObject(); // Clone.
 
         for (WidgetSettingsSection section : this.settingsLayout.getSections()) {
             for (WidgetSettingsItem item : section.getItems()) {
@@ -251,14 +258,8 @@ public abstract class Widget {
     }
 
     @SneakyThrows
-    public final JsonObject getSettings() {
-        // Convert to string and then reparse as object,
-        // Basically one JANKY clone.
-        if (this.settings == null) {
-            return new JsonObject();
-        } else {
-            return Rson.DEFAULT.fromJson(this.settings.toString(), JsonObject.class);
-        }
+    public final WidgetSettings settings() {
+        return this.widgetSettings;
     }
 
     public final <T extends Widget> T setSettings(@NonNull JsonObject newSettings) {

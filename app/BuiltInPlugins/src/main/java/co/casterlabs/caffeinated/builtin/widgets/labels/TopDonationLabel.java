@@ -49,23 +49,21 @@ public class TopDonationLabel extends GenericLabel implements KoiEventListener {
 
         // If this fails then we don't care.
         try {
-            JsonElement recentSubscriber = this.getSettings().get("top_donator");
+            JsonElement recentSubscriber = this.settings().get("top_donator");
 
             this.topDonator = Rson.DEFAULT.fromJson(recentSubscriber, User.class);
-            this.topAmount = this.getSettings().getNumber("top_amount").doubleValue();
-            this.topCurrency = this.getSettings().getString("top_currency");
+            this.topAmount = this.settings().getNumber("top_amount").doubleValue();
+            this.topCurrency = this.settings().getString("top_currency");
         } catch (Exception ignored) {}
 
         this.updateText();
     }
 
     private void save() {
-        this.setSettings(
-            this.getSettings()
-                .put("top_donator", Rson.DEFAULT.toJson(this.topDonator))
-                .put("top_amount", this.topAmount)
-                .put("top_currency", this.topCurrency)
-        );
+        this.settings()
+            .set("top_donator", Rson.DEFAULT.toJson(this.topDonator))
+            .set("top_amount", this.topAmount)
+            .set("top_currency", this.topCurrency);
     }
 
     @Override
@@ -143,7 +141,7 @@ public class TopDonationLabel extends GenericLabel implements KoiEventListener {
             String formattedTotal = null;
             boolean showName = false;
 
-            switch (this.getSettings().getString("money.style")) {
+            switch (this.settings().getString("money.style")) {
                 case "Name Only": {
                     showName = true;
                     break;
@@ -155,7 +153,7 @@ public class TopDonationLabel extends GenericLabel implements KoiEventListener {
                 }
 
                 case "Amount Only": {
-                    String targetCurrency = this.getSettings().getString("money.currency");
+                    String targetCurrency = this.settings().getString("money.currency");
                     formattedTotal = Currencies.convertAndFormatCurrency(
                         this.topAmount,
                         Currencies.baseCurrency,
@@ -174,8 +172,8 @@ public class TopDonationLabel extends GenericLabel implements KoiEventListener {
                 html += String.format("<span class='highlight'>%s</span>", formattedTotal);
             }
 
-            String prefix = HtmlEscape.escapeHtml(this.getSettings().getString("text.prefix")).replace(" ", "&nbsp;");
-            String suffix = HtmlEscape.escapeHtml(this.getSettings().getString("text.suffix")).replace(" ", "&nbsp;");
+            String prefix = HtmlEscape.escapeHtml(this.settings().getString("text.prefix")).replace(" ", "&nbsp;");
+            String suffix = HtmlEscape.escapeHtml(this.settings().getString("text.suffix")).replace(" ", "&nbsp;");
 
             if (!prefix.isEmpty()) {
                 html = prefix + ' ' + html;

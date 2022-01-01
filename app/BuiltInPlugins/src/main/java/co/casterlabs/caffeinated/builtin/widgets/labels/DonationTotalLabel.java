@@ -45,7 +45,7 @@ public class DonationTotalLabel extends GenericLabel implements KoiEventListener
 
         // If this fails then we don't care.
         try {
-            this.donationTotal = this.getSettings().getNumber("donation_total").doubleValue();
+            this.donationTotal = this.settings().getNumber("donation_total").doubleValue();
         } catch (Exception ignored) {}
 
         this.updateText();
@@ -67,10 +67,8 @@ public class DonationTotalLabel extends GenericLabel implements KoiEventListener
     }
 
     private void save() {
-        this.setSettings(
-            this.getSettings()
-                .put("donation_total", this.donationTotal)
-        );
+        this.settings()
+            .set("donation_total", this.donationTotal);
     }
 
     @Override
@@ -117,11 +115,11 @@ public class DonationTotalLabel extends GenericLabel implements KoiEventListener
         String html = Currencies.convertAndFormatCurrency(
             this.donationTotal,
             Currencies.baseCurrency,
-            this.getSettings().getString("money.currency")
+            this.settings().getString("money.currency")
         ).await();
 
-        String prefix = HtmlEscape.escapeHtml(this.getSettings().getString("text.prefix")).replace(" ", "&nbsp;");
-        String suffix = HtmlEscape.escapeHtml(this.getSettings().getString("text.suffix")).replace(" ", "&nbsp;");
+        String prefix = HtmlEscape.escapeHtml(this.settings().getString("text.prefix")).replace(" ", "&nbsp;");
+        String suffix = HtmlEscape.escapeHtml(this.settings().getString("text.suffix")).replace(" ", "&nbsp;");
 
         if (!prefix.isEmpty()) {
             html = prefix + ' ' + html;

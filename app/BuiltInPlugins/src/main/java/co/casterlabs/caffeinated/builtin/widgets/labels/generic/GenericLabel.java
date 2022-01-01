@@ -117,7 +117,7 @@ public abstract class GenericLabel extends Widget implements KoiEventListener {
 
             if (this.isMultiPlatform()) {
                 try {
-                    UserPlatform selectedPlatform = UserPlatform.valueOf(this.getSettings().getString("platform.platform").toUpperCase());
+                    UserPlatform selectedPlatform = UserPlatform.valueOf(this.settings().getString("platform.platform").toUpperCase());
 
                     // Make sure that platform is signed in.
                     if (Koi.getUserStates().containsKey(selectedPlatform)) {

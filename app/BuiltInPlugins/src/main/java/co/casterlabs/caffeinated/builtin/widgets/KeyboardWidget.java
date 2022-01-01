@@ -61,7 +61,7 @@ public class KeyboardWidget extends Widget implements NativeKeyListener {
     public void nativeKeyTyped(NativeKeyEvent e) {}
 
     public boolean isEnabled() {
-        return this.getSettings().getBoolean("keyboard_settings.enabled");
+        return this.settings().getBoolean("keyboard_settings.enabled");
     }
 
     @SneakyThrows

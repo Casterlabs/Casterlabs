@@ -38,7 +38,7 @@ public class RecentFollowerLabel extends GenericLabel implements KoiEventListene
 
         // If this fails then we don't care.
         try {
-            JsonElement recentSubscriber = this.getSettings().get("recent_follower");
+            JsonElement recentSubscriber = this.settings().get("recent_follower");
 
             this.recentFollower = Rson.DEFAULT.fromJson(recentSubscriber, User.class);
         } catch (Exception ignored) {}
@@ -47,10 +47,7 @@ public class RecentFollowerLabel extends GenericLabel implements KoiEventListene
     }
 
     private void save() {
-        this.setSettings(
-            this.getSettings()
-                .put("recent_follower", Rson.DEFAULT.toJson(this.recentFollower))
-        );
+        this.settings().set("recent_follower", Rson.DEFAULT.toJson(this.recentFollower));
     }
 
     @Override
@@ -87,8 +84,8 @@ public class RecentFollowerLabel extends GenericLabel implements KoiEventListene
         } else {
             String html = this.recentFollower.getDisplayname();
 
-            String prefix = HtmlEscape.escapeHtml(this.getSettings().getString("text.prefix")).replace(" ", "&nbsp;");
-            String suffix = HtmlEscape.escapeHtml(this.getSettings().getString("text.suffix")).replace(" ", "&nbsp;");
+            String prefix = HtmlEscape.escapeHtml(this.settings().getString("text.prefix")).replace(" ", "&nbsp;");
+            String suffix = HtmlEscape.escapeHtml(this.settings().getString("text.suffix")).replace(" ", "&nbsp;");
 
             if (!prefix.isEmpty()) {
                 html = prefix + ' ' + html;

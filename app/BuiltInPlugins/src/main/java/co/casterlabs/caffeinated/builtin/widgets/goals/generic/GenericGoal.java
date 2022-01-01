@@ -54,15 +54,13 @@ public abstract class GenericGoal extends Widget implements KoiEventListener {
 
         // We don't care if this fails.
         try {
-            this.count = this.getSettings().getNumber("count").doubleValue();
+            this.count = this.settings().getNumber("count").doubleValue();
         } catch (Exception ignored) {}
     }
 
     private void save() {
-        this.setSettings(
-            this.getSettings()
-                .put("count", this.count)
-        );
+        this.settings()
+            .set("count", this.count);
     }
 
     @Override
@@ -82,7 +80,7 @@ public abstract class GenericGoal extends Widget implements KoiEventListener {
     protected WidgetSettingsLayout generateSettingsLayout() {
         WidgetSettingsLayout layout = new WidgetSettingsLayout();
 
-        String currentStyle = this.getSettings().containsKey("style.style") ? this.getSettings().getString("style.style") : "Text";
+        String currentStyle = this.settings().has("style.style") ? this.settings().getString("style.style") : "Text";
 
         {
             WidgetSettingsSection barStyle = new WidgetSettingsSection("style", "Style")
@@ -176,7 +174,7 @@ public abstract class GenericGoal extends Widget implements KoiEventListener {
 
             if (this.isMultiPlatform()) {
                 try {
-                    UserPlatform selectedPlatform = UserPlatform.valueOf(this.getSettings().getString("platform.platform").toUpperCase());
+                    UserPlatform selectedPlatform = UserPlatform.valueOf(this.settings().getString("platform.platform").toUpperCase());
 
                     // Make sure that platform is signed in.
                     if (Koi.getUserStates().containsKey(selectedPlatform)) {

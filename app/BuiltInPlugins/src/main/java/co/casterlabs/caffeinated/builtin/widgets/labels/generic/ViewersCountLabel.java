@@ -56,8 +56,8 @@ public class ViewersCountLabel extends GenericLabel implements KoiEventListener 
     private void updateText(long viewersCount) {
         String html = String.valueOf(viewersCount);
 
-        String prefix = HtmlEscape.escapeHtml(this.getSettings().getString("text.prefix")).replace(" ", "&nbsp;");
-        String suffix = HtmlEscape.escapeHtml(this.getSettings().getString("text.suffix")).replace(" ", "&nbsp;");
+        String prefix = HtmlEscape.escapeHtml(this.settings().getString("text.prefix")).replace(" ", "&nbsp;");
+        String suffix = HtmlEscape.escapeHtml(this.settings().getString("text.suffix")).replace(" ", "&nbsp;");
 
         if (!prefix.isEmpty()) {
             html = prefix + ' ' + html;

@@ -33,7 +33,7 @@ public class PluginIntegrationPreferences {
             details.id = widget.getId();
             details.namespace = widget.getNamespace();
             details.name = widget.getName();
-            details.settings = widget.getSettings();
+            details.settings = widget.settings().getJson();
 
             return details;
         }
