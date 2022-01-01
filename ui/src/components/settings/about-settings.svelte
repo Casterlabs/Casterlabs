@@ -21,7 +21,7 @@
         if (buildInfo.isDev) {
             versionString = "Development Build";
         } else {
-            versionString = `Version ${buildInfo.version}-${buildInfo.commit} (Official Build) (${buildInfo.buildChannel} channel)`;
+            versionString = `Version ${buildInfo.version}-${buildInfo.commit} (${buildInfo.buildChannel})`;
         }
     });
 </script>
