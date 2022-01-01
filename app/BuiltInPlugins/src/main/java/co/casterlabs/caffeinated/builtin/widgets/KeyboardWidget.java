@@ -1,7 +1,5 @@
 package co.casterlabs.caffeinated.builtin.widgets;
 
-import java.io.IOException;
-
 import org.jetbrains.annotations.Nullable;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -11,7 +9,6 @@ import co.casterlabs.caffeinated.builtin.CaffeinatedDefaultPlugin;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails.WidgetDetailsCategory;
-import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsItem;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsLayout;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsSection;
@@ -47,25 +44,17 @@ public class KeyboardWidget extends Widget implements NativeKeyListener {
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
         if (this.isEnabled()) {
-            for (WidgetInstance instance : this.getWidgetInstances()) {
-                try {
-                    int keyCode = e.getKeyCode();
+            int keyCode = e.getKeyCode();
 
-                    instance.emit("keyPressed", JsonObject.singleton("keyCode", keyCode));
-                } catch (IOException ignored) {}
-            }
+            this.broadcastToAll("keyPressed", JsonObject.singleton("keyCode", keyCode));
         }
     }
 
     @Override
     public void nativeKeyReleased(NativeKeyEvent e) {
-        for (WidgetInstance instance : this.getWidgetInstances()) {
-            try {
-                int keyCode = e.getKeyCode();
+        int keyCode = e.getKeyCode();
 
-                instance.emit("keyReleased", JsonObject.singleton("keyCode", keyCode));
-            } catch (IOException ignored) {}
-        }
+        this.broadcastToAll("keyReleased", JsonObject.singleton("keyCode", keyCode));
     }
 
     @Override

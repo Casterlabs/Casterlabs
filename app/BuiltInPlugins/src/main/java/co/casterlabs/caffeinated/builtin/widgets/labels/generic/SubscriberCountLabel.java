@@ -67,11 +67,7 @@ public class SubscriberCountLabel extends GenericLabel implements KoiEventListen
 
         this.currHtml = html;
 
-        for (WidgetInstance instance : this.getWidgetInstances()) {
-            try {
-                instance.emit("html", JsonObject.singleton("html", this.currHtml));
-            } catch (IOException ignored) {}
-        }
+        this.broadcastToAll("html", JsonObject.singleton("html", this.currHtml));
     }
 
     @Override

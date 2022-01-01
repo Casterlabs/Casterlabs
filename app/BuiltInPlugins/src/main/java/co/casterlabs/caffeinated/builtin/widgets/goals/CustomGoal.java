@@ -109,11 +109,7 @@ public class CustomGoal extends Widget {
     public void update(double count) {
         this.count = count;
 
-        for (WidgetInstance instance : this.getWidgetInstances()) {
-            try {
-                instance.emit("count", JsonObject.singleton("count", this.count));
-            } catch (IOException ignored) {}
-        }
+        this.broadcastToAll("count", JsonObject.singleton("count", this.count));
     }
 
     @Override

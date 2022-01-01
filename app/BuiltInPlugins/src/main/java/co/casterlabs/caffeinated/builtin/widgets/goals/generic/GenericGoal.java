@@ -158,11 +158,7 @@ public abstract class GenericGoal extends Widget implements KoiEventListener {
         this.count = count;
         this.save();
 
-        for (WidgetInstance instance : this.getWidgetInstances()) {
-            try {
-                instance.emit("count", JsonObject.singleton("count", this.count));
-            } catch (IOException ignored) {}
-        }
+        this.broadcastToAll("count", JsonObject.singleton("count", this.count));
     }
 
     @Override
