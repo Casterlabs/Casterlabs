@@ -12,11 +12,13 @@ public class WebUtil {
 
     public static String sendHttpRequest(@NonNull Request.Builder builder) throws IOException {
         try (Response response = client.newCall(builder.build()).execute()) {
-            String body = response.body().string();
+            return response.body().string();
+        }
+    }
 
-//            FastLogger.logStatic(LogLevel.TRACE, "%s: %d\n%s\n", builder.getUrl$okhttp(), response.code(), body);
-
-            return body;
+    public static byte[] sendHttpRequestBytes(@NonNull Request.Builder builder) throws IOException {
+        try (Response response = client.newCall(builder.build()).execute()) {
+            return response.body().bytes();
         }
     }
 
