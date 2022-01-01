@@ -27,6 +27,7 @@
     .inline-image {
         height: 1.3em;
         vertical-align: text-bottom;
+        image-rendering: pixelated;
     }
 
     .profile-picture {
