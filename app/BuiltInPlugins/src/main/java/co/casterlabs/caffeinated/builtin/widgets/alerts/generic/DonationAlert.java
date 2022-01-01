@@ -61,7 +61,7 @@ public class DonationAlert extends GenericAlert implements KoiEventListener {
                 imageSection.addItem(WidgetSettingsItem.asDropdown("source", "Source", "Donation Image (Animated)", "Donation Image", "Donation Image (Animated)", "Custom Image"));
 
                 if (this.settings().getString("image.source", "").equals("Custom Image")) {
-                    imageSection.addItem(WidgetSettingsItem.asUnknown("file", "Image File"));
+                    imageSection.addItem(WidgetSettingsItem.asFile("file", "Image File", "image", "video"));
                 }
             }
 

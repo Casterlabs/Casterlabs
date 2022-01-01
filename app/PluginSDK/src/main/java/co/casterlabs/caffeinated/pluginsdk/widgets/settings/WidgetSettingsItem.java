@@ -191,6 +191,18 @@ public class WidgetSettingsItem {
         );
     }
 
+    /* File */
+
+    public static @NonNull WidgetSettingsItem asFile(String id, String name, String... allowed) {
+        return new WidgetSettingsItem(
+            id,
+            name,
+            WidgetSettingsItemType.FILE,
+            new JsonObject()
+                .put("allowed", new JsonArray(allowed))
+        );
+    }
+
     public static enum WidgetSettingsItemType {
         UNKNOWN,
 
@@ -204,6 +216,7 @@ public class WidgetSettingsItem {
         CURRENCY,
         FONT,
         RANGE,
+        FILE,
 
     }
 

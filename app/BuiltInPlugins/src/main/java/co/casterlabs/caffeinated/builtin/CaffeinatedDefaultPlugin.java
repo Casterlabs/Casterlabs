@@ -14,6 +14,7 @@ import co.casterlabs.caffeinated.builtin.widgets.KeyboardWidget;
 import co.casterlabs.caffeinated.builtin.widgets.NowPlayingWidget;
 import co.casterlabs.caffeinated.builtin.widgets.alerts.generic.DonationAlert;
 import co.casterlabs.caffeinated.builtin.widgets.alerts.generic.FollowAlert;
+import co.casterlabs.caffeinated.builtin.widgets.alerts.generic.SubscriptionAlert;
 import co.casterlabs.caffeinated.builtin.widgets.goals.CustomGoal;
 import co.casterlabs.caffeinated.builtin.widgets.goals.generic.FollowersGoal;
 import co.casterlabs.caffeinated.builtin.widgets.goals.generic.SubscribersGoal;
@@ -62,15 +63,19 @@ public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
         // Other
         this.getPlugins().registerWidget(this, NowPlayingWidget.DETAILS, NowPlayingWidget.class);
         this.getPlugins().registerWidget(this, KeyboardWidget.DETAILS, KeyboardWidget.class);
+        // TODO Video Share
 
         // Goals
         this.getPlugins().registerWidget(this, FollowersGoal.DETAILS, FollowersGoal.class);
         this.getPlugins().registerWidget(this, SubscribersGoal.DETAILS, SubscribersGoal.class);
         this.getPlugins().registerWidget(this, CustomGoal.DETAILS, CustomGoal.class);
+        // TODO Donation Goal
 
         // Alerts
         this.getPlugins().registerWidget(this, DonationAlert.DETAILS, DonationAlert.class);
         this.getPlugins().registerWidget(this, FollowAlert.DETAILS, FollowAlert.class);
+        this.getPlugins().registerWidget(this, SubscriptionAlert.DETAILS, SubscriptionAlert.class);
+        // TODO Raid Alert
 
     }
 

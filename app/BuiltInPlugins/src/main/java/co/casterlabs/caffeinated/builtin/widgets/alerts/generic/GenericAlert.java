@@ -90,7 +90,7 @@ public abstract class GenericAlert extends Widget {
                 .addItem(WidgetSettingsItem.asCheckbox("enabled", "Play Audio", true));
 
             if (this.settings().getBoolean("audio.enabled", true)) {
-                audioSection.addItem(WidgetSettingsItem.asUnknown("file", "Audio File", "audio"));
+                audioSection.addItem(WidgetSettingsItem.asFile("file", "Audio File", "audio"));
             }
 
             layout.addSection(audioSection);
@@ -101,7 +101,7 @@ public abstract class GenericAlert extends Widget {
                 .addItem(WidgetSettingsItem.asCheckbox("enabled", "Show Image", true));
 
             if (this.settings().getBoolean("image.enabled", true)) {
-                imageSection.addItem(WidgetSettingsItem.asUnknown("file", "Image File", "image", "video"));
+                imageSection.addItem(WidgetSettingsItem.asFile("file", "Image File", "image", "video"));
             }
 
             layout.addSection(imageSection);
