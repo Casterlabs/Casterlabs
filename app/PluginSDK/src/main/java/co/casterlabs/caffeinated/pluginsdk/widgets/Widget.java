@@ -52,7 +52,7 @@ public abstract class Widget {
     @Reflective
     @JsonField
     @NonNull
-    JsonObject settings;
+    JsonObject settings = new JsonObject();
 
     private WidgetSettings widgetSettings = new WidgetSettings(this);
 
