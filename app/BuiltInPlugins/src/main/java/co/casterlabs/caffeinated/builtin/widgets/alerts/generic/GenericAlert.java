@@ -90,7 +90,9 @@ public abstract class GenericAlert extends Widget {
                 .addItem(WidgetSettingsItem.asCheckbox("enabled", "Play Audio", true));
 
             if (this.settings().getBoolean("audio.enabled", true)) {
-                audioSection.addItem(WidgetSettingsItem.asFile("file", "Audio File", "audio"));
+                audioSection
+                    .addItem(WidgetSettingsItem.asFile("file", "Audio File", "audio"))
+                    .addItem(WidgetSettingsItem.asRange("volume", "Volume", .5, .01, 0, 1));
             }
 
             layout.addSection(audioSection);

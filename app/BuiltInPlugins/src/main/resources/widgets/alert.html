@@ -115,7 +115,7 @@
                 changeFont(Widget.getSetting("style.font"));
 
                 if (currentAudio) {
-                    currentAudio.volume = Widget.getSetting("tts.volume");
+                    currentAudio.volume = currentAudioIsTTS ? Widget.getSetting("tts.volume") : Widget.getSetting("audio.volume");
                 }
 
                 document.body.style =
@@ -214,7 +214,7 @@
 
                     executingAlert = false;
 
-                    if (queue.length > 0) {
+                    if (alertQueue.length > 0) {
                         tryProcessQueue();
                     }
                 }
@@ -231,7 +231,7 @@
                         resolve();
                     });
 
-                    currentAudio.volume = Widget.getSetting("tts.volume");
+                    currentAudio.volume = currentAudioIsTTS ? Widget.getSetting("tts.volume") : Widget.getSetting("audio.volume");
                     currentAudio.play();
                 });
             }
