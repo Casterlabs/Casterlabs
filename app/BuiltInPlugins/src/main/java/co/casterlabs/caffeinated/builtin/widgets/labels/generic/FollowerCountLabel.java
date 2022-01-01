@@ -8,7 +8,7 @@ import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails.WidgetDetailsCategory;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
-import co.casterlabs.caffeinated.util.HtmlEscape;
+import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
 import co.casterlabs.koi.api.listener.KoiEventListener;
 import co.casterlabs.koi.api.types.events.UserUpdateEvent;
@@ -54,8 +54,8 @@ public class FollowerCountLabel extends GenericLabel implements KoiEventListener
 
         String html = String.valueOf(followerCount);
 
-        String prefix = HtmlEscape.escapeHtml(this.settings().getString("text.prefix")).replace(" ", "&nbsp;");
-        String suffix = HtmlEscape.escapeHtml(this.settings().getString("text.suffix")).replace(" ", "&nbsp;");
+        String prefix = WebUtil.escapeHtml(this.settings().getString("text.prefix")).replace(" ", "&nbsp;");
+        String suffix = WebUtil.escapeHtml(this.settings().getString("text.suffix")).replace(" ", "&nbsp;");
 
         if (!prefix.isEmpty()) {
             html = prefix + ' ' + html;

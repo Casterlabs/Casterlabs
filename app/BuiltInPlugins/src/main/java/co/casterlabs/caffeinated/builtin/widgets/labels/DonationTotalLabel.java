@@ -15,7 +15,7 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsButton
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsItem;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsLayout;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsSection;
-import co.casterlabs.caffeinated.util.HtmlEscape;
+import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
 import co.casterlabs.koi.api.listener.KoiEventListener;
@@ -118,8 +118,8 @@ public class DonationTotalLabel extends GenericLabel implements KoiEventListener
             this.settings().getString("money.currency")
         ).await();
 
-        String prefix = HtmlEscape.escapeHtml(this.settings().getString("text.prefix")).replace(" ", "&nbsp;");
-        String suffix = HtmlEscape.escapeHtml(this.settings().getString("text.suffix")).replace(" ", "&nbsp;");
+        String prefix = WebUtil.escapeHtml(this.settings().getString("text.prefix")).replace(" ", "&nbsp;");
+        String suffix = WebUtil.escapeHtml(this.settings().getString("text.suffix")).replace(" ", "&nbsp;");
 
         if (!prefix.isEmpty()) {
             html = prefix + ' ' + html;
