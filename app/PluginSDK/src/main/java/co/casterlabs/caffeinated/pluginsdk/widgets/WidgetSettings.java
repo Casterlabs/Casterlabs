@@ -37,7 +37,7 @@ public class WidgetSettings {
     public @Nullable String getString(@NonNull String key) {
         JsonElement e = this.unsafe_get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return null;
         } else {
             return e.getAsString();
@@ -47,7 +47,7 @@ public class WidgetSettings {
     public @NonNull Number getNumber(@NonNull String key) {
         JsonElement e = this.unsafe_get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return 0;
         } else {
             return e.getAsNumber();
@@ -57,7 +57,7 @@ public class WidgetSettings {
     public boolean getBoolean(@NonNull String key) {
         JsonElement e = this.unsafe_get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return false;
         } else {
             return e.getAsBoolean();
@@ -67,7 +67,7 @@ public class WidgetSettings {
     public @Nullable JsonArray getArray(@NonNull String key) {
         JsonElement e = this.get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return null;
         } else {
             return e.getAsArray();
@@ -77,7 +77,7 @@ public class WidgetSettings {
     public @Nullable JsonObject getObject(@NonNull String key) {
         JsonElement e = this.get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return null;
         } else {
             return e.getAsObject();
@@ -102,7 +102,7 @@ public class WidgetSettings {
     public @Nullable String getString(@NonNull String key, @NonNull String defaultValue) {
         JsonElement e = this.unsafe_get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return defaultValue;
         } else {
             return e.getAsString();
@@ -112,7 +112,7 @@ public class WidgetSettings {
     public @NonNull Number getNumber(@NonNull String key, @NonNull Number defaultValue) {
         JsonElement e = this.unsafe_get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return defaultValue;
         } else {
             return e.getAsNumber();
@@ -122,7 +122,7 @@ public class WidgetSettings {
     public boolean getBoolean(@NonNull String key, boolean defaultValue) {
         JsonElement e = this.unsafe_get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return defaultValue;
         } else {
             return e.getAsBoolean();
@@ -132,7 +132,7 @@ public class WidgetSettings {
     public @Nullable JsonArray getArray(@NonNull String key, @NonNull JsonArray defaultValue) {
         JsonElement e = this.get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return defaultValue;
         } else {
             return e.getAsArray();
@@ -142,7 +142,7 @@ public class WidgetSettings {
     public @Nullable JsonObject getObject(@NonNull String key, @NonNull JsonObject defaultValue) {
         JsonElement e = this.get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return defaultValue;
         } else {
             return e.getAsObject();
@@ -154,7 +154,7 @@ public class WidgetSettings {
     public JsonElement get(@NonNull String key, @NonNull JsonElement defaultValue) {
         JsonElement e = this.get(key);
 
-        if (e == null) {
+        if ((e == null) || e.isJsonNull()) {
             return defaultValue;
         } else {
             return e;
