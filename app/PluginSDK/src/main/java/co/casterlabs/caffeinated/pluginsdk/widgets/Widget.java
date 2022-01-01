@@ -184,6 +184,18 @@ public abstract class Widget {
     }
 
     /* ---------------- */
+    /* Events           */
+    /* ---------------- */
+
+    public void broadcastToAll(@NonNull String type, @NonNull JsonElement message) {
+        for (WidgetInstance inst : this.widgetInstances) {
+            try {
+                inst.emit(type, message);
+            } catch (IOException ignored) {}
+        }
+    }
+
+    /* ---------------- */
     /* Mutators         */
     /* ---------------- */
 
