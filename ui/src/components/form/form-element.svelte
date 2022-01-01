@@ -3,6 +3,8 @@
     export let widgetSettingsSection;
     export let widgetSettingsOption;
 
+    import { onMount } from "svelte";
+
     import FormCheckbox from "./elements/checkbox.svelte";
     import FormColor from "./elements/color.svelte";
     import FormNumber from "./elements/number.svelte";
@@ -13,10 +15,12 @@
     import FormCurrency from "./elements/currency.svelte";
     import FormFont from "./elements/font.svelte";
     import FormRange from "./elements/range.svelte";
+    import FormFile from "./elements/file.svelte";
     // import FormDynamic from "./elements/dynamic.svelte";
-    // import FormFile from "./elements/file.svelte";
     // import FormSearch from "./elements/search.svelte";
     // import FormIframe from "./elements/iframe.svelte";
+
+    let ElementClass;
 
     const type = widgetSettingsOption.type.toLowerCase();
     const settingsKey = `${widgetSettingsSection.id}.${widgetSettingsOption.id}`;
@@ -46,33 +50,72 @@
             newValue: value
         });
     }
+
+    // Avert your eyes, children!
+    switch (type) {
+        case "checkbox": {
+            ElementClass = FormCheckbox;
+            break;
+        }
+
+        case "color": {
+            ElementClass = FormColor;
+            break;
+        }
+
+        case "number": {
+            ElementClass = FormNumber;
+            break;
+        }
+
+        case "dropdown": {
+            ElementClass = FormSelect;
+            break;
+        }
+
+        case "text": {
+            ElementClass = FormText;
+            break;
+        }
+
+        case "textarea": {
+            ElementClass = FormTextArea;
+            break;
+        }
+
+        case "password": {
+            ElementClass = FormPassword;
+            break;
+        }
+
+        case "currency": {
+            ElementClass = FormCurrency;
+            break;
+        }
+
+        case "font": {
+            ElementClass = FormFont;
+            break;
+        }
+
+        case "range": {
+            ElementClass = FormRange;
+            break;
+        }
+
+        case "file": {
+            ElementClass = FormFile;
+            break;
+        }
+    }
 </script>
 
-<span>
-    {#if type === "html"}
+{#if !ElementClass}
+    {#if type == "html"}
         {@html widgetSettingsOption.extraData.html}
-    {:else if type === "checkbox"}
-        <FormCheckbox {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
-    {:else if type === "color"}
-        <FormColor {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
-    {:else if type === "number"}
-        <FormNumber {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
-    {:else if type === "dropdown"}
-        <FormSelect {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
-    {:else if type === "text"}
-        <FormText {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
-    {:else if type === "textarea"}
-        <FormTextArea {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
-    {:else if type === "password"}
-        <FormPassword {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
-    {:else if type === "currency"}
-        <FormCurrency {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
-    {:else if type === "font"}
-        <FormFont {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
-    {:else if type === "range"}
-        <FormRange {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
     {:else}
         ... {type}
     {/if}
-    <!-- {settingsKey} -->
-</span>
+{:else}
+    <svelte:component this={ElementClass} {widget} {settingsKey} {widgetSettingsOption} bind:value on:input={onInput} on:change={onChange} />
+{/if}
