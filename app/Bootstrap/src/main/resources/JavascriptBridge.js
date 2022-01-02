@@ -1,4 +1,4 @@
-if (window.Bridge != null) {
+if (!window.Bridge) {
 	// Dependencies.
 
 	function EventHandler() {
