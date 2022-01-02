@@ -1,4 +1,4 @@
-{
+if (window.Bridge != null) {
 	// Dependencies.
 
 	function EventHandler() {
@@ -252,4 +252,4 @@
 		writable: false,
 		configurable: false
 	});
-};
+}
