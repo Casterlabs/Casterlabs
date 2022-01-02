@@ -14,12 +14,12 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 
-import co.casterlabs.caffeinated.bootstrap.theming.LafManager;
+import co.casterlabs.caffeinated.bootstrap.NativeSystemProvider;
 import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
-public class MacOSLafManager extends LafManager {
+public class MacOSLafManager implements NativeSystemProvider.LafManager {
     private static final int NSWINDOW_STYLEMASK_FULL_WINDOW_CONTENT = 1 << 14;
     private static final int NSWINDOW_STYLEMASK_TRANSPARENT_TITLE_BAR = 1 << 18;
 
@@ -42,7 +42,7 @@ public class MacOSLafManager extends LafManager {
     private static final Color DARK_TITLEBAR_BORDER_DISABLED = new Color(0, 0, 0);
 
     @Override
-    protected ThemeableJFrame getFrame0() throws Exception {
+    public ThemeableJFrame getFrame0() throws Exception {
         return new MacOSThemeableJFrame();
     }
 

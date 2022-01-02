@@ -4,15 +4,15 @@ import com.sun.jna.platform.win32.WinDef.BOOL;
 import com.sun.jna.platform.win32.WinDef.BOOLByReference;
 import com.sun.jna.platform.win32.WinDef.HWND;
 
-import co.casterlabs.caffeinated.bootstrap.theming.LafManager;
+import co.casterlabs.caffeinated.bootstrap.NativeSystemProvider;
 import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class WindowsLafManager extends LafManager {
+public class WindowsLafManager implements NativeSystemProvider.LafManager {
 
     @Override
-    protected ThemeableJFrame getFrame0() throws Exception {
+    public ThemeableJFrame getFrame0() throws Exception {
         return new WindowsThemeableJFrame();
     }
 

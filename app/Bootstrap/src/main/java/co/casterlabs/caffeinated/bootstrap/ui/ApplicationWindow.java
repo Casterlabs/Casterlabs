@@ -24,7 +24,7 @@ import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.app.window.WindowPreferences;
 import co.casterlabs.caffeinated.app.window.WindowState.Unsafe_WindowState;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
-import co.casterlabs.caffeinated.bootstrap.theming.LafManager;
+import co.casterlabs.caffeinated.bootstrap.NativeSystemProvider;
 import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
 import lombok.Getter;
 import lombok.NonNull;
@@ -49,7 +49,7 @@ public class ApplicationWindow {
 
     public ApplicationWindow(UILifeCycleListener listener) {
         this.listener = listener;
-        this.frame = LafManager.getFrame();
+        this.frame = NativeSystemProvider.getFrame();
 
         PreferenceFile<WindowPreferences> preferenceFile = CaffeinatedApp.getInstance().getWindowPreferences();
         WindowPreferences windowPreferences = preferenceFile.get();
