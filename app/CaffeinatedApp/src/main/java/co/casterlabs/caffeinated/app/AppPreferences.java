@@ -2,7 +2,6 @@ package co.casterlabs.caffeinated.app;
 
 import co.casterlabs.caffeinated.util.Crypto;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
-import co.casterlabs.rakurai.json.annotating.JsonSerializationMethod;
 import lombok.Data;
 
 @Data
@@ -23,7 +22,6 @@ public class AppPreferences {
         }
     }
 
-    @JsonSerializationMethod("trueConductorPort")
     public int getConductorPort() {
         return (override_conductorPort == -1) ? this.conductorPort : override_conductorPort;
     }

@@ -73,7 +73,7 @@
         }
 
         Bridge.query("app:preferences").then(({ data }) => {
-            widgetUrl = `https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=${widget.owner}&widgetId=${widget.id}&authorization=${data.conductorKey}&port=${data.trueConductorPort}`;
+            widgetUrl = `https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=${widget.owner}&widgetId=${widget.id}&authorization=${data.conductorKey}&port=${data.conductorPort}`;
         });
 
         if (!objectEquals(settingsLayout, widget.settingsLayout)) {
