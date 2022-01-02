@@ -18,7 +18,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
-import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @Getter
 public class PreferenceFile<T> {
@@ -101,7 +100,7 @@ public class PreferenceFile<T> {
                 listener.accept(this);
             }
 
-            this.logger.log(LogLevel.TRACE, String.format("Saved preferences: %s", json));
+//            this.logger.log(LogLevel.TRACE, String.format("Saved preferences: %s", json));
         } catch (IOException e) {
             this.logger.severe("Unable to write preferences file: %s", e);
         }
