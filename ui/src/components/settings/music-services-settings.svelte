@@ -5,6 +5,7 @@
 
     let eventHandler;
 
+    let systemData = null;
     let spotifyData = null;
     let pretzelData = null;
     let activePlayback = null;
@@ -12,6 +13,7 @@
     function parseBridgeData(data) {
         console.debug("[MusicServicesSettings]", data);
         activePlayback = data.activePlayback;
+        systemData = data.musicServices.system;
         spotifyData = data.musicServices.spotify;
         pretzelData = data.musicServices.pretzel;
     }
@@ -30,6 +32,16 @@
         const enabled = e.target.checked;
         Bridge.emit("music:settings-update", {
             platform: "pretzel",
+            settings: {
+                enabled: enabled
+            }
+        });
+    }
+
+    function updateSystem(e) {
+        const enabled = e.target.checked;
+        Bridge.emit("music:settings-update", {
+            platform: "system",
             settings: {
                 enabled: enabled
             }
@@ -59,6 +71,14 @@
 
     <div id="accounts">
         <!-- These are in order of preference btw -->
+        {#if systemData}
+            <AccountBox platform="system_music" platformName="System" showSignin={false}>
+                <label class="checkbox">
+                    <input type="checkbox" bind:checked={systemData.settings.enabled} on:change={updateSystem} />
+                    Enabled
+                </label>
+            </AccountBox>
+        {/if}
         {#if spotifyData}
             <AccountBox
                 platform="spotify"

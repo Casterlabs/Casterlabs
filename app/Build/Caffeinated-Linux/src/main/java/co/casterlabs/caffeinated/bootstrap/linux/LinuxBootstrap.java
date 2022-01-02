@@ -7,7 +7,7 @@ public class LinuxBootstrap {
 
     @SuppressWarnings("deprecation")
     public static void main(String[] args) throws Exception {
-        NativeSystemProvider.initialize(null); // Linux does not have one.
+        NativeSystemProvider.initialize(null, null);
         Bootstrap.main(args);
     }
 

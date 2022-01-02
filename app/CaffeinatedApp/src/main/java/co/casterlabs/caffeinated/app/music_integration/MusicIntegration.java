@@ -27,11 +27,14 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import xyz.e3ndr.eventapi.EventHandler;
 import xyz.e3ndr.eventapi.listeners.EventListener;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @Getter
 public class MusicIntegration {
     private static EventHandler<AppMusicIntegrationEventType> handler = new EventHandler<>();
+
+    private static InternalMusicProvider<?> systemPlaybackMusicProvider = null;
 
     private Map<String, InternalMusicProvider<?>> providers = new HashMap<>();
     private InternalMusicProvider<?> activePlayback;
@@ -51,6 +54,15 @@ public class MusicIntegration {
         this.updateBridgeData(); // Populate
 
         // Register the providers (in order of preference)
+        if (systemPlaybackMusicProvider != null) {
+            this.providers.put(systemPlaybackMusicProvider.getServiceId(), systemPlaybackMusicProvider);
+            try {
+                ReflectionLib.invokeMethod(systemPlaybackMusicProvider, "init");
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                FastLogger.logException(e);
+            }
+        }
+
         new SpotifyMusicProvider(this);
         new PretzelMusicProvider(this);
 

@@ -10,6 +10,7 @@
     export let accountName;
     export let accountLink;
 
+    export let showSignin = true;
     export let isSignedIn = false;
     export let canSignOut = true;
     export let isLoading = false;
@@ -43,7 +44,7 @@
         <img src="/img/services/{platform}/icon.svg" alt="{platformName} Logo" />
     </div>
 
-    {#if isSignedIn}
+    {#if isSignedIn && accountName}
         <a href={accountLink} class="platform-name open-channel" rel="external">
             {platformName}
         </a>
@@ -58,7 +59,9 @@
             {platformName}
         </span>
 
-        <button on:click={signin} class="button tag signin-button is-success is-text {isLoading ? 'is-loading' : ''}"> Link </button>
+        {#if showSignin}
+            <button on:click={signin} class="button tag signin-button is-success is-text {isLoading ? 'is-loading' : ''}"> Link </button>
+        {/if}
     {/if}
 
     <span style="margin-left: 10px;"><slot /> </span>

@@ -18,6 +18,7 @@ import org.jnativehook.GlobalScreen;
 import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.theming.Theme;
 import co.casterlabs.caffeinated.app.theming.ThemeManager;
@@ -154,6 +155,9 @@ public class Bootstrap implements Runnable {
         logger.setCurrentLevel(FastLoggingFramework.getDefaultLevel());
 
         Currencies.getCurrencies(); // Load the class.
+
+        // Setup the native system
+        ReflectionLib.setStaticValue(MusicIntegration.class, "systemPlaybackMusicProvider", NativeSystemProvider.getSystemPlaybackMusicProvider());
 
         this.registerThemes();
         this.startApp();
