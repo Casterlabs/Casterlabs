@@ -54,6 +54,10 @@ public class MusicIntegration {
         this.updateBridgeData(); // Populate
 
         // Register the providers (in order of preference)
+        new SpotifyMusicProvider(this);
+        new PretzelMusicProvider(this);
+
+        // Try to register the system playback music provider.
         if (systemPlaybackMusicProvider != null) {
             this.providers.put(systemPlaybackMusicProvider.getServiceId(), systemPlaybackMusicProvider);
             try {
@@ -62,9 +66,6 @@ public class MusicIntegration {
                 FastLogger.logException(e);
             }
         }
-
-        new SpotifyMusicProvider(this);
-        new PretzelMusicProvider(this);
 
         // Load their settings
         PreferenceFile<MusicIntegrationPreferences> prefs = CaffeinatedApp.getInstance().getMusicIntegrationPreferences();
