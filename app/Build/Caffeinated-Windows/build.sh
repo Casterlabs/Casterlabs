@@ -24,6 +24,9 @@ java -jar "../packr.jar" \
      --mainclass $MAIN_CLASS \
      --output target/dist
 
+# Copy the WMC .exe
+cp WMC-JsonConsoleWrapper.exe target/dist
+
 # Copy the files.
 cp -r target/dist/* ../../../dist/windows
 

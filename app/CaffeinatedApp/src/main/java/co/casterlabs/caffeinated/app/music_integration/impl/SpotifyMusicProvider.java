@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.music_integration.InternalMusicProvider;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.impl.SpotifyMusicProvider.SpotifySettings;
 import co.casterlabs.caffeinated.pluginsdk.music.MusicTrack;
+import co.casterlabs.caffeinated.util.Pair;
 import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
@@ -117,11 +116,6 @@ public class SpotifyMusicProvider extends InternalMusicProvider<SpotifySettings>
                         if (response.get("item").isJsonObject()) {
                             JsonObject item = response.getObject("item");
 
-                            final boolean PARSE_FT = true;
-                            final boolean CLEANSE_TITLE = true;
-                            final String FT_REGEX = "(\\(ft.*\\))|(\\(feat.*\\))|(\\(avec.*\\))";
-                            final String CT_REGEX = "(- [0-9]* Remaster)|(- Remastered [0-9]*)|(- Radio Version)|(- Radio Edit)|(\\(Remastered\\))";
-
                             boolean isPlaying = response.getBoolean("is_playing");
                             String songLink = item.getObject("external_urls").getString("spotify");
                             String albumArtUrl = item.getObject("album").getArray("images").getObject(0).getString("url");
@@ -133,31 +127,11 @@ public class SpotifyMusicProvider extends InternalMusicProvider<SpotifySettings>
                                 artists.add(artist.getAsObject().getString("name"));
                             }
 
-                            if (PARSE_FT) {
-                                Matcher m = Pattern.compile(FT_REGEX).matcher(title);
+                            // Use the better parsing for a more accurate result.
+                            Pair<String, List<String>> betterResult = InternalMusicProvider.parseTitleForArtists(title, artists);
 
-                                if (m.find()) {
-                                    title = title.replaceFirst(FT_REGEX, ""); // Remove (ft. ...) from the title
-
-                                    String group = m.group().split(" ", 2)[1]; // Remove the (ft.
-                                    group = group.substring(0, group.length() - 1); // Remove the ending brace.
-
-                                    String[] found = group.split("(et)|[,&]");
-
-                                    for (String artist : found) {
-                                        artist = artist.trim();
-
-                                        // Prevent duplicates.
-                                        if (!artists.contains(artist)) {
-                                            artists.add(artist);
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (CLEANSE_TITLE) {
-                                title = title.replaceAll(CT_REGEX, "");
-                            }
+                            title = betterResult.a;
+                            artists = betterResult.b;
 
                             MusicTrack track = new MusicTrack(title, artists, album, albumArtUrl, songLink);
 

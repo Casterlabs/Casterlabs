@@ -1,11 +1,17 @@
 package co.casterlabs.caffeinated.app.music_integration;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.pluginsdk.music.MusicPlaybackState;
 import co.casterlabs.caffeinated.pluginsdk.music.MusicProvider;
 import co.casterlabs.caffeinated.pluginsdk.music.MusicTrack;
+import co.casterlabs.caffeinated.util.Pair;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -93,5 +99,44 @@ public abstract class InternalMusicProvider<T> implements MusicProvider {
     }
 
     public abstract void signout();
+
+    public static Pair<String, List<String>> parseTitleForArtists(@NonNull String title, @NonNull List<String> prediscoveredArtists) {
+        final boolean PARSE_FT = true;
+        final boolean CLEANSE_TITLE = true;
+        final String FT_REGEX = "(\\(ft.*\\))|(\\(feat.*\\))|(\\(avec.*\\))";
+        final String CT_REGEX = "(- [0-9]* Remaster)|(- Remastered [0-9]*)|(- Radio Version)|(- Radio Edit)|(\\(Remastered\\))";
+
+        List<String> artists = new ArrayList<>();
+
+        artists.addAll(prediscoveredArtists);
+
+        if (PARSE_FT) {
+            Matcher m = Pattern.compile(FT_REGEX).matcher(title);
+
+            if (m.find()) {
+                title = title.replaceFirst(FT_REGEX, ""); // Remove (ft. ...) from the title
+
+                String group = m.group().split(" ", 2)[1]; // Remove the (ft.
+                group = group.substring(0, group.length() - 1); // Remove the ending brace.
+
+                String[] found = group.split("(et)|[,&]");
+
+                for (String artist : found) {
+                    artist = artist.trim();
+
+                    // Prevent duplicates.
+                    if (!artists.contains(artist)) {
+                        artists.add(artist);
+                    }
+                }
+            }
+        }
+
+        if (CLEANSE_TITLE) {
+            title = title.replaceAll(CT_REGEX, "");
+        }
+
+        return new Pair<>(title, artists);
+    }
 
 }

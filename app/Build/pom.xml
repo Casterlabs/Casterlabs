@@ -18,4 +18,22 @@
 		<module>Caffeinated-Linux</module>
 	</modules>
 
+	<dependencies>
+	
+		<!-- Code related packages -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.22</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency> <!-- For Eclipse users -->
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>19.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
 </project>
