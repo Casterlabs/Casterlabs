@@ -23,7 +23,6 @@ import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.SneakyThrows;
-import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class WindowsSystemPlaybackMusicProvider extends SystemPlaybackMusicProvider {
     private static final File WMCJCW_LOCATION = new File("./WMC-JsonConsoleWrapper.exe");
@@ -73,7 +72,6 @@ public class WindowsSystemPlaybackMusicProvider extends SystemPlaybackMusicProvi
                             Rson.DEFAULT.fromJson(json.get("Data"), MediaInfo.class)
                         )
                     );
-                    FastLogger.logStatic(json);
                     break;
 
                 case SESSION_CLOSED:
