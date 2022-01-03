@@ -44,7 +44,7 @@ public class CefUtil {
                 public void onRegisterCustomSchemes(CefSchemeRegistrar registrar) {
                     registrar.addCustomScheme(
                         "app",
-                        true, // isStandard
+                        true,  // isStandard
                         false, // isLocal
                         false, // isDisplayIsolated
                         true,  // isSecure
@@ -78,13 +78,20 @@ public class CefUtil {
 
                 @Override
                 public void handleProgress(EnumProgress state, float percent) {
-                    percent = Math.max(0, percent) / 100;
+                    if (percent < 0) {
+                        this.logger.info(
+                            "%-13s",
+                            state
+                        );
+                    } else {
+                        percent = percent / 100;
 
-                    this.logger.info(
-                        "%-13s %s",
-                        state,
-                        BarStyle.ANGLE.format(percent, 30, true)
-                    );
+                        this.logger.info(
+                            "%-13s %s",
+                            state,
+                            BarStyle.ANGLE.format(percent, 30, true)
+                        );
+                    }
                 }
             });
 
