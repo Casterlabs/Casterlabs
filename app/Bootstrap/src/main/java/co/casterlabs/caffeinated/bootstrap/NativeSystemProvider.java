@@ -3,7 +3,6 @@ package co.casterlabs.caffeinated.bootstrap;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.app.music_integration.InternalMusicProvider;
-import co.casterlabs.caffeinated.bootstrap.NativeSystemProvider.SystemPlaybackMusicProvider.SystemPlaybackSettings;
 import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
 import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame.UnimplementedThemeableFrame;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
@@ -80,12 +79,12 @@ public abstract class NativeSystemProvider {
         public boolean isEnabled() {
             return this.getSettings().enabled;
         }
+    }
 
-        @JsonClass(exposeAll = true)
-        public static class SystemPlaybackSettings {
-            private boolean enabled = false;
+    @JsonClass(exposeAll = true)
+    public static class SystemPlaybackSettings {
+        private boolean enabled = false;
 
-        }
     }
 
 }
