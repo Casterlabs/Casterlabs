@@ -45,6 +45,7 @@ import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
+@Getter
 @Command(name = "start", mixinStandardHelpOptions = true, version = "Caffeinated", description = "Starts Caffeinated")
 public class Bootstrap implements Runnable {
     public static final String appUrl = "app://app.local";
@@ -54,6 +55,12 @@ public class Bootstrap implements Runnable {
             "--dev-address"
     }, description = "Whether or not this is a dev environment, normal users beware.")
     private String devAddress;
+
+    @Option(names = {
+            "-dt",
+            "--dev-tools"
+    }, description = "Enables dev tools.")
+    private boolean devToolsEnabled;
 
     @Option(names = {
             "-d",
@@ -71,6 +78,7 @@ public class Bootstrap implements Runnable {
 
     private static @Getter BuildInfo buildInfo;
     private static @Getter boolean isDev;
+    private static @Getter Bootstrap instance;
 
     private static LocalServer localServer;
 
@@ -119,6 +127,8 @@ public class Bootstrap implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
+        instance = this;
+
         isDev = this.devAddress != null;
         ReflectionLib.setStaticValue(FileUtil.class, "isDev", isDev);
         buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);

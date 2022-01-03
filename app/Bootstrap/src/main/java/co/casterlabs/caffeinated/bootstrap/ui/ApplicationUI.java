@@ -68,7 +68,7 @@ public class ApplicationUI {
             public void onBeforeContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams params, CefMenuModel model) {
                 model.clear();
 
-                if (Bootstrap.isDev()) {
+                if (Bootstrap.isDev() || Bootstrap.getInstance().isDevToolsEnabled()) {
                     model.addItem(2, "Reload");
 
                     model.addCheckItem(1, "Inspect Element");
