@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.builtin.widgets.ChatWidget;
 import co.casterlabs.caffeinated.builtin.widgets.EmojiRainWidget;
-import co.casterlabs.caffeinated.builtin.widgets.KeyboardWidget;
 import co.casterlabs.caffeinated.builtin.widgets.NowPlayingWidget;
 import co.casterlabs.caffeinated.builtin.widgets.alerts.generic.DonationAlert;
 import co.casterlabs.caffeinated.builtin.widgets.alerts.generic.FollowAlert;
@@ -62,7 +61,7 @@ public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
 
         // Other
         this.getPlugins().registerWidget(this, NowPlayingWidget.DETAILS, NowPlayingWidget.class);
-        this.getPlugins().registerWidget(this, KeyboardWidget.DETAILS, KeyboardWidget.class);
+//        this.getPlugins().registerWidget(this, KeyboardWidget.DETAILS, KeyboardWidget.class);
         // TODO Video Share
 
         // Goals

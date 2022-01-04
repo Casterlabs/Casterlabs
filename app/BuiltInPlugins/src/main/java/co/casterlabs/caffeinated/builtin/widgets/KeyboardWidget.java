@@ -1,5 +1,5 @@
 package co.casterlabs.caffeinated.builtin.widgets;
-
+/*
 import org.jetbrains.annotations.Nullable;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -71,3 +71,4 @@ public class KeyboardWidget extends Widget implements NativeKeyListener {
     }
 
 }
+*/
