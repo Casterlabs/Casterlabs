@@ -172,8 +172,8 @@ public class CefWebview extends AppWebview {
     }
 
     @Override
-    public void executeJavaScript(@NonNull String line) {
-        this.browser.executeJavaScript(line, "app://app.local", 0);
+    public void executeJavaScript(@NonNull String script) {
+        this.browser.executeJavaScript(script, "app://app.local", 0);
     }
 
     @Override

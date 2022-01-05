@@ -45,7 +45,7 @@ public abstract class AppWebview {
 
     public abstract String getCurrentURL();
 
-    public abstract void executeJavaScript(@NonNull String line);
+    public abstract void executeJavaScript(@NonNull String script);
 
     public abstract JavascriptBridge getJavascriptBridge();
 
