@@ -38,7 +38,7 @@ public class CefJavascriptBridge extends JavascriptBridge {
 
     static {
         try {
-            bridgeScript = FileUtil.loadResourceFromBuildProject("JavascriptBridge.js", "Webview-CEF");
+            bridgeScript = FileUtil.loadResourceFromBuildProject("CEF_JavascriptBridge.js", "Webview-CEF");
         } catch (IOException e) {
             e.printStackTrace();
         }
