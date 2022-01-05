@@ -98,6 +98,10 @@
     }
 
     onMount(async () => {
+        if (!Bridge) {
+            alert("BRIDGE NOT INSTALLED!");
+        }
+
         window.goto = goto;
 
         Bridge.on("goto", ({ path }) => goto(path));
