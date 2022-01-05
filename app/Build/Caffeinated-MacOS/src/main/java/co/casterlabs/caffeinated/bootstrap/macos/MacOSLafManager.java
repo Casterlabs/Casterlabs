@@ -132,7 +132,7 @@ public class MacOSLafManager implements NativeSystemProvider.LafManager {
                 this.isFirstTimeSetup = false;
 
                 try {
-                    Object peer = ReflectionLib.invokeMethod(this, "getPeer");
+                    Object peer = ReflectionLib.getValue(this, "peer");
                     Object platformWindow = ReflectionLib.invokeMethod(peer, "getPlatformWindow");
 
                     boolean isValidPeer = Class.forName("sun.lwawt.LWWindowPeer").isAssignableFrom(peer.getClass()) &&
