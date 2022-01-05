@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.bootstrap.cef.bridge;
+package co.casterlabs.caffeinated.bootstrap.webview.impl;
 
 import java.io.IOException;
 
@@ -9,9 +9,9 @@ import org.cef.browser.CefMessageRouter;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
 
-import co.casterlabs.caffeinated.app.bridge.AppBridge;
 import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
+import co.casterlabs.caffeinated.bootstrap.webview.JavascriptBridge;
 import co.casterlabs.caffeinated.util.DualConsumer;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
@@ -26,7 +26,7 @@ import lombok.Setter;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class JavascriptBridge extends AppBridge {
+public class CefJavascriptBridge extends JavascriptBridge {
     private static String bridgeScript = "";
 
     private CefMessageRouter router;
@@ -38,13 +38,13 @@ public class JavascriptBridge extends AppBridge {
 
     static {
         try {
-            bridgeScript = FileUtil.loadResource("JavascriptBridge.js");
+            bridgeScript = FileUtil.loadResourceFromBuildProject("JavascriptBridge.js", "Webview-CEF");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public JavascriptBridge(@NonNull CefClient client) {
+    public CefJavascriptBridge(@NonNull CefClient client) {
         this.router = CefMessageRouter.create();
 
         this.router.addHandler(new CefMessageRouterHandlerAdapter() {

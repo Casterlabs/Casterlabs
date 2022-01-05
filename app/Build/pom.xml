@@ -16,6 +16,7 @@
 		<module>Caffeinated-Windows</module>
 		<module>Caffeinated-MacOS</module>
 		<module>Caffeinated-Linux</module>
+		<module>Webview-CEF</module>
 	</modules>
 
 	<dependencies>

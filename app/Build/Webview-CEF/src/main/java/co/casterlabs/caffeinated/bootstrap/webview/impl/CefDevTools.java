@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.bootstrap.ui;
+package co.casterlabs.caffeinated.bootstrap.webview.impl;
 
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
@@ -9,13 +9,13 @@ import javax.swing.WindowConstants;
 
 import org.cef.browser.CefBrowser;
 
-public class ApplicationDevTools {
+public class CefDevTools {
     private CefBrowser browser;
 
     private CefBrowser devtools;
     private JFrame frame;
 
-    public ApplicationDevTools(CefBrowser browser) {
+    public CefDevTools(CefBrowser browser) {
         this.browser = browser;
     }
 

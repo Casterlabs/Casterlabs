@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.bootstrap.cef.scheme.impl;
+package co.casterlabs.caffeinated.bootstrap.webview.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,18 +15,18 @@ import org.cef.network.CefPostDataElement;
 import org.cef.network.CefRequest;
 import org.cef.network.CefResponse;
 
-import co.casterlabs.caffeinated.bootstrap.cef.scheme.SchemeHandler;
-import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpMethod;
-import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpRequest;
-import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpResponse;
-import co.casterlabs.caffeinated.bootstrap.cef.scheme.http.HttpResponse.TransferEncoding;
+import co.casterlabs.caffeinated.bootstrap.webview.scheme.SchemeHandler;
+import co.casterlabs.caffeinated.bootstrap.webview.scheme.http.HttpMethod;
+import co.casterlabs.caffeinated.bootstrap.webview.scheme.http.HttpRequest;
+import co.casterlabs.caffeinated.bootstrap.webview.scheme.http.HttpResponse;
+import co.casterlabs.caffeinated.bootstrap.webview.scheme.http.HttpResponse.TransferEncoding;
 import co.casterlabs.rakurai.collections.HeaderMap;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RequiredArgsConstructor
-public class ResponseResourceHandler implements CefResourceHandler {
+public class CefResponseResourceHandler implements CefResourceHandler {
     private final @NonNull SchemeHandler handler;
 
     private @Setter HttpResponse response;
@@ -54,8 +54,8 @@ public class ResponseResourceHandler implements CefResourceHandler {
             null,
             null,
             null,
-            method,
-            elements
+            method
+//            elements
         );
 
         this.response = this.handler.onRequest(httpRequest);

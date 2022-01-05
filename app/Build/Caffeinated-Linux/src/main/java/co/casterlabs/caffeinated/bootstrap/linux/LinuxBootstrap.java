@@ -7,7 +7,11 @@ public class LinuxBootstrap {
 
     @SuppressWarnings("deprecation")
     public static void main(String[] args) throws Exception {
-        NativeSystemProvider.initialize(null, null);
+        NativeSystemProvider.initialize(
+            null,
+            null,
+            null // TODO
+        );
         Bootstrap.main(args);
     }
 

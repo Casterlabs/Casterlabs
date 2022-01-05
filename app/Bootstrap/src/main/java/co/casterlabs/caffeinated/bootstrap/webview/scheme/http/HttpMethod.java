@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.bootstrap.cef.scheme.http;
+package co.casterlabs.caffeinated.bootstrap.webview.scheme.http;
 
 // Source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
 public enum HttpMethod {

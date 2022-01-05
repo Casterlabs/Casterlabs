@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.bootstrap.cef.scheme.http;
+package co.casterlabs.caffeinated.bootstrap.webview.scheme.http;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

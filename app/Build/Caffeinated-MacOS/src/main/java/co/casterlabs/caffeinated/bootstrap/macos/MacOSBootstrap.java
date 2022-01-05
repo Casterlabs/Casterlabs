@@ -7,7 +7,11 @@ public class MacOSBootstrap {
 
     @SuppressWarnings("deprecation")
     public static void main(String[] args) throws Exception {
-        NativeSystemProvider.initialize(new MacOSLafManager(), null);
+        NativeSystemProvider.initialize(
+            new MacOSLafManager(),
+            null,
+            null // TODO
+        );
         Bootstrap.main(args);
     }
 

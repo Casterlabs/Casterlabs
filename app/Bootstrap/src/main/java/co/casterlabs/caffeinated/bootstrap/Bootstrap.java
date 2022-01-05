@@ -9,8 +9,6 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JFrame;
-
 import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
@@ -18,12 +16,12 @@ import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.theming.Theme;
 import co.casterlabs.caffeinated.app.theming.ThemeManager;
-import co.casterlabs.caffeinated.bootstrap.cef.CefUtil;
 import co.casterlabs.caffeinated.bootstrap.instancing.InstanceManager;
 import co.casterlabs.caffeinated.bootstrap.theming.ThemeHandleImpl;
 import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
+import co.casterlabs.caffeinated.bootstrap.webview.AppWebview;
 import co.casterlabs.caffeinated.localserver.LocalServer;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.Currencies;
@@ -75,6 +73,8 @@ public class Bootstrap implements Runnable {
     private static @Getter BuildInfo buildInfo;
     private static @Getter boolean isDev;
     private static @Getter Bootstrap instance;
+
+    private static AppWebview webview;
 
     private static LocalServer localServer;
 
@@ -188,7 +188,7 @@ public class Bootstrap implements Runnable {
         );
     }
 
-    private void startApp() {
+    private void startApp() throws Exception {
         CaffeinatedApp app = new CaffeinatedApp(buildInfo, isDev);
 
         logger.info("Entry                        | Value", buildInfo.getVersionString());
@@ -211,8 +211,11 @@ public class Bootstrap implements Runnable {
             FastLogger.logException(e);
         }
 
-        // Register CEF schemes for the internal app handler.
-        CefUtil.registerSchemes();
+        // Register the custom schemes.
+        AppWebview.setSchemeHandler(new ApplicationUI.AppSchemeHandler());
+
+        // Setup the webview.
+        webview = AppWebview.getWebviewFactory().produce();
 
         // Window listeners
         CaffeinatedApp.getInstance().onBridgeEvent("window:move", (json) -> {
@@ -234,73 +237,79 @@ public class Bootstrap implements Runnable {
             ApplicationUI.getWindow().getListener().onUICloseAttempt();
         });
 
+        // Register the lifecycle listener.
+        UILifeCycleListener uiLifeCycleListener = new UILifeCycleListener() {
+
+            @Override
+            public void onBrowserPreLoad() {
+                logger.debug("onPreLoad");
+
+                webview.getJavascriptBridge().setOnEvent((t, d) -> onBridgeEvent(t, d));
+
+                app.init();
+
+                TrayHandler.tryCreateTray();
+            }
+
+            @Override
+            public void onBrowserInitialLoad() {
+                logger.debug("onInitialLoad");
+            }
+
+            @Override
+            public boolean onUICloseAttempt() {
+                logger.debug("onUICloseAttempt");
+
+                if (app.canCloseUI()) {
+                    new AsyncTask(() -> {
+                        if (CaffeinatedApp.getInstance().getUiPreferences().get().isCloseToTray()) {
+                            ApplicationUI.closeWindow();
+                        } else {
+                            shutdown();
+                        }
+                    });
+                    return true;
+                } else {
+                    ApplicationUI.focusAndBeep();
+                    return false;
+                }
+            }
+
+            @Override
+            public void onMinimize() {
+                logger.debug("onMinimize");
+                new AsyncTask(() -> {
+                    if (CaffeinatedApp.getInstance().getUiPreferences().get().isMinimizeToTray()) {
+                        // See if the minimize to tray option is checked.
+                        // If so, make sure the app can close before closing the window.
+                        if (app.canCloseUI()) {
+                            ApplicationUI.closeWindow();
+                        } else {
+                            ApplicationUI.focusAndBeep();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onBrowserOpen() {
+                logger.debug("onWindowOpen");
+            }
+
+            @Override
+            public void onBrowserClose() {
+                logger.debug("onTrayMinimize");
+            }
+
+        };
+
+        webview.setLifeCycleListener(uiLifeCycleListener);
+
         // Ok, now initialize!
         ApplicationUI.initialize(
             isDev ? this.devAddress : appUrl,
-            new UILifeCycleListener() {
-
-                @Override
-                public void onPreLoad() {
-                    logger.debug("onPreLoad");
-
-                    ApplicationUI.getBridge().setOnEvent((t, d) -> onBridgeEvent(t, d));
-
-                    app.init();
-
-                    TrayHandler.tryCreateTray();
-                }
-
-                @Override
-                public void onInitialLoad() {
-                    logger.debug("onInitialLoad");
-                }
-
-                @Override
-                public boolean onUICloseAttempt() {
-                    logger.debug("onUICloseAttempt");
-
-                    if (app.canCloseUI()) {
-                        new AsyncTask(() -> {
-                            if (CaffeinatedApp.getInstance().getUiPreferences().get().isCloseToTray()) {
-                                ApplicationUI.closeWindow();
-                            } else {
-                                shutdown();
-                            }
-                        });
-                        return true;
-                    } else {
-                        ApplicationUI.focusAndBeep();
-                        return false;
-                    }
-                }
-
-                @Override
-                public void onMinimize() {
-                    logger.debug("onMinimize");
-                    new AsyncTask(() -> {
-                        if (CaffeinatedApp.getInstance().getUiPreferences().get().isMinimizeToTray()) {
-                            // See if the minimize to tray option is checked.
-                            // If so, make sure the app can close before closing the window.
-                            if (app.canCloseUI()) {
-                                ApplicationUI.closeWindow();
-                            } else {
-                                ApplicationUI.focusAndBeep();
-                            }
-                        }
-                    });
-                }
-
-                @Override
-                public void onWindowOpen() {
-                    logger.debug("onWindowOpen");
-                }
-
-                @Override
-                public void onTrayMinimize() {
-                    logger.debug("onTrayMinimize");
-                }
-
-            }
+            webview,
+            uiLifeCycleListener
         );
     }
 
@@ -330,18 +339,18 @@ public class Bootstrap implements Runnable {
 
                 case "ui:theme-loaded": {
                     new AsyncTask(() -> {
-                        JFrame frame = ApplicationUI.getWindow().getFrame();
+//                        JFrame frame = ApplicationUI.getWindow().getFrame();
 
                         // If we enable osr, we want to only open the window when it's fully loaded.
-                        if (CefUtil.enableOSR) {
-                            frame.setVisible(true);
-                            frame.toFront();
-                        }
+//                        if (webview.isOffScreenRenderingEnabled()) {
+//                            frame.setVisible(true);
+//                            frame.toFront();
+//                        }
 
                         // We also want to wait a bit for the app to initialize further (and to make the
                         // ux less jarring since it loads too fast.)
                         try {
-                            TimeUnit.SECONDS.sleep(5);
+                            TimeUnit.SECONDS.sleep(2);
                         } catch (InterruptedException ignored) {}
 
                         // Forward the event, after the timeout.
@@ -381,7 +390,6 @@ public class Bootstrap implements Runnable {
 
                 // UI
                 TrayHandler.destroy();
-                ApplicationUI.getDevtools().close();
                 ApplicationUI.getWindow().dispose();
 
                 // App

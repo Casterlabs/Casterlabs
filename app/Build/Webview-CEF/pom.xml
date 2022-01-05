@@ -2,13 +2,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>Caffeinated-Windows</artifactId>
-
+	<artifactId>Webview-CEF</artifactId>
+	
 	<parent>
 		<groupId>co.casterlabs</groupId>
 		<artifactId>Build</artifactId>
 		<version>1.2</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<build>
@@ -48,6 +47,21 @@
 	</repositories>
 
 	<dependencies>
+	
+		<!-- Code related packages -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.22</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency> <!-- For Eclipse users -->
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>19.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+	
 		<dependency>
 			<groupId>co.casterlabs</groupId>
 			<artifactId>Bootstrap</artifactId>
@@ -55,32 +69,13 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- UI packages -->
 		<dependency>
 			<groupId>me.friwi</groupId>
-			<artifactId>jcef-natives-windows-amd64</artifactId>
-			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
+			<artifactId>jcefmaven</artifactId>
+			<version>95.7.14.3</version>
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>co.casterlabs</groupId>
-			<artifactId>Webview-CEF</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<!-- JNA -->
-		<dependency>
-			<groupId>net.java.dev.jna</groupId>
-			<artifactId>jna</artifactId>
-			<version>5.10.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.java.dev.jna</groupId>
-			<artifactId>jna-platform</artifactId>
-			<version>5.10.0</version>
-			<scope>compile</scope>
-		</dependency>
 	</dependencies>
 </project>

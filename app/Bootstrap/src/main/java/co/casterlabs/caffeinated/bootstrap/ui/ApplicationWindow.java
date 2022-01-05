@@ -1,7 +1,7 @@
 package co.casterlabs.caffeinated.bootstrap.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
@@ -13,10 +13,8 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
-import javax.swing.border.LineBorder;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
@@ -34,10 +32,7 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @Getter
 public class ApplicationWindow {
-    public static final boolean ENABLE_CUSTOM_TITLEBAR = System.getProperty("caffeinated.window.customtitlebar.enable", "").equals("true");
-
     private ThemeableJFrame frame;
-    private JPanel cefPanel;
     private UILifeCycleListener listener;
 
     private boolean hasFocus = false;
@@ -47,10 +42,11 @@ public class ApplicationWindow {
     @SuppressWarnings("deprecation")
     private Unsafe_WindowState windowState = CaffeinatedApp.getInstance().getWindowState().unsafe;
 
-    public ApplicationWindow(UILifeCycleListener listener) {
+    public ApplicationWindow(@NonNull UILifeCycleListener listener, @NonNull Component webviewComponent) {
         this.listener = listener;
         this.frame = NativeSystemProvider.getFrame();
 
+        // Window stuff.
         PreferenceFile<WindowPreferences> preferenceFile = CaffeinatedApp.getInstance().getWindowPreferences();
         WindowPreferences windowPreferences = preferenceFile.get();
 
@@ -125,27 +121,7 @@ public class ApplicationWindow {
 
         this.updateBridgeData();
 
-        this.cefPanel = new JPanel();
-        this.cefPanel.setLayout(new BorderLayout(0, 0));
-        this.frame.getContentPane().add(this.cefPanel, BorderLayout.CENTER);
-
-        if (ENABLE_CUSTOM_TITLEBAR) {
-            // We implement our own title bar in html, as it can be easily restyled.
-            switch (ConsoleUtil.getPlatform()) {
-                case WINDOWS:
-                    this.frame.setUndecorated(true);
-                    this.cefPanel.setBorder(new LineBorder(Color.GRAY, 2));
-
-                    new ComponentResizer()
-                        .registerComponent(this.frame);
-
-                    break;
-
-                default:
-                    break;
-
-            }
-        }
+        this.frame.getContentPane().add(webviewComponent, BorderLayout.CENTER);
     }
 
     public boolean isMaximized() {
@@ -169,7 +145,6 @@ public class ApplicationWindow {
         this.windowState.maximized(this.isMaximized());
         this.windowState.platform(ConsoleUtil.getPlatform().name());
         this.windowState.hasFocus(this.hasFocus);
-        this.windowState.enableCustomTitleBar(ENABLE_CUSTOM_TITLEBAR);
         this.windowState.update();
     }
 

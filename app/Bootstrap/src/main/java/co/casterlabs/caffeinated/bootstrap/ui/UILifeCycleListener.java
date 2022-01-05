@@ -1,10 +1,8 @@
 package co.casterlabs.caffeinated.bootstrap.ui;
 
-public interface UILifeCycleListener {
+import co.casterlabs.caffeinated.bootstrap.webview.WebviewLifeCycleListener;
 
-    public void onPreLoad();
-
-    public void onInitialLoad();
+public interface UILifeCycleListener extends WebviewLifeCycleListener {
 
     /**
      * @return true to close the window, false to cancel.
@@ -12,9 +10,5 @@ public interface UILifeCycleListener {
     public boolean onUICloseAttempt();
 
     public void onMinimize();
-
-    public void onWindowOpen();
-
-    public void onTrayMinimize();
 
 }

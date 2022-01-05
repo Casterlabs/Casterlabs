@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.bootstrap.cef;
+package co.casterlabs.caffeinated.bootstrap.webview.impl;
 
 import java.io.File;
 
@@ -12,9 +12,7 @@ import org.cef.callback.CefSchemeRegistrar;
 import org.cef.handler.CefResourceHandler;
 import org.cef.network.CefRequest;
 
-import co.casterlabs.caffeinated.bootstrap.cef.scheme.SchemeHandler;
-import co.casterlabs.caffeinated.bootstrap.cef.scheme.impl.ResponseResourceHandler;
-import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI.AppSchemeHandler;
+import co.casterlabs.caffeinated.bootstrap.webview.scheme.SchemeHandler;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import me.friwi.jcefmaven.CefAppBuilder;
@@ -28,7 +26,7 @@ public class CefUtil {
     public static final boolean enableOSR = System.getProperty("caffeinated.cef.offscreenrendering.enable", "").equals("true"); // Defaults to false
     public static final boolean enableTransparency = System.getProperty("caffeinated.cef.transparency.enable", "").equals("true"); // Defaults to false
 
-    static {
+    public static void create(@NonNull String appScheme, @NonNull SchemeHandler schemeHandler) {
         try {
             CefAppBuilder builder = new CefAppBuilder();
 
@@ -43,18 +41,7 @@ public class CefUtil {
                 @Override
                 public void onRegisterCustomSchemes(CefSchemeRegistrar registrar) {
                     registrar.addCustomScheme(
-                        "app",
-                        true,  // isStandard
-                        false, // isLocal
-                        false, // isDisplayIsolated
-                        true,  // isSecure
-                        true,  // isCorsEnabled
-                        true,  // isCspBypassing
-                        true   // isFetchEnabled
-                    );
-
-                    registrar.addCustomScheme(
-                        "proxy",
+                        appScheme,
                         true,  // isStandard
                         false, // isLocal
                         false, // isDisplayIsolated
@@ -67,8 +54,18 @@ public class CefUtil {
 
                 @Override
                 public void onContextInitialized() {
-                    CefUtil.registerUrlScheme("app", new AppSchemeHandler());
-                    CefUtil.registerUrlScheme("proxy", new CorsProxySchemeHandler());
+                    CefApp
+                        .getInstance()
+                        .registerSchemeHandlerFactory(appScheme, "", new CefSchemeHandlerFactory() {
+                            @Override
+                            public CefResourceHandler create(CefBrowser browser, CefFrame frame, String schemeName, CefRequest request) {
+                                if (schemeName.equals(appScheme)) {
+                                    return new CefResponseResourceHandler(schemeHandler);
+                                }
+
+                                return null;
+                            }
+                        });
                 }
 
             });
@@ -101,28 +98,9 @@ public class CefUtil {
         }
     }
 
-    public static void registerSchemes() {
-        // This is a blank method that'll automatically call static {} once.
-    }
-
     @SneakyThrows
     public static CefClient createCefClient() {
         return CefApp.getInstance().createClient();
-    }
-
-    public static void registerUrlScheme(@NonNull String scheme, @NonNull SchemeHandler handler) {
-        CefApp app = CefApp.getInstance();
-
-        app.registerSchemeHandlerFactory(scheme, "", new CefSchemeHandlerFactory() {
-            @Override
-            public CefResourceHandler create(CefBrowser browser, CefFrame frame, String schemeName, CefRequest request) {
-                if (schemeName.equals(scheme)) {
-                    return new ResponseResourceHandler(handler);
-                }
-
-                return null;
-            }
-        });
     }
 
 }

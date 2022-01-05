@@ -5,8 +5,11 @@ import org.jetbrains.annotations.Nullable;
 import co.casterlabs.caffeinated.app.music_integration.InternalMusicProvider;
 import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
 import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame.UnimplementedThemeableFrame;
+import co.casterlabs.caffeinated.bootstrap.webview.AppWebview;
+import co.casterlabs.caffeinated.util.Producer;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import lombok.Getter;
+import lombok.NonNull;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
@@ -18,12 +21,15 @@ public abstract class NativeSystemProvider {
 
     @Deprecated
     // Something being null = unsupported.
-    public static void initialize(@Nullable LafManager lafManager, @Nullable SystemPlaybackMusicProvider systemPlaybackMusicProvider) {
+    public static void initialize(@Nullable LafManager lafManager, @Nullable SystemPlaybackMusicProvider systemPlaybackMusicProvider, @NonNull Producer<AppWebview> webviewFactory) {
         assert !INITIALIZED : "NativeSystemProvider has already been initialized.";
         INITIALIZED = true;
 
         NativeSystemProvider.lafManager = lafManager;
         NativeSystemProvider.systemPlaybackMusicProvider = systemPlaybackMusicProvider;
+
+        // We set it here so we guarantee it gets set.
+        AppWebview.setWebviewFactory(webviewFactory);
     }
 
     public static ThemeableJFrame getFrame() {

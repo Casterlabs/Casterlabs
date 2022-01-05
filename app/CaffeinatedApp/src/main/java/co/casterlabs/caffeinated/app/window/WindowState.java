@@ -13,7 +13,6 @@ public class WindowState {
     private boolean maximized;
     private String platform;
     private boolean hasFocus;
-    private boolean enableCustomTitleBar;
 
     @Deprecated
     @Getter(AccessLevel.NONE)
@@ -47,10 +46,6 @@ public class WindowState {
 
         public void hasFocus(boolean value) {
             hasFocus = value;
-        }
-
-        public void enableCustomTitleBar(boolean value) {
-            enableCustomTitleBar = value;
         }
 
     }
