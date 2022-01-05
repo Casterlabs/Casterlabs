@@ -4,6 +4,7 @@
  - wget
  - Maven
  - [JDK 8](https://adoptium.net) (You _can_ use JDK 11 to compile the project since it has a built in JDK 8 mode)
+ - [JavaFX SDK](https://openjfx.io/openjfx-docs/) (You need JavaFX for Java 11, you need to tick "include older versions" on the download page, and add the required VM arguments ex `--module-path "C:\Program Files\Java\javafx-sdk-11\lib" --add-modules javafx.controls,javafx.web,javafx.swing`)
 
 ## Windows
 You can either  
