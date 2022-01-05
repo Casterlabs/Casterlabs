@@ -6,7 +6,7 @@ cd app/Build/Caffeinated-Linux
 
 echo "Building for Linux..."
 
-JRE_DOWNLOAD_URL="https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u312-b07/OpenJDK8U-jre_x64_linux_hotspot_8u312b07.tar.gz"
+JRE_DOWNLOAD_URL="https://api.adoptium.net/v3/binary/version/jdk-11.0.13%2B8/linux/x64/jre/hotspot/normal/eclipse?project=jdk"
 MAIN_CLASS="co.casterlabs.caffeinated.bootstrap.linux.LinuxBootstrap"
 
 rm -rf target/dist
