@@ -2,6 +2,7 @@ package co.casterlabs.caffeinated.bootstrap.windows.music.types;
 
 import java.util.List;
 
+import co.casterlabs.caffeinated.pluginsdk.music.MusicProvider;
 import co.casterlabs.rakurai.json.annotating.JsonDeserializationMethod;
 import co.casterlabs.rakurai.json.annotating.JsonField;
 import co.casterlabs.rakurai.json.element.JsonString;
@@ -52,7 +53,7 @@ public class MediaInfo {
 
     public @NonNull String getThumnailAsDataUri() {
         if (this.thumbnailBase64 == null) {
-            return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNM/g8AAcsBZMiygSIAAAAASUVORK5CYII=";
+            return MusicProvider.BLANK_ART;
         } else {
             return "data:" + this.thumbnailMimeType + ";base64," + this.thumbnailBase64;
         }

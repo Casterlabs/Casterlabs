@@ -9,6 +9,7 @@ import lombok.NonNull;
 
 @JsonClass(serializer = Serializer.class)
 public interface MusicProvider {
+    public static final String BLANK_ART = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNM/g8AAcsBZMiygSIAAAAASUVORK5CYII=";
 
     public String getServiceName();
 
