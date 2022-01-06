@@ -37,8 +37,8 @@ if [[ $@ != *"nodist"* ]]; then
     sh app/Build/Caffeinated-Windows/build.sh
     echo ""
 
-    #sh app/Build/Caffeinated-Linux/build.sh
-    #echo ""
+    sh app/Build/Caffeinated-Linux/build.sh
+    echo ""
 
     sh app/Build/Caffeinated-MacOS/build.sh
     echo ""
