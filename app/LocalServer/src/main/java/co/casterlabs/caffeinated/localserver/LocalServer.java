@@ -12,6 +12,7 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.localserver.handlers.RouteLocalServer;
 import co.casterlabs.caffeinated.localserver.handlers.RoutePluginApi;
 import co.casterlabs.caffeinated.localserver.handlers.RouteWidgetApi;
+import co.casterlabs.caffeinated.localserver.nuclearoption.NuclearOptionPlugin;
 import co.casterlabs.caffeinated.localserver.websocket.RealtimeConnection;
 import co.casterlabs.caffeinated.util.Pair;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
@@ -35,6 +36,7 @@ public class LocalServer implements Closeable, HttpProvider {
 
     private static final long PING_INTERVAL = TimeUnit.SECONDS.toMillis(15);
     private SoraFramework framework;
+    private int port;
 
     static {
         List<String> methods = new ArrayList<>();
@@ -47,8 +49,9 @@ public class LocalServer implements Closeable, HttpProvider {
 
     @SneakyThrows
     public LocalServer(int port) {
+        this.port = port;
         this.framework = new SoraLauncher()
-            .setPort(port)
+            .setPort(this.port)
             .setImplementation(HttpServerImplementation.UNDERTOW)
             .buildWithoutPluginLoader();
 
@@ -60,6 +63,21 @@ public class LocalServer implements Closeable, HttpProvider {
         this.framework
             .getSora()
             .register(new LocalServerPluginWrapper());
+    }
+
+    // Due to
+    // https://bitbucket.org/chromiumembedded/java-cef/issues/365/custom-scheme-onloaderror-not-called
+    // we have to use HTTP to host the caffeinated ui. So we generate a random
+    // password (to help prevent people from loading the ui in a browser) and
+    // register a middleware in the existing localserver and have it automatically
+    // serve requests to the frontend by checking for that password in the useragent
+    // header.
+    public String initNuclearOption(String password, boolean isDev) {
+        this.framework
+            .getSora()
+            .register(new NuclearOptionPlugin(password, isDev));
+
+        return String.format("http://127.0.0.1:%d", this.port);
     }
 
     private class LocalServerPluginWrapper extends SoraPlugin {

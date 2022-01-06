@@ -34,6 +34,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import xyz.e3ndr.consoleutil.ConsoleUtil;
+import xyz.e3ndr.consoleutil.platform.JavaPlatform;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
@@ -71,12 +72,12 @@ public class Bootstrap implements Runnable {
     private static FastLogger logger = new FastLogger();
 
     private static @Getter BuildInfo buildInfo;
+    private static @Getter boolean enableNuclearOption;
     private static @Getter boolean isDev;
+
     private static @Getter Bootstrap instance;
-
-    private static AppWebview webview;
-
     private static LocalServer localServer;
+    private static AppWebview webview;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Enable assertions programatically.
@@ -201,9 +202,22 @@ public class Bootstrap implements Runnable {
 
         logger.info("Initializing CEF (it may take some time to extract the natives)");
 
+        // App url
+        String url = isDev ? this.devAddress : appUrl;
+
+        enableNuclearOption = ((ConsoleUtil.getPlatform() == JavaPlatform.UNIX) && !isDev) ||
+            System.getProperty("caffeinated.nuclearoption.force", "").equals("true");
+
         // Init and start the local server.
         try {
             localServer = new LocalServer(app.getAppPreferences().get().getConductorPort());
+
+            // This is the nuclear option.
+            // https://bitbucket.org/chromiumembedded/java-cef/issues/365/custom-scheme-onloaderror-not-called
+            if (enableNuclearOption) {
+                FastLogger.logStatic("Nuclear option password: ", AppWebview.STATE_PASSWORD);
+                url = localServer.initNuclearOption(AppWebview.STATE_PASSWORD, isDev);
+            }
 
             localServer.start();
         } catch (IOException e) {
@@ -307,7 +321,7 @@ public class Bootstrap implements Runnable {
 
         // Ok, now initialize!
         ApplicationUI.initialize(
-            isDev ? this.devAddress : appUrl,
+            url,
             webview,
             uiLifeCycleListener
         );

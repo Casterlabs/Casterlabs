@@ -13,6 +13,7 @@ import org.cef.handler.CefResourceHandler;
 import org.cef.network.CefRequest;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.bootstrap.webview.AppWebview;
 import co.casterlabs.caffeinated.bootstrap.webview.scheme.SchemeHandler;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -34,6 +35,7 @@ public class CefUtil {
 
             builder.getCefSettings().windowless_rendering_enabled = enableOSR;
             builder.getCefSettings().log_severity = LogSeverity.LOGSEVERITY_DISABLE;
+            builder.getCefSettings().user_agent_product = String.format("Chromium; Just A CasterlabsCaffeinated (%s)", AppWebview.STATE_PASSWORD);
 
             builder.setAppHandler(new MavenCefAppHandlerAdapter() {
 

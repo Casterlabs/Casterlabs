@@ -5,6 +5,7 @@ import java.awt.Component;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.bootstrap.webview.scheme.SchemeHandler;
+import co.casterlabs.caffeinated.util.Crypto;
 import co.casterlabs.caffeinated.util.Producer;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import lombok.Setter;
 
 public abstract class AppWebview {
     public static final String WEBVIEW_SCHEME = "app";
+    public static final String STATE_PASSWORD = new String(Crypto.generateSecureRandomKey());
 
     private static @Getter @Setter Producer<AppWebview> webviewFactory;
 
