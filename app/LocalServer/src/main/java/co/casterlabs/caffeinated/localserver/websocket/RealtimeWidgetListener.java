@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import co.casterlabs.caffeinated.localserver.RouteHelper;
-import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
-import co.casterlabs.caffeinated.pluginsdk.music.Music;
+import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.util.Pair;
@@ -56,12 +55,12 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
 
         this.sendMessage(
             "KOI_STATICS",
-            Koi.toJson() // Exact same.
+            Caffeinated.getInstance().getKoi().toJson() // Exact same.
         );
 
         this.sendMessage(
             "MUSIC",
-            Music.toJson()
+            Caffeinated.getInstance().getKoi().toJson()
         );
 
         this.sendMessage(
@@ -69,7 +68,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
             new JsonObject()
                 .put("connectionId", this.connectionId)
                 .put("widget", Rson.DEFAULT.toJson(this.widget))
-                .put("koi", Koi.toJson())
+                .put("koi", Caffeinated.getInstance().getKoi().toJson())
         );
     }
 

@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import co.casterlabs.caffeinated.util.Reflective;
 import co.casterlabs.koi.api.KoiChatterType;
 import co.casterlabs.koi.api.types.events.KoiEvent;
 import co.casterlabs.koi.api.types.events.RoomstateEvent;
@@ -14,44 +13,52 @@ import co.casterlabs.koi.api.types.user.User;
 import co.casterlabs.koi.api.types.user.UserPlatform;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
-import lombok.Getter;
 import lombok.NonNull;
 
-public class Koi {
-    private static @Reflective @Getter List<KoiEvent> eventHistory;
-    private static @Reflective @Getter Map<UserPlatform, List<User>> viewers;
-    private static @Reflective @Getter Map<UserPlatform, UserUpdateEvent> userStates;
-    private static @Reflective @Getter Map<UserPlatform, StreamStatusEvent> streamStates;
-    private static @Reflective @Getter Map<UserPlatform, RoomstateEvent> roomStates;
+public abstract class Koi {
 
-    private static @Reflective KoiHandle HANDLE;
+    public abstract List<KoiEvent> getEventHistory();
+
+    public abstract Map<UserPlatform, List<User>> getViewers();
+
+    public abstract Map<UserPlatform, UserUpdateEvent> getUserStates();
+
+    public abstract Map<UserPlatform, StreamStatusEvent> getStreamStates();
+
+    public abstract Map<UserPlatform, RoomstateEvent> getRoomStates();
+
+    public abstract void sendChat(@NonNull UserPlatform platform, @NonNull String message, @NonNull KoiChatterType chatter);
+
+    public abstract void upvoteChat(@NonNull UserPlatform platform, @NonNull String messageId);
+
+    public abstract void deleteChat(@NonNull UserPlatform platform, @NonNull String messageId);
 
     /**
      * @deprecated This is used internally.
      */
     @Deprecated
-    public static JsonObject toJson() {
+    public JsonObject toJson() {
         return new JsonObject()
-            .put("history", Rson.DEFAULT.toJson(eventHistory))
-            .put("viewers", Rson.DEFAULT.toJson(viewers))
-            .put("userStates", Rson.DEFAULT.toJson(userStates))
-            .put("streamStates", Rson.DEFAULT.toJson(streamStates))
-            .put("roomStates", Rson.DEFAULT.toJson(roomStates));
+            .put("history", Rson.DEFAULT.toJson(this.getEventHistory()))
+            .put("viewers", Rson.DEFAULT.toJson(this.getViewers()))
+            .put("userStates", Rson.DEFAULT.toJson(this.getUserStates()))
+            .put("streamStates", Rson.DEFAULT.toJson(this.getStreamStates()))
+            .put("roomStates", Rson.DEFAULT.toJson(this.getRoomStates()));
     }
 
-    public static List<UserPlatform> getSignedInPlatforms() {
-        return new LinkedList<>(userStates.keySet());
+    public List<UserPlatform> getSignedInPlatforms() {
+        return new LinkedList<>(this.getUserStates().keySet());
     }
 
-    public static boolean isMultiUserMode() {
-        return userStates.size() > 1;
+    public boolean isMultiUserMode() {
+        return this.getUserStates().size() > 1;
     }
 
-    public static boolean isSignedOut() {
-        return userStates.size() == 0;
+    public boolean isSignedOut() {
+        return this.getUserStates().size() == 0;
     }
 
-    public static int getMaxMessageLength(@NonNull UserPlatform platform) {
+    public int getMaxMessageLength(@NonNull UserPlatform platform) {
         switch (platform) {
             case CAFFEINE:
                 return 80;
@@ -73,37 +80,14 @@ public class Koi {
         }
     }
 
-    public static void sendChat(@NonNull UserPlatform platform, @NonNull String message, @NonNull KoiChatterType chatter) {
-        HANDLE.sendChat(platform, message, chatter);
-    }
-
-    public static void upvoteChat(@NonNull UserPlatform platform, @NonNull String messageId) {
-        HANDLE.upvoteChat(platform, messageId);
-    }
-
-    public static void deleteChat(@NonNull UserPlatform platform, @NonNull String messageId) {
-        HANDLE.deleteChat(platform, messageId);
-    }
-
     /**
      * It's important to note that this is really only useful outside of multi-user
      * mode.
      * 
      * @throws IndexOutOfBoundsException if no user is signed in.
      */
-    public static UserPlatform getFirstSignedInPlatform() {
-        return getSignedInPlatforms().get(0);
-    }
-
-    @Deprecated
-    public static interface KoiHandle {
-
-        public void sendChat(@NonNull UserPlatform platform, @NonNull String message, @NonNull KoiChatterType chatter);
-
-        public void upvoteChat(@NonNull UserPlatform platform, @NonNull String messageId);
-
-        public void deleteChat(@NonNull UserPlatform platform, @NonNull String messageId);
-
+    public UserPlatform getFirstSignedInPlatform() {
+        return this.getSignedInPlatforms().get(0);
     }
 
 }

@@ -40,18 +40,14 @@ import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
-import lombok.Getter;
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import xyz.e3ndr.eventapi.EventHandler;
 import xyz.e3ndr.eventapi.listeners.EventListener;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
-import xyz.e3ndr.reflectionlib.ReflectionLib;
 
-@Getter
 @SuppressWarnings("deprecation")
-public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
+public class GlobalKoi extends Koi implements KoiLifeCycleHandler {
     private static final List<KoiEventType> KEPT_EVENTS = Arrays.asList(
         KoiEventType.FOLLOW,
         KoiEventType.CHAT,
@@ -76,22 +72,16 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
     private Map<UserPlatform, StreamStatusEvent> streamStates = new ConcurrentHashMap<>();
     private Map<UserPlatform, RoomstateEvent> roomStates = new ConcurrentHashMap<>();
 
-    private BridgeValue<List<KoiEvent>> historyBridge = new BridgeValue<>("koi:history", Collections.unmodifiableList(this.eventHistory), false);
     private BridgeValue<Map<UserPlatform, List<User>>> viewersBridge = new BridgeValue<>("koi:viewers", Collections.unmodifiableMap(this.viewers));
     private BridgeValue<Map<UserPlatform, UserUpdateEvent>> userStatesBridge = new BridgeValue<>("koi:userStates", Collections.unmodifiableMap(this.userStates));
     private BridgeValue<Map<UserPlatform, StreamStatusEvent>> streamStatesBridge = new BridgeValue<>("koi:streamStates", Collections.unmodifiableMap(this.streamStates));
     private BridgeValue<Map<UserPlatform, RoomstateEvent>> roomStatesBridge = new BridgeValue<>("koi:roomStates", Collections.unmodifiableMap(this.roomStates));
 
-    @SneakyThrows
     public void init() {
-        // Set read-only pointers to this instance's chatHistory and viewers fields.
-        ReflectionLib.setStaticValue(Koi.class, "eventHistory", this.historyBridge.get());
-        ReflectionLib.setStaticValue(Koi.class, "viewers", this.viewersBridge.get());
-        ReflectionLib.setStaticValue(Koi.class, "userStates", this.userStatesBridge.get());
-        ReflectionLib.setStaticValue(Koi.class, "streamStates", this.streamStatesBridge.get());
-        ReflectionLib.setStaticValue(Koi.class, "roomStates", this.roomStatesBridge.get());
-
         handler.register(this);
+
+        // We don't use it, so it'll just sit here in purgatory.
+        new BridgeValue<>("koi:history", Collections.unmodifiableList(this.eventHistory), false);
     }
 
     /**
@@ -123,6 +113,7 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
         this.viewersBridge.update();
         this.userStatesBridge.update();
         this.streamStatesBridge.update();
+        this.roomStatesBridge.update();
 
         // Send update to the widget instances.
         new AsyncTask(() -> {
@@ -304,6 +295,31 @@ public class GlobalKoi implements KoiLifeCycleHandler, Koi.KoiHandle {
                     .getEventClass()
             )
         );
+    }
+
+    @Override
+    public List<KoiEvent> getEventHistory() {
+        return Collections.unmodifiableList(this.eventHistory);
+    }
+
+    @Override
+    public Map<UserPlatform, List<User>> getViewers() {
+        return Collections.unmodifiableMap(this.viewers);
+    }
+
+    @Override
+    public Map<UserPlatform, UserUpdateEvent> getUserStates() {
+        return Collections.unmodifiableMap(this.userStates);
+    }
+
+    @Override
+    public Map<UserPlatform, StreamStatusEvent> getStreamStates() {
+        return Collections.unmodifiableMap(this.streamStates);
+    }
+
+    @Override
+    public Map<UserPlatform, RoomstateEvent> getRoomStates() {
+        return Collections.unmodifiableMap(this.roomStates);
     }
 
 }

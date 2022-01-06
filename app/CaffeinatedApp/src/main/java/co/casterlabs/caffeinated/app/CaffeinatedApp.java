@@ -21,6 +21,7 @@ import co.casterlabs.caffeinated.app.ui.AppUI;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.app.window.WindowPreferences;
 import co.casterlabs.caffeinated.app.window.WindowState;
+import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
@@ -29,7 +30,7 @@ import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
 @Getter
-public class CaffeinatedApp {
+public class CaffeinatedApp extends Caffeinated {
     public static final String caffeinatedClientId = "LmHG2ux992BxqQ7w9RJrfhkW";
     public static final String appDataDir;
 
@@ -47,7 +48,7 @@ public class CaffeinatedApp {
     private final boolean isDev;
 
     private AppAuth auth = new AppAuth();
-    private MusicIntegration musicIntegration = new MusicIntegration();
+    private MusicIntegration music = new MusicIntegration();
     private GlobalKoi koi = new GlobalKoi();
     private AppUI UI = new AppUI();
     private PluginIntegration plugins = new PluginIntegration();
@@ -87,7 +88,7 @@ public class CaffeinatedApp {
         this.UI.init();
         this.koi.init();
         this.auth.init();
-        this.musicIntegration.init();
+        this.music.init();
         this.plugins.init();
 
         bridge_AppPreferences.set(this.appPreferences.get());

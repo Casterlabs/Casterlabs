@@ -2,7 +2,6 @@ package co.casterlabs.caffeinated.app.music_integration;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +16,7 @@ import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.music.Music;
 import co.casterlabs.caffeinated.pluginsdk.music.MusicPlaybackState;
+import co.casterlabs.caffeinated.pluginsdk.music.MusicProvider;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
@@ -31,7 +31,7 @@ import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @Getter
-public class MusicIntegration {
+public class MusicIntegration extends Music {
     private static EventHandler<AppMusicIntegrationEventType> handler = new EventHandler<>();
 
     private static InternalMusicProvider<?> systemPlaybackMusicProvider = null;
@@ -46,8 +46,12 @@ public class MusicIntegration {
     @SneakyThrows
     public MusicIntegration() {
         handler.register(this);
+    }
 
-        ReflectionLib.setStaticValue(Music.class, "providers", Collections.unmodifiableMap(this.providers));
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, MusicProvider> getProviders() {
+        return (Map<String, MusicProvider>) ((Object) this.providers);
     }
 
     public void init() {
@@ -140,11 +144,8 @@ public class MusicIntegration {
 
         new AsyncTask(() -> {
             try {
-                // Update the pluginsdk Music class.
-                ReflectionLib.setStaticValue(Music.class, "activePlayback", this.activePlayback);
-
                 @SuppressWarnings("deprecation")
-                JsonObject music = Music.toJson();
+                JsonObject music = this.toJson();
 
                 // Send the events to the widget instances.
                 for (CaffeinatedPlugin plugin : CaffeinatedApp.getInstance().getPlugins().getPlugins().getPlugins()) {

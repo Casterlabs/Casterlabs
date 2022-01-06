@@ -42,6 +42,9 @@ import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
+// This is a maintenance nightmare.
+// TODO switch to proxies, handlers, or contexts, anything to avoid reflection.
+
 @Getter
 public class PluginIntegration {
     private static EventHandler<AppPluginIntegrationEventType> handler = new EventHandler<>();
