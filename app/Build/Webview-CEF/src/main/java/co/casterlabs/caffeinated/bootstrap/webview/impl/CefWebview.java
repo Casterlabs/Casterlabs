@@ -44,7 +44,7 @@ public class CefWebview extends AppWebview {
         // One-time setup.
         if (!cefInitialized) {
             cefInitialized = true;
-            CefUtil.create(AppWebview.WEBVIEW_SCHEME, AppWebview.getSchemeHandler());
+            CefUtil.create(AppWebview.isOffScreenRenderingEnabled(), AppWebview.WEBVIEW_SCHEME, AppWebview.getSchemeHandler());
         }
 
         // Setup the panel
@@ -189,7 +189,7 @@ public class CefWebview extends AppWebview {
             }
 
             // Create browser
-            this.browser = this.client.createBrowser(url, this.isOffScreenRenderingEnabled(), this.isTransparencyEnabled());
+            this.browser = this.client.createBrowser(url, AppWebview.isOffScreenRenderingEnabled(), AppWebview.isTransparencyEnabled());
 
             // Add it to the JPanel.
             this.cefPanel.add(this.browser.getUIComponent(), BorderLayout.CENTER);

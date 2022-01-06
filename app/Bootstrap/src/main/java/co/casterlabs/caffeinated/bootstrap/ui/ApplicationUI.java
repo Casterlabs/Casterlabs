@@ -35,10 +35,7 @@ public class ApplicationUI {
         ApplicationUI.webview = webview;
 
         // Initialize the webview
-        final boolean enableOSR = false;
-        final boolean enableTransparency = false;
-
-        Component webviewComponent = webview.initialize(enableOSR, enableTransparency);
+        Component webviewComponent = webview.initialize();
 
         // Create the window
         window = new ApplicationWindow(uiLifeCycleListener, webviewComponent);

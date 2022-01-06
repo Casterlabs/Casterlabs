@@ -21,19 +21,16 @@ import me.friwi.jcefmaven.CefAppBuilder;
 import me.friwi.jcefmaven.MavenCefAppHandlerAdapter;
 
 public class CefUtil {
-    public static final boolean enableOSR = System.getProperty("caffeinated.cef.offscreenrendering.enable", "").equals("true"); // Defaults to false
-    public static final boolean enableTransparency = System.getProperty("caffeinated.cef.transparency.enable", "").equals("true"); // Defaults to false
-
     public static final File bundleDirectory = new File(CaffeinatedApp.appDataDir, "dependencies/cef_bundle");
 
-    public static void create(@NonNull String appScheme, @NonNull SchemeHandler schemeHandler) {
+    public static void create(boolean enableOsr, @NonNull String appScheme, @NonNull SchemeHandler schemeHandler) {
         try {
             CefAppBuilder builder = new CefAppBuilder();
 
             builder.addJcefArgs("--disable-http-cache", "--disable-web-security");
             builder.setInstallDir(bundleDirectory);
 
-            builder.getCefSettings().windowless_rendering_enabled = enableOSR;
+            builder.getCefSettings().windowless_rendering_enabled = enableOsr;
             builder.getCefSettings().log_severity = LogSeverity.LOGSEVERITY_DISABLE;
             builder.getCefSettings().user_agent_product = String.format("Chromium; Just A CasterlabsCaffeinated (%s)", AppWebview.STATE_PASSWORD);
 

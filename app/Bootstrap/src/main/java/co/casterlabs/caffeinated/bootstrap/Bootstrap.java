@@ -200,7 +200,20 @@ public class Bootstrap implements Runnable {
         logger.info("bootstrap.isDev              | %b", isDev);
         logger.info("");
 
-        logger.info("Initializing CEF (it may take some time to extract the natives)");
+        // Webview settings.
+        switch (ConsoleUtil.getPlatform()) {
+            case UNIX: {
+                this.devToolsEnabled = false; // Broken on Linux.
+                AppWebview.setOffScreenRenderingEnabled(true); // Won't resize without it.
+                break;
+            }
+
+            case MAC:
+            case UNKNOWN:
+            case WINDOWS:
+                break;
+
+        }
 
         // App url
         String url = isDev ? this.devAddress : appUrl;
@@ -229,6 +242,7 @@ public class Bootstrap implements Runnable {
         AppWebview.setSchemeHandler(new ApplicationUI.AppSchemeHandler());
 
         // Setup the webview.
+        logger.info("Initializing UI (this may take some time)");
         webview = AppWebview.getWebviewFactory().produce();
 
         // Window listeners
