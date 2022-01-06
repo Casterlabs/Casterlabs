@@ -20,20 +20,6 @@
 
 	<dependencies>
 
-		<!-- Code related packages -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.22</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency> <!-- For Eclipse users -->
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>19.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>co.casterlabs</groupId>
 			<artifactId>Util</artifactId>
@@ -49,21 +35,9 @@
 
 		<!-- Utilities -->
 		<dependency>
-			<groupId>com.github.casterlabs.rakurai</groupId>
-			<artifactId>Json</artifactId>
-			<version>1.11.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 			<version>4.2</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.e3ndr</groupId>
-			<artifactId>FastLoggingFramework</artifactId>
-			<version>1.7.1</version>
 			<scope>compile</scope>
 		</dependency>
 
