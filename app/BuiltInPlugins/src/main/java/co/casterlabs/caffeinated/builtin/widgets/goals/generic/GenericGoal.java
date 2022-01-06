@@ -8,7 +8,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.builtin.CaffeinatedDefaultPlugin;
-import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
+import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsButton;
@@ -167,17 +167,17 @@ public abstract class GenericGoal extends Widget implements KoiEventListener {
     }
 
     public @Nullable UserPlatform getSelectedPlatform() {
-        if (Koi.isSignedOut()) {
+        if (Caffeinated.getInstance().getKoi().isSignedOut()) {
             return null;
         } else {
-            UserPlatform platform = Koi.getFirstSignedInPlatform();
+            UserPlatform platform = Caffeinated.getInstance().getKoi().getFirstSignedInPlatform();
 
             if (this.isMultiPlatform()) {
                 try {
                     UserPlatform selectedPlatform = UserPlatform.valueOf(this.settings().getString("platform.platform").toUpperCase());
 
                     // Make sure that platform is signed in.
-                    if (Koi.getUserStates().containsKey(selectedPlatform)) {
+                    if (Caffeinated.getInstance().getKoi().getUserStates().containsKey(selectedPlatform)) {
                         platform = selectedPlatform;
                     }
                 } catch (Exception e) {
@@ -196,7 +196,7 @@ public abstract class GenericGoal extends Widget implements KoiEventListener {
     }
 
     protected boolean isMultiPlatform() {
-        return Koi.getUserStates().size() > 1;
+        return Caffeinated.getInstance().getKoi().getUserStates().size() > 1;
     }
 
 }

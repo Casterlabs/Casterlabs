@@ -6,6 +6,7 @@ import java.lang.reflect.Proxy;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 @AllArgsConstructor
 public class ReflectiveProxy implements InvocationHandler {
