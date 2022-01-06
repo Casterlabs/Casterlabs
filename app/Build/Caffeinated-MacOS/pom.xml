@@ -41,6 +41,7 @@
 	</build>
 
 	<dependencies>
+	
 		<dependency>
 			<groupId>co.casterlabs</groupId>
 			<artifactId>Bootstrap</artifactId>
@@ -53,5 +54,13 @@
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>
+
+		<!-- <dependency>
+			<groupId>me.friwi</groupId>
+			<artifactId>jcef-natives-macos-amd64</artifactId>
+			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
+			<scope>compile</scope>
+		</dependency> -->
+
 	</dependencies>
 </project>

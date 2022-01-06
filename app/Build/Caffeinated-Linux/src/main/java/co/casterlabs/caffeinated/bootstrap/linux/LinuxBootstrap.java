@@ -2,6 +2,7 @@ package co.casterlabs.caffeinated.bootstrap.linux;
 
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.NativeSystemProvider;
+import co.casterlabs.caffeinated.bootstrap.webview.impl.CefWebview;
 
 public class LinuxBootstrap {
 
@@ -10,7 +11,7 @@ public class LinuxBootstrap {
         NativeSystemProvider.initialize(
             null,
             null,
-            null // TODO
+            CefWebview.FACTORY
         );
         Bootstrap.main(args);
     }
