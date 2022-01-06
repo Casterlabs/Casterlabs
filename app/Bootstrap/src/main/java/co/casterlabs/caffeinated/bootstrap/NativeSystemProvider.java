@@ -1,5 +1,7 @@
 package co.casterlabs.caffeinated.bootstrap;
 
+import javax.swing.UIManager;
+
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.app.music_integration.InternalMusicProvider;
@@ -18,6 +20,12 @@ public abstract class NativeSystemProvider {
 
     private static LafManager lafManager = null;
     private static @Getter SystemPlaybackMusicProvider systemPlaybackMusicProvider = null;
+
+    static {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ignored) {}
+    }
 
     @Deprecated
     // Something being null = unsupported.
