@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.cef.CefApp;
 import org.cef.CefClient;
+import org.cef.CefSettings;
 import org.cef.CefSettings.LogSeverity;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
@@ -30,9 +31,11 @@ public class CefUtil {
             builder.addJcefArgs("--disable-http-cache", "--disable-web-security");
             builder.setInstallDir(bundleDirectory);
 
-            builder.getCefSettings().windowless_rendering_enabled = enableOsr;
-            builder.getCefSettings().log_severity = LogSeverity.LOGSEVERITY_DISABLE;
-            builder.getCefSettings().user_agent_product = String.format("Chromium; Just A CasterlabsCaffeinated (%s)", AppWebview.STATE_PASSWORD);
+            CefSettings settings = builder.getCefSettings();
+
+            settings.windowless_rendering_enabled = enableOsr;
+            settings.log_severity = LogSeverity.LOGSEVERITY_DISABLE;
+            settings.user_agent_product = String.format("Chromium; Just A CasterlabsCaffeinated (%s)", AppWebview.STATE_PASSWORD);
 
             builder.setAppHandler(new MavenCefAppHandlerAdapter() {
 
