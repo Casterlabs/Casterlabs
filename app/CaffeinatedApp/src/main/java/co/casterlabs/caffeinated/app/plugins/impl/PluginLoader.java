@@ -107,6 +107,7 @@ public class PluginLoader {
             for (Class<?> clazz : types) {
                 if (CaffeinatedPlugin.class.isAssignableFrom(clazz)) {
                     try {
+                        @SuppressWarnings("deprecation")
                         CaffeinatedPlugin plugin = (CaffeinatedPlugin) clazz.newInstance();
                         ServiceLoader<Driver> sqlDrivers = ServiceLoader.load(java.sql.Driver.class, classLoader);
 

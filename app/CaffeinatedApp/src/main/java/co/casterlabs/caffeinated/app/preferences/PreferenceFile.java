@@ -36,6 +36,7 @@ public class PreferenceFile<T> {
     /**
      * @param clazz required to deserialize from json.
      */
+    @SuppressWarnings("deprecation")
     @SneakyThrows
     public PreferenceFile(@NonNull String name, @NonNull Class<T> clazz) {
         this.name = name;
