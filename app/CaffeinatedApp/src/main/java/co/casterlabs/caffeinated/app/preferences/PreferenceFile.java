@@ -68,7 +68,7 @@ public class PreferenceFile<T> {
                 this.logger.info("Preferences file doesn't exist, creating it with defaults.");
                 this.save();
             }
-        } catch (JsonParseException e) {
+        } catch (StringIndexOutOfBoundsException | JsonParseException e) {
             this.logger.warn("Unable to parse preferences file, overwriting with defaults.");
             this.logger.warn(e);
             this.save();
