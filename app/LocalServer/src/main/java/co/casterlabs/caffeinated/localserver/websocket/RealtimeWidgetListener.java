@@ -55,12 +55,12 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
 
         this.sendMessage(
             "KOI_STATICS",
-            Caffeinated.getInstance().getKoi().toJson() // Exact same.
+            Caffeinated.getInstance().getKoi().toJson()
         );
 
         this.sendMessage(
             "MUSIC",
-            Caffeinated.getInstance().getKoi().toJson()
+            Caffeinated.getInstance().getMusic().toJson()
         );
 
         this.sendMessage(
