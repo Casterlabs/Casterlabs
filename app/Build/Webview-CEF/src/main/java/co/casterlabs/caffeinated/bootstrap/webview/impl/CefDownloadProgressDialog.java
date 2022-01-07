@@ -65,6 +65,7 @@ public class CefDownloadProgressDialog implements IProgressHandler, Closeable {
         frame.setResizable(false);
         frame.setSize(300, 100);
         frame.setAlwaysOnTop(true);
+        frame.setTitle("Casterlabs Caffeinated");
 
         frame.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
