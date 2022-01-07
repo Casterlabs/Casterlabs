@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.Nullable;
 
-import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
+import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails.WidgetDetailsCategory;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
@@ -43,7 +43,7 @@ public class SubscriberCountLabel extends GenericLabel implements KoiEventListen
         UserPlatform platform = this.getSelectedPlatform();
 
         if (platform != null) {
-            this.updateText(Koi.getUserStates().get(platform).getStreamer().getSubCount());
+            this.updateText(Caffeinated.getInstance().getKoi().getUserStates().get(platform).getStreamer().getSubCount());
         }
     }
 

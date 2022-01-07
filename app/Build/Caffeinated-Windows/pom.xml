@@ -57,6 +57,12 @@
 		</dependency>
 		<dependency>
 			<groupId>co.casterlabs</groupId>
+			<artifactId>Util</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>co.casterlabs</groupId>
 			<artifactId>Webview-CEF</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>

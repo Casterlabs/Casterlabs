@@ -1,6 +1,5 @@
 package co.casterlabs.caffeinated.pluginsdk.music;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import co.casterlabs.rakurai.json.Rson;
@@ -8,27 +7,28 @@ import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonNull;
 import co.casterlabs.rakurai.json.element.JsonObject;
 
-public class Music {
+public abstract class Music {
 
-    private static Map<String, MusicProvider> providers = new HashMap<>();
-    private static MusicProvider activePlayback;
+    public abstract Map<String, MusicProvider> getProviders();
+
+    public abstract MusicProvider getActivePlayback();
 
     /**
      * @deprecated This is used internally.
      */
     @Deprecated
-    public static JsonObject toJson() {
+    public JsonObject toJson() {
         JsonElement _activePlayback;
 
-        if (activePlayback == null) {
+        if (this.getActivePlayback() == null) {
             _activePlayback = JsonNull.INSTANCE;
         } else {
-            _activePlayback = activePlayback.toJson();
+            _activePlayback = this.getActivePlayback().toJson();
         }
 
         return new JsonObject()
             .put("activePlayback", _activePlayback)
-            .put("providers", Rson.DEFAULT.toJson(providers));
+            .put("providers", Rson.DEFAULT.toJson(this.getProviders()));
     }
 
 }

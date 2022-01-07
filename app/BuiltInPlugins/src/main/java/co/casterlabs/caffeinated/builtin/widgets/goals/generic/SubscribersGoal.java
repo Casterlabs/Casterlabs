@@ -2,7 +2,7 @@ package co.casterlabs.caffeinated.builtin.widgets.goals.generic;
 
 import org.jetbrains.annotations.Nullable;
 
-import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
+import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails.WidgetDetailsCategory;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
@@ -35,7 +35,7 @@ public class SubscribersGoal extends GenericGoal {
         UserPlatform platform = this.getSelectedPlatform();
 
         if (platform != null) {
-            this.update(Koi.getUserStates().get(platform).getStreamer().getSubCount());
+            this.update(Caffeinated.getInstance().getKoi().getUserStates().get(platform).getStreamer().getSubCount());
         }
     }
 

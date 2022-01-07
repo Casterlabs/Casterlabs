@@ -42,9 +42,10 @@ public abstract class InternalMusicProvider<T> implements MusicProvider {
     protected void updateSettings(@NonNull Object settings) {
         this.settings = (T) settings;
         this.onSettingsUpdate();
-        CaffeinatedApp.getInstance().getMusicIntegration().save(); // Auto updates bridge data.
+        CaffeinatedApp.getInstance().getMusic().save(); // Auto updates bridge data.
     }
 
+    @SuppressWarnings("deprecation")
     public void updateSettingsFromJson(@Nullable JsonElement settings) {
         try {
             if (settings == null) {
@@ -64,7 +65,7 @@ public abstract class InternalMusicProvider<T> implements MusicProvider {
             this.isSignedIn = true;
             this.accountName = accountName;
             this.accountLink = accountLink;
-            CaffeinatedApp.getInstance().getMusicIntegration().updateBridgeData();
+            CaffeinatedApp.getInstance().getMusic().updateBridgeData();
         } else {
             this.isSignedIn = false;
             this.accountName = null;
@@ -76,25 +77,25 @@ public abstract class InternalMusicProvider<T> implements MusicProvider {
     protected void setPlaybackStateInactive() {
         this.playbackState = MusicPlaybackState.INACTIVE;
         this.currentTrack = null;
-        CaffeinatedApp.getInstance().getMusicIntegration().updateBridgeData();
+        CaffeinatedApp.getInstance().getMusic().updateBridgeData();
     }
 
     protected void setPlaying(@NonNull MusicTrack track) {
         this.playbackState = MusicPlaybackState.PLAYING;
         this.currentTrack = track;
-        CaffeinatedApp.getInstance().getMusicIntegration().updateBridgeData();
+        CaffeinatedApp.getInstance().getMusic().updateBridgeData();
     }
 
     protected void setPaused(@NonNull MusicTrack track) {
         this.playbackState = MusicPlaybackState.PAUSED;
         this.currentTrack = track;
-        CaffeinatedApp.getInstance().getMusicIntegration().updateBridgeData();
+        CaffeinatedApp.getInstance().getMusic().updateBridgeData();
     }
 
     protected void makePaused() {
         if (this.currentTrack != null) {
             this.playbackState = MusicPlaybackState.PAUSED;
-            CaffeinatedApp.getInstance().getMusicIntegration().updateBridgeData();
+            CaffeinatedApp.getInstance().getMusic().updateBridgeData();
         }
     }
 

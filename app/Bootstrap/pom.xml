@@ -48,20 +48,6 @@
 
 	<dependencies>
 
-		<!-- Code related packages -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.22</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency> <!-- For Eclipse users -->
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>19.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>co.casterlabs</groupId>
 			<artifactId>CaffeinatedApp</artifactId>
@@ -83,18 +69,6 @@
 
 		<!-- Utility packages -->
 		<dependency>
-			<groupId>com.github.casterlabs.rakurai</groupId>
-			<artifactId>Json</artifactId>
-			<version>1.11.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.casterlabs.rakurai</groupId>
-			<artifactId>Util</artifactId>
-			<version>1.11.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
 			<version>4.3.0</version>
@@ -110,18 +84,6 @@
 			<groupId>com.github.e3ndr</groupId>
 			<artifactId>EventApi</artifactId>
 			<version>1.2.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.e3ndr</groupId>
-			<artifactId>ReflectionLib</artifactId>
-			<version>61b9f0d</version> <!-- 1.1.0 -->
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.e3ndr</groupId>
-			<artifactId>FastLoggingFramework</artifactId>
-			<version>1.7.1</version>
 			<scope>compile</scope>
 		</dependency>
 

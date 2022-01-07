@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.Nullable;
 
-import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
+import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails.WidgetDetailsCategory;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
@@ -49,7 +49,7 @@ public class ViewersCountLabel extends GenericLabel implements KoiEventListener 
         UserPlatform platform = this.getSelectedPlatform();
 
         if (platform != null) {
-            this.updateText(Koi.getViewers().get(platform).size());
+            this.updateText(Caffeinated.getInstance().getKoi().getViewers().get(platform).size());
         }
     }
 

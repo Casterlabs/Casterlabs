@@ -20,20 +20,6 @@
 
 	<dependencies>
 
-		<!-- Code related packages -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.22</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency> <!-- For Eclipse users -->
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>19.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>co.casterlabs</groupId>
 			<artifactId>CaffeinatedApp</artifactId>
@@ -52,12 +38,6 @@
 			<groupId>com.github.casterlabs.sora</groupId>
 			<artifactId>Sora-Framework</artifactId>
 			<version>2.5.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.e3ndr</groupId>
-			<artifactId>FastLoggingFramework</artifactId>
-			<version>1.7.1</version>
 			<scope>compile</scope>
 		</dependency>
 
