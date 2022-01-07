@@ -22,7 +22,7 @@ import me.friwi.jcefmaven.CefAppBuilder;
 import me.friwi.jcefmaven.MavenCefAppHandlerAdapter;
 
 public class CefUtil {
-    public static final File bundleDirectory = new File(CaffeinatedApp.appDataDir, "dependencies/cef_bundle");
+    public static final File bundleDirectory = new File(CaffeinatedApp.appDataDir, "app/dependencies/cef_bundle");
 
     public static void create(boolean enableOsr, @NonNull String appScheme, @NonNull SchemeHandler schemeHandler) {
         try {
