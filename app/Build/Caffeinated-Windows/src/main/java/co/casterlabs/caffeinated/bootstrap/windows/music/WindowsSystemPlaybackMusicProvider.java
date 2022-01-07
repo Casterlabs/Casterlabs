@@ -23,6 +23,8 @@ import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.SneakyThrows;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class WindowsSystemPlaybackMusicProvider extends SystemPlaybackMusicProvider {
     private static final File WMCJCW_LOCATION = new File("./WMC-JsonConsoleWrapper.exe");
@@ -49,52 +51,57 @@ public class WindowsSystemPlaybackMusicProvider extends SystemPlaybackMusicProvi
 
         String line = null;
         while ((line = reader.readLine()) != null) {
-            JsonObject json = Rson.DEFAULT.fromJson(line, JsonObject.class);
-            PlaybackEventType type = PlaybackEventType.valueOf(json.getString("Type"));
-            String sessionId = json.getString("SessionId");
+            try {
+                JsonObject json = Rson.DEFAULT.fromJson(line, JsonObject.class);
+                PlaybackEventType type = PlaybackEventType.valueOf(json.getString("Type"));
+                String sessionId = json.getString("SessionId");
 
-            switch (type) {
-                case PLAYBACK_STATE_CHANGE:
-                    this.onPlaybackStateEvent(
-                        new PlaybackEvent<PlaybackStateEvent>(
-                            type,
-                            sessionId,
-                            Rson.DEFAULT.fromJson(json.get("Data"), PlaybackStateEvent.class)
-                        )
-                    );
-                    break;
+                switch (type) {
+                    case PLAYBACK_STATE_CHANGE:
+                        this.onPlaybackStateEvent(
+                            new PlaybackEvent<PlaybackStateEvent>(
+                                type,
+                                sessionId,
+                                Rson.DEFAULT.fromJson(json.get("Data"), PlaybackStateEvent.class)
+                            )
+                        );
+                        break;
 
-                case PROPERTY_CHANGE:
-                    this.onPropertyChange(
-                        new PlaybackEvent<MediaInfo>(
-                            type,
-                            sessionId,
-                            Rson.DEFAULT.fromJson(json.get("Data"), MediaInfo.class)
-                        )
-                    );
-                    break;
+                    case PROPERTY_CHANGE:
+                        this.onPropertyChange(
+                            new PlaybackEvent<MediaInfo>(
+                                type,
+                                sessionId,
+                                Rson.DEFAULT.fromJson(json.get("Data"), MediaInfo.class)
+                            )
+                        );
+                        break;
 
-                case SESSION_CLOSED:
-                    this.onSessionState(
-                        new PlaybackEvent<Void>(
-                            type,
-                            sessionId,
-                            null
-                        ),
-                        false
-                    );
-                    break;
+                    case SESSION_CLOSED:
+                        this.onSessionState(
+                            new PlaybackEvent<Void>(
+                                type,
+                                sessionId,
+                                null
+                            ),
+                            false
+                        );
+                        break;
 
-                case SESSION_STARTED:
-                    this.onSessionState(
-                        new PlaybackEvent<Void>(
-                            type,
-                            sessionId,
-                            null
-                        ),
-                        true
-                    );
-                    break;
+                    case SESSION_STARTED:
+                        this.onSessionState(
+                            new PlaybackEvent<Void>(
+                                type,
+                                sessionId,
+                                null
+                            ),
+                            true
+                        );
+                        break;
+                }
+            } catch (Exception e) {
+                FastLogger.logStatic(LogLevel.SEVERE, "An error occurred whilst parsing system music data:");
+                FastLogger.logException(e);
             }
         }
     }
