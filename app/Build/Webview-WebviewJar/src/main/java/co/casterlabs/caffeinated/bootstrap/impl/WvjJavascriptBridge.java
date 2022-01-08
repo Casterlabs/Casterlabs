@@ -1,10 +1,8 @@
 package co.casterlabs.caffeinated.bootstrap.impl;
 
 import java.io.Closeable;
-import java.io.IOException;
 
 import co.casterlabs.caffeinated.app.bridge.BridgeValue;
-import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.caffeinated.bootstrap.webview.JavascriptBridge;
 import co.casterlabs.caffeinated.util.DualConsumer;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
@@ -15,31 +13,22 @@ import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonNull;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.element.JsonString;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class WvjJavascriptBridge extends JavascriptBridge implements Closeable {
-    private static String bridgeScript = "";
-
     private WvjWebview webview;
 
-    private Promise<Void> loadPromise;
+    private @Getter Promise<Void> loadPromise;
     private @Setter DualConsumer<String, JsonObject> onEvent;
     private boolean hasPreloaded = false;
 
     public WvjJavascriptBridge(WvjWebview webview) {
         this.webview = webview;
         this.close();
-    }
-
-    static {
-        try {
-            bridgeScript = FileUtil.loadResourceFromBuildProject("WVJ_JavascriptBridge.js", "Webview-WebviewJar");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     // Called by WvjWebview
@@ -110,10 +99,6 @@ public class WvjJavascriptBridge extends JavascriptBridge implements Closeable {
                 this.onEvent.accept(type, data);
             }
         }
-    }
-
-    public void injectBridgeScript() {
-        this.webview.executeJavaScript(bridgeScript);
     }
 
     @Override

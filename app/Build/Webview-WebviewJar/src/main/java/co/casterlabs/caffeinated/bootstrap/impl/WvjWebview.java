@@ -1,12 +1,12 @@
 package co.casterlabs.caffeinated.bootstrap.impl;
 
 import java.awt.Component;
+import java.io.IOException;
 
 import org.jetbrains.annotations.Nullable;
 
-import ca.weblite.webview.WebViewCLIClient;
-import ca.weblite.webview.WebViewClient.MessageEvent;
-import ca.weblite.webview.WebViewClient.OnLoadWebEvent;
+import ca.weblite.webview.WebView;
+import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.caffeinated.bootstrap.webview.AppWebview;
 import co.casterlabs.caffeinated.bootstrap.webview.JavascriptBridge;
 import co.casterlabs.caffeinated.util.Producer;
@@ -24,6 +24,8 @@ public class WvjWebview extends AppWebview {
         return new WvjWebview();
     };
 
+    private static String bridgeScript = "";
+
     static {
         if (ConsoleUtil.getPlatform() == JavaPlatform.WINDOWS) {
             FastLogger.logStatic(
@@ -33,9 +35,16 @@ public class WvjWebview extends AppWebview {
 
 //            LoopbackExemption.checkLoopback();
         }
+
+        try {
+            bridgeScript = FileUtil.loadResourceFromBuildProject("WVJ_JavascriptBridge.js", "Webview-WebviewJar");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private @Getter WebViewCLIClient webview;
+    private @Getter WebView webview;
+    private AsyncTask webviewLoop;
 
     private WvjJavascriptBridge bridge = new WvjJavascriptBridge(this);
     private String currentUrl;
@@ -64,13 +73,9 @@ public class WvjWebview extends AppWebview {
 
     @Override
     public void executeJavaScript(@NonNull String script) {
-        if (this.webview.isDispatchThread()) {
+        this.webview.dispatch(() -> {
             this.webview.eval(script);
-        } else {
-            this.webview.dispatch(() -> {
-                this.webview.eval(script);
-            });
-        }
+        });
     }
 
     @Override
@@ -78,39 +83,38 @@ public class WvjWebview extends AppWebview {
         return this.bridge;
     }
 
-    private void onLoad(OnLoadWebEvent e) {
-        this.currentUrl = e.getURL();
-        this.bridge.injectBridgeScript();
-    }
-
-    private void onMessage(MessageEvent e) {
+    private void onMessage(String message) {
         new AsyncTask(() -> {
-            this.bridge.query(e.getMessage());
+            this.bridge.query(message);
         });
     }
 
     @SneakyThrows
     @Override
     public void createBrowser(@Nullable String url) {
-        this.webview = (WebViewCLIClient) new WebViewCLIClient.Builder()
+        this.webview = new WebView()
             .size(800, 600)
             .title("Casterlabs Caffeinated")
             .resizable(true)
             .url("about:blank")
-            .build();
+            .addOnBeforeLoad("ready();")
+            .addJavascriptCallback("query", this::onMessage)
+            .addJavascriptCallback("ready", (ignored) -> {
+                this.executeJavaScript("delete window.ready;");
+                this.executeJavaScript("document.body.innerText = 'test';");
+                this.executeJavaScript(bridgeScript);
+            });
 
-        this.webview.addMessageListener(this::onMessage);
-        this.webview.addLoadListener(this::onLoad);
+        this.webviewLoop = new AsyncTask(this.webview::show);
 
-        this.webview.ready().get();
-
-        this.loadURL(url);
+        this.bridge.getLoadPromise().await();
+//        this.loadURL(url);
     }
 
     @Override
     public void destroyBrowser() {
         try {
-            webview.close();
+            this.webviewLoop.cancel();
         } catch (Exception e) {
             FastLogger.logException(e);
         }

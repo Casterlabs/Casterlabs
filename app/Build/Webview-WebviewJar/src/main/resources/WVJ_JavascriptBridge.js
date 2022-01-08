@@ -1,5 +1,3 @@
-alert("test")
-
 if (!window.Bridge) {
 	// Dependencies.
 
@@ -185,10 +183,10 @@ if (!window.Bridge) {
 
 
 	// Setup the Bridge.
-	const external = window.external;
+	const query = window.query;
 	const eventHandler = new EventHandler();
 
-	delete window.external;
+	delete window.query;
 
 	function sendToParent(emission) {
 		const payload = {
@@ -196,7 +194,7 @@ if (!window.Bridge) {
 			data: emission
 		};
 
-		external.invoke(JSON.stringify(payload));
+		query(JSON.stringify(payload));
 	}
 
 	function sendQuery(field, nonce) {
@@ -206,7 +204,7 @@ if (!window.Bridge) {
 			nonce: nonce
 		};
 
-		external.invoke(JSON.stringify(payload));
+		query(JSON.stringify(payload));
 	}
 
 	const Bridge = {
