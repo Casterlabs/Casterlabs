@@ -26,6 +26,7 @@ public class ApplicationUI {
     private static @Getter String appAddress;
     private static AppWebview webview;
     private static @Getter boolean open = false;
+    private static boolean customImplementation = false;
 
     private static @Getter ApplicationWindow window;
 
@@ -37,8 +38,13 @@ public class ApplicationUI {
         // Initialize the webview
         Component webviewComponent = webview.initialize();
 
-        // Create the window
-        window = new ApplicationWindow(uiLifeCycleListener, webviewComponent);
+        if (webviewComponent == null) {
+            // The webview implements it's own Windowing system.
+            customImplementation = true;
+        } else {
+            // Create the window
+            window = new ApplicationWindow(uiLifeCycleListener, webviewComponent);
+        }
 
         logger.info("appAddress = %s", appAddress);
 
@@ -50,7 +56,9 @@ public class ApplicationUI {
         if (!open) {
             webview.createBrowser(appAddress);
 
-            window.getFrame().setVisible(true);
+            if (!customImplementation) {
+                window.getFrame().setVisible(true);
+            }
 
             // Update state
             open = true;
@@ -60,8 +68,10 @@ public class ApplicationUI {
 
     public static void closeWindow() {
         if (open) {
-            // Hide the frame
-            window.getFrame().setVisible(false);
+            if (!customImplementation) {
+                // Hide the frame
+                window.getFrame().setVisible(false);
+            }
 
             // Destsroy the browser.
             webview.destroyBrowser();
@@ -73,13 +83,17 @@ public class ApplicationUI {
     }
 
     public static void setTitle(@Nullable String title) {
-        if (title == null) {
-            title = "Casterlabs Caffeinated";
-        } else {
-            title = "Casterlabs Caffeinated - " + title;
-        }
+        webview.setTitle(title);
 
-        window.setTitle(title);
+        if (!customImplementation) {
+            if (title == null) {
+                title = "Casterlabs Caffeinated";
+            } else {
+                title = "Casterlabs Caffeinated - " + title;
+            }
+
+            window.setTitle(title);
+        }
     }
 
     public static class AppSchemeHandler implements SchemeHandler {
@@ -125,7 +139,10 @@ public class ApplicationUI {
             showWindow();
         }
 
-        window.toFront();
+        if (!customImplementation) {
+            window.toFront();
+        }
+
         ConsoleUtil.bell();
     }
 

@@ -52,4 +52,6 @@ public abstract class AppWebview {
 
     public abstract void destroyBrowser();
 
+    public void setTitle(@Nullable String title) {}
+
 }
