@@ -118,10 +118,10 @@ public class UpdaterUI extends JDialog {
         getContentPane().add(statusText);
 
         LoadingSpinner loadingSpinner = new LoadingSpinner();
-        dialogLayout.putConstraint(SpringLayout.NORTH, loadingSpinner, -65, SpringLayout.SOUTH, getContentPane());
-        dialogLayout.putConstraint(SpringLayout.WEST, loadingSpinner, -56, SpringLayout.WEST, progressText);
-        dialogLayout.putConstraint(SpringLayout.SOUTH, loadingSpinner, -16, SpringLayout.SOUTH, getContentPane());
-        dialogLayout.putConstraint(SpringLayout.EAST, loadingSpinner, -6, SpringLayout.WEST, progressText);
+        dialogLayout.putConstraint(SpringLayout.NORTH, loadingSpinner, 0, SpringLayout.NORTH, statusText);
+        dialogLayout.putConstraint(SpringLayout.WEST, loadingSpinner, 20, SpringLayout.WEST, getContentPane());
+        dialogLayout.putConstraint(SpringLayout.SOUTH, loadingSpinner, 0, SpringLayout.SOUTH, progressText);
+        dialogLayout.putConstraint(SpringLayout.EAST, loadingSpinner, 70, SpringLayout.WEST, getContentPane());
         getContentPane().add(loadingSpinner);
 
         // Handle the close button.
@@ -134,7 +134,6 @@ public class UpdaterUI extends JDialog {
             }
         });
 
-        loadingSpinner.start();
         this.setVisible(true);
     }
 
