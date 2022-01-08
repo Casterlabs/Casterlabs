@@ -1,7 +1,6 @@
 package co.casterlabs.caffeinated.updater;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.UIManager;
 
@@ -19,9 +18,28 @@ public class Launcher {
         } catch (Exception ignored) {}
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         UpdaterUI ui = new UpdaterUI();
 
+        ui.setStatus("Checking for updates...");
+        ui.setVisible(true);
+
+        Thread.sleep(2000);
+
+        double progress = 0;
+
+        while (progress < 1) {
+            ui.setStatus(String.format("Downloading updates... (%.1f%%)", progress * 100).replace(".0", ""));
+            ui.setProgress(progress);
+            progress += .0085;
+            Thread.sleep(70);
+        }
+
+        ui.setStatus("Installing updates...");
+        Thread.sleep(3500);
+        ui.setStatus("Done!");
+        Thread.sleep(1500);
+        ui.close();
     }
 
 }
