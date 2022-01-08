@@ -26,12 +26,14 @@ public class DragListener extends MouseAdapter {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        Point currCoords = e.getLocationOnScreen();
+        if (this.mouseDownCompCoords != null) {
+            Point currCoords = e.getLocationOnScreen();
 
-        int x = currCoords.x - this.mouseDownCompCoords.x;
-        int y = currCoords.y - this.mouseDownCompCoords.y;
+            int x = currCoords.x - this.mouseDownCompCoords.x;
+            int y = currCoords.y - this.mouseDownCompCoords.y;
 
-        this.dialog.setLocation(x, y);
+            this.dialog.setLocation(x, y);
+        }
     }
 
 }
