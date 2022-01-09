@@ -3,19 +3,16 @@ package co.casterlabs.caffeinated.updater;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 public class LoadingSpinner extends JPanel {
     private static final long serialVersionUID = 8420714649640311101L;
 
-    private Timer timer = new Timer(16, this::rotationHandler); // ~60fps
-    private int rotation = 0;
+    private double rotation = 0;
 
     private JLabel label;
 
@@ -38,21 +35,10 @@ public class LoadingSpinner extends JPanel {
         this.setOpaque(false);
     }
 
-    private void rotationHandler(ActionEvent e) {
-        if (this.isVisible()) {
-            this.rotation += 6;
-            this.rotation %= 360;
-            this.repaint();
-        } else {
-            this.timer.stop();
-        }
-    }
-
     @Override
     public void paintComponent(Graphics g) {
-        if (!this.timer.isRunning()) {
-            this.timer.start();
-        }
+        this.rotation += 5;
+        this.rotation %= 360;
 
         super.paintComponent(g);
 

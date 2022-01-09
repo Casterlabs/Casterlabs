@@ -138,28 +138,36 @@ public class UpdaterDialog extends JDialog implements Closeable {
     }
 
     @Override
-    public void paint(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
+    public synchronized void paint(Graphics g) {
+        // Wait for an animation frame.
+        // This helps with stuttering.
+        if (AnimationContext.isAnimationFrame()) {
+            Graphics2D g2d = (Graphics2D) g;
 
-        // Paint the container.
-        super.paint(g2d);
+            // Paint the container.
+            super.paint(g2d);
 
-        // Enable antialiasing.
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            // Enable antialiasing.
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        // Paint the background color
+            // Paint the background color
 //        g2d.clearRect(0, 0, WIDTH, HEIGHT);
-        g2d.setColor(BACKGROUND_COLOR);
-        g2d.fillRect(0, 0, WIDTH, HEIGHT);
+            g2d.setColor(BACKGROUND_COLOR);
+            g2d.fillRect(0, 0, WIDTH, HEIGHT);
 
-        // Paint the background image if set
-        if (this.chosenStreamerImage != null) {
-            // The image is same size as the window.
-            g2d.drawImage(this.chosenStreamerImage, 0, 0, null);
+            // Paint the background image if set
+            if (this.chosenStreamerImage != null) {
+                // The image is same size as the window.
+                g2d.drawImage(this.chosenStreamerImage, 0, 0, null);
+            }
+
+
+            // Paint all children.
+            super.paintComponents(g2d);
+
+
+            AnimationContext.reset();
         }
-
-        // Paint all children.
-        super.paintComponents(g2d);
     }
 
     @Override
@@ -168,6 +176,7 @@ public class UpdaterDialog extends JDialog implements Closeable {
 
         if (visible) {
             this.createBufferStrategy(2);
+            AnimationContext.setRepaintable(this);
         }
     }
 
@@ -175,6 +184,12 @@ public class UpdaterDialog extends JDialog implements Closeable {
     public void close() {
         this.dispose();
         System.exit(0);
+    }
+
+    @Override
+    public void dispose() {
+        AnimationContext.setRepaintable(null);;
+        super.dispose();
     }
 
     @SneakyThrows
