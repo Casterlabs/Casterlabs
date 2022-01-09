@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.updater;
 
 import java.io.File;
+import java.util.Calendar;
 
 import javax.swing.UIManager;
 
@@ -22,8 +23,11 @@ public class Launcher {
     public static void main(String[] args) throws Exception {
         UpdaterDialog dialog = new UpdaterDialog();
 
+        if (Calendar.getInstance().get(Calendar.MONTH) == Calendar.DECEMBER) {
+            dialog.setCurrentAnimation(new WinterSeasonAnimation());
+        }
+
         dialog.setVisible(true);
-        dialog.setCurrentAnimation(new WinterSeasonAnimation());
 
         while (true) {
             animateDemo(dialog);
