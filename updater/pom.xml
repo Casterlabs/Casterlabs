@@ -103,6 +103,12 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.e3ndr</groupId>
+			<artifactId>ConsoleUtil</artifactId>
+			<version>9d51c20</version> <!-- 1.4.0-EXPERIMENTAL -->
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.e3ndr</groupId>
 			<artifactId>FastLoggingFramework</artifactId>
 			<version>1.7.1</version>
 			<scope>compile</scope>

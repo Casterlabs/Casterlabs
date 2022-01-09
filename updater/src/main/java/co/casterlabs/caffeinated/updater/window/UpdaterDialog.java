@@ -22,9 +22,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.SpringLayout;
 
-import co.casterlabs.caffeinated.updater.FileUtil;
 import co.casterlabs.caffeinated.updater.animations.BlankAnimation;
 import co.casterlabs.caffeinated.updater.animations.DialogAnimation;
+import co.casterlabs.caffeinated.updater.util.FileUtil;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -229,6 +229,10 @@ public class UpdaterDialog extends JDialog implements Closeable {
                 taskbar.setWindowProgressValue(this, percent);
             }
         }
+    }
+
+    public void setLoading(boolean loading) {
+        this.ui.setLoading(loading);
     }
 
 }

@@ -15,6 +15,8 @@ public class UpdaterUI extends JPanel {
 
     private JLabel statusText;
 
+    private LoadingSpinner loadingSpinner;
+
     public UpdaterUI(UpdaterDialog dialog) throws IOException {
         SpringLayout layout = new SpringLayout();
 
@@ -31,14 +33,14 @@ public class UpdaterUI extends JPanel {
 
         statusText = new JLabel();
         layout.putConstraint(SpringLayout.SOUTH, statusText, -32, SpringLayout.SOUTH, this);
-        layout.putConstraint(SpringLayout.EAST, statusText, -149, SpringLayout.EAST, this);
+        layout.putConstraint(SpringLayout.EAST, statusText, -10, SpringLayout.EAST, this);
         statusText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         statusText.setForeground(UpdaterDialog.TEXT_COLOR);
         statusText.setOpaque(false);
         statusText.setText("Checking for updates...");
         this.add(statusText);
 
-        LoadingSpinner loadingSpinner = new LoadingSpinner();
+        loadingSpinner = new LoadingSpinner();
         layout.putConstraint(SpringLayout.NORTH, statusText, 13, SpringLayout.NORTH, loadingSpinner);
         layout.putConstraint(SpringLayout.WEST, statusText, 6, SpringLayout.EAST, loadingSpinner);
         layout.putConstraint(SpringLayout.NORTH, loadingSpinner, 255, SpringLayout.NORTH, this);
@@ -61,6 +63,10 @@ public class UpdaterUI extends JPanel {
         layout.putConstraint(SpringLayout.EAST, casterlabsBanner, 265, SpringLayout.WEST, this);
         add(casterlabsBanner);
 
+    }
+
+    public void setLoading(boolean loading) {
+        this.loadingSpinner.setVisible(loading);
     }
 
     public void setStatus(@NonNull String status) {

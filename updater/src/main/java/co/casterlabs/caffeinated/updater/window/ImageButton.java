@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 import org.jetbrains.annotations.Nullable;
 
-import co.casterlabs.caffeinated.updater.FileUtil;
+import co.casterlabs.caffeinated.updater.util.FileUtil;
 import lombok.NonNull;
 
 public class ImageButton extends JPanel implements MouseListener {

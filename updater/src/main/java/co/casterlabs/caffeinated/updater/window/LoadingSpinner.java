@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import co.casterlabs.caffeinated.updater.FileUtil;
+import co.casterlabs.caffeinated.updater.util.FileUtil;
 
 public class LoadingSpinner extends JPanel {
     private static final long serialVersionUID = 8420714649640311101L;

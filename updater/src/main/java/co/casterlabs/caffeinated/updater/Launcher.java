@@ -1,11 +1,14 @@
 package co.casterlabs.caffeinated.updater;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.UIManager;
 
 import co.casterlabs.caffeinated.updater.animations.WinterSeasonAnimation;
 import co.casterlabs.caffeinated.updater.window.UpdaterDialog;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class Launcher {
 
@@ -22,33 +25,60 @@ public class Launcher {
             dialog.setCurrentAnimation(new WinterSeasonAnimation());
         }
 
+        dialog.setStatus("");
         dialog.setVisible(true);
 
-        while (true) {
-            animateDemo(dialog);
+        if (InstanceManager.trySummonInstance()) {
+            FastLogger.logStatic("App already running, goodbye!");
+            dialog.close();
+            Updater.launch();
+            return;
+        }
+
+        dialog.setStatus("Checking for updates...");
+
+        if (Updater.isLauncherOutOfDate()) {
+            TimeUnit.SECONDS.sleep(1);
+            // TODO display this message better and give a button to download.
+            dialog.setLoading(false);
+            dialog.setStatus("Your launcher is out of date! (Download from casterlabs.co)");
+        } else {
+            checkForUpdates(dialog);
         }
     }
 
-    private static void animateDemo(UpdaterDialog dialog) throws Exception {
-        dialog.setStatus("Checking for updates...");
+    private static void checkForUpdates(UpdaterDialog dialog) throws Exception {
+        try {
+            if (Updater.needsUpdate()) {
+                Updater.downloadAndInstallUpdate(dialog);
+                dialog.setStatus("Done!");
+                // Artificial delay added because it'd be too jarring otherwise.
+                // Heh, JARring, haha.
+                TimeUnit.SECONDS.sleep(2);
+            } else {
+                TimeUnit.SECONDS.sleep(1);
+                dialog.setStatus("You are up to date!");
+            }
 
-        Thread.sleep(2000);
+            Updater.launch();
+            dialog.close();
+        } catch (UpdaterException e) {
+            dialog.setStatus(e.getMessage());
 
-        double progress = 0;
+            FastLogger.logStatic(LogLevel.SEVERE, e.getMessage());
+            FastLogger.logException(e.getCause());
 
-        while (progress < 1) {
-            dialog.setStatus(String.format("Downloading updates... (%.1f%%)", progress * 100).replace(".0", ""));
-            dialog.setProgress(progress);
-            progress += .0085;
-            Thread.sleep(70);
+            switch (e.getError()) {
+                case LAUNCH_FAILED:
+                    Updater.borkInstall();
+                    TimeUnit.SECONDS.sleep(5);
+                    checkForUpdates(dialog);
+                    return;
+
+                default:
+                    return;
+            }
         }
-
-        dialog.setProgress(0);
-        dialog.setStatus("Installing updates...");
-        Thread.sleep(3500);
-        dialog.setStatus("Done!");
-        Thread.sleep(1500);
-//        dialog.close();
     }
 
 }
