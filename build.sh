@@ -30,17 +30,22 @@ mkdir dist/linux
 mkdir dist/macos
 
 if [[ $@ != *"nodist"* ]]; then
+    cp app/Bootstrap/target/classes/commit.txt dist
+
     echo ""
     echo "Completing packaging of application."
     echo ""
     
     sh app/Build/Caffeinated-Windows/build.sh
+    cp dist/commit.txt dist/windows
     echo ""
 
     sh app/Build/Caffeinated-Linux/build.sh
+    cp dist/commit.txt dist/linux
     echo ""
 
     sh app/Build/Caffeinated-MacOS/build.sh
+    cp dist/commit.txt dist/macos
     echo ""
 
 fi
