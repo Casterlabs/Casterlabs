@@ -18,10 +18,16 @@ public class UpdaterUI extends JPanel {
     public UpdaterUI(UpdaterDialog dialog) throws IOException {
         SpringLayout layout = new SpringLayout();
 
-        this.setOpaque(false);
-        this.setBackground(new Color(0, 0, 0, 0));
+        this.setBackground(UpdaterDialog.BACKGROUND_COLOR);
         this.setSize(UpdaterDialog.WIDTH, UpdaterDialog.HEIGHT);
         this.setLayout(layout);
+
+        // Check for this variable, so we can actually *see* what we're
+        // doing in WindowBuilder.
+        if (dialog != null) {
+            this.setOpaque(false);
+            this.setBackground(new Color(0, 0, 0, 0));
+        }
 
         statusText = new JLabel();
         layout.putConstraint(SpringLayout.SOUTH, statusText, -32, SpringLayout.SOUTH, this);
