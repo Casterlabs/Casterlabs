@@ -19,27 +19,27 @@ public class Launcher {
     }
 
     public static void main(String[] args) throws Exception {
-        UpdaterUI ui = new UpdaterUI();
+        UpdaterDialog dialog = new UpdaterDialog();
 
-        ui.setStatus("Checking for updates...");
-        ui.setVisible(true);
+        dialog.setStatus("Checking for updates...");
+        dialog.setVisible(true);
 
         Thread.sleep(2000);
 
         double progress = 0;
 
         while (progress < 1) {
-            ui.setStatus(String.format("Downloading updates... (%.1f%%)", progress * 100).replace(".0", ""));
-            ui.setProgress(progress);
+            dialog.setStatus(String.format("Downloading updates... (%.1f%%)", progress * 100).replace(".0", ""));
+            dialog.setProgress(progress);
             progress += .0085;
             Thread.sleep(70);
         }
 
-        ui.setStatus("Installing updates...");
+        dialog.setStatus("Installing updates...");
         Thread.sleep(3500);
-        ui.setStatus("Done!");
+        dialog.setStatus("Done!");
         Thread.sleep(1500);
-        ui.close();
+        dialog.close();
     }
 
 }
