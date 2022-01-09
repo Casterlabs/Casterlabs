@@ -1,6 +1,9 @@
 package co.casterlabs.caffeinated.updater;
 
 import java.awt.Cursor;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -62,5 +65,15 @@ public class ImageButton extends JPanel implements MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void paintComponent(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+
+        // Enable antialiasing.
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+        super.paintComponent(g);
+    }
 
 }
