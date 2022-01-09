@@ -2,9 +2,14 @@ package co.casterlabs.caffeinated.updater;
 
 import java.awt.Color;
 import java.awt.Dialog;
+import java.awt.DisplayMode;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -76,6 +81,32 @@ public class UpdaterDialog extends JDialog implements Closeable {
         layout.putConstraint(SpringLayout.SOUTH, ui, 0, SpringLayout.SOUTH, getContentPane());
         layout.putConstraint(SpringLayout.EAST, ui, 0, SpringLayout.EAST, getContentPane());
         getContentPane().add(this.ui);
+
+        // Set the location.
+        {
+            Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
+            GraphicsDevice currentScreen = null;
+
+            for (GraphicsDevice screen : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
+                if (screen.getDefaultConfiguration().getBounds().contains(mouseLoc)) {
+                    currentScreen = screen;
+                    break;
+                }
+            }
+
+            if (currentScreen == null) {
+                currentScreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            }
+
+            DisplayMode display = currentScreen.getDisplayMode();
+
+            if (display != null) {
+                int x = (display.getWidth() / 2) - (WIDTH / 2);
+                int y = (display.getHeight() / 2) - (HEIGHT / 2);
+
+                this.setLocation(x, y);
+            }
+        }
 
         // Drag listener.
         {

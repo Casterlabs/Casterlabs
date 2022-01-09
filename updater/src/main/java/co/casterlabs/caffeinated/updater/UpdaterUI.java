@@ -1,12 +1,7 @@
 package co.casterlabs.caffeinated.updater;
 
 import java.awt.Color;
-import java.awt.DisplayMode;
 import java.awt.Font;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.MouseInfo;
-import java.awt.Point;
 import java.io.IOException;
 
 import javax.swing.JLabel;
@@ -27,32 +22,6 @@ public class UpdaterUI extends JPanel {
         this.setBackground(new Color(0, 0, 0, 0));
         this.setSize(UpdaterDialog.WIDTH, UpdaterDialog.HEIGHT);
         this.setLayout(layout);
-
-        // Set the location.
-        {
-            Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
-            GraphicsDevice currentScreen = null;
-
-            for (GraphicsDevice screen : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
-                if (screen.getDefaultConfiguration().getBounds().contains(mouseLoc)) {
-                    currentScreen = screen;
-                    break;
-                }
-            }
-
-            if (currentScreen == null) {
-                currentScreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-            }
-
-            DisplayMode display = currentScreen.getDisplayMode();
-
-            if (display != null) {
-                int x = (display.getWidth() / 2) - (WIDTH / 2);
-                int y = (display.getHeight() / 2) - (HEIGHT / 2);
-
-                this.setLocation(x, y);
-            }
-        }
 
         statusText = new JLabel();
         layout.putConstraint(SpringLayout.SOUTH, statusText, -32, SpringLayout.SOUTH, this);
