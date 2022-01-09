@@ -42,9 +42,11 @@ public class Updater {
         appDirectory.mkdirs();
 
         switch (ConsoleUtil.getPlatform()) {
-            case MAC:
-                REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-macos.zip";
-                break;
+
+            // Macos is brokded.
+//            case MAC:
+//                REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-macos.zip";
+//                break;
 
             case UNIX:
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-linux.zip";
@@ -55,7 +57,7 @@ public class Updater {
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-windows.zip";
                 break;
 
-            case UNKNOWN:
+            default:
                 isPlatformSupported = false;
                 break;
 
