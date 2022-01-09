@@ -13,5 +13,3 @@ target/
 cef_bundle/
 Bootstrap/src/main/resources/app
 debug.log
-current_build_info.json
-.build_ok

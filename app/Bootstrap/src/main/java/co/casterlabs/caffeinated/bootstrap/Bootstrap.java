@@ -130,6 +130,8 @@ public class Bootstrap implements Runnable {
         ReflectionLib.setStaticValue(FileUtil.class, "isDev", isDev);
         buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
 
+        Files.write(new File("./current_build_info.json").toPath(), FileUtil.loadResourceBytes("build_info.json"));
+
         ReflectionLib.setStaticValue(CaffeinatedPlugin.class, "devEnvironment", isDev);
 
         // Check for another instance, and do IPC things.
@@ -339,6 +341,10 @@ public class Bootstrap implements Runnable {
             webview,
             uiLifeCycleListener
         );
+
+        // If all of that succeeds, we write a file to let the updater know that
+        // everything's okay.
+        new File("./.build_ok").createNewFile();
     }
 
     private void onBridgeEvent(String type, JsonObject data) {
