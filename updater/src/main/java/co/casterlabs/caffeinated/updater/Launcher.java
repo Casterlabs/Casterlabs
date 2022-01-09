@@ -21,8 +21,20 @@ public class Launcher {
     public static void main(String[] args) throws Exception {
         UpdaterDialog dialog = new UpdaterDialog();
 
-        if (Calendar.getInstance().get(Calendar.MONTH) == Calendar.DECEMBER) {
-            dialog.setCurrentAnimation(new WinterSeasonAnimation());
+        // Enable the winter season animation between NOV 25 - JAN 15.
+        {
+            Calendar calendar = Calendar.getInstance();
+
+            int calendarMonth = calendar.get(Calendar.MONTH);
+            int calendarDate = calendar.get(Calendar.DATE);
+
+            boolean isDecember = calendarMonth == Calendar.DECEMBER;
+            boolean isNovemberTimeframe = (calendarMonth == Calendar.NOVEMBER) && (calendarDate >= 25);
+            boolean isJanuaryTimeframe = (calendarMonth == Calendar.JANUARY) && (calendarDate <= 15);
+
+            if (isDecember || isNovemberTimeframe || isJanuaryTimeframe) {
+                dialog.setCurrentAnimation(new WinterSeasonAnimation());
+            }
         }
 
         dialog.setStatus("");
