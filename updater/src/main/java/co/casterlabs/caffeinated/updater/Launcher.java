@@ -20,9 +20,15 @@ public class Launcher {
 
     public static void main(String[] args) throws Exception {
         UpdaterDialog dialog = new UpdaterDialog();
-
-        dialog.setStatus("Checking for updates...");
         dialog.setVisible(true);
+
+        while (true) {
+            animateDemo(dialog);
+        }
+    }
+
+    private static void animateDemo(UpdaterDialog dialog) throws Exception {
+        dialog.setStatus("Checking for updates...");
 
         Thread.sleep(2000);
 
@@ -39,7 +45,7 @@ public class Launcher {
         Thread.sleep(3500);
         dialog.setStatus("Done!");
         Thread.sleep(1500);
-        dialog.close();
+//        dialog.close();
     }
 
 }

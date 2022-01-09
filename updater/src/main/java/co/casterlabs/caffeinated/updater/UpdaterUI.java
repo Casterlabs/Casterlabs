@@ -60,7 +60,7 @@ public class UpdaterUI extends JPanel {
         statusText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         statusText.setForeground(UpdaterDialog.TEXT_COLOR);
         statusText.setOpaque(false);
-        statusText.setText("Downloading updates... (22.6 / 40 MB)");
+        statusText.setText("Checking for updates...");
         this.add(statusText);
 
         LoadingSpinner loadingSpinner = new LoadingSpinner();
