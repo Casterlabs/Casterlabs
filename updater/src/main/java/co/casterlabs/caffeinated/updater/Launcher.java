@@ -48,6 +48,7 @@ public class Launcher {
             Thread.sleep(70);
         }
 
+        dialog.setProgress(0);
         dialog.setStatus("Installing updates...");
         Thread.sleep(3500);
         dialog.setStatus("Done!");

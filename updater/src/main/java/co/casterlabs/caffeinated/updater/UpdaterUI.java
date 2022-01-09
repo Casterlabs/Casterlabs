@@ -57,15 +57,6 @@ public class UpdaterUI extends JPanel {
 
     }
 
-    public void setProgress(double progress) {
-        progress = Math.round(progress * 100); // 0-1 -> 0-100
-
-        // This was added in Java9, TODO update my eclipse installation.
-//        Taskbar taskbar = Taskbar.getTaskbar();
-//        taskbar.setWindowProgressState(this, State.ERROR);
-//        taskbar.setWindowProgressValue(this, 50);
-    }
-
     public void setStatus(@NonNull String status) {
         this.statusText.setText(status);
         this.repaint();

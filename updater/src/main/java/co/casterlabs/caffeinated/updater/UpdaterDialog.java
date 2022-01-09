@@ -11,6 +11,7 @@ import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Taskbar;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.Closeable;
@@ -215,7 +216,18 @@ public class UpdaterDialog extends JDialog implements Closeable {
     }
 
     public void setProgress(double progress) {
-        this.ui.setProgress(progress);
+        if (Taskbar.isTaskbarSupported()) {
+            Taskbar taskbar = Taskbar.getTaskbar();
+
+            if (progress < 0) {
+                taskbar.setWindowProgressState(this, Taskbar.State.OFF);
+            } else {
+                int percent = (int) Math.round(progress * 100); // 0-1 -> 0-100
+
+                taskbar.setWindowProgressState(this, Taskbar.State.NORMAL);
+                taskbar.setWindowProgressValue(this, percent);
+            }
+        }
     }
 
 }
