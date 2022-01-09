@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.updater;
+package co.casterlabs.caffeinated.updater.window;
 
 import java.awt.Point;
 import java.awt.event.MouseAdapter;

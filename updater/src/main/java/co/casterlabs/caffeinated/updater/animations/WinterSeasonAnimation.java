@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.util.concurrent.ThreadLocalRandom;
 
-import co.casterlabs.caffeinated.updater.UpdaterDialog;
+import co.casterlabs.caffeinated.updater.window.UpdaterDialog;
 
 public class WinterSeasonAnimation extends DialogAnimation {
     private static final int FLAKE_COUNT = 60; // MUST BE DIVISIBLE BY 3

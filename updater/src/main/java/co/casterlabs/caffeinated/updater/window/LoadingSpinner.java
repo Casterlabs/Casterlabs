@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.updater;
+package co.casterlabs.caffeinated.updater.window;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -8,6 +8,8 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import co.casterlabs.caffeinated.updater.FileUtil;
 
 public class LoadingSpinner extends JPanel {
     private static final long serialVersionUID = 8420714649640311101L;

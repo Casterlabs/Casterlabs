@@ -6,6 +6,7 @@ import java.util.Calendar;
 import javax.swing.UIManager;
 
 import co.casterlabs.caffeinated.updater.animations.WinterSeasonAnimation;
+import co.casterlabs.caffeinated.updater.window.UpdaterDialog;
 import net.harawata.appdirs.AppDirsFactory;
 
 public class Launcher {

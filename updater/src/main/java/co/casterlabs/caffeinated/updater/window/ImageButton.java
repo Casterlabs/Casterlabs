@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.updater;
+package co.casterlabs.caffeinated.updater.window;
 
 import java.awt.Cursor;
 import java.awt.Graphics;
@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import org.jetbrains.annotations.Nullable;
 
+import co.casterlabs.caffeinated.updater.FileUtil;
 import lombok.NonNull;
 
 public class ImageButton extends JPanel implements MouseListener {
