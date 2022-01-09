@@ -48,6 +48,13 @@ public class UpdaterUI extends JPanel {
         layout.putConstraint(SpringLayout.EAST, closeButton, -10, SpringLayout.EAST, this);
         this.add(closeButton);
 
+        ImageButton casterlabsBanner = new ImageButton("banner.png", null);
+        layout.putConstraint(SpringLayout.NORTH, casterlabsBanner, 10, SpringLayout.NORTH, this);
+        layout.putConstraint(SpringLayout.WEST, casterlabsBanner, 10, SpringLayout.WEST, this);
+        layout.putConstraint(SpringLayout.SOUTH, casterlabsBanner, 93, SpringLayout.NORTH, this);
+        layout.putConstraint(SpringLayout.EAST, casterlabsBanner, 265, SpringLayout.WEST, this);
+        add(casterlabsBanner);
+
     }
 
     public void setProgress(double progress) {

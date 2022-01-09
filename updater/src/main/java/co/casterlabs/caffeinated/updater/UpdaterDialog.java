@@ -124,7 +124,7 @@ public class UpdaterDialog extends JDialog implements Closeable {
 
         // Set the icon.
         try {
-            URL iconUrl = FileUtil.loadResourceAsUrl("assets/logo/casterlabs.png");
+            URL iconUrl = FileUtil.loadResourceAsUrl("assets/icon.png");
             ImageIcon img = new ImageIcon(iconUrl);
 
             this.setIconImage(img.getImage());
