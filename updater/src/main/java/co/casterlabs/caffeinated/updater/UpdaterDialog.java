@@ -201,7 +201,7 @@ public class UpdaterDialog extends JDialog implements Closeable {
 
     @Override
     public void dispose() {
-        AnimationContext.setRepaintable(null);;
+        AnimationContext.setRepaintable(null);
         super.dispose();
     }
 
