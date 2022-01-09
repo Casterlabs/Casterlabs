@@ -14,7 +14,7 @@ import javax.swing.Timer;
 public class LoadingSpinner extends JPanel {
     private static final long serialVersionUID = 8420714649640311101L;
 
-    private Timer timer = new Timer(50, this::rotationHandler);
+    private Timer timer = new Timer(16, this::rotationHandler); // ~60fps
     private int rotation = 0;
 
     private JLabel label;
@@ -40,7 +40,7 @@ public class LoadingSpinner extends JPanel {
 
     private void rotationHandler(ActionEvent e) {
         if (this.isVisible()) {
-            this.rotation += 10;
+            this.rotation += 6;
             this.rotation %= 360;
             this.repaint();
         } else {
