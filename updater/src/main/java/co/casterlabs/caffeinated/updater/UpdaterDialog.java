@@ -21,6 +21,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.SpringLayout;
 
+import co.casterlabs.caffeinated.updater.animations.BlankAnimation;
+import co.casterlabs.caffeinated.updater.animations.DialogAnimation;
+import lombok.NonNull;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
@@ -37,6 +41,8 @@ public class UpdaterDialog extends JDialog implements Closeable {
 
     public static final int WIDTH = 500;
     public static final int HEIGHT = 320;
+
+    private @Setter @NonNull DialogAnimation currentAnimation = new BlankAnimation();
 
     private String chosenStreamer = "DivideAConquer"; // Default is required for WindowBuilder.
     private Image chosenStreamerImage;
@@ -155,16 +161,23 @@ public class UpdaterDialog extends JDialog implements Closeable {
             g2d.setColor(BACKGROUND_COLOR);
             g2d.fillRect(0, 0, WIDTH, HEIGHT);
 
+            // Paint the animation (background)
+            this.currentAnimation.paintOnBackground(g2d);
+
             // Paint the background image if set
             if (this.chosenStreamerImage != null) {
                 // The image is same size as the window.
                 g2d.drawImage(this.chosenStreamerImage, 0, 0, null);
             }
 
+            // Paint the animation (over background)
+            this.currentAnimation.paintOverBackground(g2d);
 
             // Paint all children.
             super.paintComponents(g2d);
 
+            // Paint the animation (foreground)
+            this.currentAnimation.paintOnForeground(g2d);
 
             AnimationContext.reset();
         }

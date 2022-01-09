@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.swing.UIManager;
 
+import co.casterlabs.caffeinated.updater.animations.WinterSeasonAnimation;
 import net.harawata.appdirs.AppDirsFactory;
 
 public class Launcher {
@@ -20,7 +21,9 @@ public class Launcher {
 
     public static void main(String[] args) throws Exception {
         UpdaterDialog dialog = new UpdaterDialog();
+
         dialog.setVisible(true);
+        dialog.setCurrentAnimation(new WinterSeasonAnimation());
 
         while (true) {
             animateDemo(dialog);
