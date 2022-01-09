@@ -35,7 +35,7 @@ public class ImageButton extends JPanel implements MouseListener {
         this.setMinimumSize(this.getSize());
         this.setMaximumSize(this.getSize());
 
-        this.setBackground(UpdaterUI.BACKGROUND_COLOR);
+        this.setOpaque(false);
 
         if (this.onClickHandler != null) {
             this.addMouseListener(this);

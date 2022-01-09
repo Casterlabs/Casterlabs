@@ -35,7 +35,7 @@ public class LoadingSpinner extends JPanel {
         this.setMinimumSize(this.getSize());
         this.setMaximumSize(this.getSize());
 
-        this.setBackground(UpdaterUI.BACKGROUND_COLOR);
+        this.setOpaque(false);
     }
 
     private void rotationHandler(ActionEvent e) {
