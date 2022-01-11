@@ -183,10 +183,8 @@ if (!window.Bridge) {
 
 
 	// Setup the Bridge.
-	const query = window.query;
 	const eventHandler = new EventHandler();
-
-	delete window.query;
+	var queryQueue = [];
 
 	function sendToParent(emission) {
 		const payload = {
@@ -194,7 +192,7 @@ if (!window.Bridge) {
 			data: emission
 		};
 
-		query(JSON.stringify(payload));
+		queryQueue.push(JSON.stringify(payload));
 	}
 
 	function sendQuery(field, nonce) {
@@ -204,10 +202,21 @@ if (!window.Bridge) {
 			nonce: nonce
 		};
 
-		query(JSON.stringify(payload));
+		queryQueue.push(JSON.stringify(payload));
 	}
 
 	const Bridge = {
+		clearQueryQueue() {
+			if (queryQueue.length > 0) {
+				const copy = queryQueue;
+				queryQueue = [];
+
+				return JSON.stringify(copy);
+			} else {
+				return null;
+			}
+		},
+
 		emit(type, data = {}) {
 			sendToParent({
 				type: type,
@@ -239,5 +248,3 @@ if (!window.Bridge) {
 		configurable: false
 	});
 }
-
-Bridge.emit("internal::ready");

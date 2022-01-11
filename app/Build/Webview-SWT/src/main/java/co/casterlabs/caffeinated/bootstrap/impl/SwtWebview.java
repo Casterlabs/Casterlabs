@@ -1,9 +1,12 @@
 package co.casterlabs.caffeinated.bootstrap.impl;
 
 import java.awt.Component;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.browser.ProgressListener;
 import org.eclipse.swt.browser.TitleEvent;
 import org.eclipse.swt.browser.TitleListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -14,7 +17,13 @@ import org.jetbrains.annotations.Nullable;
 import co.casterlabs.caffeinated.bootstrap.webview.AppWebview;
 import co.casterlabs.caffeinated.bootstrap.webview.JavascriptBridge;
 import co.casterlabs.caffeinated.util.Producer;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.rakurai.json.Rson;
+import co.casterlabs.rakurai.json.element.JsonArray;
+import co.casterlabs.rakurai.json.element.JsonElement;
+import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.NonNull;
+import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class SwtWebview extends AppWebview {
     private static Display display;
@@ -30,18 +39,51 @@ public class SwtWebview extends AppWebview {
         System.setProperty("sun.awt.xembedserver", "true");
     }
 
-    private Shell shell;
+    private SwtBridge bridge = new SwtBridge(this);
 
     private Browser browser;
+    private Shell shell;
 
     @Override
     protected Component initialize0() {
+        new AsyncTask(() -> {
+            while (true) {
+                if (browser != null) {
+                    String result = (String) this.eval("return window.Bridge?.clearQueryQueue();");
+
+                    if (result != null) {
+                        try {
+                            JsonArray arr = Rson.DEFAULT.fromJson(result, JsonArray.class);
+
+                            for (JsonElement e : arr) {
+                                bridge.query(e.getAsString());
+                            }
+                        } catch (JsonParseException e) {
+                            FastLogger.logException(e);
+                        }
+                    }
+                }
+
+                try {
+                    TimeUnit.MILLISECONDS.sleep(200);
+                } catch (InterruptedException e) {}
+            }
+        });
+
         return null; // We handle the window ourselves.
     }
 
     @Override
-    public void loadURL(@Nullable String url) {
+    public void loadURL(@Nullable String _url) {
+        Display.getDefault().asyncExec(() -> {
+            String url = _url; // Pointer copy.
 
+            if (url == null) {
+                url = "about:blank";
+            }
+
+            this.browser.setUrl(url);
+        });
     }
 
     @Override
@@ -56,9 +98,13 @@ public class SwtWebview extends AppWebview {
         });
     }
 
+    private Object eval(String line) {
+        return new SwtPromise<Object>(() -> this.browser.evaluate(line, true)).await();
+    }
+
     @Override
     public JavascriptBridge getJavascriptBridge() {
-        return null;
+        return this.bridge;
     }
 
     @Override
@@ -69,6 +115,16 @@ public class SwtWebview extends AppWebview {
             this.shell.setLayout(new FillLayout());
 
             this.browser = new Browser(this.shell, SWT.NONE);
+
+            this.browser.addProgressListener(new ProgressListener() {
+                @Override
+                public void changed(ProgressEvent event) {
+                    bridge.injectBridgeScript();
+                }
+
+                @Override
+                public void completed(ProgressEvent event) {}
+            });
 
             this.browser.addTitleListener(new TitleListener() {
                 @Override
@@ -82,7 +138,7 @@ public class SwtWebview extends AppWebview {
             this.shell.pack();
             this.shell.open();
 
-            this.browser.setUrl(url);
+            this.loadURL(url);
 
             while (!shell.isDisposed()) {
                 if (!display.readAndDispatch()) {
