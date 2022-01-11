@@ -2,7 +2,7 @@ package co.casterlabs.caffeinated.bootstrap.macos;
 
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.NativeSystemProvider;
-import co.casterlabs.caffeinated.bootstrap.webview.impl.CefWebview;
+import co.casterlabs.caffeinated.bootstrap.impl.SwtWebview;
 
 public class MacOSBootstrap {
 
@@ -11,7 +11,7 @@ public class MacOSBootstrap {
         NativeSystemProvider.initialize(
             new MacOSLafManager(),
             null,
-            CefWebview.FACTORY
+            SwtWebview.FACTORY
         );
         Bootstrap.main(args);
     }

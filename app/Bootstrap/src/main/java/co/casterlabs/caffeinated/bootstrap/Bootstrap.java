@@ -116,9 +116,9 @@ public class Bootstrap implements Runnable {
 //            FastLogger.logException(t);
 //        }
 
-        new Thread(() -> {
-            new CommandLine(new Bootstrap()).execute(args); // Calls #run()
-        }).start();
+//        new Thread(() -> {
+        new CommandLine(new Bootstrap()).execute(args); // Calls #run()
+//        }).start();
     }
 
     @SneakyThrows

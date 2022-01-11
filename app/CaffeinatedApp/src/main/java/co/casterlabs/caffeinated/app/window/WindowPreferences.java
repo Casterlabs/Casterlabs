@@ -18,14 +18,19 @@ public class WindowPreferences {
     private int stateFlags = JFrame.NORMAL;
 
     public WindowPreferences() {
-        // Setup Defaults
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        // On MacOS we start the app on the first thread, using AWT will cause the app
+        // to
+        // lock up.
+        if (!System.getProperty("os.name").toLowerCase().contains("mac")) {
+            // Setup Defaults
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
-        int monitorWidth = gd.getDisplayMode().getWidth();
-        int monitorHeight = gd.getDisplayMode().getHeight();
+            int monitorWidth = gd.getDisplayMode().getWidth();
+            int monitorHeight = gd.getDisplayMode().getHeight();
 
-        this.x = (monitorWidth - this.width) / 2;
-        this.y = (monitorHeight - this.height) / 2;
+            this.x = (monitorWidth - this.width) / 2;
+            this.y = (monitorHeight - this.height) / 2;
+        }
     }
 
 }

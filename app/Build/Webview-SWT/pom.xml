@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>Webview-WebviewJar</artifactId>
+	<artifactId>Webview-SWT</artifactId>
 
 	<parent>
 		<groupId>co.casterlabs</groupId>
@@ -40,6 +40,13 @@
 		</plugins>
 	</build>
 
+	<repositories>
+		<repository>
+			<id>maven-eclipse-repo</id>
+			<url>http://maven-eclipse.github.io/maven</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 
 		<dependency>
@@ -55,12 +62,10 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- UI packages -->
 		<dependency>
-			<!-- See install_deps.sh -->
-			<groupId>org.webview</groupId>
-			<artifactId>WebViewJar</artifactId>
-			<version>1.0.0</version>
+			<groupId>org.eclipse.swt</groupId>
+			<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
+			<version>4.5</version>
 			<scope>compile</scope>
 		</dependency>
 

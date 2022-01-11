@@ -19,7 +19,7 @@
 		<module>Webview-CEF</module>
 		<module>Webview-JavaFX</module>
 		<module>Webview-Swing</module>
-		<module>Webview-WebviewJar</module>
+		<module>Webview-SWT</module>
 	</modules>
 
 </project>
