@@ -9,11 +9,18 @@ import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
 import org.eclipse.swt.browser.TitleEvent;
 import org.eclipse.swt.browser.TitleListener;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.jetbrains.annotations.Nullable;
 
+import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
+import co.casterlabs.caffeinated.app.window.WindowPreferences;
+import co.casterlabs.caffeinated.bootstrap.ui.ApplicationWindow;
 import co.casterlabs.caffeinated.bootstrap.webview.AppWebview;
 import co.casterlabs.caffeinated.bootstrap.webview.JavascriptBridge;
 import co.casterlabs.caffeinated.util.Producer;
@@ -133,14 +140,43 @@ public class SwtWebview extends AppWebview {
                 }
             });
 
-            this.browser.setBounds(0, 0, 600, 400);
+            PreferenceFile<WindowPreferences> prefsFile = CaffeinatedApp.getInstance().getWindowPreferences();
+            WindowPreferences prefs = prefsFile.get();
+
+            this.shell.setMinimumSize(ApplicationWindow.MIN_WIDTH, ApplicationWindow.MIN_HEIGHT);
+            this.shell.setBounds(prefs.getX(), prefs.getY(), prefs.getWidth(), prefs.getHeight());
+
+            this.shell.addControlListener(new ControlListener() {
+                @Override
+                public void controlMoved(ControlEvent e) {
+                    Point loc = shell.getLocation();
+
+                    prefs.setX(loc.x);
+                    prefs.setY(loc.y);
+                    prefsFile.save();
+                }
+
+                @Override
+                public void controlResized(ControlEvent e) {
+                    Point size = shell.getSize();
+
+                    prefs.setWidth(size.x);
+                    prefs.setHeight(size.y);
+                    prefsFile.save();
+                }
+            });
+
+            this.shell.addListener(SWT.Close, (event) -> {
+                event.doit = false;
+                destroyBrowser();
+            });
 
             this.shell.pack();
             this.shell.open();
 
             this.loadURL(url);
 
-            while (!shell.isDisposed()) {
+            while ((shell != null) && !shell.isDisposed()) {
                 if (!display.readAndDispatch()) {
                     display.sleep();
                 }
