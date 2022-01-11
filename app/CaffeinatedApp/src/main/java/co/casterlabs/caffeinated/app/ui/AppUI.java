@@ -39,6 +39,7 @@ import okhttp3.Request;
 import xyz.e3ndr.eventapi.EventHandler;
 import xyz.e3ndr.eventapi.listeners.EventListener;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class AppUI {
     private static final String GOOGLE_FONTS_API_KEY = "AIzaSyBuFeOYplWvsOlgbPeW8OfPUejzzzTCITM";
@@ -161,7 +162,10 @@ public class AppUI {
                 this.navigate("/signin");
             } else if (auth.isAuthorized()) {
                 this.navigate("/home");
-            } // Otherwise AppAuth will automagically move us there :D
+            } else {
+                // Otherwise AppAuth will automagically move us there :D
+                FastLogger.logStatic(LogLevel.DEBUG, "Waiting for auth to navigate us. (theme-loaded)");
+            }
         }
     }
 
