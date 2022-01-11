@@ -146,4 +146,12 @@ public class ApplicationUI {
         ConsoleUtil.bell();
     }
 
+    public static void dispose() {
+        closeWindow();
+
+        if (!customImplementation) {
+            window.dispose();
+        }
+    }
+
 }

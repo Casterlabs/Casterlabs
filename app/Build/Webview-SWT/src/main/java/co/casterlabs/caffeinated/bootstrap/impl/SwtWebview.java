@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.window.WindowPreferences;
+import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationWindow;
 import co.casterlabs.caffeinated.bootstrap.webview.AppWebview;
 import co.casterlabs.caffeinated.bootstrap.webview.JavascriptBridge;
@@ -82,7 +83,7 @@ public class SwtWebview extends AppWebview {
 
     @Override
     public void loadURL(@Nullable String _url) {
-        Display.getDefault().asyncExec(() -> {
+        display.asyncExec(() -> {
             String url = _url; // Pointer copy.
 
             if (url == null) {
@@ -100,7 +101,7 @@ public class SwtWebview extends AppWebview {
 
     @Override
     public void executeJavaScript(@NonNull String script) {
-        Display.getDefault().asyncExec(() -> {
+        display.asyncExec(() -> {
             this.browser.execute(script);
         });
     }
@@ -116,7 +117,7 @@ public class SwtWebview extends AppWebview {
 
     @Override
     public void createBrowser(@Nullable String url) {
-        Display.getDefault().syncExec(() -> {
+        display.syncExec(() -> {
             this.shell = new Shell(display, SWT.SHELL_TRIM);
 
             this.shell.setLayout(new FillLayout());
@@ -182,14 +183,18 @@ public class SwtWebview extends AppWebview {
                 }
             }
         });
+
+        TrayHandler.updateShowCheckbox(true);
     }
 
     @Override
     public void destroyBrowser() {
-        Display.getDefault().syncExec(() -> {
+        display.asyncExec(() -> {
             this.shell.dispose();
             this.shell = null;
             this.browser = null;
+
+            TrayHandler.updateShowCheckbox(false);
         });
     }
 

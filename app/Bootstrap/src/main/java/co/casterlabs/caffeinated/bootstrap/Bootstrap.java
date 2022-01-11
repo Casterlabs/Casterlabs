@@ -418,7 +418,7 @@ public class Bootstrap implements Runnable {
 
                 // UI
                 TrayHandler.destroy();
-                ApplicationUI.getWindow().dispose();
+                ApplicationUI.dispose();
 
                 // App
                 CaffeinatedApp.getInstance().shutdown();
