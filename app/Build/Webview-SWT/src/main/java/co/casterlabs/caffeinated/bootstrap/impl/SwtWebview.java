@@ -118,12 +118,12 @@ public class SwtWebview extends AppWebview {
 
             this.browser.addProgressListener(new ProgressListener() {
                 @Override
-                public void changed(ProgressEvent event) {
-                    bridge.injectBridgeScript();
-                }
+                public void changed(ProgressEvent event) {}
 
                 @Override
-                public void completed(ProgressEvent event) {}
+                public void completed(ProgressEvent event) {
+                    bridge.injectBridgeScript();
+                }
             });
 
             this.browser.addTitleListener(new TitleListener() {

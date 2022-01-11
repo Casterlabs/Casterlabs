@@ -6,6 +6,7 @@ import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.caffeinated.bootstrap.webview.JavascriptBridge;
 import co.casterlabs.caffeinated.util.DualConsumer;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonNull;
@@ -21,6 +22,7 @@ public class SwtBridge extends JavascriptBridge {
     private static String bridgeScript = "";
 
     private SwtWebview webview;
+    private boolean hasPreloaded = false;
 
     private @Setter DualConsumer<String, JsonObject> onEvent;
 
@@ -41,9 +43,9 @@ public class SwtBridge extends JavascriptBridge {
     protected void emit0(@NonNull String type, @NonNull JsonElement data) {
         String script = String.format("window.Bridge.broadcast(%s,%s);", new JsonString(type), data);
 
-        if (!type.startsWith("querynonce:")) {
-            FastLogger.logStatic(LogLevel.TRACE, "emission [%s]: %s", type, data);
-        }
+//        if (!type.startsWith("querynonce:")) {
+        FastLogger.logStatic(LogLevel.TRACE, "emission [%s]: %s", type, data);
+//        }
 
         this.eval0(script);
     }
@@ -55,10 +57,25 @@ public class SwtBridge extends JavascriptBridge {
 
     public void injectBridgeScript() {
         this.eval0(bridgeScript);
+
+        // Lifecycle listener. (Outside of the JavaFX thread)
+        new AsyncTask(() -> {
+//            this.loadPromise.fulfill(null);
+
+            // Both of these events should get fired right here.
+            if (!this.hasPreloaded) {
+                this.hasPreloaded = true;
+                this.webview.getLifeCycleListener().onBrowserPreLoad();
+            }
+
+            this.webview.getLifeCycleListener().onBrowserInitialLoad();
+        });
     }
 
     // Called by SwtWebview
     public void query(String request) {
+        FastLogger.logStatic(LogLevel.TRACE, request);
+
         try {
             JsonObject query = Rson.DEFAULT.fromJson(request, JsonObject.class);
 
@@ -67,8 +84,6 @@ public class SwtBridge extends JavascriptBridge {
                     JsonObject emission = query.getObject("data");
                     String type = emission.getString("type");
                     JsonObject data = emission.getObject("data");
-
-                    FastLogger.logStatic(LogLevel.TRACE, request);
 
                     if (this.onEvent != null) {
                         this.onEvent.accept(type, data);
