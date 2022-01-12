@@ -9,6 +9,7 @@ echo "Building for MacOS..."
 
 JRE_DOWNLOAD_URL="https://api.adoptium.net/v3/binary/version/jdk-11.0.13%2B8/mac/x64/jre/hotspot/normal/eclipse?project=jdk"
 MAIN_CLASS="co.casterlabs.caffeinated.bootstrap.macos.MacOSBootstrap"
+APP_NAME="Caffeinated"
 
 rm -rf target/dist
 
@@ -25,6 +26,7 @@ java -jar "../packr.jar" \
      --bundle co.casterlabs.caffeinated \
      --classpath target/Caffeinated-MacOS.jar \
      --mainclass $MAIN_CLASS \
+     --vmargs Xdock:name=\"$APP_NAME\" \ 
      --output target/dist
 
 # Copy the files.
