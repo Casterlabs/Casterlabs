@@ -65,7 +65,7 @@
         highlight = true;
     } else if (koiEvent.event_type == "CHANNEL_POINTS") {
         const reward = koiEvent.reward;
-        const imageHtml = `<img class="vcimage" src = "${reward.reward_image ?? reward.default_reward_image}" /> `;
+        const imageHtml = `<img class="vcimage" src = "${reward.reward_image || reward.default_reward_image}" /> `;
 
         highlight = true;
         messageHtml = `${koiEvent.sender.displayname} just redeemed ${imageHtml}${reward.title}`;
