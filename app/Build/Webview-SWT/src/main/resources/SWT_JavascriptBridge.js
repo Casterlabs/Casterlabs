@@ -85,6 +85,11 @@ if (!window.Bridge) {
 		};
 	}
 
+
+	// Setup the Bridge.
+	var eventHandler = new EventHandler();
+	var queryQueue = [];
+
 	function ThrowawayEventHandler() {
 		let listeners = {};
 		let callbackIdCounter = 0;
@@ -181,10 +186,6 @@ if (!window.Bridge) {
 		return instance;
 	}
 
-
-	// Setup the Bridge.
-	const eventHandler = new EventHandler();
-	var queryQueue = [];
 
 	function sendToParent(emission) {
 		const payload = {
