@@ -18,7 +18,6 @@
 		<module>Caffeinated-Linux</module>
 		<module>Webview-CEF</module>
 		<module>Webview-JavaFX</module>
-		<module>Webview-Swing</module>
 		<module>Webview-SWT</module>
 	</modules>
 
