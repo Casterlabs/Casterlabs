@@ -35,7 +35,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import xyz.e3ndr.consoleutil.ConsoleUtil;
-import xyz.e3ndr.consoleutil.platform.JavaPlatform;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
@@ -205,24 +204,32 @@ public class Bootstrap implements Runnable {
 
         // Webview settings.
         switch (ConsoleUtil.getPlatform()) {
+
+            // Linux uses CEF.
             case UNIX: {
+                enableNuclearOption = true;
                 this.devToolsEnabled = false; // Broken on Linux.
                 AppWebview.setOffScreenRenderingEnabled(true); // Won't resize without it.
                 break;
             }
 
-            case MAC:
+            // MacOS uses SWT.
+            case MAC: {
+                enableNuclearOption = true;
+                break;
+            }
+
             case UNKNOWN:
             case WINDOWS:
                 break;
 
         }
 
+        enableNuclearOption = enableNuclearOption && !isDev ||
+            System.getProperty("caffeinated.nuclearoption.force", "").equals("true");
+
         // App url
         String url = isDev ? this.devAddress : appUrl;
-
-        enableNuclearOption = ((ConsoleUtil.getPlatform() == JavaPlatform.UNIX) && !isDev) ||
-            System.getProperty("caffeinated.nuclearoption.force", "").equals("true");
 
         // Init and start the local server.
         try {

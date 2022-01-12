@@ -14,6 +14,8 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.cocoa.NSString;
+import org.eclipse.swt.internal.cocoa.WebView;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -41,6 +43,7 @@ import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class SwtWebview extends AppWebview {
     private static Display display;
@@ -117,16 +120,25 @@ public class SwtWebview extends AppWebview {
         // We create the shell and leave it open.
         // When the app wants it gone all we do is hide it.
         this.shell = new Shell(display, SWT.SHELL_TRIM);
-
         this.shell.setLayout(new FillLayout());
 
-        this.browser = new Browser(this.shell, SWT.NONE);
+        this.browser = new Browser(this.shell, SWT.WEBKIT);
+
+        this.browser.setUrl("about:blank");
+
+        try {
+            Object webkit = ReflectionLib.getValue(browser, "webBrowser"); // org.eclipse.swt.browser.WebKit
+            WebView view = ReflectionLib.getValue(webkit, "webView");
+
+            view.setApplicationNameForUserAgent(NSString.stringWith(String.format("WebKit; Just A CasterlabsCaffeinated (%s)", AppWebview.STATE_PASSWORD)));
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         this.browser.addProgressListener(new ProgressListener() {
             @Override
             public void changed(ProgressEvent event) {
                 bridge.injectBridgeScript();
-
             }
 
             @Override
