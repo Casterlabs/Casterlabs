@@ -54,6 +54,8 @@ public class SwtWebview extends AppWebview {
 
         MainThread.submitTask(() -> {
             if (display == null) {
+                Display.setAppName("Casterlabs Caffeinated");
+
                 display = Display.getDefault();
             }
 
