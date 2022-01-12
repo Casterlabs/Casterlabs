@@ -22,7 +22,6 @@ public class SwtBridge extends JavascriptBridge {
     private static String bridgeScript = "";
 
     private SwtWebview webview;
-    private boolean hasPreloaded = false;
 
     private @Setter DualConsumer<String, JsonObject> onEvent;
 
@@ -61,13 +60,6 @@ public class SwtBridge extends JavascriptBridge {
         // Lifecycle listener. (Outside of the JavaFX thread)
         new AsyncTask(() -> {
 //            this.loadPromise.fulfill(null);
-
-            // Both of these events should get fired right here.
-            if (!this.hasPreloaded) {
-                this.hasPreloaded = true;
-                this.webview.getLifeCycleListener().onBrowserPreLoad();
-            }
-
             this.webview.getLifeCycleListener().onBrowserInitialLoad();
         });
     }

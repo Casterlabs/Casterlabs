@@ -26,6 +26,7 @@ import co.casterlabs.caffeinated.localserver.LocalServer;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.Currencies;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.caffeinated.util.async.Promise;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
@@ -116,9 +117,9 @@ public class Bootstrap implements Runnable {
 //            FastLogger.logException(t);
 //        }
 
-//        new Thread(() -> {
-        new CommandLine(new Bootstrap()).execute(args); // Calls #run()
-//        }).start();
+        MainThread.park(() -> {
+            new CommandLine(new Bootstrap()).execute(args); // Calls #run()
+        });
     }
 
     @SneakyThrows
@@ -276,7 +277,12 @@ public class Bootstrap implements Runnable {
 
                 app.init();
 
-                TrayHandler.tryCreateTray();
+                try {
+                    new Promise<>(() -> {
+                        TrayHandler.tryCreateTray();
+                        return null;
+                    }).await();
+                } catch (Throwable ignored) {}
             }
 
             @Override
@@ -332,6 +338,8 @@ public class Bootstrap implements Runnable {
         };
 
         webview.setLifeCycleListener(uiLifeCycleListener);
+
+        logger.info("Starting the UI");
 
         // Ok, now initialize!
         ApplicationUI.initialize(
@@ -405,8 +413,8 @@ public class Bootstrap implements Runnable {
     }
 
     private static void shutdown(boolean force, boolean relaunch, boolean isReset) {
-        if (CaffeinatedApp.getInstance().canCloseUI() || force) {
-            new AsyncTask(() -> {
+        new AsyncTask(() -> {
+            if (CaffeinatedApp.getInstance().canCloseUI() || force) {
                 logger.info("Shutting down.");
 
                 // Local Server
@@ -441,10 +449,10 @@ public class Bootstrap implements Runnable {
                 } else {
                     System.exit(0);
                 }
-            });
-        } else {
-            ApplicationUI.focusAndBeep();
-        }
+            } else {
+                ApplicationUI.focusAndBeep();
+            }
+        });
     }
 
     @SneakyThrows
