@@ -182,12 +182,12 @@ public class SwtWebview extends AppWebview {
 
         this.shell.addListener(SWT.Close, (event) -> {
             event.doit = false;
-            destroyBrowser();
+            ApplicationUI.closeWindow();
         });
 
         display.getMenuBar().addListener(SWT.Activate, (event) -> {
-            ApplicationUI.showWindow();
             event.doit = true;
+            ApplicationUI.showWindow();
         });
 
         new AsyncTask(() -> {
