@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>Caffeinated-MacOS</artifactId>
+	<artifactId>Webview-SWT</artifactId>
 
 	<parent>
 		<groupId>co.casterlabs</groupId>
@@ -32,7 +32,7 @@
 					<transformers>
 						<transformer
 							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-							<mainClass>co.casterlabs.caffeinated.bootstrap.macos.MacOSBootstrap</mainClass>
+							<mainClass>co.casterlabs.caffeinated.bootstrap.windows.WindowsBootstrap</mainClass>
 						</transformer>
 					</transformers>
 				</configuration>
@@ -40,8 +40,15 @@
 		</plugins>
 	</build>
 
+	<repositories>
+		<repository>
+			<id>maven-eclipse-repo</id>
+			<url>http://maven-eclipse.github.io/maven</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>co.casterlabs</groupId>
 			<artifactId>Bootstrap</artifactId>
@@ -54,19 +61,13 @@
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
-			<groupId>co.casterlabs</groupId>
-			<artifactId>Webview-SWT</artifactId>
-			<version>${project.parent.version}</version>
+			<groupId>org.eclipse.swt</groupId>
+			<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
+			<version>4.6.1</version>
 			<scope>compile</scope>
 		</dependency>
-
-		<!-- <dependency>
-			<groupId>me.friwi</groupId>
-			<artifactId>jcef-natives-macos-amd64</artifactId>
-			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
-			<scope>compile</scope>
-		</dependency> -->
 
 	</dependencies>
 </project>

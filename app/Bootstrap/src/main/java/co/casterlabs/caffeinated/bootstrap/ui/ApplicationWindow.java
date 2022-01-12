@@ -32,6 +32,9 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @Getter
 public class ApplicationWindow {
+    public static final int MIN_WIDTH = 800;
+    public static final int MIN_HEIGHT = 580;
+
     private ThemeableJFrame frame;
     private UILifeCycleListener listener;
 
@@ -117,7 +120,7 @@ public class ApplicationWindow {
         this.frame.setLocation(windowPreferences.getX(), windowPreferences.getY());
         this.frame.setState(windowPreferences.getStateFlags());
         this.frame.setResizable(true);
-        this.frame.setMinimumSize(new Dimension(800, 580));
+        this.frame.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
 
         this.updateBridgeData();
 
