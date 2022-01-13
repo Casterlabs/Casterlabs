@@ -220,13 +220,15 @@ public class UpdaterDialog extends JDialog implements Closeable {
         if (Taskbar.isTaskbarSupported()) {
             Taskbar taskbar = Taskbar.getTaskbar();
 
-            if (progress < 0) {
-                taskbar.setWindowProgressState(this, Taskbar.State.OFF);
-            } else {
-                int percent = (int) Math.round(progress * 100); // 0-1 -> 0-100
+            if (taskbar.isSupported(Taskbar.Feature.PROGRESS_STATE_WINDOW)) {
+                if (progress < 0) {
+                    taskbar.setWindowProgressState(this, Taskbar.State.OFF);
+                } else {
+                    int percent = (int) Math.round(progress * 100); // 0-1 -> 0-100
 
-                taskbar.setWindowProgressState(this, Taskbar.State.NORMAL);
-                taskbar.setWindowProgressValue(this, percent);
+                    taskbar.setWindowProgressState(this, Taskbar.State.NORMAL);
+                    taskbar.setWindowProgressValue(this, percent);
+                }
             }
         }
     }

@@ -17,7 +17,9 @@ import net.harawata.appdirs.AppDirsFactory;
 import okhttp3.Request;
 import okhttp3.Response;
 import xyz.e3ndr.consoleutil.ConsoleUtil;
+import xyz.e3ndr.consoleutil.platform.JavaPlatform;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class Updater {
     private static final int VERSION = 10;
@@ -36,25 +38,34 @@ public class Updater {
     private static @Getter boolean isLauncherOutOfDate = false;
     private static @Getter boolean isPlatformSupported = true;
 
-    private static final String launchCommand;
+    private static final String[] launchCommand;
 
     static {
         appDirectory.mkdirs();
 
+        FastLogger.logStatic(LogLevel.INFO, "App Directory: %s", appDirectory);
+
         switch (ConsoleUtil.getPlatform()) {
 
             case MAC:
-                launchCommand = "open " + appDirectory + "/Casterlabs-Caffeinated.app";
+                launchCommand = new String[] {
+                        "open",
+                        appDirectory.getAbsolutePath() + "/Casterlabs-Caffeinated.app"
+                };
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-macos.zip";
                 break;
 
             case UNIX:
-                launchCommand = appDirectory + "/Casterlabs-Caffeinated";
+                launchCommand = new String[] {
+                        appDirectory + "/Casterlabs-Caffeinated"
+                };
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-linux.zip";
                 break;
 
             case WINDOWS:
-                launchCommand = appDirectory + "/Casterlabs-Caffeinated.exe";
+                launchCommand = new String[] {
+                        appDirectory + "/Casterlabs-Caffeinated.exe"
+                };
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-windows.zip";
                 break;
 
@@ -140,6 +151,17 @@ public class Updater {
                 ZipUtil.unzip(updateFile, appDirectory);
 
                 updateFile.delete();
+
+                // Unquarantine the app on MacOS.
+                if (ConsoleUtil.getPlatform() == JavaPlatform.MAC) {
+                    new ProcessBuilder()
+                        .command("xattr", "-r", "-w", "com.apple.quarantine", "\"00c1;;;\"", launchCommand[1])
+                        .inheritIO()
+                        .start()
+
+                        // Wait for exit.
+                        .waitFor();
+                }
             }
         } catch (Exception e) {
             throw new UpdaterException(UpdaterException.Error.DOWNLOAD_FAILED, "Update failed :(", e);
@@ -154,6 +176,7 @@ public class Updater {
             new ProcessBuilder()
                 .directory(appDirectory)
                 .command(launchCommand)
+                .inheritIO()
                 .start();
 
             TimeUnit.SECONDS.sleep(5);
