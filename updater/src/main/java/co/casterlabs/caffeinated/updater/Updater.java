@@ -36,28 +36,30 @@ public class Updater {
     private static @Getter boolean isLauncherOutOfDate = false;
     private static @Getter boolean isPlatformSupported = true;
 
-    private static String launchCommand = appDirectory + "/Casterlabs-Caffeinated";
+    private static final String launchCommand;
 
     static {
         appDirectory.mkdirs();
 
         switch (ConsoleUtil.getPlatform()) {
 
-            // Macos is brokded.
-//            case MAC:
-//                REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-macos.zip";
-//                break;
+            case MAC:
+                launchCommand = "open " + appDirectory + "/Casterlabs-Caffeinated.app";
+                REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-macos.zip";
+                break;
 
             case UNIX:
+                launchCommand = appDirectory + "/Casterlabs-Caffeinated";
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-linux.zip";
                 break;
 
             case WINDOWS:
-                launchCommand += ".exe";
+                launchCommand = appDirectory + "/Casterlabs-Caffeinated.exe";
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-windows.zip";
                 break;
 
             default:
+                launchCommand = null;
                 isPlatformSupported = false;
                 break;
 

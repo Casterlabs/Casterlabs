@@ -24,9 +24,7 @@ if [[ $@ != *"nodist"* ]]; then
     echo ""
 
     # MacOS
-
-    # BROKEN
-    #sh build-macos.sh
-    #echo ""
+    sh build-macos.sh
+    echo ""
 fi
 
