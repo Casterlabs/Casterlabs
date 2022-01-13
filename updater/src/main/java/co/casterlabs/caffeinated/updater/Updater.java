@@ -5,11 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ProcessBuilder.Redirect;
 import java.util.concurrent.TimeUnit;
 
 import co.casterlabs.caffeinated.updater.util.FileUtil;
 import co.casterlabs.caffeinated.updater.util.WebUtil;
 import co.casterlabs.caffeinated.updater.util.ZipUtil;
+import co.casterlabs.caffeinated.updater.util.async.AsyncTask;
 import co.casterlabs.caffeinated.updater.window.UpdaterDialog;
 import co.casterlabs.rakurai.io.IOUtil;
 import lombok.Getter;
@@ -38,7 +40,7 @@ public class Updater {
     private static @Getter boolean isLauncherOutOfDate = false;
     private static @Getter boolean isPlatformSupported = true;
 
-    private static final String[] launchCommand;
+    private static final String launchCommand;
 
     static {
         appDirectory.mkdirs();
@@ -48,24 +50,17 @@ public class Updater {
         switch (ConsoleUtil.getPlatform()) {
 
             case MAC:
-                launchCommand = new String[] {
-                        "open",
-                        appDirectory.getAbsolutePath() + "/Casterlabs-Caffeinated.app"
-                };
+                launchCommand = appDirectory + "/Casterlabs-Caffeinated.app/Contents/MacOS/Casterlabs-Caffeinated";
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-macos.zip";
                 break;
 
             case UNIX:
-                launchCommand = new String[] {
-                        appDirectory + "/Casterlabs-Caffeinated"
-                };
+                launchCommand = appDirectory + "/Casterlabs-Caffeinated";
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-linux.zip";
                 break;
 
             case WINDOWS:
-                launchCommand = new String[] {
-                        appDirectory + "/Casterlabs-Caffeinated.exe"
-                };
+                launchCommand = appDirectory + "/Casterlabs-Caffeinated.exe";
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-windows.zip";
                 break;
 
@@ -155,7 +150,7 @@ public class Updater {
                 // Unquarantine the app on MacOS.
                 if (ConsoleUtil.getPlatform() == JavaPlatform.MAC) {
                     new ProcessBuilder()
-                        .command("xattr", "-r", "-w", "com.apple.quarantine", "\"00c1;;;\"", launchCommand[1])
+                        .command("xattr", "-r", "-w", "com.apple.quarantine", "\"00c1;;;\"", appDirectory.getAbsolutePath() + "/Casterlabs-Caffeinated.app")
                         .inheritIO()
                         .start()
 
@@ -168,18 +163,32 @@ public class Updater {
         }
     }
 
-    public static void launch() throws UpdaterException {
+    public static void launch(UpdaterDialog dialog) throws UpdaterException {
         try {
             // TODO wait for .build_ok to show up.
             // (We will need to start bundling cef rather than having it downloaded)
 
-            new ProcessBuilder()
+            Process process = new ProcessBuilder()
                 .directory(appDirectory)
                 .command(launchCommand)
-                .inheritIO()
+                .redirectOutput(Redirect.PIPE)
+                .redirectError(Redirect.INHERIT)
+                .redirectInput(Redirect.INHERIT)
                 .start();
 
-            TimeUnit.SECONDS.sleep(5);
+            // Input stream pipe.
+            new AsyncTask(() -> {
+                try {
+                    // TODO look for "Starting the UI" before we close the dialog.
+                    IOUtil.writeInputStreamToOutputStream(process.getInputStream(), System.out);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            TimeUnit.SECONDS.sleep(2);
+            dialog.dispose();
+            Thread.sleep(Long.MAX_VALUE);
         } catch (Exception e) {
             throw new UpdaterException(UpdaterException.Error.LAUNCH_FAILED, "Could not launch update :(", e);
         }

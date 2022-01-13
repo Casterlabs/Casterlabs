@@ -43,7 +43,6 @@ public class Launcher {
         if (InstanceManager.trySummonInstance()) {
             FastLogger.logStatic("App already running, goodbye!");
             dialog.close();
-            Updater.launch();
             return;
         }
 
@@ -72,8 +71,7 @@ public class Launcher {
                 dialog.setStatus("You are up to date!");
             }
 
-            Updater.launch();
-            dialog.close();
+            Updater.launch(dialog);
         } catch (UpdaterException e) {
             dialog.setStatus(e.getMessage());
 
