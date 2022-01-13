@@ -56,6 +56,10 @@ public class UpdaterPane extends JPanel {
         layout.putConstraint(SpringLayout.SOUTH, ui, 0, SpringLayout.SOUTH, this);
         layout.putConstraint(SpringLayout.EAST, ui, 0, SpringLayout.EAST, this);
         this.add(this.ui);
+
+        AnimationContext
+            .getRenderables()
+            .add(this::repaint);
     }
 
     @Override

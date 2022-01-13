@@ -3,7 +3,6 @@ package co.casterlabs.caffeinated.updater.window;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.DisplayMode;
-import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.MouseInfo;
@@ -114,22 +113,11 @@ public class UpdaterDialog extends JDialog implements Closeable {
     }
 
     @Override
-    public synchronized void paint(Graphics g) {
-        // Wait for an animation frame.
-        // This helps with stuttering.
-        if (AnimationContext.isAnimationFrame()) {
-            super.paint(g);
-            AnimationContext.reset();
-        }
-    }
-
-    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
 
         if (visible) {
             this.createBufferStrategy(2);
-            AnimationContext.setRepaintable(this);
         }
     }
 
@@ -141,7 +129,6 @@ public class UpdaterDialog extends JDialog implements Closeable {
 
     @Override
     public void dispose() {
-        AnimationContext.setRepaintable(null);
         super.dispose();
     }
 

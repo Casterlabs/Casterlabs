@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.util.concurrent.ThreadLocalRandom;
 
+import co.casterlabs.caffeinated.updater.window.AnimationContext;
 import co.casterlabs.caffeinated.updater.window.UpdaterDialog;
 
 public class WinterSeasonAnimation extends DialogAnimation {
@@ -34,6 +35,16 @@ public class WinterSeasonAnimation extends DialogAnimation {
             int y = ThreadLocalRandom.current().nextInt(minBoundsY, maxBoundsY);
             snowflakeData[1] = y;
         }
+
+        AnimationContext
+            .getRenderables()
+            .add(() -> {
+                for (int snowflakeId = 0; snowflakeId < this.snowflakePositions.length; snowflakeId++) {
+                    int[] snowflakeData = this.snowflakePositions[snowflakeId];
+
+                    this.moveSnowflake(snowflakeData);
+                }
+            });
     }
 
     @Override
@@ -69,8 +80,6 @@ public class WinterSeasonAnimation extends DialogAnimation {
             // Generate & fill the ellipse.
             Ellipse2D.Double circle = new Ellipse2D.Double(x, y, size, size);
             g2d.fill(circle);
-
-            this.moveSnowflake(snowflakeData);
         }
 
         // Restore the color, just in case it's needed again.

@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.updater.window;
 
-import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +13,7 @@ public class AnimationContext {
     private static final double FRAME_INTERVAL = FRAME_RATE / 1000f;
     private static final long FRAME_INTERVAL_FLOOR = (long) Math.floor(FRAME_RATE);
 
-    private static @Setter Component repaintable;
+    private static @Getter List<Runnable> renderables = new ArrayList<>();
 
     private static @Getter @Setter boolean isAnimationFrame = false;
     private static @Setter long lastAnimation = 0;
@@ -46,7 +47,7 @@ public class AnimationContext {
     private static void waitToAnimate() {
         Thread.sleep(FRAME_INTERVAL_FLOOR);
 
-        if (repaintable != null) {
+        if (!renderables.isEmpty()) {
             while (getDelta() < 1) {
                 // Waste cpu.
             }
@@ -54,13 +55,10 @@ public class AnimationContext {
             // Animate.
             isAnimationFrame = true;
 
-            repaintable.repaint(0);
-        }
-    }
+            for (Runnable r : renderables) {
+                r.run();
+            }
 
-    // This gets called by UpdaterDialog.
-    public static void reset() {
-        if (isAnimationFrame) {
             lastAnimation = System.currentTimeMillis();
             isAnimationFrame = false;
         }

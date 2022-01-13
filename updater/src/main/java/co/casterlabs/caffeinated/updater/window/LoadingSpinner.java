@@ -35,13 +35,17 @@ public class LoadingSpinner extends JPanel {
         this.setMaximumSize(this.getSize());
 
         this.setOpaque(false);
+
+        AnimationContext
+            .getRenderables()
+            .add(() -> {
+                this.rotation += 5;
+                this.rotation %= 360;
+            });
     }
 
     @Override
     public void paintComponent(Graphics g) {
-        this.rotation += 5;
-        this.rotation %= 360;
-
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
