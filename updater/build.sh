@@ -12,6 +12,7 @@ rm -rf dist/*
 mkdir -p dist
 mkdir dist/windows
 mkdir dist/linux
+mkdir dist/macos
 mkdir dist/macos/Casterlabs-Caffeinated.app
 
 if [[ $@ != *"nodist"* ]]; then
