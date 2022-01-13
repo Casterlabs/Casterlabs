@@ -10,6 +10,7 @@ public class WindowsBootstrap {
     @SuppressWarnings("deprecation")
     public static void main(String[] args) throws Exception {
         NativeSystemProvider.initialize(
+            false,
             new WindowsLafManager(),
             new WindowsSystemPlaybackMusicProvider(),
             CefWebview.FACTORY

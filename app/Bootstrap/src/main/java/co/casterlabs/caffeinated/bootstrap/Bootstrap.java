@@ -192,14 +192,15 @@ public class Bootstrap implements Runnable {
     }
 
     private void startApp() throws Exception {
-        CaffeinatedApp app = new CaffeinatedApp(buildInfo, isDev);
+        CaffeinatedApp app = new CaffeinatedApp(buildInfo, isDev, NativeSystemProvider.isAwtSupported());
 
         logger.info("Entry                        | Value", buildInfo.getVersionString());
         logger.info("-----------------------------+-------------------------");
         logger.info("buildInfo.versionString      | %s", buildInfo.getVersionString());
         logger.info("buildInfo.author             | %s", buildInfo.getAuthor());
+        logger.info("buildInfo.isDev              | %b", isDev);
         logger.info("system.platform              | %s", ConsoleUtil.getPlatform().name());
-        logger.info("bootstrap.isDev              | %b", isDev);
+        logger.info("nativeSystem.awtSupported    | %b", app.isAwtSupported());
         logger.info("");
 
         // Webview settings.

@@ -56,7 +56,7 @@
 		</dependency>
 		<dependency>
 			<groupId>co.casterlabs</groupId>
-			<artifactId>Webview-SWT</artifactId>
+			<artifactId>Webview-WebKit</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>

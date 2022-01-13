@@ -18,10 +18,7 @@ public class WindowPreferences {
     private int stateFlags = JFrame.NORMAL;
 
     public WindowPreferences() {
-        // On MacOS we start the app on the first thread, using AWT will cause the app
-        // to
-        // lock up.
-        if (!System.getProperty("os.name").toLowerCase().contains("mac")) {
+        if (System.getProperty("awt.supported").equals("true")) {
             // Setup Defaults
             GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 

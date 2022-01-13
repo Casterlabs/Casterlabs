@@ -46,6 +46,7 @@ public class CaffeinatedApp extends Caffeinated {
 
     private final BuildInfo buildInfo;
     private final boolean isDev;
+    private final boolean awtSupported;
 
     private AppAuth auth = new AppAuth();
     private MusicIntegration music = new MusicIntegration();
@@ -76,9 +77,10 @@ public class CaffeinatedApp extends Caffeinated {
         new File(appDataDir, "preferences").mkdirs();
     }
 
-    public CaffeinatedApp(@NonNull BuildInfo buildInfo, boolean isDev) {
+    public CaffeinatedApp(@NonNull BuildInfo buildInfo, boolean isDev, boolean awtSupported) {
         this.buildInfo = buildInfo;
         this.isDev = isDev;
+        this.awtSupported = awtSupported;
         instance = this;
 
         ThemeManager.setTheme(this.uiPreferences.get().getTheme(), "co.casterlabs.dark");

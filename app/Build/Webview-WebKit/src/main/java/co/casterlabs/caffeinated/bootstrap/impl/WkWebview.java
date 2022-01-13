@@ -45,7 +45,7 @@ import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
-public class SwtWebview extends AppWebview {
+public class WkWebview extends AppWebview {
     private static Display display;
 
     @SuppressWarnings("deprecation")
@@ -91,7 +91,7 @@ public class SwtWebview extends AppWebview {
             promise.await();
         } catch (Throwable ignored) {}
 
-        return new SwtWebview();
+        return new WkWebview();
     };
 
     static {
@@ -99,7 +99,7 @@ public class SwtWebview extends AppWebview {
         System.setProperty("sun.awt.xembedserver", "true");
     }
 
-    private SwtBridge bridge = new SwtBridge(this);
+    private WkBridge bridge = new WkBridge(this);
     private boolean hasPreloaded = false;
 
     private Browser browser;

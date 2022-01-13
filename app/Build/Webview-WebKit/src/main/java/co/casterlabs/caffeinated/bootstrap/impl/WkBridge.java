@@ -18,10 +18,10 @@ import lombok.Setter;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class SwtBridge extends JavascriptBridge {
+public class WkBridge extends JavascriptBridge {
     private static String bridgeScript = "";
 
-    private SwtWebview webview;
+    private WkWebview webview;
 
     private @Setter DualConsumer<String, JsonObject> onEvent;
 
@@ -34,7 +34,7 @@ public class SwtBridge extends JavascriptBridge {
         }
     }
 
-    public SwtBridge(SwtWebview webview) {
+    public WkBridge(WkWebview webview) {
         this.webview = webview;
     }
 

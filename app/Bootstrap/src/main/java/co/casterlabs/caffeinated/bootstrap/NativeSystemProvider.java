@@ -20,6 +20,7 @@ public abstract class NativeSystemProvider {
 
     private static LafManager lafManager = null;
     private static @Getter SystemPlaybackMusicProvider systemPlaybackMusicProvider = null;
+    private static @Getter boolean awtSupported;
 
     static {
         try {
@@ -29,9 +30,12 @@ public abstract class NativeSystemProvider {
 
     @Deprecated
     // Something being null = unsupported.
-    public static void initialize(@Nullable LafManager lafManager, @Nullable SystemPlaybackMusicProvider systemPlaybackMusicProvider, @NonNull Producer<AppWebview> webviewFactory) {
+    public static void initialize(boolean startedOnFirstThread, @Nullable LafManager lafManager, @Nullable SystemPlaybackMusicProvider systemPlaybackMusicProvider, @NonNull Producer<AppWebview> webviewFactory) {
         assert !INITIALIZED : "NativeSystemProvider has already been initialized.";
         INITIALIZED = true;
+
+        awtSupported = !startedOnFirstThread; // AWT will not work on the first thread.
+        System.setProperty("awt.supported", String.valueOf(awtSupported));
 
         NativeSystemProvider.lafManager = lafManager;
         NativeSystemProvider.systemPlaybackMusicProvider = systemPlaybackMusicProvider;
