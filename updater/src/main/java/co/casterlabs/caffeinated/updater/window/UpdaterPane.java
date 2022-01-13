@@ -48,6 +48,7 @@ public class UpdaterPane extends JPanel {
         this.setLayout(layout);
 
         this.setBackground(UpdaterDialog.TRANSPARENT_COLOR);
+        this.setOpaque(false);
 
         this.ui = new UpdaterUI(dialog);
         layout.putConstraint(SpringLayout.NORTH, ui, 0, SpringLayout.NORTH, this);
@@ -58,39 +59,33 @@ public class UpdaterPane extends JPanel {
     }
 
     @Override
-    public synchronized void paint(Graphics g) {
-        // Wait for an animation frame.
-        // This helps with stuttering.
-        if (AnimationContext.isAnimationFrame()) {
-            Graphics2D g2d = (Graphics2D) g;
+    public void paint(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
 
-            // Enable antialiasing.
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        // Enable antialiasing.
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-            // Paint the background color
-//            g2d.clearRect(0, 0, WIDTH, HEIGHT);
-            g2d.setColor(UpdaterDialog.BACKGROUND_COLOR);
-            g2d.fillRect(0, 0, WIDTH, HEIGHT);
+        // Paint the background color
+//        g2d.clearRect(0, 0, WIDTH, HEIGHT);
+        g2d.setBackground(UpdaterDialog.BACKGROUND_COLOR);
+        g2d.fillRect(0, 0, WIDTH, HEIGHT);
 
-            // Paint the animation (background)
-            this.currentAnimation.paintOnBackground(g2d);
+        // Paint the animation (background)
+        this.currentAnimation.paintOnBackground(g2d);
 
-            // Paint the background image if set
-            if (this.chosenStreamerImage != null) {
-                // The image is same size as the window.
-                g2d.drawImage(this.chosenStreamerImage, 0, 0, null);
-            }
-
-            // Paint the animation (over background)
-            this.currentAnimation.paintOverBackground(g2d);
-
-            super.paint(g2d);
-
-            // Paint the animation (foreground)
-            this.currentAnimation.paintOnForeground(g2d);
-
-            AnimationContext.reset();
+        // Paint the background image if set
+        if (this.chosenStreamerImage != null) {
+            // The image is same size as the window.
+            g2d.drawImage(this.chosenStreamerImage, 0, 0, null);
         }
+
+        // Paint the animation (over background)
+        this.currentAnimation.paintOverBackground(g2d);
+
+        super.paint(g2d);
+
+        // Paint the animation (foreground)
+        this.currentAnimation.paintOnForeground(g2d);
     }
 
 }
