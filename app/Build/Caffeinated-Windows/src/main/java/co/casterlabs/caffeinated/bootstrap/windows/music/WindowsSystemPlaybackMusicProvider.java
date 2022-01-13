@@ -11,7 +11,7 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 
 import co.casterlabs.caffeinated.app.music_integration.InternalMusicProvider;
-import co.casterlabs.caffeinated.bootstrap.NativeSystemProvider.SystemPlaybackMusicProvider;
+import co.casterlabs.caffeinated.bootstrap.NativeSystem.SystemPlaybackMusicProvider;
 import co.casterlabs.caffeinated.bootstrap.windows.music.events.PlaybackEvent;
 import co.casterlabs.caffeinated.bootstrap.windows.music.events.PlaybackEvent.PlaybackEventType;
 import co.casterlabs.caffeinated.bootstrap.windows.music.events.PlaybackStateEvent;

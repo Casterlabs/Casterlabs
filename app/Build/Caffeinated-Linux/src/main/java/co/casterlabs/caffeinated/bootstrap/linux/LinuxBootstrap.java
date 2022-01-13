@@ -1,7 +1,7 @@
 package co.casterlabs.caffeinated.bootstrap.linux;
 
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
-import co.casterlabs.caffeinated.bootstrap.NativeSystemProvider;
+import co.casterlabs.caffeinated.bootstrap.NativeSystem;
 import co.casterlabs.caffeinated.bootstrap.linux.music.LinuxSystemPlaybackMusicProvider;
 import co.casterlabs.caffeinated.bootstrap.webview.impl.CefWebview;
 
@@ -15,7 +15,7 @@ public class LinuxBootstrap {
             playbackProvider = new LinuxSystemPlaybackMusicProvider();
         }
 
-        NativeSystemProvider.initialize(
+        NativeSystem.initialize(
             false,
             null,
             playbackProvider,

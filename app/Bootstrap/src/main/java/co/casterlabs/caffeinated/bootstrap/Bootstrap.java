@@ -166,7 +166,7 @@ public class Bootstrap implements Runnable {
         Currencies.getCurrencies(); // Load the class.
 
         // Setup the native system
-        ReflectionLib.setStaticValue(MusicIntegration.class, "systemPlaybackMusicProvider", NativeSystemProvider.getSystemPlaybackMusicProvider());
+        ReflectionLib.setStaticValue(MusicIntegration.class, "systemPlaybackMusicProvider", NativeSystem.getSystemPlaybackMusicProvider());
 
         this.registerThemes();
         this.startApp();
@@ -192,7 +192,7 @@ public class Bootstrap implements Runnable {
     }
 
     private void startApp() throws Exception {
-        CaffeinatedApp app = new CaffeinatedApp(buildInfo, isDev, NativeSystemProvider.isAwtSupported());
+        CaffeinatedApp app = new CaffeinatedApp(buildInfo, isDev, NativeSystem.isAwtSupported());
 
         logger.info("Entry                        | Value", buildInfo.getVersionString());
         logger.info("-----------------------------+-------------------------");

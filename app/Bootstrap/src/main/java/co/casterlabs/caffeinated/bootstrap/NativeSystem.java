@@ -15,7 +15,7 @@ import lombok.NonNull;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public abstract class NativeSystemProvider {
+public abstract class NativeSystem {
     private static boolean INITIALIZED = false;
 
     private static LafManager lafManager = null;
@@ -37,8 +37,8 @@ public abstract class NativeSystemProvider {
         awtSupported = !startedOnFirstThread; // AWT will not work on the first thread.
         System.setProperty("awt.supported", String.valueOf(awtSupported));
 
-        NativeSystemProvider.lafManager = lafManager;
-        NativeSystemProvider.systemPlaybackMusicProvider = systemPlaybackMusicProvider;
+        NativeSystem.lafManager = lafManager;
+        NativeSystem.systemPlaybackMusicProvider = systemPlaybackMusicProvider;
 
         // We set it here so we guarantee it gets set.
         AppWebview.setWebviewFactory(webviewFactory);

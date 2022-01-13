@@ -14,12 +14,12 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 
-import co.casterlabs.caffeinated.bootstrap.NativeSystemProvider;
+import co.casterlabs.caffeinated.bootstrap.NativeSystem;
 import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
-public class MacOSLafManager implements NativeSystemProvider.LafManager {
+public class MacOSLafManager implements NativeSystem.LafManager {
     private static final int NSWINDOW_STYLEMASK_FULL_WINDOW_CONTENT = 1 << 14;
     private static final int NSWINDOW_STYLEMASK_TRANSPARENT_TITLE_BAR = 1 << 18;
 
