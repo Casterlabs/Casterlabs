@@ -4,7 +4,7 @@
  - wget
  - Maven
  - [JDK 11](https://adoptium.net) 
- - [JavaFX SDK](https://openjfx.io/openjfx-docs/) (You need JavaFX for Java 11, you need to tick "include older versions" on the download page, and add the required VM arguments ex `--module-path "C:\Program Files\Java\javafx-sdk-11\lib" --add-modules javafx.controls,javafx.web,javafx.swing`)
+ - [Lombok](https://projectlombok.org) (Only for IDEs, without it you will not be able to do __anything__)
 
 ## Windows
 You can either  
@@ -23,15 +23,35 @@ b) Follow these directions:
  - `sudo apt install nodejs npm`
  - `sudo apt install wget`
  - `sudo apt install maven`
+  
+  
 
 ## MacOS
 [Install homebrew.](https://brew.sh)
  - `brew install nodejs npm`
  - `brew install wget`
  - `brew install maven`
-
-# Note for IDEs
-You will need to install [lombok](https://projectlombok.org)
+ 
+ Additionally, you will need to edit the `Info.plist` of your JDK install to include the following lines (put before two `</dict></plist>` tags) (otherwise you will not be able to *locally* run the dev UI, you could still use something like ngrok to proxy it though)
+```xml
+  <key>NSAppTransportSecurity</key>
+  <dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+    <key>NSExceptionDomains</key>
+    <dict>
+      <key>127.0.0.1</key>
+      <dict>
+        <key>NSExceptionAllowsInsecureHTTPLoads</key>
+        <true/>
+        <key>NSIncludesSubdomains</key>
+        <true/>
+      </dict>
+    </dict>
+  </dict>
+```
+  
+  
 
 # Building
 1) Clone the repo
