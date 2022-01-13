@@ -64,9 +64,6 @@ public class UpdaterPane extends JPanel {
         if (AnimationContext.isAnimationFrame()) {
             Graphics2D g2d = (Graphics2D) g;
 
-            // Paint the container.
-            super.paint(g2d);
-
             // Enable antialiasing.
             g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
@@ -87,8 +84,7 @@ public class UpdaterPane extends JPanel {
             // Paint the animation (over background)
             this.currentAnimation.paintOverBackground(g2d);
 
-            // Paint all children.
-            super.paintComponents(g2d);
+            super.paint(g2d);
 
             // Paint the animation (foreground)
             this.currentAnimation.paintOnForeground(g2d);

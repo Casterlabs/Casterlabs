@@ -168,8 +168,6 @@ public class Updater {
             // TODO wait for .build_ok to show up.
             // (We will need to start bundling cef rather than having it downloaded)
 
-            Thread.sleep(1000000000);
-
             Process process = new ProcessBuilder()
                 .directory(appDirectory)
                 .command(launchCommand)
