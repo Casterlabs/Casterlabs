@@ -188,7 +188,8 @@ public class Updater {
 
             TimeUnit.SECONDS.sleep(2);
             dialog.dispose();
-            Thread.sleep(Long.MAX_VALUE);
+
+            System.exit(process.waitFor());
         } catch (Exception e) {
             throw new UpdaterException(UpdaterException.Error.LAUNCH_FAILED, "Could not launch update :(", e);
         }
