@@ -33,7 +33,7 @@ public class Launcher {
             boolean isJanuaryTimeframe = (calendarMonth == Calendar.JANUARY) && (calendarDate <= 15);
 
             if (isDecember || isNovemberTimeframe || isJanuaryTimeframe) {
-                dialog.setCurrentAnimation(new WinterSeasonAnimation());
+                dialog.getPane().setCurrentAnimation(new WinterSeasonAnimation());
             }
         }
 
