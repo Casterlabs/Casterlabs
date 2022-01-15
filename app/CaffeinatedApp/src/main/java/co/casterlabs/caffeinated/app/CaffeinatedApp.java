@@ -48,13 +48,15 @@ public class CaffeinatedApp extends Caffeinated {
     private final boolean isDev;
     private final boolean awtSupported;
 
-    private AppAuth auth = new AppAuth();
-    private MusicIntegration music = new MusicIntegration();
-    private GlobalKoi koi = new GlobalKoi();
-    private AppUI UI = new AppUI();
-    private PluginIntegration plugins = new PluginIntegration();
-
     // @formatter:off
+    private PluginIntegration plugins = new PluginIntegration();
+    private MusicIntegration  music   = new MusicIntegration();
+    private GlobalKoi         koi     = new GlobalKoi();
+    private AppAuth           auth    = new AppAuth();
+    private AppUI             UI      = new AppUI();
+
+    private WindowState windowState = new WindowState();
+
     private PreferenceFile<PluginIntegrationPreferences> pluginIntegrationPreferences = new PreferenceFile<>("plugins", PluginIntegrationPreferences.class);
     private PreferenceFile<MusicIntegrationPreferences>  musicIntegrationPreferences  = new PreferenceFile<>("music",   MusicIntegrationPreferences.class);
     private PreferenceFile<WindowPreferences>            windowPreferences            = new PreferenceFile<>("window",  WindowPreferences.class);
@@ -67,8 +69,6 @@ public class CaffeinatedApp extends Caffeinated {
     private Map<String, List<Consumer<JsonObject>>> appEventListeners = new HashMap<>();
 
     private static BridgeValue<AppPreferences> bridge_AppPreferences = new BridgeValue<>("app:preferences");
-
-    private WindowState windowState = new WindowState();
 
     static {
         AppDirs appDirs = AppDirsFactory.getInstance();
@@ -98,7 +98,7 @@ public class CaffeinatedApp extends Caffeinated {
             bridge_AppPreferences.update();
         });
 
-        // This doesn't update, so we register it and leave it be.
+        // This doesn't updating, so we register it and leave it be.
         new BridgeValue<BuildInfo>("build").set(this.buildInfo);
     }
 
