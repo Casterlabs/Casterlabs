@@ -149,8 +149,17 @@ public class Updater {
 
                 // Unquarantine the app on MacOS.
                 if (ConsoleUtil.getPlatform() == JavaPlatform.MAC) {
+                    String app = '"' + appDirectory.getAbsolutePath() + "/Casterlabs-Caffeinated.app" + '"';
+                    String command = "xattr -rd com.apple.quarantine " + app + " && chmod -R u+x " + app;
+
+                    dialog.setStatus("Waiting for permission...");
+
                     new ProcessBuilder()
-                        .command("xattr", "-r", "-w", "com.apple.quarantine", "\"00c1;;;\"", appDirectory.getAbsolutePath() + "/Casterlabs-Caffeinated.app")
+                        .command(
+                            "osascript",
+                            "-e",
+                            "do shell script \"" + command.replace("\"", "\\\"") + "\" with prompt \"Casterlabs Caffeinated would like to make changes.\" with administrator privileges"
+                        )
                         .inheritIO()
                         .start()
 
