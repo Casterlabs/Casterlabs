@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import co.casterlabs.caffeinated.app.auth.AppAuth;
 import co.casterlabs.caffeinated.app.auth.AuthPreferences;
 import co.casterlabs.caffeinated.app.bridge.BridgeValue;
+import co.casterlabs.caffeinated.app.chatbot.AppChatbot;
 import co.casterlabs.caffeinated.app.koi.GlobalKoi;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegrationPreferences;
@@ -45,12 +46,13 @@ public class CaffeinatedApp extends Caffeinated {
     private static @Getter CaffeinatedApp instance;
 
     private final BuildInfo buildInfo;
-    private final boolean isDev;
     private final boolean awtSupported;
+    private final boolean isDev;
 
     // @formatter:off
     private PluginIntegration plugins = new PluginIntegration();
     private MusicIntegration  music   = new MusicIntegration();
+    private AppChatbot        chatbot = new AppChatbot();
     private GlobalKoi         koi     = new GlobalKoi();
     private AppAuth           auth    = new AppAuth();
     private AppUI             UI      = new AppUI();
@@ -184,6 +186,11 @@ public class CaffeinatedApp extends Caffeinated {
 
             case "koi": {
                 GlobalKoi.invokeEvent(data, nestedType);
+                return;
+            }
+
+            case "chatbot": {
+                AppChatbot.invokeEvent(data, nestedType);
                 return;
             }
 
