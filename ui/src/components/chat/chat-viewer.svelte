@@ -3,7 +3,7 @@
     import ChatMessage from "./chat-message.svelte";
     import Viewers from "./viewers.svelte";
 
-    import { createEventDispatcher } from "svelte";
+    import { createEventDispatcher, onMount } from "svelte";
 
     const dispatch = createEventDispatcher();
 
@@ -11,8 +11,11 @@
 
     let chatHistory = {};
     let isMultiPlatform = true;
+    let chatboxContainer;
     let chatbox;
     let signedInPlatforms = [];
+
+    let showJumpToBottomButton = false;
 
     let showChatSettings = false;
 
@@ -121,6 +124,7 @@
             return;
         }
 
+        tryScroll();
         console.log("[ChatViewer]", "Processed event:", event);
     }
 
@@ -169,6 +173,26 @@
         }
 
         return filteredCommandSections;
+    }
+
+    function tryScroll() {
+        const jumpingToBottom = isNearBottom();
+
+        if (jumpingToBottom) {
+            jumpToBottom();
+        } else {
+            showJumpToBottomButton = true;
+        }
+    }
+
+    function isNearBottom() {
+        const scrollPercent = (chatboxContainer.scrollTop + chatboxContainer.clientHeight) / chatboxContainer.scrollHeight;
+        return scrollPercent >= 0.9;
+    }
+
+    function jumpToBottom() {
+        showJumpToBottomButton = false;
+        chatboxContainer.scroll(0, chatboxContainer.scrollHeight);
     }
 
     function commandPaletteListener(e) {
@@ -304,6 +328,12 @@
 
         viewersListElement.onAuthUpdate(signedInPlatforms);
     }
+
+    onMount(() => {
+        chatboxContainer.addEventListener("scroll", () => {
+            showJumpToBottomButton = !isNearBottom();
+        });
+    });
 </script>
 
 <div
@@ -319,9 +349,28 @@
         {showCommandPalette && commandPalette.length > 0 ? 'chat-command-palette-open' : ''} 
     "
 >
-    <div id="chat-box">
+    <div id="chat-box" bind:this={chatboxContainer}>
         <ul bind:this={chatbox} />
     </div>
+
+    <!-- svelte-ignore a11y-missing-attribute -->
+    <a class="jump-button" on:click={jumpToBottom} style="opacity: {showJumpToBottomButton ? 1 : 0};">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-arrow-down"
+        >
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <polyline points="19 12 12 19 5 12" />
+        </svg>
+    </a>
 
     <div id="viewers-list" style="display: {showViewersList ? 'block' : 'none'}">
         <Viewers bind:this={viewersListElement} />
@@ -610,5 +659,26 @@
         visibility: visible;
         height: 200px;
         opacity: 1;
+    }
+
+    /* Jump To Bottom */
+
+    .jump-button {
+        position: absolute;
+        bottom: 5.5em;
+        right: 1.5em;
+        width: 32px;
+        height: 32px;
+        border-radius: 100%;
+        color: black;
+        background-color: white;
+        transition: 0.15s;
+    }
+
+    .jump-button svg {
+        width: 28px;
+        height: 28px;
+        margin-left: calc(50% - 14px);
+        margin-top: calc(50% - 14px);
     }
 </style>
