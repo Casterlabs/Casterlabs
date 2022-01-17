@@ -33,6 +33,9 @@
 
         highlight = true;
         messageHtml = `${host.displayname} just raided with ${viewers} ${viewers == 1 ? "viewer" : "viewers"}`;
+    } else if (koiEvent.event_type == "FOLLOW") {
+        highlight = true;
+        messageHtml = `${koiEvent.follower.displayname} just followed!`;
     } else if (koiEvent.event_type == "SUBSCRIPTION") {
         const { gift_recipient, subscriber, months } = koiEvent;
 
@@ -243,7 +246,7 @@
     .highlighted {
         margin-top: 15px;
         margin-bottom: 15px;
-        text-align: center;
+        /* text-align: center; */
         background-color: rgba(0, 0, 0, 0.15);
     }
 
