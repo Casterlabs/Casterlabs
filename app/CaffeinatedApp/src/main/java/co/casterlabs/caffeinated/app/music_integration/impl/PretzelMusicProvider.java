@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.InternalMusicProvider;
+import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.music_integration.impl.PretzelMusicProvider.PretzelSettings;
 import co.casterlabs.caffeinated.pluginsdk.music.MusicTrack;
 import co.casterlabs.caffeinated.util.WebUtil;
@@ -58,7 +58,6 @@ public class PretzelMusicProvider extends InternalMusicProvider<PretzelSettings>
                     });
                 }
             } else {
-                this.logger.info("Signed out.");
                 this.channelId = null;
                 this.setAccountData(false, null, null);
             }
