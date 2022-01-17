@@ -128,11 +128,13 @@ public class WindowsSystemPlaybackMusicProvider extends SystemPlaybackMusicProvi
     private void onPropertyChange(PlaybackEvent<MediaInfo> e) {
         SessionState session = this.sessions.get(e.getSessionId());
 
-        session
-            .setMediaInfo(e.getData())
-            .setType(e.getData().getPlaybackType());
+        if (session != null) {
+            session
+                .setMediaInfo(e.getData())
+                .setType(e.getData().getPlaybackType());
 
-        this.update();
+            this.update();
+        }
     }
 
     @Override
