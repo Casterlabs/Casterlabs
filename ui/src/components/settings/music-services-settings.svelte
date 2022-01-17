@@ -57,6 +57,7 @@
     <p>
         {#if activePlayback}
             &nbsp;Now Playing:
+            <img src={activePlayback.currentTrack.albumArtUrl} class="active-playback-icon" />
             <span style="user-select: all !important;">
                 {activePlayback.currentTrack.title}
             </span>
@@ -112,6 +113,16 @@
 </div>
 
 <style>
+    .active-playback-icon {
+        height: 32px;
+        width: auto;
+        vertical-align: middle;
+        border-radius: 4px;
+        image-rendering: pixelated;
+        margin-left: 2px;
+        margin-right: 2px;
+    }
+
     #accounts {
         margin-right: 55px;
     }
