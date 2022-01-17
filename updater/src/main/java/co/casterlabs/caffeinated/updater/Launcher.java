@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.UIManager;
 
+import co.casterlabs.caffeinated.updater.animations.KamihinokinaiAnimation;
 import co.casterlabs.caffeinated.updater.animations.WinterSeasonAnimation;
 import co.casterlabs.caffeinated.updater.window.UpdaterDialog;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
@@ -21,19 +22,31 @@ public class Launcher {
     public static void main(String[] args) throws Exception {
         UpdaterDialog dialog = new UpdaterDialog();
 
-        // Enable the winter season animation between NOV 25 - JAN 15.
         {
             Calendar calendar = Calendar.getInstance();
 
             int calendarMonth = calendar.get(Calendar.MONTH);
             int calendarDate = calendar.get(Calendar.DATE);
 
-            boolean isDecember = calendarMonth == Calendar.DECEMBER;
-            boolean isNovemberTimeframe = (calendarMonth == Calendar.NOVEMBER) && (calendarDate >= 25);
-            boolean isJanuaryTimeframe = (calendarMonth == Calendar.JANUARY) && (calendarDate <= 15);
+            // Enable the winter season animation between NOV 25 - JAN 15.
+            {
+                boolean isDecember = calendarMonth == Calendar.DECEMBER;
+                boolean isNovemberTimeframe = (calendarMonth == Calendar.NOVEMBER) && (calendarDate >= 25);
+                boolean isJanuaryTimeframe = (calendarMonth == Calendar.JANUARY) && (calendarDate <= 15);
 
-            if (isDecember || isNovemberTimeframe || isJanuaryTimeframe) {
-                dialog.getPane().setCurrentAnimation(new WinterSeasonAnimation());
+                if (isDecember || isNovemberTimeframe || isJanuaryTimeframe) {
+                    dialog.getPane().setCurrentAnimation(new WinterSeasonAnimation());
+                }
+            }
+
+            // Enable the Kamihinokinai animation on FEB 10.
+            {
+                boolean isFeburay = calendarMonth == Calendar.FEBRUARY;
+                boolean isTheTenth = calendarDate == 10;
+
+                if (isFeburay || isTheTenth) {
+                    dialog.getPane().setCurrentAnimation(new KamihinokinaiAnimation());
+                }
             }
         }
 
