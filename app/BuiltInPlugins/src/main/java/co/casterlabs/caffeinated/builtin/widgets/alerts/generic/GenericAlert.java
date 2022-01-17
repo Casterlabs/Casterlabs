@@ -54,11 +54,18 @@ public abstract class GenericAlert extends Widget {
                     .addItem(WidgetSettingsItem.asColor("highlight_color", "Highlight Color", "#5bf599"))
             );
 
-        layout.addSection(
-            new WidgetSettingsSection("text", "Text")
-                .addItem(WidgetSettingsItem.asText("prefix", "Prefix", this.defaultPrefix(), ""))
-                .addItem(WidgetSettingsItem.asText("suffix", "Suffix", this.defaultSuffix(), ""))
-        );
+        {
+            WidgetSettingsSection textSection = new WidgetSettingsSection("text", "Text")
+                .addItem(WidgetSettingsItem.asText("prefix", "Prefix", this.defaultPrefix(), ""));
+
+            if (this.hasInfix()) {
+                textSection.addItem(WidgetSettingsItem.asText("infix", "Infix", this.defaultInfix(), ""));
+            }
+
+            textSection.addItem(WidgetSettingsItem.asText("suffix", "Suffix", this.defaultSuffix(), ""));
+
+            layout.addSection(textSection);
+        }
 
         if (this.hasTTS()) {
             WidgetSettingsSection ttsSection = new WidgetSettingsSection("tts", "Text To Speech")
@@ -123,6 +130,10 @@ public abstract class GenericAlert extends Widget {
     }
 
     public void queueAlert(@NonNull String titleHtml, @Nullable ChatEvent chatEvent, @Nullable String[] customImages, @Nullable String ttsText) {
+        this.queueAlert(titleHtml, null, chatEvent, customImages, ttsText);
+    }
+
+    public void queueAlert(@NonNull String titleHtml, @Nullable String titleHtml2, @Nullable ChatEvent chatEvent, @Nullable String[] customImages, @Nullable String ttsText) {
         String ttsAudio = null;
 
         // Generate the base64 audio data for TTS if enabled.
@@ -143,6 +154,11 @@ public abstract class GenericAlert extends Widget {
 
         if (!prefix.isEmpty()) {
             titleHtml = prefix + ' ' + titleHtml;
+        }
+
+        if (this.hasInfix()) {
+            String infix = WebUtil.escapeHtml(this.settings().getString("text.infix")).replace(" ", "&nbsp;");
+            titleHtml += infix + ' ' + titleHtml2;
         }
 
         if (!suffix.isEmpty()) {
@@ -175,10 +191,18 @@ public abstract class GenericAlert extends Widget {
 
     protected abstract String defaultPrefix();
 
+    protected String defaultInfix() {
+        return null;
+    }
+
     protected abstract String defaultSuffix();
 
     protected abstract boolean hasCustomImageImplementation();
 
     protected abstract boolean hasTTS();
+
+    protected boolean hasInfix() {
+        return false;
+    }
 
 }
