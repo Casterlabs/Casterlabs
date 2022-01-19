@@ -74,7 +74,7 @@ public class PretzelMusicProvider extends InternalMusicProvider<PretzelSettings>
     }
 
     private void pollPretzel() {
-        if (this.isSignedIn()) {
+        if (this.isSignedIn() && this.isEnabled()) {
             try {
                 String response = WebUtil.sendHttpRequest(new Request.Builder().url(String.format(PRETZEL_ENDPOINT, this.channelId)));
 
@@ -112,7 +112,7 @@ public class PretzelMusicProvider extends InternalMusicProvider<PretzelSettings>
                      this.logger.debug("Error while polling Pretzel: %s", response);
                   }*/
 
-                if (this.isEnabled() && (this.currentTrackCache != null)) {
+                if (this.currentTrackCache != null) {
                     this.setPlaying(this.currentTrackCache);
                 }
             } catch (IOException e) {
