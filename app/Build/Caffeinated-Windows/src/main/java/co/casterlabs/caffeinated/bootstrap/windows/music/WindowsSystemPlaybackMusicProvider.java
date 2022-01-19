@@ -178,7 +178,12 @@ public class WindowsSystemPlaybackMusicProvider extends SystemPlaybackMusicProvi
                         String[] splitTitle = currentSession.getMediaInfo().getTitle().split(" · ", 2);
 
                         title = splitTitle[0];
-                        artistsString = splitTitle[1];
+
+                        if (splitTitle.length > 1) {
+                            artistsString = splitTitle[1];
+                        } else {
+                            artistsString = "Unknown Artist";
+                        }
                     }
                 } else {
                     title = currentSession.getMediaInfo().getTitle();
