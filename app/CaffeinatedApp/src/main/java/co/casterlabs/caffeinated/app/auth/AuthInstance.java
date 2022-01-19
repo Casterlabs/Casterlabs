@@ -7,6 +7,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
+import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.koi.api.KoiChatterType;
 import co.casterlabs.koi.api.KoiConnection;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
@@ -30,6 +31,8 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
 
     private FastLogger logger;
     private KoiConnection koi;
+
+    private boolean disposed = false;
 
     private @Getter @Nullable User userData;
     private @Getter @Nullable StreamStatusEvent streamData;
@@ -142,9 +145,17 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
     /* Connection Stuff */
     /* ---------------- */
 
-    @SneakyThrows
     private void reconnect() {
-        this.koi.login(this.token);
+        if (!this.disposed && !this.koi.isConnected()) {
+            try {
+                this.koi.login(this.token);
+            } catch (Exception e) {
+                this.logger.exception(e);
+                new AsyncTask(() -> {
+                    this.onClose(true);
+                });
+            }
+        }
     }
 
     @Override
@@ -157,10 +168,12 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
         }
     }
 
+    @SneakyThrows
     @Override
     public void onClose(boolean remote) {
-        if (remote) {
+        if (!this.disposed) {
             this.logger.info("Reconnecting to Koi.");
+            Thread.sleep(2000);
             this.reconnect();
         }
     }
@@ -177,6 +190,7 @@ public class AuthInstance implements KoiLifeCycleHandler, Closeable {
 
     @Override
     public void close() throws IOException {
+        this.disposed = true;
         this.koi.close();
     }
 

@@ -27,13 +27,15 @@ public class KoiConnection implements Closeable {
     private FastLogger logger;
     private KoiSocket socket;
 
+    private URI uri;
+
     private JsonObject request;
 
     @SneakyThrows
     public KoiConnection(@NonNull String url, @NonNull FastLogger logger, @NonNull KoiLifeCycleHandler listener, String clientId) {
         this.logger = logger;
         this.listener = listener;
-        this.socket = new KoiSocket(new URI(url + "?client_id=" + clientId));
+        this.uri = new URI(url + "?client_id=" + clientId);
     }
 
     @Override
@@ -42,7 +44,11 @@ public class KoiConnection implements Closeable {
     }
 
     public boolean isConnected() {
-        return this.socket.isOpen();
+        if (this.socket == null) {
+            return false;
+        } else {
+            return this.socket.isOpen();
+        }
     }
 
     public KoiConnection hookStreamStatus(String username, UserPlatform platform) throws InterruptedException {
@@ -56,6 +62,7 @@ public class KoiConnection implements Closeable {
             this.request.put("platform", platform.name());
             this.request.put("nonce", "_login");
 
+            this.socket = new KoiSocket(this.uri);
             this.socket.connectBlocking();
 
             return this;
@@ -72,6 +79,7 @@ public class KoiConnection implements Closeable {
             this.request.put("token", token);
             this.request.put("nonce", "_login");
 
+            this.socket = new KoiSocket(this.uri);
             this.socket.connectBlocking();
 
             return this;
@@ -83,12 +91,21 @@ public class KoiConnection implements Closeable {
         public KoiSocket(URI uri) {
             super(uri);
 
+            this.setConnectionLostTimeout(5 /* Seconds */);
             this.addHeader("User-Agent", "Casterlabs");
             this.setTcpNoDelay(true);
         }
 
         @Override
+        public boolean connectBlocking() throws InterruptedException {
+            logger.info("Connecting to Koi...");
+            return super.connectBlocking();
+        }
+
+        @Override
         public void onOpen(ServerHandshake handshakedata) {
+            logger.info("Connected to Koi.");
+
             if (request == null) {
                 this.close();
             } else {
@@ -153,23 +170,30 @@ public class KoiConnection implements Closeable {
 
         @Override
         public void onClose(int code, String reason, boolean remote) {
-            if (listener == null) {
-                if (remote) {
-                    logger.info("Lost connection to Koi.");
-                }
+            if (remote) {
+                logger.info("Lost connection to Koi.");
             } else {
-                // So the user can immediately reconnect without
-                // errors from the underlying library.
-                new Thread(() -> listener.onClose(remote)).start();
+                logger.info("Disconnected from Koi.");
             }
+
+            this.fireCloseEvent(remote);
         }
 
         @Override
         public void onError(Exception e) {
-            if ((e instanceof IOException) && e.getMessage().isEmpty() && !this.isOpen()) {
-                this.onClose(0, null, true);
+            if (e instanceof IOException) {
+                logger.info("Connection to Koi failed.");
+                this.fireCloseEvent(true);
             } else {
                 logger.exception(e);
+            }
+        }
+
+        private void fireCloseEvent(boolean remote) {
+            if (listener != null) {
+                // So the user can immediately reconnect without
+                // errors from the underlying library.
+                new Thread(() -> listener.onClose(remote)).start();
             }
         }
 
