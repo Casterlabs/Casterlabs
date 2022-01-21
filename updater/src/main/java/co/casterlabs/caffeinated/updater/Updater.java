@@ -31,11 +31,11 @@ public class Updater {
     private static final String REMOTE_COMMIT_URL = "https://cdn.casterlabs.co/dist/beta/commit.txt";
     private static final String LAUNCHER_VERSION_URL = "https://cdn.casterlabs.co/dist/beta/updater-version.txt";
 
-    public static final String appDataDirectory = AppDirsFactory.getInstance().getUserDataDir("casterlabs-caffeinated", null, null, true);
-    private static final File appDirectory = new File(appDataDirectory, "app");
-    private static final File updateFile = new File(appDirectory, "update.zip");
-    private static final File commitFile = new File(appDirectory, "commit.txt");
-    private static final File buildokFile = new File(appDirectory, ".build_ok");
+    public static String appDataDirectory = AppDirsFactory.getInstance().getUserDataDir("casterlabs-caffeinated", null, null, true);
+    private static File appDirectory = new File(appDataDirectory, "app");
+    private static File updateFile = new File(appDirectory, "update.zip");
+    private static File commitFile = new File(appDirectory, "commit.txt");
+    private static File buildokFile = new File(appDirectory, ".build_ok");
 
     private static @Getter boolean isLauncherOutOfDate = false;
     private static @Getter boolean isPlatformSupported = true;
@@ -50,6 +50,8 @@ public class Updater {
         switch (ConsoleUtil.getPlatform()) {
 
             case MAC:
+                // The .build_ok file will be located inside of the app bundle.
+                buildokFile = new File(appDirectory, "/Casterlabs-Caffeinated.app/Contents/Resources.build_ok");
                 launchCommand = appDirectory + "/Casterlabs-Caffeinated.app/Contents/MacOS/Casterlabs-Caffeinated";
                 REMOTE_ZIP_DOWNLOAD_URL += "caffeinated-macos.zip";
                 break;
