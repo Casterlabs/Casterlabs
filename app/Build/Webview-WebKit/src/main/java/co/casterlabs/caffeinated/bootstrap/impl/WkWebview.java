@@ -268,6 +268,7 @@ public class WkWebview extends AppWebview {
         display.syncExec(() -> {
 //            this.shell.pack();
             this.shell.open();
+            this.shell.setActive();
 
             this.loadURL(url);
         });
