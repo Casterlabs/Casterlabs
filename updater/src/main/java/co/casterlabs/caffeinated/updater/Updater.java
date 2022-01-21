@@ -177,28 +177,42 @@ public class Updater {
             // TODO wait for .build_ok to show up.
             // (We will need to start bundling cef rather than having it downloaded)
 
-            Process process = new ProcessBuilder()
+            ProcessBuilder pb = new ProcessBuilder()
                 .directory(appDirectory)
-                .command(launchCommand)
-                .redirectOutput(Redirect.PIPE)
-                .redirectError(Redirect.INHERIT)
-                .redirectInput(Redirect.INHERIT)
-                .start();
+                .command(launchCommand);
 
-            // Input stream pipe.
-            new AsyncTask(() -> {
-                try {
-                    // TODO look for "Starting the UI" before we close the dialog.
-                    IOUtil.writeInputStreamToOutputStream(process.getInputStream(), System.out);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+            if (ConsoleUtil.getPlatform() == JavaPlatform.MAC) {
+                // On MacOS we do not want to keep the updater process open as it'll stick in
+                // the dock. So we start the process and kill the updater to make sure that
+                // doesn't happen.
+                FastLogger.logStatic(LogLevel.INFO, "The process will now exit, this is so the updater's icon doesn't stick in the dock.");
+                pb.start();
+                dialog.close();
+            } else {
+                Process process = pb
+                    .redirectOutput(Redirect.PIPE)
+                    .redirectError(Redirect.INHERIT)
+                    .redirectInput(Redirect.INHERIT)
+                    .start();
 
-            TimeUnit.SECONDS.sleep(2);
-            dialog.dispose();
+                // Input stream pipe.
+                new AsyncTask(() -> {
+                    try {
+                        IOUtil.writeInputStreamToOutputStream(process.getInputStream(), System.out);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
 
-            System.exit(process.waitFor());
+                // TODO look for "Starting the UI" before we close the dialog.
+                // TODO look for the .build_ok file before trusting the process. (kill & let the
+                // user know it's dead)
+
+                TimeUnit.SECONDS.sleep(2);
+                dialog.dispose();
+
+                System.exit(process.waitFor());
+            }
         } catch (Exception e) {
             throw new UpdaterException(UpdaterException.Error.LAUNCH_FAILED, "Could not launch update :(", e);
         }
