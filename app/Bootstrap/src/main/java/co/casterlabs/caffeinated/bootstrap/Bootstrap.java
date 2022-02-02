@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
+import co.casterlabs.caffeinated.MainThread;
 import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
@@ -17,16 +18,15 @@ import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.theming.Theme;
 import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.bootstrap.instancing.InstanceManager;
-import co.casterlabs.caffeinated.bootstrap.theming.ThemeHandleImpl;
 import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
 import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
-import co.casterlabs.caffeinated.bootstrap.webview.AppWebview;
 import co.casterlabs.caffeinated.localserver.LocalServer;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.Currencies;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
+import co.casterlabs.caffeinated.webview.Webview;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
@@ -77,7 +77,7 @@ public class Bootstrap implements Runnable {
 
     private static @Getter Bootstrap instance;
     private static LocalServer localServer;
-    private static AppWebview webview;
+    private static Webview webview;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Enable assertions programatically.
@@ -174,8 +174,6 @@ public class Bootstrap implements Runnable {
 
     @SuppressWarnings("deprecation")
     private void registerThemes() {
-        ThemeManager.setHandle(new ThemeHandleImpl());
-
         // Light theme
         ThemeManager.registerTheme(
             new Theme("co.casterlabs.light", "Light")
@@ -210,7 +208,7 @@ public class Bootstrap implements Runnable {
             case UNIX: {
                 enableNuclearOption = true;
                 this.devToolsEnabled = false; // Broken on Linux.
-                AppWebview.setOffScreenRenderingEnabled(true); // Won't resize without it.
+                Webview.setOffScreenRenderingEnabled(true); // Won't resize without it.
                 break;
             }
 
@@ -239,8 +237,8 @@ public class Bootstrap implements Runnable {
             // This is the nuclear option.
             // https://bitbucket.org/chromiumembedded/java-cef/issues/365/custom-scheme-onloaderror-not-called
             if (enableNuclearOption) {
-                FastLogger.logStatic("Nuclear option password: ", AppWebview.STATE_PASSWORD);
-                url = localServer.initNuclearOption(AppWebview.STATE_PASSWORD, isDev);
+                FastLogger.logStatic("Nuclear option password: ", Webview.STATE_PASSWORD);
+                url = localServer.initNuclearOption(Webview.STATE_PASSWORD, isDev);
             }
 
             localServer.start();
@@ -250,31 +248,11 @@ public class Bootstrap implements Runnable {
         }
 
         // Register the custom schemes.
-        AppWebview.setSchemeHandler(new ApplicationUI.AppSchemeHandler());
+        Webview.setSchemeHandler(new ApplicationUI.AppSchemeHandler());
 
         // Setup the webview.
         logger.info("Initializing UI (this may take some time)");
-        webview = AppWebview.getWebviewFactory().produce();
-
-        // Window listeners
-        CaffeinatedApp.getInstance().onBridgeEvent("window:move", (json) -> {
-            int moveX = json.getNumber("moveX").intValue();
-            int moveY = json.getNumber("moveY").intValue();
-
-            ApplicationUI.getWindow().translate(moveX, moveY);
-        });
-
-        CaffeinatedApp.getInstance().onBridgeEvent("window:minimize", (json) -> {
-            ApplicationUI.getWindow().minimize();
-        });
-
-        CaffeinatedApp.getInstance().onBridgeEvent("window:minmax", (json) -> {
-            ApplicationUI.getWindow().minmax();
-        });
-
-        CaffeinatedApp.getInstance().onBridgeEvent("window:close ", (json) -> {
-            ApplicationUI.getWindow().getListener().onUICloseAttempt();
-        });
+        webview = Webview.getWebviewFactory().produce();
 
         // Register the lifecycle listener.
         UILifeCycleListener uiLifeCycleListener = new UILifeCycleListener() {

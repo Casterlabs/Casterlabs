@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.app.bridge.BridgeValue;
+import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;

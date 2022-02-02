@@ -15,7 +15,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 
 import co.casterlabs.caffeinated.bootstrap.NativeSystem;
-import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
+import co.casterlabs.caffeinated.window.theming.ThemeableJFrame;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 

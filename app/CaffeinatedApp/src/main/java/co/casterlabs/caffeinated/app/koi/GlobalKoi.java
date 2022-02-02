@@ -12,8 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AuthInstance;
-import co.casterlabs.caffeinated.app.bridge.AppBridge;
-import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.koi.events.AppKoiChatDeleteEvent;
 import co.casterlabs.caffeinated.app.koi.events.AppKoiChatSendEvent;
 import co.casterlabs.caffeinated.app.koi.events.AppKoiChatUpvoteEvent;
@@ -23,6 +21,7 @@ import co.casterlabs.caffeinated.pluginsdk.koi.Koi;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
 import co.casterlabs.koi.api.KoiChatterType;
 import co.casterlabs.koi.api.listener.KoiEventHandler;
 import co.casterlabs.koi.api.listener.KoiEventUtil;
@@ -207,8 +206,8 @@ public class GlobalKoi extends Koi implements KoiLifeCycleHandler {
             // Emit the event to Caffeinated.
             JsonElement asJson = Rson.DEFAULT.toJson(e);
 
-            AppBridge.emit("koi:event:" + e.getType().name().toLowerCase(), asJson);
-            AppBridge.emit("koi:event", asJson);
+            CaffeinatedApp.getInstance().getAppBridge().emit("koi:event:" + e.getType().name().toLowerCase(), asJson);
+            CaffeinatedApp.getInstance().getAppBridge().emit("koi:event", asJson);
 
             // These are used internally.
             for (KoiLifeCycleHandler listener : this.koiEventListeners) {

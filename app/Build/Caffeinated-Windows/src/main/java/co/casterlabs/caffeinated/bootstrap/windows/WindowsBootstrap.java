@@ -2,8 +2,8 @@ package co.casterlabs.caffeinated.bootstrap.windows;
 
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.NativeSystem;
-import co.casterlabs.caffeinated.bootstrap.webview.impl.CefWebview;
 import co.casterlabs.caffeinated.bootstrap.windows.music.WindowsSystemPlaybackMusicProvider;
+import co.casterlabs.caffeinated.webview.impl.CefWebview;
 
 public class WindowsBootstrap {
 

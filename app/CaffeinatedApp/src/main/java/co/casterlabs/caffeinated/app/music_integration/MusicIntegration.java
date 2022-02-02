@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.music_integration.events.AppMusicIntegrationEventType;
 import co.casterlabs.caffeinated.app.music_integration.events.AppMusicIntegrationSettingsUpdateEvent;
 import co.casterlabs.caffeinated.app.music_integration.events.AppMusicIntegrationSignoutEvent;
@@ -20,6 +19,7 @@ import co.casterlabs.caffeinated.pluginsdk.music.MusicProvider;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;

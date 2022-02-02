@@ -5,10 +5,10 @@ import javax.swing.UIManager;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.app.music_integration.InternalMusicProvider;
-import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame;
-import co.casterlabs.caffeinated.bootstrap.theming.ThemeableJFrame.UnimplementedThemeableFrame;
-import co.casterlabs.caffeinated.bootstrap.webview.AppWebview;
-import co.casterlabs.caffeinated.util.Producer;
+import co.casterlabs.caffeinated.webview.Webview;
+import co.casterlabs.caffeinated.webview.WebviewFactory;
+import co.casterlabs.caffeinated.window.theming.ThemeableJFrame;
+import co.casterlabs.caffeinated.window.theming.ThemeableJFrame.UnimplementedThemeableFrame;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import lombok.Getter;
 import lombok.NonNull;
@@ -30,7 +30,7 @@ public abstract class NativeSystem {
 
     @Deprecated
     // Something being null = unsupported.
-    public static void initialize(boolean startedOnFirstThread, @Nullable LafManager lafManager, @Nullable SystemPlaybackMusicProvider systemPlaybackMusicProvider, @NonNull Producer<AppWebview> webviewFactory) {
+    public static void initialize(boolean startedOnFirstThread, @Nullable LafManager lafManager, @Nullable SystemPlaybackMusicProvider systemPlaybackMusicProvider, @NonNull WebviewFactory webviewFactory) {
         assert !INITIALIZED : "NativeSystemProvider has already been initialized.";
         INITIALIZED = true;
 
@@ -41,7 +41,7 @@ public abstract class NativeSystem {
         NativeSystem.systemPlaybackMusicProvider = systemPlaybackMusicProvider;
 
         // We set it here so we guarantee it gets set.
-        AppWebview.setWebviewFactory(webviewFactory);
+        Webview.setWebviewFactory(webviewFactory);
     }
 
     public static ThemeableJFrame getFrame() {

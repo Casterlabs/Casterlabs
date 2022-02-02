@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 
 import co.casterlabs.caffeinated.app.auth.AppAuth;
 import co.casterlabs.caffeinated.app.auth.AuthPreferences;
-import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.chatbot.AppChatbot;
 import co.casterlabs.caffeinated.app.koi.GlobalKoi;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
@@ -20,9 +19,10 @@ import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.app.ui.AppUI;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
-import co.casterlabs.caffeinated.app.window.WindowPreferences;
-import co.casterlabs.caffeinated.app.window.WindowState;
 import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
+import co.casterlabs.caffeinated.webview.WebviewWindowState;
+import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
+import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
@@ -49,6 +49,8 @@ public class CaffeinatedApp extends Caffeinated {
     private final boolean awtSupported;
     private final boolean isDev;
 
+    private WebviewBridge appBridge;
+
     // @formatter:off
     private PluginIntegration plugins = new PluginIntegration();
     private MusicIntegration  music   = new MusicIntegration();
@@ -57,11 +59,9 @@ public class CaffeinatedApp extends Caffeinated {
     private AppAuth           auth    = new AppAuth();
     private AppUI             UI      = new AppUI();
 
-    private WindowState windowState = new WindowState();
-
     private PreferenceFile<PluginIntegrationPreferences> pluginIntegrationPreferences = new PreferenceFile<>("plugins", PluginIntegrationPreferences.class);
     private PreferenceFile<MusicIntegrationPreferences>  musicIntegrationPreferences  = new PreferenceFile<>("music",   MusicIntegrationPreferences.class);
-    private PreferenceFile<WindowPreferences>            windowPreferences            = new PreferenceFile<>("window",  WindowPreferences.class);
+    private PreferenceFile<WebviewWindowState>                  windowPreferences            = new PreferenceFile<>("window",  WebviewWindowState.class);
     private PreferenceFile<AuthPreferences>              authPreferences              = new PreferenceFile<>("auth",    AuthPreferences.class);
     private PreferenceFile<AppPreferences>               appPreferences               = new PreferenceFile<>("app",     AppPreferences.class).bridge();
     private PreferenceFile<UIPreferences>                uiPreferences                = new PreferenceFile<>("ui",      UIPreferences.class).bridge();

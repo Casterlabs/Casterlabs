@@ -16,8 +16,6 @@ import java.util.Set;
 import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AppAuth;
-import co.casterlabs.caffeinated.app.bridge.AppBridge;
-import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.app.ui.UIPreferences.ChatViewerPreferences;
@@ -28,6 +26,7 @@ import co.casterlabs.caffeinated.app.ui.events.AppUISaveChatViewerPreferencesEve
 import co.casterlabs.caffeinated.app.ui.events.AppUIThemeLoadedEvent;
 import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonArray;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -196,19 +195,19 @@ public class AppUI {
                     )
             );
 
-            AppBridge.eval(line);
+            CaffeinatedApp.getInstance().getAppBridge().eval(line);
         }
     }
 
     public void goBack() {
         if (this.uiFinishedLoad) {
-            AppBridge.eval("history.back()");
+            CaffeinatedApp.getInstance().getAppBridge().eval("history.back()");
         }
     }
 
     public void navigate(String path) {
         if (this.uiFinishedLoad) {
-            AppBridge.emit("goto", JsonObject.singleton("path", path));
+            CaffeinatedApp.getInstance().getAppBridge().emit("goto", JsonObject.singleton("path", path));
         }
     }
 

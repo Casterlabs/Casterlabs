@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.app.bridge.BridgeValue;
 import co.casterlabs.caffeinated.app.plugins.PluginIntegrationPreferences.WidgetSettingsDetails;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationClickWidgetSettingsButtonEvent;
 import co.casterlabs.caffeinated.app.plugins.events.AppPluginIntegrationCopyWidgetUrlEvent;
@@ -29,6 +28,7 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsButton;
 import co.casterlabs.caffeinated.util.ClipboardUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import co.casterlabs.rakurai.json.element.JsonElement;

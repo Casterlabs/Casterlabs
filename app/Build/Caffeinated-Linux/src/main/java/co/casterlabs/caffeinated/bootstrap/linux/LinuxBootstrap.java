@@ -3,7 +3,7 @@ package co.casterlabs.caffeinated.bootstrap.linux;
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.NativeSystem;
 import co.casterlabs.caffeinated.bootstrap.linux.music.LinuxSystemPlaybackMusicProvider;
-import co.casterlabs.caffeinated.bootstrap.webview.impl.CefWebview;
+import co.casterlabs.caffeinated.webview.impl.CefWebview;
 
 public class LinuxBootstrap {
 
