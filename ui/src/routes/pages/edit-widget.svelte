@@ -105,7 +105,7 @@
     });
 
     onMount(async () => {
-        document.title = "Widget Manager";
+        document.title = "Widget Editor";
 
         eventHandler = Bridge.createThrowawayEventHandler();
         eventHandler.on("plugins:update", parseBridgeData);
