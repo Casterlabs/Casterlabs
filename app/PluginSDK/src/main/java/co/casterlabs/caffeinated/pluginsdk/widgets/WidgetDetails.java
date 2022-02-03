@@ -19,6 +19,8 @@ public class WidgetDetails {
     private @With String friendlyName;
     private @With WidgetDetailsCategory category;
 
+    private @With WidgetType type;
+
     private @With(AccessLevel.PRIVATE) boolean showDemo;
     private @With(AccessLevel.PRIVATE) double demoAspectRatio;
 
@@ -27,6 +29,7 @@ public class WidgetDetails {
         this.icon = "grid";
         this.friendlyName = null;
         this.category = WidgetDetailsCategory.OTHER;
+        this.type = WidgetType.WIDGET;
         this.showDemo = false;
         this.demoAspectRatio = 0;
     }

@@ -17,6 +17,7 @@ import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugins;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget.WidgetHandle;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
+import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetType;
 import co.casterlabs.caffeinated.util.Producer;
 import co.casterlabs.caffeinated.util.Triple;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
@@ -59,11 +60,24 @@ public class PluginsHandler implements CaffeinatedPlugins {
     /* Other Methods    */
     /* ---------------- */
 
-    @SneakyThrows
+    public WidgetHandle createApplet(@NonNull String namespace, @Nullable JsonObject settings) {
+        return this.createWidget(namespace, "applet", "Applet", settings, WidgetType.APPLET);
+    }
+
+    public WidgetHandle createDock(@NonNull String namespace, @Nullable JsonObject settings) {
+        return this.createWidget(namespace, "dock", "Dock", settings, WidgetType.DOCK);
+    }
+
     public WidgetHandle createWidget(@NonNull String namespace, @NonNull String id, @NonNull String name, @Nullable JsonObject settings) {
+        return this.createWidget(namespace, id, name, settings, WidgetType.WIDGET);
+    }
+
+    @SneakyThrows
+    private WidgetHandle createWidget(@NonNull String namespace, @NonNull String id, @NonNull String name, @Nullable JsonObject settings, @NonNull WidgetType expectedType) {
         Triple<CaffeinatedPlugin, Producer<Widget>, WidgetDetails> factory = this.widgetFactories.get(namespace);
 
         assert factory != null : "A factory associated to that widget is not registered.";
+        assert factory.c.getType() == expectedType : "That widget is not of the expected type of " + expectedType;
 
         List<Widget> pluginWidgetsField = ReflectionLib.getValue(factory.a, "widgets");
 
@@ -140,10 +154,25 @@ public class PluginsHandler implements CaffeinatedPlugins {
         widgetDetails.validate();
 
         List<String> pluginWidgetNamespacesField = ReflectionLib.getValue(plugin, "widgetNamespaces");
-
         pluginWidgetNamespacesField.add(widgetDetails.getNamespace());
 
         this.widgetFactories.put(widgetDetails.getNamespace(), new Triple<>(plugin, widgetProducer, widgetDetails));
+
+        // Automatically create the docks and applets when registered.
+        switch (widgetDetails.getType()) {
+            case APPLET:
+                this.createApplet(widgetDetails.getNamespace(), null);
+                break;
+
+            case DOCK:
+                this.createDock(widgetDetails.getNamespace(), null);
+                break;
+
+            case WIDGET:
+            default:
+                break;
+
+        }
 
         return this;
     }

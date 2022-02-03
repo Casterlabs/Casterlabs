@@ -97,9 +97,13 @@ public class PluginIntegration {
 
         for (WidgetSettingsDetails details : CaffeinatedApp.getInstance().getPluginIntegrationPreferences().get().getWidgetSettings()) {
             try {
-                // Reconstruct the widget.
-                this.plugins.createWidget(details.getNamespace(), details.getId(), details.getName(), details.getSettings());
-            } catch (AssertionError | SecurityException | IllegalArgumentException e) {
+                String id = details.getId();
+
+                // Reconstruct the widget and ignore the applet and dock.
+                if (!id.equals("applet") && !id.equals("dock")) {
+                    this.plugins.createWidget(details.getNamespace(), id, details.getName(), details.getSettings());
+                }
+            } catch (AssertionError | SecurityException | NullPointerException | IllegalArgumentException e) {
                 if ("A factory associated to that widget is not registered.".equals(e.getMessage())) {
                     // We can safely ignore it.
                     // TODO let the user know that the widget could not be found.
