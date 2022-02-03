@@ -23,7 +23,7 @@ import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.UIBackgroundColor;
 import co.casterlabs.caffeinated.builtin.CaffeinatedDefaultPlugin;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
-import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
+import co.casterlabs.caffeinated.pluginsdk.widgets.Widget.WidgetHandle;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsButton;
 import co.casterlabs.caffeinated.util.ClipboardUtil;
@@ -42,9 +42,6 @@ import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
-// This is a maintenance nightmare.
-// TODO switch to proxies, handlers, or contexts, anything to avoid reflection.
-
 @Getter
 public class PluginIntegration {
     private static EventHandler<AppPluginIntegrationEventType> handler = new EventHandler<>();
@@ -60,7 +57,7 @@ public class PluginIntegration {
     private static class PluginsBridgeObject {
         private List<CaffeinatedPlugin> loadedPlugins;
         private List<WidgetDetails> creatableWidgets;
-        private List<Widget> widgets;
+        private List<WidgetHandle> widgets;
 
     }
 
@@ -120,8 +117,8 @@ public class PluginIntegration {
         PreferenceFile<PluginIntegrationPreferences> prefs = CaffeinatedApp.getInstance().getPluginIntegrationPreferences();
 
         List<WidgetSettingsDetails> widgetSettings = new LinkedList<>();
-        for (Widget widget : this.plugins.getWidgets()) {
-            widgetSettings.add(WidgetSettingsDetails.from(widget));
+        for (WidgetHandle handle : this.plugins.getWidgetHandles()) {
+            widgetSettings.add(WidgetSettingsDetails.from(handle.widget));
         }
 
         prefs.get().setWidgetSettings(widgetSettings);
@@ -132,21 +129,21 @@ public class PluginIntegration {
 
     @EventListener
     public void onPluginIntegrationCreateWidgetEvent(AppPluginIntegrationCreateWidgetEvent event) {
-        Widget widget = this.plugins.createWidget(event.getNamespace(), UUID.randomUUID().toString(), event.getName(), null);
+        WidgetHandle handle = this.plugins.createWidget(event.getNamespace(), UUID.randomUUID().toString(), event.getName(), null);
 
         this.save();
-        CaffeinatedApp.getInstance().getUI().navigate("/pages/edit-widget?widget=" + widget.getId());
+        CaffeinatedApp.getInstance().getUI().navigate("/pages/edit-widget?widget=" + handle.id);
     }
 
     @SneakyThrows
     @EventListener
     public void onPluginIntegrationRenameWidgetEvent(AppPluginIntegrationRenameWidgetEvent event) {
-        Widget widget = this.plugins.getWidget(event.getId());
+        WidgetHandle handle = this.plugins.getWidgetHandle(event.getId());
 
-        ReflectionLib.setValue(widget, "name", event.getNewName());
+        handle.name = event.getNewName();
         this.save();
 
-        widget.onNameUpdate();
+        handle.widget.onNameUpdate();
     }
 
     @EventListener
@@ -158,59 +155,51 @@ public class PluginIntegration {
 
     @EventListener
     public void onPluginIntegrationEditWidgetSettingsEvent(AppPluginIntegrationEditWidgetSettingsEvent event) {
-        Widget widget = this.plugins.getWidget(event.getId());
+        WidgetHandle handle = this.plugins.getWidgetHandle(event.getId());
 
-        try {
-            JsonObject settings = ReflectionLib.getValue(widget, "settings");
-            JsonElement value = event.getNewValue();
+        JsonObject settings = handle.settings;
+        JsonElement value = event.getNewValue();
 
-            // JsonNull should always be converted to null.
-            if ((value == null) || value.isJsonNull()) {
-                settings.remove(event.getKey());
-            } else {
-                settings.put(event.getKey(), value);
-            }
-
-            ReflectionLib.invokeMethod(widget, "$onSettingsUpdate", settings);
-        } catch (Throwable t) {
-            t.printStackTrace();
+        // JsonNull should always be converted to null.
+        if ((value == null) || value.isJsonNull()) {
+            settings.remove(event.getKey());
+        } else {
+            settings.put(event.getKey(), value);
         }
+
+        handle.onSettingsUpdate(settings);
 
         this.save();
     }
 
     @EventListener
     public void onPluginIntegrationClickSettingsButtonEvent(AppPluginIntegrationClickWidgetSettingsButtonEvent event) {
-        Widget widget = this.plugins.getWidget(event.getId());
+        WidgetHandle handle = this.plugins.getWidgetHandle(event.getId());
 
-        try {
-            WidgetSettingsButton button = null;
+        WidgetSettingsButton button = null;
 
-            for (WidgetSettingsButton b : widget.getSettingsLayout().getButtons()) {
-                if (b.getId().equals(event.getButtonId())) {
-                    button = b;
-                    break;
-                }
+        for (WidgetSettingsButton b : handle.settingsLayout.getButtons()) {
+            if (b.getId().equals(event.getButtonId())) {
+                button = b;
+                break;
             }
+        }
 
-            if (button != null) {
-                new AsyncTask(button.getOnClick());
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
+        if (button != null) {
+            new AsyncTask(button.getOnClick());
         }
     }
 
     @EventListener
     public void onPluginIntegrationCopyWidgetUrlEvent(AppPluginIntegrationCopyWidgetUrlEvent event) {
-        Widget widget = this.plugins.getWidget(event.getId());
+        WidgetHandle handle = this.plugins.getWidgetHandle(event.getId());
 
         String conductorKey = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorKey();
         int conductorPort = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorPort();
         String url = String.format(
-            "https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=%s&widgetId=%s&authorization=%s&port=%d",
-            widget.getPlugin().getId(),
-            widget.getId(),
+            "https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=%s&widgetId=%s&authorization=%s&port=%d&mode=widget",
+            handle.plugin.getId(),
+            handle.id,
             conductorKey,
             conductorPort
         );
@@ -223,7 +212,7 @@ public class PluginIntegration {
     public void updateBridgeData() {
         this.bridge.get().loadedPlugins = this.plugins.getPlugins();
         this.bridge.get().creatableWidgets = this.plugins.getCreatableWidgets();
-        this.bridge.get().widgets = this.plugins.getWidgets();
+        this.bridge.get().widgets = this.plugins.getWidgetHandles();
         this.bridge.update();
     }
 

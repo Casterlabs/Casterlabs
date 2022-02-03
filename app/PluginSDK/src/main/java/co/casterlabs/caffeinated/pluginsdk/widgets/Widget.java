@@ -23,8 +23,6 @@ import co.casterlabs.rakurai.json.annotating.JsonField;
 import co.casterlabs.rakurai.json.annotating.JsonSerializationMethod;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
-import co.casterlabs.rakurai.json.validation.JsonValidate;
-import co.casterlabs.rakurai.json.validation.JsonValidationException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -33,62 +31,83 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @SuppressWarnings("unchecked") // This is for chaining.
 public abstract class Widget {
-    // <All set by reflection>
-    private @JsonField String namespace;
-    private @JsonField String id;
-    private @JsonField String name; // This is mutable by the end user.
 
-    private CaffeinatedPlugin plugin;
+    public static abstract class WidgetHandle {
+        public CaffeinatedPlugin plugin;
 
-    private @JsonField @Getter WidgetType type = WidgetType.WIDGET; // TODO Add more.
-    private @JsonField WidgetDetails details;
+        public @JsonField String namespace;
+        public @JsonField String id;
+        public @JsonField @Getter WidgetType type = WidgetType.WIDGET; // TODO Add more.
+        public @JsonField String name; // This is mutable by the end user.
 
-    private @Reflective Runnable pokeOutside;
-    // </All set by reflection>
+        public @Reflective Set<KoiEventListener> koiListeners = new HashSet<>();
 
-    private @JsonField @Nullable WidgetSettingsLayout settingsLayout;
+        public List<WidgetInstance> widgetInstances = new LinkedList<>();
+        public Widget widget;
 
-    // Package visiblity.
-    @Reflective
-    @JsonField
-    @NonNull
-    JsonObject settings = new JsonObject();
+        public @JsonField WidgetDetails details;
+        public @JsonField @Nullable WidgetSettingsLayout settingsLayout;
 
-    private WidgetSettings widgetSettings = new WidgetSettings(this);
+        @NonNull
+        @JsonField
+        public JsonObject settings = new JsonObject();
+        public WidgetSettings widgetSettings;
 
-    private @Reflective Set<KoiEventListener> koiListeners = new HashSet<>();
+        public WidgetHandle(Widget w) {
+            this.widget = w;
+            this.widgetSettings = new WidgetSettings(this.widget);
+        }
 
-    private List<WidgetInstance> widgetInstances = new LinkedList<>();
+        @JsonSerializationMethod("owner")
+        private JsonElement $serialize_owner() {
+            return Rson.DEFAULT.toJson(this.plugin.getId());
+        }
 
-    /* ---------------- */
-    /* Serialization    */
-    /* ---------------- */
+        @Reflective
+        public void cleanlyDestroy() {
+            this.widgetInstances.forEach((w) -> {
+                try {
+                    w.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
 
-    @JsonSerializationMethod("owner")
-    private JsonElement $serialize_owner() {
-        return Rson.DEFAULT.toJson(this.plugin.getId());
-    }
+            this.widget.onDestroy();
+        }
 
-    @JsonValidate
-    private void validate() throws JsonValidationException {
-        throw new JsonValidationException("You cannot deserialize into a widget.");
-    }
+        public void onSettingsUpdate(@Nullable JsonObject newSettings) {
+            if (newSettings != null) {
+                this.settings = newSettings;
+                this.onSettingsUpdate();
 
-    /* ---------------- */
-    /* Internals        */
-    /* ---------------- */
-
-    @Reflective
-    private void cleanlyDestroy() {
-        this.widgetInstances.forEach((w) -> {
-            try {
-                w.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                for (WidgetInstance widgetInstance : this.widgetInstances) {
+                    try {
+                        widgetInstance.onSettingsUpdate();
+                    } catch (Throwable t) {}
+                }
             }
-        });
+        }
 
-        this.onDestroy();
+        public abstract void onSettingsUpdate();
+
+    };
+
+    // Package visibility.
+    @Reflective
+    WidgetHandle $handle;
+
+    @JsonSerializationMethod("_")
+    private JsonElement $fail_serialize() {
+        throw new RuntimeException("Do not serialize Widget directly, call #toJson() instead.");
+    }
+
+    /**
+     * @deprecated This is used internally.
+     */
+    @Deprecated
+    public JsonObject toJson() {
+        return Rson.DEFAULT.toJson($handle).getAsObject();
     }
 
     /* ---------------- */
@@ -108,7 +127,7 @@ public abstract class Widget {
     @Deprecated
     public final Promise<Void> fireKoiEventListeners(@NonNull KoiEvent event) {
         return new Promise<Void>(() -> {
-            for (KoiEventListener listener : new ArrayList<>(this.koiListeners)) {
+            for (KoiEventListener listener : new ArrayList<>($handle.koiListeners)) {
                 try {
                     KoiEventUtil.reflectInvoke(listener, event);
                 } catch (Throwable t) {
@@ -140,29 +159,11 @@ public abstract class Widget {
      *          internal implementation is a {@link HashSet}.
      */
     public final void addKoiListener(@NonNull KoiEventListener listener) {
-        this.koiListeners.add(listener);
+        $handle.koiListeners.add(listener);
     }
 
     public final void removeKoiListener(@NonNull KoiEventListener listener) {
-        this.koiListeners.remove(listener);
-    }
-
-    /* ---------------- */
-    /* Settings         */
-    /* ---------------- */
-
-    @Reflective
-    private void $onSettingsUpdate(@Nullable JsonObject newSettings) {
-        if (newSettings != null) {
-            this.settings = newSettings;
-            this.onSettingsUpdate();
-
-            for (WidgetInstance widgetInstance : this.getWidgetInstances()) {
-                try {
-                    widgetInstance.onSettingsUpdate();
-                } catch (Throwable t) {}
-            }
-        }
+        $handle.koiListeners.remove(listener);
     }
 
     /* ---------------- */
@@ -203,7 +204,7 @@ public abstract class Widget {
     /* ---------------- */
 
     public void broadcastToAll(@NonNull String type, @NonNull JsonElement message) {
-        for (WidgetInstance inst : this.widgetInstances) {
+        for (WidgetInstance inst : $handle.widgetInstances) {
             try {
                 inst.emit(type, message);
             } catch (IOException ignored) {}
@@ -219,12 +220,12 @@ public abstract class Widget {
     }
 
     public final synchronized <T extends Widget> T setSettingsLayout(@NonNull WidgetSettingsLayout newSettingsLayout, boolean preserveExtraSettings) {
-        this.settingsLayout = newSettingsLayout;
+        $handle.settingsLayout = newSettingsLayout;
 
         JsonObject oldSettings = this.settings().getJson();
         JsonObject newSettings = preserveExtraSettings ? this.settings().getJson() : new JsonObject(); // Clone.
 
-        for (WidgetSettingsSection section : this.settingsLayout.getSections()) {
+        for (WidgetSettingsSection section : $handle.settingsLayout.getSections()) {
             for (WidgetSettingsItem item : section.getItems()) {
                 String key = String.format("%s.%s", section.getId(), item.getId());
 
@@ -248,11 +249,8 @@ public abstract class Widget {
             }
         }
 
-        this.settings = newSettings;
-
-        if (this.pokeOutside != null) {
-            this.pokeOutside.run();
-        }
+        $handle.settings = newSettings;
+        $handle.onSettingsUpdate();
 
         return (T) this;
     }
@@ -262,38 +260,35 @@ public abstract class Widget {
     /* ---------------- */
 
     public final @Nullable WidgetSettingsLayout getSettingsLayout() {
-        return this.settingsLayout;
+        return $handle.settingsLayout;
     }
 
     @SneakyThrows
     public final WidgetSettings settings() {
-        return this.widgetSettings;
+        return $handle.widgetSettings;
     }
 
     public final <T extends Widget> T setSettings(@NonNull JsonObject newSettings) {
-        this.settings = newSettings;
-
-        if (this.pokeOutside != null) {
-            this.pokeOutside.run();
-        }
+        $handle.settings = newSettings;
+        $handle.onSettingsUpdate();
 
         return (T) this;
     }
 
     public final String getNamespace() {
-        return this.namespace;
+        return $handle.namespace;
     }
 
     public final String getId() {
-        return this.id;
+        return $handle.id;
     }
 
     public final List<WidgetInstance> getWidgetInstances() {
-        return new ArrayList<>(this.widgetInstances);
+        return new ArrayList<>($handle.widgetInstances);
     }
 
     public final WidgetDetails getWidgetDetails() {
-        return this.details;
+        return $handle.details;
     }
 
     /**
@@ -301,14 +296,14 @@ public abstract class Widget {
      *          unique property, use {@link #getId() } for that instead.
      */
     public final String getName() {
-        return this.name;
+        return $handle.name;
     }
 
     /**
      * The result is auto-cast to whatever type you want.
      */
     public final <T extends CaffeinatedPlugin> T getPlugin() {
-        return (T) this.plugin;
+        return (T) $handle.plugin;
     }
 
 }

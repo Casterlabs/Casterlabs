@@ -15,6 +15,7 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugins;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
+import co.casterlabs.caffeinated.pluginsdk.widgets.Widget.WidgetHandle;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.util.Producer;
 import co.casterlabs.caffeinated.util.Triple;
@@ -30,18 +31,18 @@ public class PluginsHandler implements CaffeinatedPlugins {
 
     private Map<String, CaffeinatedPlugin> plugins = new HashMap<>();
     private Map<String, Triple<CaffeinatedPlugin, Producer<Widget>, WidgetDetails>> widgetFactories = new HashMap<>();
-    private Map<String, Widget> widgets = new HashMap<>();
+    private Map<String, WidgetHandle> widgetHandles = new HashMap<>();
 
     public List<CaffeinatedPlugin> getPlugins() {
         return new ArrayList<>(this.plugins.values());
     }
 
-    public List<Widget> getWidgets() {
-        return new ArrayList<>(this.widgets.values());
+    public List<WidgetHandle> getWidgetHandles() {
+        return new ArrayList<>(this.widgetHandles.values());
     }
 
-    public Widget getWidget(@NonNull String id) {
-        return this.widgets.get(id);
+    public WidgetHandle getWidgetHandle(@NonNull String id) {
+        return this.widgetHandles.get(id);
     }
 
     public List<WidgetDetails> getCreatableWidgets() {
@@ -59,54 +60,55 @@ public class PluginsHandler implements CaffeinatedPlugins {
     /* ---------------- */
 
     @SneakyThrows
-    public Widget createWidget(@NonNull String namespace, @NonNull String id, @NonNull String name, @Nullable JsonObject settings) {
+    public WidgetHandle createWidget(@NonNull String namespace, @NonNull String id, @NonNull String name, @Nullable JsonObject settings) {
         Triple<CaffeinatedPlugin, Producer<Widget>, WidgetDetails> factory = this.widgetFactories.get(namespace);
 
         assert factory != null : "A factory associated to that widget is not registered.";
 
         List<Widget> pluginWidgetsField = ReflectionLib.getValue(factory.a, "widgets");
-        Widget widget = factory.b.produce();
 
-        ReflectionLib.setValue(widget, "namespace", namespace);
-        ReflectionLib.setValue(widget, "id", id);
-        ReflectionLib.setValue(widget, "name", name);
-        ReflectionLib.setValue(widget, "plugin", factory.a);
-        ReflectionLib.setValue(widget, "details", factory.c);
-        ReflectionLib.setValue(widget, "pokeOutside", (Runnable) (() -> {
-            CaffeinatedApp.getInstance().getPlugins().save();
-        }));
+        WidgetHandle handle = new WidgetHandle(factory.b.produce()) {
+            @Override
+            public void onSettingsUpdate() {
+                CaffeinatedApp.getInstance().getPlugins().save();
+            }
+        };
+
+        ReflectionLib.setValue(handle.widget, "$handle", handle);
+
+        handle.namespace = namespace;
+        handle.id = id;
+        handle.name = name;
+        handle.plugin = factory.a;
+        handle.details = factory.c;
 
         // Register it, update it, and return it.
-        this.widgets.put(widget.getId(), widget);
-        pluginWidgetsField.add(widget);
+        this.widgetHandles.put(handle.widget.getId(), handle);
+        pluginWidgetsField.add(handle.widget);
 
         new AsyncTask(() -> {
             if (settings != null) {
-                try {
-                    ReflectionLib.setValue(widget, "settings", settings);
-                } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ignored) {}
+                handle.settings = settings;
             }
 
-            widget.onInit();
-            widget.onNameUpdate();
+            handle.widget.onInit();
+            handle.widget.onNameUpdate();
         });
 
-        return widget;
+        return handle;
     }
 
     @SneakyThrows
     public void destroyWidget(@NonNull String id) {
-        Widget widget = this.widgets.remove(id);
+        WidgetHandle handle = this.widgetHandles.remove(id);
 
-        assert widget != null : "That widget is not registered.";
+        assert handle != null : "That widget is not registered.";
 
-        List<Widget> pluginWidgetsField = ReflectionLib.getValue(widget.getPlugin(), "widgets");
+        List<Widget> pluginWidgetsField = ReflectionLib.getValue(handle.plugin, "widgets");
 
-        pluginWidgetsField.remove(widget);
+        pluginWidgetsField.remove(handle.widget);
 
-        try {
-            ReflectionLib.invokeMethod(widget, "cleanlyDestroy");
-        } catch (Throwable ignored) {}
+        handle.cleanlyDestroy();
     }
 
     /* ---------------- */
@@ -133,9 +135,9 @@ public class PluginsHandler implements CaffeinatedPlugins {
     @SneakyThrows
     @Override
     public CaffeinatedPlugins registerWidgetFactory(@NonNull CaffeinatedPlugin plugin, @NonNull WidgetDetails widgetDetails, @NonNull Producer<Widget> widgetProducer) {
-        widgetDetails.validate();
-
         assert !this.widgetFactories.containsKey(widgetDetails.getNamespace()) : "A widget of that namespace is already registered.";
+
+        widgetDetails.validate();
 
         List<String> pluginWidgetNamespacesField = ReflectionLib.getValue(plugin, "widgetNamespaces");
 

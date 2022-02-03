@@ -98,7 +98,7 @@ public interface RouteHelper {
                 new AsyncTask(() -> {
                     try {
                         websocket.send(errorPayload.toString());
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (IOException | InterruptedException ignored) {} finally {
                         safeClose(websocket);
                     }

@@ -1,11 +1,11 @@
 package co.casterlabs.caffeinated.localserver.websocket;
 
 import java.io.IOException;
-import java.util.List;
 
 import co.casterlabs.caffeinated.localserver.RouteHelper;
 import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
+import co.casterlabs.caffeinated.pluginsdk.widgets.Widget.WidgetHandle;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstanceMode;
 import co.casterlabs.caffeinated.util.Pair;
@@ -22,7 +22,7 @@ import lombok.SneakyThrows;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
-    private Widget widget;
+    private WidgetHandle handle;
     private WidgetInstanceMode mode;
     private String connectionId;
 
@@ -30,15 +30,11 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
     private RealtimeConnection connInstance;
     private Websocket websocket;
 
-    private List<WidgetInstance> field_widgetInstances;
-
     @SneakyThrows
     public RealtimeWidgetListener(Widget widget, WidgetInstanceMode mode, String connectionId) {
-        this.widget = widget;
+        this.handle = ReflectionLib.getValue(widget, "$handle");
         this.mode = mode;
         this.connectionId = connectionId;
-
-        this.field_widgetInstances = ReflectionLib.getValue(this.widget, "widgetInstances");
     }
 
     @SuppressWarnings("deprecation")
@@ -52,7 +48,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
         Pair<RealtimeConnection, WidgetInstance> connPair = new Pair<>(this.connInstance, this.wInstance);
 
         websocket.setAttachment(connPair);
-        this.field_widgetInstances.add(this.wInstance);
+        this.handle.widgetInstances.add(this.wInstance);
 
         this.sendMessage(
             "KOI_STATICS",
@@ -68,7 +64,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
             "INIT",
             new JsonObject()
                 .put("connectionId", this.connectionId)
-                .put("widget", Rson.DEFAULT.toJson(this.widget))
+                .put("widget", Rson.DEFAULT.toJson(this.handle))
                 .put("koi", Caffeinated.getInstance().getKoi().toJson())
         );
     }
@@ -83,7 +79,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
             switch (type) {
 
                 case "READY": {
-                    this.widget.onNewInstance(this.wInstance);
+                    this.handle.widget.onNewInstance(this.wInstance);
                     return;
                 }
 
@@ -117,7 +113,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
         try {
             this.wInstance.onClose();
         } finally {
-            this.field_widgetInstances.remove(this.wInstance);
+            this.handle.widgetInstances.remove(this.wInstance);
         }
     }
 
@@ -203,7 +199,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
             sendMessage(
                 "UPDATE",
                 new JsonObject()
-                    .put("widget", Rson.DEFAULT.toJson(widget))
+                    .put("widget", Rson.DEFAULT.toJson(handle))
             );
         }
 

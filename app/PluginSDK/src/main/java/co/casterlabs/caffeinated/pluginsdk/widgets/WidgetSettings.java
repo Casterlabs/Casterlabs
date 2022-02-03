@@ -27,7 +27,7 @@ public class WidgetSettings {
     }
 
     public boolean has(@NonNull String key) {
-        return this.widget.settings.containsKey(key);
+        return this.widget.$handle.settings.containsKey(key);
     }
 
     /* ---------------- */
@@ -92,7 +92,7 @@ public class WidgetSettings {
 
     // Speedup.
     private JsonElement unsafe_get(@NonNull String key) {
-        return this.widget.settings.get(key);
+        return this.widget.$handle.settings.get(key);
     }
 
     /* ---------------- */
@@ -214,10 +214,10 @@ public class WidgetSettings {
     public JsonObject getJson() {
         // Convert to string and then reparse as object,
         // Basically one JANKY clone.
-        if (this.widget.settings == null) {
+        if (this.widget.$handle.settings == null) {
             return new JsonObject();
         } else {
-            return Rson.DEFAULT.fromJson(this.widget.settings.toString(), JsonObject.class);
+            return Rson.DEFAULT.fromJson(this.widget.$handle.settings.toString(), JsonObject.class);
         }
     }
 
