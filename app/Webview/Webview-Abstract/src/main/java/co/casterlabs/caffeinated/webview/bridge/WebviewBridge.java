@@ -3,6 +3,7 @@ package co.casterlabs.caffeinated.webview.bridge;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import co.casterlabs.caffeinated.util.DualConsumer;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.NonNull;
+import lombok.Setter;
 
 public abstract class WebviewBridge {
     private static Map<String, BridgeValue<?>> globalQueryData = new HashMap<>();
@@ -19,11 +21,23 @@ public abstract class WebviewBridge {
 
     private Map<String, BridgeValue<?>> personalQueryData = new HashMap<>();
 
+    private List<WeakReference<WebviewBridge>> downstreamBridges = new LinkedList<>();
+    private List<WeakReference<WebviewBridge>> attachedBridges = new LinkedList<>();
+
+    protected @Setter DualConsumer<String, JsonObject> onEvent;
+
     public WebviewBridge() {
         bridges.add(this.$ref);
     }
 
-    public void attachBridge(@NonNull BridgeValue<?> bv) {
+    @Deprecated
+    public void mergeWith(WebviewBridge parent) {
+        parent.downstreamBridges.add(this.$ref);
+        this.attachedBridges.add(parent.$ref);
+        this.onEvent = parent.onEvent;
+    }
+
+    public void attachValue(@NonNull BridgeValue<?> bv) {
         this.personalQueryData.put(bv.getKey(), bv);
         bv.attachedBridges.add(this.$ref);
     }
@@ -44,15 +58,33 @@ public abstract class WebviewBridge {
         for (BridgeValue<?> bv : this.personalQueryData.values()) {
             bv.attachedBridges.remove(this.$ref);
         }
+
+        for (WeakReference<WebviewBridge> wb : this.attachedBridges) {
+            wb.get().downstreamBridges.remove(this.$ref);
+        }
+    }
+
+    public void emit(@NonNull String type, @NonNull JsonElement data) {
+        this.emit0(type, data);
+
+        for (WeakReference<WebviewBridge> wb : this.downstreamBridges) {
+            wb.get().emit0(type, data);
+        }
+    }
+
+    public void eval(@NonNull String script) {
+        this.eval0(script);
+
+        for (WeakReference<WebviewBridge> wb : this.downstreamBridges) {
+            wb.get().eval0(script);
+        }
     }
 
     /* Impl */
 
-    public abstract void setOnEvent(DualConsumer<String, JsonObject> onEvent);
+    protected abstract void emit0(@NonNull String type, @NonNull JsonElement data);
 
-    public abstract void emit(@NonNull String type, @NonNull JsonElement data);
-
-    public abstract void eval(@NonNull String script);
+    protected abstract void eval0(@NonNull String script);
 
     /* Statics */
 

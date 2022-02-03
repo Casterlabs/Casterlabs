@@ -2,7 +2,6 @@ package co.casterlabs.caffeinated.webview.impl;
 
 import java.io.IOException;
 
-import co.casterlabs.caffeinated.util.DualConsumer;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.webview.WebviewFileUtil;
 import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
@@ -14,7 +13,6 @@ import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.element.JsonString;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.NonNull;
-import lombok.Setter;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
@@ -22,8 +20,6 @@ public class WkBridge extends WebviewBridge {
     private static String bridgeScript = "";
 
     private WkWebview webview;
-
-    private @Setter DualConsumer<String, JsonObject> onEvent;
 
     static {
         // Get the javascript bridge.
@@ -39,7 +35,7 @@ public class WkBridge extends WebviewBridge {
     }
 
     @Override
-    public void emit(@NonNull String type, @NonNull JsonElement data) {
+    protected void emit0(@NonNull String type, @NonNull JsonElement data) {
         String script = String.format("window.Bridge.broadcast(%s,%s);", new JsonString(type), data);
 
 //        if (!type.startsWith("querynonce:")) {
@@ -50,7 +46,7 @@ public class WkBridge extends WebviewBridge {
     }
 
     @Override
-    public void eval(@NonNull String script) {
+    protected void eval0(@NonNull String script) {
         webview.executeJavaScript(script);
     }
 
@@ -60,7 +56,7 @@ public class WkBridge extends WebviewBridge {
         // Lifecycle listener. (Outside of the main thread)
         new AsyncTask(() -> {
 //            this.loadPromise.fulfill(null);
-            this.attachBridge(this.webview.getWindowState().getBridge());
+            this.attachValue(this.webview.getWindowState().getBridge());
         });
     }
 

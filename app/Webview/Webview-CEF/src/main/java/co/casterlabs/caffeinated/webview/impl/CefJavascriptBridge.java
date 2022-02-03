@@ -9,7 +9,6 @@ import org.cef.browser.CefMessageRouter;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
 
-import co.casterlabs.caffeinated.util.DualConsumer;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
 import co.casterlabs.caffeinated.webview.WebviewFileUtil;
@@ -22,7 +21,6 @@ import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.element.JsonString;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.NonNull;
-import lombok.Setter;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
@@ -33,8 +31,6 @@ public class CefJavascriptBridge extends WebviewBridge {
     private CefFrame frame;
 
     private Promise<Void> loadPromise = new Promise<>();
-
-    private @Setter DualConsumer<String, JsonObject> onEvent;
 
     static {
         try {
@@ -104,7 +100,7 @@ public class CefJavascriptBridge extends WebviewBridge {
     }
 
     @Override
-    public void emit(@NonNull String type, @NonNull JsonElement data) {
+    protected void emit0(@NonNull String type, @NonNull JsonElement data) {
         new AsyncTask(() -> {
             try {
                 this.loadPromise.await();
@@ -117,7 +113,7 @@ public class CefJavascriptBridge extends WebviewBridge {
     }
 
     @Override
-    public void eval(@NonNull String script) {
+    protected void eval0(@NonNull String script) {
         new AsyncTask(() -> {
             try {
                 this.loadPromise.await();
