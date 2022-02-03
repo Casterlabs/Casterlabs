@@ -22,8 +22,12 @@ import co.casterlabs.caffeinated.app.ui.UIPreferences.ChatViewerPreferences;
 import co.casterlabs.caffeinated.app.ui.events.AppUIAppearanceUpdateEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUIEventType;
 import co.casterlabs.caffeinated.app.ui.events.AppUIOpenLinkEvent;
+import co.casterlabs.caffeinated.app.ui.events.AppUIPopoutChatEvent;
+import co.casterlabs.caffeinated.app.ui.events.AppUIPopoutViewersEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUISaveChatViewerPreferencesEvent;
 import co.casterlabs.caffeinated.app.ui.events.AppUIThemeLoadedEvent;
+import co.casterlabs.caffeinated.app.ui.popouts.UIChatPopout;
+import co.casterlabs.caffeinated.app.ui.popouts.UIViewersPopout;
 import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.webview.Webview;
@@ -50,6 +54,9 @@ public class AppUI {
     private static BridgeValue<ChatViewerPreferences> bridge_ChatViewerPreferences = new BridgeValue<>("ui:chatViewerPreferences");
 
     private @Getter boolean uiFinishedLoad = false;
+
+    private UIChatPopout chatPopout;
+    private UIViewersPopout viewersPopout;
 
     private @Getter List<String> systemFonts = Collections.emptyList();
     private @Getter List<String> googleFonts = Collections.emptyList();
@@ -117,6 +124,9 @@ public class AppUI {
     }
 
     public void init() {
+        this.chatPopout = new UIChatPopout();
+        this.viewersPopout = new UIViewersPopout();
+
         CaffeinatedApp.getInstance().getAppBridge().attachValue(bridge_ChatViewerPreferences);
 
         CaffeinatedApp.getInstance().getAppBridge().attachValue(
@@ -125,6 +135,16 @@ public class AppUI {
         );
 
         bridge_ChatViewerPreferences.set(CaffeinatedApp.getInstance().getUiPreferences().get().getChatViewerPreferences());
+    }
+
+    @EventListener
+    public void onUIPopoutChatEvent(AppUIPopoutChatEvent event) {
+        this.chatPopout.open();
+    }
+
+    @EventListener
+    public void onUIPopoutViewersEvent(AppUIPopoutViewersEvent event) {
+        this.viewersPopout.open();
     }
 
     @EventListener
