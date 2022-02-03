@@ -9,34 +9,29 @@ import java.util.Map;
 import co.casterlabs.caffeinated.util.DualConsumer;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonObject;
-import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 
 public abstract class WebviewBridge {
     private static Map<String, BridgeValue<?>> globalQueryData = new HashMap<>();
     private static List<WeakReference<WebviewBridge>> bridges = new ArrayList<>();
 
-    @Getter
-    @Setter
-    @Deprecated
-    protected BridgeHandle handle;
-
     private WeakReference<WebviewBridge> $ref = new WeakReference<>(this);
+
+    private Map<String, BridgeValue<?>> personalQueryData = new HashMap<>();
 
     public WebviewBridge() {
         bridges.add(this.$ref);
     }
 
     public void attachBridge(@NonNull BridgeValue<?> bv) {
-        handle.personalQueryData.put(bv.getKey(), bv);
+        this.personalQueryData.put(bv.getKey(), bv);
         bv.attachedBridges.add(this.$ref);
     }
 
     protected Map<String, BridgeValue<?>> getQueryData() {
         Map<String, BridgeValue<?>> combined = new HashMap<>();
 
-        combined.putAll(handle.personalQueryData);
+        combined.putAll(this.personalQueryData);
         combined.putAll(globalQueryData);
 
         return combined;
@@ -46,16 +41,14 @@ public abstract class WebviewBridge {
     protected void finalize() {
         bridges.remove(this.$ref);
 
-        for (BridgeValue<?> bv : handle.personalQueryData.values()) {
+        for (BridgeValue<?> bv : this.personalQueryData.values()) {
             bv.attachedBridges.remove(this.$ref);
         }
     }
 
-    public void setOnEvent(DualConsumer<String, JsonObject> onEvent) {
-        handle.onEvent = onEvent;
-    }
-
     /* Impl */
+
+    public abstract void setOnEvent(DualConsumer<String, JsonObject> onEvent);
 
     public abstract void emit(@NonNull String type, @NonNull JsonElement data);
 
@@ -73,12 +66,6 @@ public abstract class WebviewBridge {
 
     public static void evalAll(@NonNull String script) {
         bridges.forEach((b) -> b.get().eval(script));
-    }
-
-    public static class BridgeHandle {
-        private @Getter DualConsumer<String, JsonObject> onEvent;
-        private Map<String, BridgeValue<?>> personalQueryData = new HashMap<>();
-
     }
 
 }

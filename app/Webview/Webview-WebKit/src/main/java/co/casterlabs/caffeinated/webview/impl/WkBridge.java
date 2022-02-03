@@ -2,6 +2,7 @@ package co.casterlabs.caffeinated.webview.impl;
 
 import java.io.IOException;
 
+import co.casterlabs.caffeinated.util.DualConsumer;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.webview.WebviewFileUtil;
 import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
@@ -13,6 +14,7 @@ import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.element.JsonString;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.NonNull;
+import lombok.Setter;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
@@ -20,6 +22,8 @@ public class WkBridge extends WebviewBridge {
     private static String bridgeScript = "";
 
     private WkWebview webview;
+
+    private @Setter DualConsumer<String, JsonObject> onEvent;
 
     static {
         // Get the javascript bridge.
@@ -61,7 +65,6 @@ public class WkBridge extends WebviewBridge {
     }
 
     // Called by SwtWebview
-    @SuppressWarnings("deprecation")
     public void query(String request) {
         FastLogger.logStatic(LogLevel.TRACE, request);
 
@@ -74,8 +77,8 @@ public class WkBridge extends WebviewBridge {
                     String type = emission.getString("type");
                     JsonObject data = emission.getObject("data");
 
-                    if (handle.getOnEvent() != null) {
-                        handle.getOnEvent().accept(type, data);
+                    if (this.onEvent != null) {
+                        this.onEvent.accept(type, data);
                     }
                     break;
                 }
