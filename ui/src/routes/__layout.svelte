@@ -5,7 +5,6 @@
 
     let pageAttributes = {
         showSideBar: false,
-        pageTitle: "",
         allowNavigateBackwards: false
     };
 
@@ -16,7 +15,6 @@
     function setPageProperties(val) {
         pageAttributes = {
             showSideBar: false,
-            pageTitle: "",
             allowNavigateBackwards: false,
 
             // Spread the `val` so we have these as defaults^
@@ -29,10 +27,6 @@
 
         if (typeof window != "undefined") {
             window.currentPageAttributes = pageAttributes;
-        }
-
-        if (typeof document != "undefined") {
-            document.title = pageAttributes.pageTitle || "";
         }
     }
 

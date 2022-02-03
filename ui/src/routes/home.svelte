@@ -7,11 +7,11 @@
 
     setPageProperties({
         showSideBar: true,
-        pageTitle: "",
         allowNavigateBackwards: false
     });
 
     onMount(async () => {
+        document.title = "";
         buildInfo = (await Bridge.query("build")).data;
     });
 </script>

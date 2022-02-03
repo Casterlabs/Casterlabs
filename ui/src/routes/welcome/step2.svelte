@@ -1,10 +1,10 @@
 <script>
     // Meta
     import { setPageProperties } from "../__layout.svelte";
+    import { onMount } from "svelte";
 
     setPageProperties({
         showSideBar: false,
-        pageTitle: "",
         allowNavigateBackwards: false
     });
 
@@ -33,6 +33,10 @@
         //     type: "category"
         // }
     ];
+
+    onMount(() => {
+        document.title = "";
+    });
 </script>
 
 <div class="welcome-contents">

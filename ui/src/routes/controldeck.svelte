@@ -1,12 +1,17 @@
 <script>
+    import { onMount } from "svelte";
+
     import DummyDeck from "../components/controldeck/ui/impl/dummydeck.svelte";
 
     import { setPageProperties } from "./__layout.svelte";
 
     setPageProperties({
         showSideBar: true,
-        pageTitle: "Control Deck",
         allowNavigateBackwards: true
+    });
+
+    onMount(() => {
+        document.title = "Control Deck";
     });
 </script>
 

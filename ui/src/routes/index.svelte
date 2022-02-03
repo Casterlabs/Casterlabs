@@ -6,7 +6,6 @@
 
     setPageProperties({
         showSideBar: false,
-        pageTitle: "",
         allowNavigateBackwards: false
     });
 
@@ -14,6 +13,8 @@
     let color = "white";
 
     onMount(async () => {
+        document.title = "";
+
         const { icon } = (await Bridge.query("window")).data;
         const { isDark } = (await Bridge.query("theme")).data;
 

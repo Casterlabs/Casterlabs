@@ -12,11 +12,12 @@
 
     setPageProperties({
         showSideBar: false,
-        pageTitle: "",
         allowNavigateBackwards: false
     });
 
     onMount(() => {
+        document.title = "";
+
         window.gotoStep1 = function () {
             goto("/welcome/step1");
         };

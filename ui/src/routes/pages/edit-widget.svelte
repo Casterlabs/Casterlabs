@@ -9,7 +9,6 @@
 
     setPageProperties({
         showSideBar: false,
-        pageTitle: "Widget Manager",
         allowNavigateBackwards: true
     });
 
@@ -106,6 +105,8 @@
     });
 
     onMount(async () => {
+        document.title = "Widget Manager";
+
         eventHandler = Bridge.createThrowawayEventHandler();
         eventHandler.on("plugins:update", parseBridgeData);
         parseBridgeData((await Bridge.query("plugins")).data);

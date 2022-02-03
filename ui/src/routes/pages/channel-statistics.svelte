@@ -1,10 +1,14 @@
 <script>
     import { setPageProperties } from "../__layout.svelte";
+    import { onMount } from "svelte";
 
     setPageProperties({
         showSideBar: false,
-        pageTitle: "",
         allowNavigateBackwards: false
+    });
+
+    onMount(() => {
+        document.title = "";
     });
 </script>
 

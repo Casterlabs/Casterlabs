@@ -1,11 +1,16 @@
 <script>
     import { setPageProperties } from "../__layout.svelte";
+    import { onMount } from "svelte";
+
     import OAuthSignin from "../../components/platforms/oauth-signin.svelte";
 
     setPageProperties({
         showSideBar: false,
-        pageTitle: "",
-        allowNavigateBackwards: true
+        allowNavigateBackwards: false
+    });
+
+    onMount(() => {
+        document.title = "";
     });
 </script>
 

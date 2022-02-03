@@ -6,7 +6,6 @@
 
     setPageProperties({
         showSideBar: true,
-        pageTitle: "Widget Manager",
         allowNavigateBackwards: true
     });
 
@@ -57,6 +56,8 @@
     }
 
     onMount(async () => {
+        document.title = "Widgets";
+
         render((await Bridge.query("plugins")).data);
     });
 </script>
