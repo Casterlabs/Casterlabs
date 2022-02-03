@@ -9,8 +9,8 @@
     let viewerElement = {};
 
     setPageProperties({
-        showSideBar: true,
-        pageTitle: "",
+        showSideBar: false,
+        pageTitle: "Stream Chat",
         allowNavigateBackwards: true
     });
 
