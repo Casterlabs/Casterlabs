@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.bootstrap.tray;
+package co.casterlabs.caffeinated.bootstrap;
 
 import java.awt.AWTException;
 import java.awt.CheckboxMenuItem;
@@ -19,8 +19,6 @@ import javax.swing.ImageIcon;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
-import co.casterlabs.caffeinated.bootstrap.Bootstrap;
-import co.casterlabs.caffeinated.bootstrap.FileUtil;
 import co.casterlabs.caffeinated.webview.Webview;
 import lombok.NonNull;
 

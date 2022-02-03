@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.bootstrap.instancing;
+package co.casterlabs.caffeinated.bootstrap;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,6 @@ import java.nio.channels.FileLock;
 import java.util.concurrent.TimeUnit;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
 import xyz.e3ndr.consoleutil.ipc.IpcChannel;
