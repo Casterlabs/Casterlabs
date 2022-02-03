@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.util.Pair;
-import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.rakurai.io.IOUtil;
 import co.casterlabs.rakurai.io.http.HttpResponse;
 import co.casterlabs.rakurai.io.http.MimeTypes;
@@ -19,16 +17,12 @@ import co.casterlabs.sora.api.http.annotations.HttpEndpoint;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import okhttp3.Request;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 // https://bitbucket.org/chromiumembedded/java-cef/issues/365/custom-scheme-onloaderror-not-called
 @AllArgsConstructor
 public class AppLoopbackPlugin extends SoraPlugin implements HttpProvider {
-    private static final String DEV_SERVER = "http://localhost:3000";
-
-    private boolean isDev;
 
     @Override
     public void onInit(Sora sora) {
@@ -48,51 +42,34 @@ public class AppLoopbackPlugin extends SoraPlugin implements HttpProvider {
         if (session.getHost().startsWith("app-loopback.casterlabs.co")) {
             String uri = session.getUri();
 
-            byte[] content;
-            String mimeType = "application/octet-stream";
+            // Append `index.html` to the end when required.
+            if (!uri.contains(".")) {
+                if (uri.endsWith("/")) {
+                    uri += "index.html";
+                } else {
+                    uri += "/index.html";
+                }
+            }
 
-            if (this.isDev) {
-                Pair<byte[], String> response = WebUtil.sendHttpRequestBytesWithMime(
-                    new Request.Builder()
-                        .url(DEV_SERVER + uri)
+            try {
+                // Load the resource
+                byte[] content = IOUtil.readInputStreamBytes(
+                    AppLoopbackPlugin.class.getClassLoader().getResourceAsStream("app" + uri)
                 );
+                String mimeType = "application/octet-stream";
 
-                content = response.a;
-                mimeType = response.b;
-            } else {
-                // Append `index.html` to the end when required.
-                if (!uri.contains(".")) {
-                    if (uri.endsWith("/")) {
-                        uri += "index.html";
-                    } else {
-                        uri += "/index.html";
-                    }
+                String[] split = uri.split("\\.");
+                if (split.length > 1) {
+                    mimeType = MimeTypes.getMimeForType(split[split.length - 1]);
                 }
 
-                try {
-                    // Load the resource
-                    content = IOUtil.readInputStreamBytes(
-                        AppLoopbackPlugin.class.getClassLoader().getResourceAsStream("app" + uri)
-                    );
+                FastLogger.logStatic(LogLevel.TRACE, "200: Remapped app://app.local%s -> app%s (%s)", session.getUri(), uri, mimeType);
 
-                    String[] split = uri.split("\\.");
-                    if (split.length > 1) {
-                        mimeType = MimeTypes.getMimeForType(split[split.length - 1]);
-                    }
-                } catch (IOException e) {
-                    content = null;
-                }
-            }
-
-            if (content == null) {
+                return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content)
+                    .setMimeType(mimeType);
+            } catch (IOException e) {
                 FastLogger.logStatic(LogLevel.SEVERE, "404: Could not remap app://%s -> app%s", session.getUri(), uri);
-                return null;
             }
-
-            FastLogger.logStatic(LogLevel.TRACE, "200: Remapped app://app.local%s -> app%s (%s)", session.getUri(), uri, mimeType);
-
-            return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content)
-                .setMimeType(mimeType);
         }
 
         return null;

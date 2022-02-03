@@ -65,10 +65,10 @@ public class LocalServer implements Closeable, HttpProvider {
             .register(new LocalServerPluginWrapper());
     }
 
-    public String initLoopback(boolean isDev) {
+    public String initLoopback() {
         this.framework
             .getSora()
-            .register(new AppLoopbackPlugin(isDev));
+            .register(new AppLoopbackPlugin());
 
         return String.format("http://app-loopback.casterlabs.co:%d", this.port);
     }

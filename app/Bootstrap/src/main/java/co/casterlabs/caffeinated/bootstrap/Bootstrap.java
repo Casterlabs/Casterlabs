@@ -71,7 +71,7 @@ public class Bootstrap implements Runnable {
     private static FastLogger logger = new FastLogger();
 
     private static @Getter BuildInfo buildInfo;
-    private static @Getter boolean enableNuclearOption;
+    private static @Getter boolean useAppLoopback;
     private static @Getter boolean isDev;
 
     private static @Getter Bootstrap instance;
@@ -201,7 +201,7 @@ public class Bootstrap implements Runnable {
         logger.info("bootstrap.args               | %s", System.getProperty("sun.java.command"));
         logger.info("");
 
-        enableNuclearOption = Webview.getWebviewFactory().useNuclearOption() && !isDev ||
+        useAppLoopback = Webview.getWebviewFactory().useNuclearOption() && !isDev ||
             System.getProperty("caffeinated.nuclearoption.force", "").equals("true");
 
         // Init and start the local server.
@@ -215,9 +215,9 @@ public class Bootstrap implements Runnable {
         }
 
         // App url
-        appLoopbackUrl = localServer.initLoopback(isDev);
+        appLoopbackUrl = isDev ? this.devAddress : localServer.initLoopback();
 
-        if (enableNuclearOption) {
+        if (useAppLoopback) {
             // This is the nuclear option.
             // https://bitbucket.org/chromiumembedded/java-cef/issues/365/custom-scheme-onloaderror-not-called
             appUrl = appLoopbackUrl;
