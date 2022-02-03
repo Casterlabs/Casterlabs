@@ -55,7 +55,7 @@ public class MusicIntegration extends Music {
     }
 
     public void init() {
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(this.bridge);
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(this.bridge);
         this.updateBridgeData(); // Populate
 
         // Register the providers (in order of preference)

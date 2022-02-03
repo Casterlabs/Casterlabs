@@ -96,13 +96,13 @@ public class CaffeinatedApp extends Caffeinated {
         this.music.init();
         this.plugins.init();
 
-        this.appBridge.attachBridge(bridge_AppPreferences);
+        this.appBridge.attachValue(bridge_AppPreferences);
         bridge_AppPreferences.set(this.appPreferences.get());
         this.appPreferences.addSaveListener((pref) -> {
             bridge_AppPreferences.update();
         });
 
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(
             // This doesn't update, so we register it and leave it be.
             new BridgeValue<UIPreferences>("ui:preferences").set(this.uiPreferences.get())
         );

@@ -20,8 +20,8 @@ public class ThemeManager {
     private static BridgeValue<Collection<Theme>> bridge_Themes = new BridgeValue<>("themes");
 
     public static void init() {
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(bridge_Theme);
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(bridge_Themes);
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(bridge_Theme);
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(bridge_Themes);
     }
 
     public static void registerTheme(@NonNull Theme theme) {

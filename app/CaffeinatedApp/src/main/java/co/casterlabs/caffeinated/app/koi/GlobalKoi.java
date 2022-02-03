@@ -79,13 +79,13 @@ public class GlobalKoi extends Koi implements KoiLifeCycleHandler {
     public void init() {
         handler.register(this);
 
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(this.viewersBridge);
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(this.userStatesBridge);
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(this.streamStatesBridge);
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(this.roomStatesBridge);
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(this.viewersBridge);
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(this.userStatesBridge);
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(this.streamStatesBridge);
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(this.roomStatesBridge);
 
         // We don't use it, so it'll just sit here in purgatory.
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(
             new BridgeValue<>("koi:history", Collections.unmodifiableList(this.eventHistory), false)
         );
     }

@@ -117,9 +117,9 @@ public class AppUI {
     }
 
     public void init() {
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(bridge_ChatViewerPreferences);
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(bridge_ChatViewerPreferences);
 
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(
             // This doesn't update, so we register it and leave it be.
             new BridgeValue<List<String>>("ui:fonts").set(this.allFonts)
         );

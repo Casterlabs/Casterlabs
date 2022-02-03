@@ -50,7 +50,7 @@ public class AppAuth {
     }
 
     public void init() {
-        CaffeinatedApp.getInstance().getAppBridge().attachBridge(this.bridge);
+        CaffeinatedApp.getInstance().getAppBridge().attachValue(this.bridge);
         this.updateBridgeData(); // Populate
 
         List<String> ids = CaffeinatedApp.getInstance().getAuthPreferences().get().getKoiTokenIds();
