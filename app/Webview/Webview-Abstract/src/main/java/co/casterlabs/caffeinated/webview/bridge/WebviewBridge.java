@@ -34,6 +34,7 @@ public abstract class WebviewBridge {
     public void mergeWith(WebviewBridge parent) {
         parent.downstreamBridges.add(this.$ref);
         this.attachedBridges.add(parent.$ref);
+        this.personalQueryData = parent.personalQueryData; // Pointer copy.
         this.onEvent = parent.onEvent;
     }
 
