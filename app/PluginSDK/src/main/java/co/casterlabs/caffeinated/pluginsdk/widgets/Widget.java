@@ -186,8 +186,16 @@ public abstract class Widget {
 
     public void onNewInstance(@NonNull WidgetInstance instance) {}
 
-    public @Nullable String getWidgetHtml() {
+    /**
+     * @deprecated Implement {@link #getWidgetHtml(WidgetInstanceMode)} instead.
+     */
+    @Deprecated
+    protected @Nullable String getWidgetHtml() {
         return null;
+    }
+
+    public @Nullable String getWidgetHtml(WidgetInstanceMode mode) {
+        return this.getWidgetHtml();
     }
 
     /* ---------------- */

@@ -17,14 +17,14 @@ import lombok.Getter;
 import lombok.NonNull;
 
 public abstract class WidgetInstance implements Closeable {
-    private @Getter boolean isDemo;
+    private @Getter WidgetInstanceMode instanceMode;
     private @Getter String connectionId;
 
     private MultiValuedMap<String, Consumer<JsonElement>> eventHandlers = new HashSetValuedHashMap<>();
     private Set<Runnable> onCloseHandlers = new HashSet<>();
 
-    public WidgetInstance(boolean isDemo, String connectionId) {
-        this.isDemo = isDemo;
+    public WidgetInstance(WidgetInstanceMode instanceMode, String connectionId) {
+        this.instanceMode = instanceMode;
         this.connectionId = connectionId;
     }
 

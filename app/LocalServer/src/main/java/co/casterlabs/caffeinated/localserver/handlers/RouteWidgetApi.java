@@ -8,6 +8,7 @@ import co.casterlabs.caffeinated.localserver.RouteHelper;
 import co.casterlabs.caffeinated.localserver.websocket.RealtimeWidgetListener;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
+import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstanceMode;
 import co.casterlabs.rakurai.io.http.HttpResponse;
 import co.casterlabs.rakurai.io.http.StandardHttpStatus;
 import co.casterlabs.rakurai.io.http.websocket.WebsocketListener;
@@ -29,6 +30,12 @@ public class RouteWidgetApi implements HttpProvider, WebsocketProvider, RouteHel
             if (authorize(session)) {
                 String pluginId = session.getUriParameters().get("pluginId");
                 String widgetId = session.getUriParameters().get("widgetId");
+                WidgetInstanceMode mode = WidgetInstanceMode.valueOf(
+                    session
+                        .getQueryParameters()
+                        .getOrDefault("mode", "WIDGET")
+                        .toUpperCase()
+                );
 
                 CaffeinatedPlugin owningPlugin = CaffeinatedApp.getInstance().getPlugins().getPlugins().getPluginById(pluginId);
 
@@ -38,7 +45,7 @@ public class RouteWidgetApi implements HttpProvider, WebsocketProvider, RouteHel
 
                 for (Widget widget : owningPlugin.getWidgets()) {
                     if (widget.getId().equals(widgetId)) {
-                        String html = widget.getWidgetHtml();
+                        String html = widget.getWidgetHtml(mode);
 
                         if (html == null) {
                             return newErrorResponse(StandardHttpStatus.NOT_FOUND, RequestError.RESOURCE_NOT_FOUND);
@@ -67,6 +74,12 @@ public class RouteWidgetApi implements HttpProvider, WebsocketProvider, RouteHel
             if (authorize(session)) {
                 String pluginId = session.getUriParameters().get("pluginId");
                 String widgetId = session.getUriParameters().get("widgetId");
+                WidgetInstanceMode mode = WidgetInstanceMode.valueOf(
+                    session
+                        .getQueryParameters()
+                        .getOrDefault("mode", "WIDGET")
+                        .toUpperCase()
+                );
 
                 CaffeinatedPlugin owningPlugin = CaffeinatedApp.getInstance().getPlugins().getPlugins().getPluginById(pluginId);
 
@@ -85,10 +98,8 @@ public class RouteWidgetApi implements HttpProvider, WebsocketProvider, RouteHel
                 if (widget == null) {
                     return newWebsocketErrorResponse(StandardHttpStatus.NOT_FOUND, RequestError.WIDGET_NOT_FOUND);
                 } else {
-                    boolean isDemoConnection = session.getQueryParameters().getOrDefault("isDemo", "").equals("true");
-
                     // Connect.
-                    return new RealtimeWidgetListener(widget, isDemoConnection, UUID.randomUUID().toString());
+                    return new RealtimeWidgetListener(widget, mode, UUID.randomUUID().toString());
                 }
             } else {
                 return newWebsocketErrorResponse(StandardHttpStatus.UNAUTHORIZED, RequestError.UNAUTHORIZED);

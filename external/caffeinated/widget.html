@@ -64,9 +64,9 @@
             const { pluginId, widgetId, authorization } = queryParams;
             const port = queryParams.port || "8092";
             const address = queryParams.address || "localhost";
-            const isWidgetDemo = queryParams.isWidgetDemo == "true";
+            const widgetMode = (queryParams.mode || "WIDGET").toUpperCase();
 
-            const conn = new Conn(`ws://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/realtime?authorization=${authorization}`);;
+            const conn = new Conn(`ws://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/realtime?authorization=${authorization}&mode=${widgetMode}`);
 
             let sandboxFrame;
 
@@ -82,8 +82,8 @@
                     return conn.widgetData;
                 },
 
-                get isWidgetDemo() {
-                    return isWidgetDemo;
+                get mode() {
+                    return widgetMode;
                 },
 
                 getSetting(key) {
@@ -249,7 +249,7 @@
                         });
 
                         // Load the widget html.
-                        const response = await fetch(`http://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/html?authorization=${authorization}`);
+                        const response = await fetch(`http://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/html?authorization=${authorization}&mode=${widgetMode}`);
 
                         if (response.status == 200) {
                             const widgetHtml = await response.text();

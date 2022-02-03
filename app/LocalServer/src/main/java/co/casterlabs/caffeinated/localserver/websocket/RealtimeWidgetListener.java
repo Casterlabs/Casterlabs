@@ -7,6 +7,7 @@ import co.casterlabs.caffeinated.localserver.RouteHelper;
 import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
+import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstanceMode;
 import co.casterlabs.caffeinated.util.Pair;
 import co.casterlabs.koi.api.types.events.KoiEvent;
 import co.casterlabs.rakurai.io.http.websocket.Websocket;
@@ -22,7 +23,7 @@ import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
     private Widget widget;
-    private boolean isDemo;
+    private WidgetInstanceMode mode;
     private String connectionId;
 
     private WidgetInstanceProvider wInstance;
@@ -32,9 +33,9 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
     private List<WidgetInstance> field_widgetInstances;
 
     @SneakyThrows
-    public RealtimeWidgetListener(Widget widget, boolean isDemo, String connectionId) {
+    public RealtimeWidgetListener(Widget widget, WidgetInstanceMode mode, String connectionId) {
         this.widget = widget;
-        this.isDemo = isDemo;
+        this.mode = mode;
         this.connectionId = connectionId;
 
         this.field_widgetInstances = ReflectionLib.getValue(this.widget, "widgetInstances");
@@ -151,7 +152,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
     private class WidgetInstanceProvider extends WidgetInstance {
 
         public WidgetInstanceProvider() {
-            super(isDemo, connectionId);
+            super(mode, connectionId);
         }
 
         /* ---------------- */
