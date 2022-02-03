@@ -12,8 +12,10 @@ import co.casterlabs.caffeinated.window.theming.ThemeableJFrame.UnimplementedThe
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 public abstract class NativeSystem {
     private static boolean INITIALIZED = false;
@@ -29,6 +31,7 @@ public abstract class NativeSystem {
     }
 
     @Deprecated
+    @SneakyThrows
     // Something being null = unsupported.
     public static void initialize(boolean startedOnFirstThread, @Nullable LafManager lafManager, @Nullable SystemPlaybackMusicProvider systemPlaybackMusicProvider, @NonNull WebviewFactory webviewFactory) {
         assert !INITIALIZED : "NativeSystemProvider has already been initialized.";
@@ -41,7 +44,7 @@ public abstract class NativeSystem {
         NativeSystem.systemPlaybackMusicProvider = systemPlaybackMusicProvider;
 
         // We set it here so we guarantee it gets set.
-        Webview.setWebviewFactory(webviewFactory);
+        ReflectionLib.setStaticValue(Webview.class, "webviewFactory", webviewFactory);
 
         ThemeableJFrame.FACTORY = NativeSystem::getFrame;
     }

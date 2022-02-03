@@ -28,7 +28,7 @@ public class WkBridge extends WebviewBridge {
     static {
         // Get the javascript bridge.
         try {
-            bridgeScript = WebviewFileUtil.loadResourceFromBuildProject("SWT_JavascriptBridge.js", "Webview-SWT");
+            bridgeScript = WebviewFileUtil.loadResourceFromBuildProject("SWT_JavascriptBridge.js", "Webview-Webkit");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,7 +61,6 @@ public class WkBridge extends WebviewBridge {
         new AsyncTask(() -> {
 //            this.loadPromise.fulfill(null);
             this.attachBridge(this.webview.getWindowState().getBridge());
-            this.webview.getLifeCycleListener().onBrowserInitialLoad();
         });
     }
 

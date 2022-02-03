@@ -71,7 +71,7 @@ public class CefWebview extends Webview {
         // One-time setup.
         if (!cefInitialized) {
             cefInitialized = true;
-            CefUtil.create(Webview.isOffScreenRenderingEnabled(), Webview.WEBVIEW_SCHEME, Webview.getSchemeHandler());
+            CefUtil.create(true /* I hate this. */, Webview.WEBVIEW_SCHEME, this.getSchemeHandler());
         }
 
         // Setup the panel
@@ -207,7 +207,6 @@ public class CefWebview extends Webview {
             public void onLoadEnd(CefBrowser _browser, CefFrame _frame, int httpStatusCode) {
                 if (this.loadState == 0) {
                     logger.debug("Loadstate 1");
-                    getLifeCycleListener().onBrowserInitialLoad();
                     this.loadState = 2;
                     logger.debug("Loadstate 2");
                 }
@@ -289,7 +288,7 @@ public class CefWebview extends Webview {
             }
 
             // Create browser
-            this.browser = this.client.createBrowser(url, Webview.isOffScreenRenderingEnabled(), Webview.isTransparencyEnabled());
+            this.browser = this.client.createBrowser(url, this.isOffScreenRenderingEnabled(), this.isTransparencyEnabled());
 
             // Add it to the JPanel.
             this.cefPanel.add(this.browser.getUIComponent(), BorderLayout.CENTER);

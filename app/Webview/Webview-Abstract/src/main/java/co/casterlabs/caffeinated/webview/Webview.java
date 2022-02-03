@@ -5,41 +5,42 @@ import org.jetbrains.annotations.Nullable;
 import co.casterlabs.caffeinated.util.Crypto;
 import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.caffeinated.webview.scheme.SchemeHandler;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
 public abstract class Webview {
-    private static @Getter @Setter boolean offScreenRenderingEnabled = System.getProperty("caffeinated.cef.offscreenrendering.enable", "").equals("true"); // Defaults to false;
-    private static @Getter @Setter boolean transparencyEnabled = System.getProperty("caffeinated.cef.transparency.enable", "").equals("true"); // Defaults to false
-
     public static final String WEBVIEW_SCHEME = "app";
     public static final String STATE_PASSWORD = new String(Crypto.generateSecureRandomKey());
     public static final boolean isDev = false;
 
-    private static @Getter @Setter WebviewFactory webviewFactory;
-    private static @Getter @Setter SchemeHandler schemeHandler;
+    private static @Getter(AccessLevel.PROTECTED) Runnable shutdown;
+    private static @Getter WebviewFactory webviewFactory;
+
+    private @Getter boolean offScreenRenderingEnabled = false;
+    private @Getter boolean transparencyEnabled = false;
+
+    private @Getter @Setter SchemeHandler schemeHandler;
 
     private boolean initialized = false;
 
     private @Getter WebviewLifeCycleListener lifeCycleListener;
     protected @Getter WebviewWindowState windowState = new WebviewWindowState();
 
-    public final void initialize(@Nullable WebviewWindowState windowState) throws Exception {
+    public final void initialize(@NonNull WebviewLifeCycleListener lifeCycleListener, @Nullable WebviewWindowState windowState, boolean offScreenRenderingEnabled, boolean transparencyEnabled) throws Exception {
         assert !this.initialized : "Webview is already initialized.";
 
         if (windowState != null) {
             this.windowState = windowState;
         }
 
+        this.lifeCycleListener = lifeCycleListener;
+        this.offScreenRenderingEnabled = offScreenRenderingEnabled;
+        this.transparencyEnabled = transparencyEnabled;
+
         this.initialized = true;
         this.initialize0();
-    }
-
-    public final void setLifeCycleListener(@NonNull WebviewLifeCycleListener lifeCycleListener) {
-        assert !this.initialized : "Webview is already initialized, setLifeCycleListener must be called BEFORE initialization.";
-
-        this.lifeCycleListener = lifeCycleListener;
     }
 
     protected abstract void initialize0() throws Exception;

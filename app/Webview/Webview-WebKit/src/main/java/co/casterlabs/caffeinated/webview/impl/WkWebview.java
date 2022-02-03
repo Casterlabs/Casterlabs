@@ -59,11 +59,10 @@ public class WkWebview extends Webview {
                 // This is required for SWT and AWT to play nicely with eachother.
                 while (true) {
 
-                    // SWT GOT KILLED, THE END IS NEIGH.
                     if (display.isDisposed()) {
-                        System.out.println("\n\n\nSWT GOT KILLED, THE END IS NEIGH!\n\n");
-                        System.exit(1);
-                        break;
+                        // SWT GOT KILLED, THE END IS NEIGH.
+                        Webview.getShutdown().run();
+                        return;
                     } else {
 
                         // Let the main thread do some work (since we're blocking it right now)
@@ -148,7 +147,7 @@ public class WkWebview extends Webview {
         this.browser.addTitleListener(new TitleListener() {
             @Override
             public void changed(TitleEvent event) {
-                if (event.title.equals("null")) {
+                if (event.title.equals("null") || event.title.equals("undefined") || event.title.isEmpty()) {
                     shell.setText("Casterlabs Caffeinated");
                 } else {
                     shell.setText("Casterlabs Caffeinated - " + event.title);
@@ -263,6 +262,7 @@ public class WkWebview extends Webview {
         this.getLifeCycleListener().onBrowserOpen();
 
         display.syncExec(() -> {
+            this.mt_initialize();
 //            this.shell.pack();
             this.shell.open();
             this.shell.setActive();
@@ -274,9 +274,8 @@ public class WkWebview extends Webview {
     @Override
     public void close() {
         display.syncExec(() -> {
-            // IMPL NOTE:
-            // The shell is freed from the os if the JVM is shutting down cleanly.
-            this.shell.close();
+            // We destroy the shell to prevent it from sticking in the Dock.
+            this.shell.setVisible(false);
             this.browser.setUrl("about:blank");
         });
 

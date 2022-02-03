@@ -227,12 +227,14 @@ public class Bootstrap implements Runnable {
 
         appUrl = url;
 
-        // Register the custom schemes.
-        Webview.setSchemeHandler(new AppSchemeHandler());
+        ReflectionLib.setStaticValue(Webview.class, "shutdown", (Runnable) Bootstrap::shutdown);
 
         // Setup the webview.
         logger.info("Initializing UI (this may take some time)");
         webview = Webview.getWebviewFactory().produce();
+
+        // Register the custom schemes.
+        webview.setSchemeHandler(new AppSchemeHandler());
 
         // Register the lifecycle listener.
         WebviewLifeCycleListener uiLifeCycleListener = new WebviewLifeCycleListener() {
@@ -252,11 +254,6 @@ public class Bootstrap implements Runnable {
                         return null;
                     }).await();
                 } catch (Throwable ignored) {}
-            }
-
-            @Override
-            public void onBrowserInitialLoad() {
-                logger.debug("onInitialLoad");
             }
 
             @Override
@@ -313,8 +310,12 @@ public class Bootstrap implements Runnable {
         };
 
         logger.info("Starting the UI");
-        webview.setLifeCycleListener(uiLifeCycleListener);
-        webview.initialize(app.getWindowPreferences().get());
+        webview.initialize(
+            uiLifeCycleListener,
+            app.getWindowPreferences().get(),
+            false,
+            false
+        );
 
         logger.info("appAddress = %s", appUrl);
         webview.open(appUrl);
