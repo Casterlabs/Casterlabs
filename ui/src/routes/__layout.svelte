@@ -32,11 +32,7 @@
         }
 
         if (typeof document != "undefined") {
-            if (pageAttributes.pageTitle && pageAttributes.pageTitle.length > 0) {
-                document.title = `Casterlabs Caffeinated - ${pageAttributes.pageTitle}`;
-            } else {
-                document.title = "Casterlabs Caffeinated";
-            }
+            document.title = pageAttributes.pageTitle || "";
         }
     }
 
