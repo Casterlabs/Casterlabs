@@ -13,7 +13,7 @@
     });
 
     let widget = null;
-    let widgetUrl = null;
+    let widgetDemoUrl = null;
     let nameEditorTextContent;
     let nameEditor;
 
@@ -72,7 +72,7 @@
         }
 
         Bridge.query("app:preferences").then(({ data }) => {
-            widgetUrl = `https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=${widget.owner}&widgetId=${widget.id}&authorization=${data.conductorKey}&port=${data.conductorPort}`;
+            widgetDemoUrl = `https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=${widget.owner}&widgetId=${widget.id}&authorization=${data.conductorKey}&port=${data.conductorPort}&mode=demo`;
         });
 
         if (!objectEquals(settingsLayout, widget.settingsLayout)) {
@@ -227,10 +227,10 @@
                 {/each}
             {/if}
 
-            {#if widget.details.showDemo && widgetUrl}
+            {#if widget.details.showDemo && widgetDemoUrl}
                 <div class="widget-demo-container">
                     <div class="widget-demo" style="padding-bottom: {widget.details.demoAspectRatio * 100}%;">
-                        <iframe src={widgetUrl} title="Preview" />
+                        <iframe src={widgetDemoUrl} title="Preview" />
                     </div>
                 </div>
             {/if}
