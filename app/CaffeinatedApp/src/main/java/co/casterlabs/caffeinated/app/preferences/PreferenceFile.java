@@ -86,6 +86,7 @@ public class PreferenceFile<T> {
         }
 
         try {
+            this.file.getParentFile().mkdirs();
             this.file.createNewFile();
 
             JsonElement json = Rson.DEFAULT.toJson(this.data);
