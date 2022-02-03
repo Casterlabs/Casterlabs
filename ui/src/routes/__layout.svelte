@@ -74,18 +74,25 @@
     }
 
     onMount(async () => {
-        if (!Bridge) {
-            alert("BRIDGE NOT INSTALLED!");
-        }
+        if (typeof Bridge == "undefined") {
+            updateTheme({
+                isDark: true,
+                css: ["/css/bulma.min.css", "/css/bulma-prefers-dark.min.css"],
+                classes: "bulma-dark-mode",
+                name: "Dark",
+                isInlineCss: false,
+                id: "co.casterlabs.dark"
+            });
+        } else {
+            window.goto = goto;
 
-        window.goto = goto;
+            if (!location.pathname.startsWith("/popout")) {
+                Bridge.on("goto", ({ path }) => goto(path));
+            }
 
-        if (!location.pathname.startsWith("/popout")) {
-            Bridge.on("goto", ({ path }) => goto(path));
+            Bridge.on("theme:update", updateTheme);
+            updateTheme((await Bridge.query("theme")).data);
         }
-        
-        Bridge.on("theme:update", updateTheme);
-        updateTheme((await Bridge.query("theme")).data);
     });
 </script>
 
