@@ -32,12 +32,14 @@
 
         // We rely on the global Modules instance
         for (const creatable of creatableWidgets) {
-            _widgetCategories[creatable.category.toLowerCase()].push({
-                name: creatable.friendlyName,
-                create: () => {
-                    Bridge.emit("plugins:create-widget", { namespace: creatable.namespace, name: `${creatable.friendlyName} (New)` });
-                }
-            });
+            if (creatable.type == "WIDGET") {
+                _widgetCategories[creatable.category.toLowerCase()].push({
+                    name: creatable.friendlyName,
+                    create: () => {
+                        Bridge.emit("plugins:create-widget", { namespace: creatable.namespace, name: `${creatable.friendlyName} (New)` });
+                    }
+                });
+            }
         }
 
         // This forces svelte to rerender.
@@ -66,15 +68,17 @@
     <!-- All widgets -->
     <div id="all-widgets">
         {#each widgets as widget}
-            <a class="button widget-tile" href="/pages/edit-widget?widget={widget.id}" title={widget.name}>
-                <i data-feather={widget.details.icon || DEFAULT_MODULE_ICON} aria-hidden="true" />
-                <p class="widget-name">
-                    {widget.name}
-                </p>
-            </a>
-            <script>
-                feather.replace();
-            </script>
+            {#if widget.details.type == "WIDGET"}
+                <a class="button widget-tile" href="/pages/edit-widget?widget={widget.id}" title={widget.name}>
+                    <i data-feather={widget.details.icon || DEFAULT_MODULE_ICON} aria-hidden="true" />
+                    <p class="widget-name">
+                        {widget.name}
+                    </p>
+                </a>
+                <script>
+                    feather.replace();
+                </script>
+            {/if}
         {/each}
     </div>
 
