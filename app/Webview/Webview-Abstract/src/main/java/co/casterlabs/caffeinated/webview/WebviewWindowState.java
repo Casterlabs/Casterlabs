@@ -7,13 +7,10 @@ import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import co.casterlabs.rakurai.json.annotating.JsonExclude;
 import lombok.Data;
-import lombok.NonNull;
-import lombok.Setter;
 
 @Data
 @JsonClass(exposeAll = true)
 public class WebviewWindowState {
-    private String icon = "casterlabs";
     private boolean maximized = false;
     private boolean hasFocus;
 
@@ -23,13 +20,6 @@ public class WebviewWindowState {
     private int height = 600;
 
     private @JsonExclude BridgeValue<WebviewWindowState> bridge = new BridgeValue<>("window", this);
-
-    /* Listeners to be utilized by the webview impl itself */
-
-    @Setter
-    @NonNull
-    @Deprecated
-    private @JsonExclude Runnable onIconUpdate = WebviewWindowState::noop;
 
     public WebviewWindowState() {
         if (System.getProperty("awt.supported").equals("true")) {
@@ -42,11 +32,6 @@ public class WebviewWindowState {
             this.x = (monitorWidth - this.width) / 2;
             this.y = (monitorHeight - this.height) / 2;
         }
-    }
-
-    public void setIcon(@NonNull String newIcon) {
-        this.icon = newIcon;
-        this.onIconUpdate.run();
     }
 
     public void update() {
@@ -62,7 +47,5 @@ public class WebviewWindowState {
     public int getMinHeight() {
         return 580;
     }
-
-    private static void noop() {}
 
 }

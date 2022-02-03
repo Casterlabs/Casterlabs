@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 
 import co.casterlabs.caffeinated.app.AppPreferences;
-import co.casterlabs.caffeinated.app.AppWindowState;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AppAuth;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
@@ -27,6 +26,7 @@ import co.casterlabs.caffeinated.app.ui.events.AppUISaveChatViewerPreferencesEve
 import co.casterlabs.caffeinated.app.ui.events.AppUIThemeLoadedEvent;
 import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
+import co.casterlabs.caffeinated.webview.Webview;
 import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonArray;
@@ -146,10 +146,7 @@ public class AppUI {
         uiPrefs.setMinimizeToTray(event.isMinimizeToTray());
         CaffeinatedApp.getInstance().getUiPreferences().save();
 
-        AppWindowState windowState = CaffeinatedApp.getInstance().getWindowPreferences().get();
-
-        windowState.setIcon(uiPrefs.getIcon());
-        windowState.update();
+        Webview.getWebviewFactory().setIcon(uiPrefs.getIcon());
 
         ThemeManager.setTheme(event.getTheme(), "co.casterlabs.dark");
     }

@@ -1,6 +1,7 @@
 package co.casterlabs.caffeinated.webview.impl;
 
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.SWT;
@@ -92,6 +93,13 @@ public class WkWebview extends Webview {
         public boolean useNuclearOption() {
             return true;
         }
+
+        @Override
+        protected void setIcon0(@NonNull String icon) {
+            for (WeakReference<Webview> wv : webviews) {
+                ((WkWebview) wv.get()).changeImage(icon);
+            }
+        }
     };
 
     static {
@@ -105,16 +113,12 @@ public class WkWebview extends Webview {
     private Browser browser;
     private Shell shell;
 
-    @SuppressWarnings("deprecation")
     @SneakyThrows
     @Override
     protected void initialize0() {
         MainThread.submitTaskAndWait(this::mt_initialize);
 
-        changeImage(this.windowState.getIcon());
-        this.windowState.setOnIconUpdate(() -> {
-            changeImage(this.windowState.getIcon());
-        });
+        this.changeImage(WebviewFactory.getCurrentIcon());
     }
 
     private void mt_initialize() {

@@ -7,6 +7,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -53,6 +54,13 @@ public class CefWebview extends Webview {
             // The scheme only works on Windows for some dumb reason.
             return ConsoleUtil.getPlatform() != JavaPlatform.WINDOWS;
         }
+
+        @Override
+        protected void setIcon0(@NonNull String icon) {
+            for (WeakReference<Webview> wv : webviews) {
+                ((CefWebview) wv.get()).updateAppIcon(icon);
+            }
+        }
     };
 
     private static FastLogger logger = new FastLogger();
@@ -67,7 +75,6 @@ public class CefWebview extends Webview {
     private CefBrowser browser;
     private CefDevTools devtools;
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void initialize0() throws Exception {
         // One-time setup.
@@ -88,10 +95,7 @@ public class CefWebview extends Webview {
         });
         saveTimer.setRepeats(false);
 
-        this.updateAppIcon(this.windowState.getIcon());
-        this.windowState.setOnIconUpdate(() -> {
-            this.updateAppIcon(this.windowState.getIcon());
-        });
+        this.updateAppIcon(WebviewFactory.getCurrentIcon());
 
         this.frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -215,7 +219,7 @@ public class CefWebview extends Webview {
                 if (browser == _browser) {
                     logger.info("Injected Bridge.");
                     bridge.injectBridgeScript(browser.getMainFrame());
-                    bridge.attachBridge(windowState.getBridge());
+                    bridge.attachValue(windowState.getBridge());
                 }
             }
         });

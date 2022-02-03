@@ -1,5 +1,9 @@
 package co.casterlabs.caffeinated.webview;
 
+import java.lang.ref.WeakReference;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.util.Crypto;
@@ -18,6 +22,8 @@ public abstract class Webview {
     private static @Getter(AccessLevel.PROTECTED) Runnable shutdown;
     private static @Getter WebviewFactory webviewFactory;
 
+    protected static List<WeakReference<Webview>> webviews = new LinkedList<>();
+
     private @Getter boolean offScreenRenderingEnabled = false;
     private @Getter boolean transparencyEnabled = false;
 
@@ -27,6 +33,17 @@ public abstract class Webview {
 
     private @Getter WebviewLifeCycleListener lifeCycleListener;
     protected @Getter WebviewWindowState windowState = new WebviewWindowState();
+
+    private WeakReference<Webview> $ref = new WeakReference<>(this);
+
+    public Webview() {
+        webviews.add(this.$ref);
+    }
+
+    @Override
+    protected void finalize() {
+        webviews.remove(this.$ref);
+    }
 
     public final void initialize(@NonNull WebviewLifeCycleListener lifeCycleListener, @Nullable WebviewWindowState windowState, boolean offScreenRenderingEnabled, boolean transparencyEnabled) throws Exception {
         assert !this.initialized : "Webview is already initialized.";
