@@ -20,12 +20,14 @@ import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.callback.CefContextMenuParams;
 import org.cef.callback.CefMenuModel;
-import org.cef.handler.CefContextMenuHandler;
-import org.cef.handler.CefLifeSpanHandler;
+import org.cef.handler.CefContextMenuHandlerAdapter;
+import org.cef.handler.CefDisplayHandlerAdapter;
+import org.cef.handler.CefLifeSpanHandlerAdapter;
 import org.cef.handler.CefLoadHandlerAdapter;
 import org.cef.network.CefRequest.TransitionType;
 import org.jetbrains.annotations.Nullable;
 
+import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.webview.Webview;
 import co.casterlabs.caffeinated.webview.WebviewFactory;
 import co.casterlabs.caffeinated.webview.WebviewFileUtil;
@@ -71,7 +73,7 @@ public class CefWebview extends Webview {
         // One-time setup.
         if (!cefInitialized) {
             cefInitialized = true;
-            CefUtil.create(true /* I hate this. */, Webview.WEBVIEW_SCHEME, this.getSchemeHandler());
+            CefUtil.create(false /* I hate this. */, Webview.WEBVIEW_SCHEME, this.getSchemeHandler());
         }
 
         // Setup the panel
@@ -115,7 +117,6 @@ public class CefWebview extends Webview {
         });
 
         this.frame.addComponentListener(new ComponentAdapter() {
-
             @Override
             public void componentResized(ComponentEvent e) {
                 if (!isMaximized()) {
@@ -152,7 +153,7 @@ public class CefWebview extends Webview {
         this.bridge = new CefJavascriptBridge(this.client);
 
         // Context menu
-        this.client.addContextMenuHandler(new CefContextMenuHandler() {
+        this.client.addContextMenuHandler(new CefContextMenuHandlerAdapter() {
             // ID | Name
             // ---+-------------------------
             // 01 | Inspect Element
@@ -189,9 +190,6 @@ public class CefWebview extends Webview {
                 }
                 return true;
             }
-
-            @Override
-            public void onContextMenuDismissed(CefBrowser browser, CefFrame frame) {}
         });
 
         // Load handler
@@ -220,17 +218,10 @@ public class CefWebview extends Webview {
                     bridge.attachBridge(windowState.getBridge());
                 }
             }
-
         });
 
         // Lifespan
-        this.client.addLifeSpanHandler(new CefLifeSpanHandler() {
-
-            @Override
-            public boolean doClose(CefBrowser var1) {
-                return false;
-            }
-
+        this.client.addLifeSpanHandler(new CefLifeSpanHandlerAdapter() {
             @Override
             public void onAfterCreated(CefBrowser _browser) {
                 if (browser == _browser) {
@@ -238,16 +229,18 @@ public class CefWebview extends Webview {
                     devtools = new CefDevTools(browser);
                 }
             }
+        });
 
+        this.client.addDisplayHandler(new CefDisplayHandlerAdapter() {
             @Override
-            public void onAfterParentChanged(CefBrowser var1) {}
-
-            @Override
-            public void onBeforeClose(CefBrowser var1) {}
-
-            @Override
-            public boolean onBeforePopup(CefBrowser var1, CefFrame var2, String var3, String var4) {
-                return false;
+            public void onTitleChange(CefBrowser browser, String title) {
+                new AsyncTask(() -> {
+                    if ((title == null) || title.equals("null") || title.equals("undefined") || title.isEmpty()) {
+                        frame.setTitle("Casterlabs Caffeinated");
+                    } else {
+                        frame.setTitle("Casterlabs Caffeinated - " + title);
+                    }
+                });
             }
         });
     }
