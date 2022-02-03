@@ -89,7 +89,7 @@ public class AppLoopbackPlugin extends SoraPlugin implements HttpProvider {
                 return null;
             }
 
-            FastLogger.logStatic(LogLevel.DEBUG, "200: Remapped app://%s -> app%s (%s)", session.getUri(), uri, mimeType);
+            FastLogger.logStatic(LogLevel.TRACE, "200: Remapped app://app.local%s -> app%s (%s)", session.getUri(), uri, mimeType);
 
             return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content)
                 .setMimeType(mimeType);
