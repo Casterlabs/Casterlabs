@@ -9,8 +9,7 @@
     let viewerElement = {};
 
     setPageProperties({
-        showSideBar: false,
-        pageTitle: "Stream Chat",
+        showSideBar: true,
         allowNavigateBackwards: true
     });
 
@@ -149,6 +148,8 @@
     });
 
     onMount(async () => {
+        document.title = "Stream Chat";
+
         eventHandler = Bridge.createThrowawayEventHandler();
 
         eventHandler.on("auth:update", bridge_onAuthUpdate);
