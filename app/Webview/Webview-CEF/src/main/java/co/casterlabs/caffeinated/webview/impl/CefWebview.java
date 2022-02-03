@@ -239,7 +239,11 @@ public class CefWebview extends Webview {
             @Override
             public void onTitleChange(CefBrowser browser, String title) {
                 new AsyncTask(() -> {
-                    if ((title == null) || title.equals("null") || title.equals("undefined") || title.isEmpty()) {
+                    if ((title == null) ||
+                        title.equals("null") ||
+                        title.equals("undefined") ||
+                        title.isEmpty() ||
+                        getCurrentURL().contains(title)) {
                         frame.setTitle("Casterlabs Caffeinated");
                     } else {
                         frame.setTitle("Casterlabs Caffeinated - " + title);

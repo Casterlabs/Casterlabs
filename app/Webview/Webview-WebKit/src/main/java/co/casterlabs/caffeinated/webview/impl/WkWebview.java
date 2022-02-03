@@ -151,10 +151,16 @@ public class WkWebview extends Webview {
         this.browser.addTitleListener(new TitleListener() {
             @Override
             public void changed(TitleEvent event) {
-                if (event.title.equals("null") || event.title.equals("undefined") || event.title.isEmpty()) {
+                String title = event.title;
+
+                if ((title == null) ||
+                    title.equals("null") ||
+                    title.equals("undefined") ||
+                    title.isEmpty() ||
+                    getCurrentURL().contains(title)) {
                     shell.setText("Casterlabs Caffeinated");
                 } else {
-                    shell.setText("Casterlabs Caffeinated - " + event.title);
+                    shell.setText("Casterlabs Caffeinated - " + title);
                 }
             }
         });
