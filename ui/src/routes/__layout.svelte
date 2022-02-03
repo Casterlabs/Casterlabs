@@ -100,8 +100,10 @@
 
         window.goto = goto;
 
-        Bridge.on("goto", ({ path }) => goto(path));
-
+        if (!location.pathname.startsWith("/popout")) {
+            Bridge.on("goto", ({ path }) => goto(path));
+        }
+        
         Bridge.on("window:update", parseWindowUpdate);
         parseWindowUpdate((await Bridge.query("window")).data);
 
