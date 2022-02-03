@@ -244,6 +244,8 @@ public class Bootstrap implements Runnable {
                 webview.getBridge().setOnEvent((t, d) -> onBridgeEvent(t, d));
 
                 app.setAppBridge(webview.getBridge());
+                app.setWebview(webview);
+                app.setAppUrl(appUrl);
                 app.init();
 
                 try {

@@ -20,6 +20,7 @@ import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.app.ui.AppUI;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
+import co.casterlabs.caffeinated.webview.Webview;
 import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
 import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.rakurai.json.element.JsonObject;
@@ -50,6 +51,8 @@ public class CaffeinatedApp extends Caffeinated {
     private final boolean isDev;
 
     private @Setter WebviewBridge appBridge;
+    private @Setter Webview webview;
+    private @Setter String appUrl;
 
     // @formatter:off
     private PluginIntegration plugins = new PluginIntegration();
