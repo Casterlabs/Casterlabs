@@ -19,7 +19,7 @@ import co.casterlabs.caffeinated.pluginsdk.music.MusicTrack;
 import co.casterlabs.caffeinated.util.Pair;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.rakurai.io.IOUtil;
-import co.casterlabs.sora.MimeTypes;
+import co.casterlabs.rakurai.io.http.MimeTypes;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
