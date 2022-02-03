@@ -42,6 +42,7 @@ import xyz.e3ndr.reflectionlib.ReflectionLib;
 @Command(name = "start", mixinStandardHelpOptions = true, version = "Caffeinated", description = "Starts Caffeinated")
 public class Bootstrap implements Runnable {
     private static @Getter String appUrl = "app://app.local";
+    private static @Getter String appLoopbackUrl;
 
     @Option(names = {
             "-D",
@@ -203,19 +204,9 @@ public class Bootstrap implements Runnable {
         enableNuclearOption = Webview.getWebviewFactory().useNuclearOption() && !isDev ||
             System.getProperty("caffeinated.nuclearoption.force", "").equals("true");
 
-        // App url
-        String url = isDev ? this.devAddress : appUrl;
-
         // Init and start the local server.
         try {
             localServer = new LocalServer(app.getAppPreferences().get().getConductorPort());
-
-            // This is the nuclear option.
-            // https://bitbucket.org/chromiumembedded/java-cef/issues/365/custom-scheme-onloaderror-not-called
-            if (enableNuclearOption) {
-                FastLogger.logStatic("Nuclear option password: ", Webview.STATE_PASSWORD);
-                url = localServer.initNuclearOption(Webview.STATE_PASSWORD, isDev);
-            }
 
             localServer.start();
         } catch (IOException e) {
@@ -223,13 +214,22 @@ public class Bootstrap implements Runnable {
             FastLogger.logException(e);
         }
 
-        appUrl = url;
+        // App url
+        appLoopbackUrl = localServer.initLoopback(isDev);
 
-        ReflectionLib.setStaticValue(Webview.class, "shutdown", (Runnable) Bootstrap::shutdown);
+        if (enableNuclearOption) {
+            // This is the nuclear option.
+            // https://bitbucket.org/chromiumembedded/java-cef/issues/365/custom-scheme-onloaderror-not-called
+            appUrl = appLoopbackUrl;
+        } else {
+            appUrl = isDev ? this.devAddress : appUrl;
+        }
 
         // Setup the webview.
         logger.info("Initializing UI (this may take some time)");
         webview = Webview.getWebviewFactory().produce();
+
+        ReflectionLib.setStaticValue(Webview.class, "shutdown", (Runnable) Bootstrap::shutdown);
 
         // Register the custom schemes.
         webview.setSchemeHandler(new AppSchemeHandler());

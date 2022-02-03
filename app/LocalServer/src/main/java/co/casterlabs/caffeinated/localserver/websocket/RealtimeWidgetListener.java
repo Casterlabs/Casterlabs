@@ -181,7 +181,7 @@ public class RealtimeWidgetListener implements WebsocketListener, RouteHelper {
 
         @Override
         public @NonNull String getRemoteIpAddress() {
-            return websocket.getRemoteIpAddress();
+            return websocket.getSession().getRemoteIpAddress();
         }
 
         @Override

@@ -26,6 +26,15 @@ public class WebUtil {
         }
     }
 
+    public static Pair<byte[], String> sendHttpRequestBytesWithMime(@NonNull Request.Builder builder) throws IOException {
+        try (Response response = client.newCall(builder.build()).execute()) {
+            byte[] content = response.body().bytes();
+            String mimeType = response.header("Content-Type", "application/octet-stream");
+
+            return new Pair<>(content, mimeType);
+        }
+    }
+
     public static String escapeHtml(@NonNull String str) {
         return str
             .codePoints()
