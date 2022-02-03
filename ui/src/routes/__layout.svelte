@@ -41,12 +41,9 @@
 
 <script>
     import SideBar from "../components/side-bar.svelte";
-    import WindowsTitleBar from "../components/titlebar/windows.svelte";
 
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
-
-    let showTitleBar = false;
 
     elementUpdateHandler = update;
 
@@ -82,17 +79,6 @@
         }
     }
 
-    function parseWindowUpdate(data) {
-        // console.log("[__layout]", "Window state data: ", data);
-
-        // Incase it's needed elsewhere.
-        document.title = data.title;
-
-        if (data.platform == "WINDOWS" && data.enableTitleBar) {
-            showTitleBar = true;
-        }
-    }
-
     onMount(async () => {
         if (!Bridge) {
             alert("BRIDGE NOT INSTALLED!");
@@ -104,25 +90,10 @@
             Bridge.on("goto", ({ path }) => goto(path));
         }
         
-        Bridge.on("window:update", parseWindowUpdate);
-        parseWindowUpdate((await Bridge.query("window")).data);
-
         Bridge.on("theme:update", updateTheme);
         updateTheme((await Bridge.query("theme")).data);
     });
 </script>
-
-<!-- Titlebar -->
-{#if showTitleBar}
-    <section class="title-bar no-select">
-        <WindowsTitleBar />
-    </section>
-    <style>
-        :root {
-            --title-bar-height: 32px !important;
-        }
-    </style>
-{/if}
 
 <section id="notifications" class="no-select" />
 
