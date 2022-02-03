@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import co.casterlabs.caffeinated.app.AppPreferences;
+import co.casterlabs.caffeinated.app.AppWindowState;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.auth.AppAuth;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
@@ -112,13 +113,17 @@ public class AppUI {
             Collections.sort(allFonts);
 
             this.allFonts = Collections.unmodifiableList(allFonts);
-
-            // This doesn't update, so we register it and leave it be.
-            new BridgeValue<List<String>>("ui:fonts").set(this.allFonts);
         });
     }
 
     public void init() {
+        CaffeinatedApp.getInstance().getAppBridge().attachBridge(bridge_ChatViewerPreferences);
+
+        CaffeinatedApp.getInstance().getAppBridge().attachBridge(
+            // This doesn't update, so we register it and leave it be.
+            new BridgeValue<List<String>>("ui:fonts").set(this.allFonts)
+        );
+
         bridge_ChatViewerPreferences.set(CaffeinatedApp.getInstance().getUiPreferences().get().getChatViewerPreferences());
     }
 
@@ -140,6 +145,11 @@ public class AppUI {
         uiPrefs.setCloseToTray(event.isCloseToTray());
         uiPrefs.setMinimizeToTray(event.isMinimizeToTray());
         CaffeinatedApp.getInstance().getUiPreferences().save();
+
+        AppWindowState windowState = CaffeinatedApp.getInstance().getWindowPreferences().get();
+
+        windowState.setIcon(uiPrefs.getIcon());
+        windowState.update();
 
         ThemeManager.setTheme(event.getTheme(), "co.casterlabs.dark");
     }

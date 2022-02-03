@@ -119,8 +119,6 @@ public class WkWebview extends Webview {
     }
 
     private void mt_initialize() {
-        // We create the shell and leave it open.
-        // When the app wants it gone all we do is hide it.
         this.shell = new Shell(display, SWT.SHELL_TRIM);
         this.shell.setLayout(new FillLayout());
 
@@ -150,8 +148,10 @@ public class WkWebview extends Webview {
         this.browser.addTitleListener(new TitleListener() {
             @Override
             public void changed(TitleEvent event) {
-                if (!event.title.equals("null")) {
-                    shell.setText(event.title);
+                if (event.title.equals("null")) {
+                    shell.setText("Casterlabs Caffeinated");
+                } else {
+                    shell.setText("Casterlabs Caffeinated - " + event.title);
                 }
             }
         });
@@ -164,18 +164,18 @@ public class WkWebview extends Webview {
             public void controlMoved(ControlEvent e) {
                 Point loc = shell.getLocation();
 
-                WkWebview.this.windowState.setX(loc.x);
-                WkWebview.this.windowState.setY(loc.y);
-                WkWebview.this.windowState.update();
+                windowState.setX(loc.x);
+                windowState.setY(loc.y);
+                windowState.update();
             }
 
             @Override
             public void controlResized(ControlEvent e) {
                 Point size = shell.getSize();
 
-                WkWebview.this.windowState.setWidth(size.x);
-                WkWebview.this.windowState.setHeight(size.y);
-                WkWebview.this.windowState.update();
+                windowState.setWidth(size.x);
+                windowState.setHeight(size.y);
+                windowState.update();
             }
         });
 
@@ -217,7 +217,7 @@ public class WkWebview extends Webview {
     @Override
     public void loadURL(@Nullable String _url) {
         display.asyncExec(() -> {
-            String url = _url; // Pointer copy.
+            String url = _url; // Pointer.
 
             if (url == null) {
                 url = "about:blank";
@@ -276,7 +276,7 @@ public class WkWebview extends Webview {
         display.syncExec(() -> {
             // IMPL NOTE:
             // The shell is freed from the os if the JVM is shutting down cleanly.
-            this.shell.setVisible(false);
+            this.shell.close();
             this.browser.setUrl("about:blank");
         });
 
@@ -292,14 +292,29 @@ public class WkWebview extends Webview {
 
     @SneakyThrows
     private void changeImage(String logo) {
-        try (InputStream in = WebviewFileUtil.loadResourceAsUrl(String.format("assets/logo/%s.png", logo)).openStream()) {
-            Image image = new Image(display, in);
+        if (logo != null) {
+            try (InputStream in = WebviewFileUtil.loadResourceAsUrl(String.format("assets/logo/%s.png", logo)).openStream()) {
+                Image image = new Image(display, in);
 
-            display.syncExec(() -> {
-
-                this.shell.setImage(image);
-            });
+                display.syncExec(() -> {
+                    this.shell.setImage(image);
+                });
+            }
         }
+    }
+
+    @Override
+    public void focus() {
+        display.syncExec(() -> {
+            this.shell.setActive();
+        });
+    }
+
+    @Override
+    public boolean isOpen() {
+        return new SwtPromise<>(() -> {
+            return this.shell.isVisible();
+        }).await();
     }
 
 }

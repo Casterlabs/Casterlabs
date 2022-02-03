@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
-import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
 import xyz.e3ndr.consoleutil.ipc.IpcChannel;
@@ -155,7 +154,8 @@ public class InstanceManager {
                     String line = ipc.read();
 
                     if (line.equals("SUMMON")) {
-                        ApplicationUI.focusAndBeep();
+                        Bootstrap.getWebview().open(Bootstrap.getAppUrl());
+                        Bootstrap.getWebview().focus();
                     } else if (line.equals("SHUTDOWN")) {
                         Bootstrap.shutdown();
                     }

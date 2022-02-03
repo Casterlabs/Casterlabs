@@ -15,18 +15,18 @@ import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
-import co.casterlabs.caffeinated.app.theming.Theme;
 import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.bootstrap.instancing.InstanceManager;
 import co.casterlabs.caffeinated.bootstrap.tray.TrayHandler;
-import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
-import co.casterlabs.caffeinated.bootstrap.ui.UILifeCycleListener;
 import co.casterlabs.caffeinated.localserver.LocalServer;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.Currencies;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
 import co.casterlabs.caffeinated.webview.Webview;
+import co.casterlabs.caffeinated.webview.WebviewFileUtil;
+import co.casterlabs.caffeinated.webview.WebviewLifeCycleListener;
+import co.casterlabs.caffeinated.window.theming.Theme;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
@@ -43,7 +43,7 @@ import xyz.e3ndr.reflectionlib.ReflectionLib;
 @Getter
 @Command(name = "start", mixinStandardHelpOptions = true, version = "Caffeinated", description = "Starts Caffeinated")
 public class Bootstrap implements Runnable {
-    public static final String appUrl = "app://app.local";
+    private static @Getter String appUrl = "app://app.local";
 
     @Option(names = {
             "-D",
@@ -76,8 +76,8 @@ public class Bootstrap implements Runnable {
     private static @Getter boolean isDev;
 
     private static @Getter Bootstrap instance;
+    private static @Getter Webview webview;
     private static LocalServer localServer;
-    private static Webview webview;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Enable assertions programatically.
@@ -128,6 +128,7 @@ public class Bootstrap implements Runnable {
 
         isDev = this.devAddress != null;
         ReflectionLib.setStaticValue(FileUtil.class, "isDev", isDev);
+        ReflectionLib.setStaticValue(WebviewFileUtil.class, "isDev", isDev);
         buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
 
         Files.write(new File("./current_build_info.json").toPath(), FileUtil.loadResourceBytes("build_info.json"));
@@ -172,7 +173,6 @@ public class Bootstrap implements Runnable {
         this.startApp();
     }
 
-    @SuppressWarnings("deprecation")
     private void registerThemes() {
         // Light theme
         ThemeManager.registerTheme(
@@ -199,32 +199,10 @@ public class Bootstrap implements Runnable {
         logger.info("buildInfo.isDev              | %b", isDev);
         logger.info("system.platform              | %s", ConsoleUtil.getPlatform().name());
         logger.info("nativeSystem.awtSupported    | %b", app.isAwtSupported());
+        logger.info("bootstrap.args               | %s", System.getProperty("sun.java.command"));
         logger.info("");
 
-        // Webview settings.
-        switch (ConsoleUtil.getPlatform()) {
-
-            // Linux uses CEF.
-            case UNIX: {
-                enableNuclearOption = true;
-                this.devToolsEnabled = false; // Broken on Linux.
-                Webview.setOffScreenRenderingEnabled(true); // Won't resize without it.
-                break;
-            }
-
-            // MacOS uses SWT.
-            case MAC: {
-                enableNuclearOption = true;
-                break;
-            }
-
-            case UNKNOWN:
-            case WINDOWS:
-                break;
-
-        }
-
-        enableNuclearOption = enableNuclearOption && !isDev ||
+        enableNuclearOption = Webview.getWebviewFactory().useNuclearOption() && !isDev ||
             System.getProperty("caffeinated.nuclearoption.force", "").equals("true");
 
         // App url
@@ -247,27 +225,30 @@ public class Bootstrap implements Runnable {
             FastLogger.logException(e);
         }
 
+        appUrl = url;
+
         // Register the custom schemes.
-        Webview.setSchemeHandler(new ApplicationUI.AppSchemeHandler());
+        Webview.setSchemeHandler(new AppSchemeHandler());
 
         // Setup the webview.
         logger.info("Initializing UI (this may take some time)");
         webview = Webview.getWebviewFactory().produce();
 
         // Register the lifecycle listener.
-        UILifeCycleListener uiLifeCycleListener = new UILifeCycleListener() {
+        WebviewLifeCycleListener uiLifeCycleListener = new WebviewLifeCycleListener() {
 
             @Override
             public void onBrowserPreLoad() {
                 logger.debug("onPreLoad");
 
-                webview.getJavascriptBridge().setOnEvent((t, d) -> onBridgeEvent(t, d));
+                webview.getBridge().setOnEvent((t, d) -> onBridgeEvent(t, d));
 
+                app.setAppBridge(webview.getBridge());
                 app.init();
 
                 try {
                     new Promise<>(() -> {
-                        TrayHandler.tryCreateTray();
+                        TrayHandler.tryCreateTray(webview);
                         return null;
                     }).await();
                 } catch (Throwable ignored) {}
@@ -279,25 +260,6 @@ public class Bootstrap implements Runnable {
             }
 
             @Override
-            public boolean onUICloseAttempt() {
-                logger.debug("onUICloseAttempt");
-
-                if (app.canCloseUI()) {
-                    new AsyncTask(() -> {
-                        if (CaffeinatedApp.getInstance().getUiPreferences().get().isCloseToTray()) {
-                            ApplicationUI.closeWindow();
-                        } else {
-                            shutdown();
-                        }
-                    });
-                    return true;
-                } else {
-                    ApplicationUI.focusAndBeep();
-                    return false;
-                }
-            }
-
-            @Override
             public void onMinimize() {
                 logger.debug("onMinimize");
                 new AsyncTask(() -> {
@@ -305,9 +267,9 @@ public class Bootstrap implements Runnable {
                         // See if the minimize to tray option is checked.
                         // If so, make sure the app can close before closing the window.
                         if (app.canCloseUI()) {
-                            ApplicationUI.closeWindow();
+                            webview.close();
                         } else {
-                            ApplicationUI.focusAndBeep();
+                            webview.focus();
                         }
                     }
                 });
@@ -316,25 +278,46 @@ public class Bootstrap implements Runnable {
             @Override
             public void onBrowserOpen() {
                 logger.debug("onWindowOpen");
+                TrayHandler.updateShowCheckbox(true);
             }
 
             @Override
             public void onBrowserClose() {
-                logger.debug("onTrayMinimize");
+                logger.debug("onBrowserClose");
+                TrayHandler.updateShowCheckbox(false);
+            }
+
+            @Override
+            public void onOpenRequested() {
+                logger.debug("onOpenRequested");
+                webview.open(appUrl);
+            }
+
+            @Override
+            public void onCloseRequested() {
+                logger.debug("onCloseRequested");
+
+                if (app.canCloseUI()) {
+                    new AsyncTask(() -> {
+                        if (CaffeinatedApp.getInstance().getUiPreferences().get().isCloseToTray()) {
+                            webview.close();
+                        } else {
+                            shutdown();
+                        }
+                    });
+                } else {
+                    webview.focus();
+                }
             }
 
         };
 
-        webview.setLifeCycleListener(uiLifeCycleListener);
-
         logger.info("Starting the UI");
+        webview.setLifeCycleListener(uiLifeCycleListener);
+        webview.initialize(app.getWindowPreferences().get());
 
-        // Ok, now initialize!
-        ApplicationUI.initialize(
-            url,
-            webview,
-            uiLifeCycleListener
-        );
+        logger.info("appAddress = %s", appUrl);
+        webview.open(appUrl);
 
         // If all of that succeeds, we write a file to let the updater know that
         // everything's okay.
@@ -418,7 +401,7 @@ public class Bootstrap implements Runnable {
 
                 // UI
                 TrayHandler.destroy();
-                ApplicationUI.dispose();
+                webview.destroy();
 
                 // App
                 CaffeinatedApp.getInstance().shutdown();
@@ -442,7 +425,7 @@ public class Bootstrap implements Runnable {
                     System.exit(0);
                 }
             } else {
-                ApplicationUI.focusAndBeep();
+                webview.focus();
             }
         });
     }

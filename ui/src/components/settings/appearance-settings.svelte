@@ -21,10 +21,13 @@
     }
 
     function loadPreferences(data) {
-        appearanceTheme = data.theme;
         appearanceIcon = data.icon;
         appearanceCloseToTray = data.closeToTray;
         appearanceMinimizeToTray = data.minimizeToTray;
+    }
+
+    function onThemeUpdate(data) {
+        appearanceTheme = data.id;
     }
 
     function onThemesUpdate(t) {
@@ -41,8 +44,11 @@
         eventHandler.on("themes:update", onThemesUpdate);
         onThemesUpdate((await Bridge.query("themes")).data);
 
+        eventHandler.on("theme:update", onThemeUpdate);
+        onThemeUpdate((await Bridge.query("theme")).data);
+
         eventHandler.on("pref-update:ui", loadPreferences);
-        loadPreferences((await Bridge.query("ui")).data);
+        loadPreferences((await Bridge.query("ui:preferences")).data);
     });
 </script>
 

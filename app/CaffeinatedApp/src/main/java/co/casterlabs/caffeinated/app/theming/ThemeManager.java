@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
+import co.casterlabs.caffeinated.window.theming.Theme;
 import co.casterlabs.caffeinated.window.theming.ThemeableJFrame;
 import lombok.Getter;
 import lombok.NonNull;
@@ -16,6 +18,11 @@ public class ThemeManager {
 
     private static BridgeValue<Theme> bridge_Theme = new BridgeValue<>("theme");
     private static BridgeValue<Collection<Theme>> bridge_Themes = new BridgeValue<>("themes");
+
+    public static void init() {
+        CaffeinatedApp.getInstance().getAppBridge().attachBridge(bridge_Theme);
+        CaffeinatedApp.getInstance().getAppBridge().attachBridge(bridge_Themes);
+    }
 
     public static void registerTheme(@NonNull Theme theme) {
         themes.put(theme.getId(), theme);

@@ -32,6 +32,8 @@ import co.casterlabs.caffeinated.webview.WebviewFileUtil;
 import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.caffeinated.window.theming.ThemeableJFrame;
 import lombok.NonNull;
+import xyz.e3ndr.consoleutil.ConsoleUtil;
+import xyz.e3ndr.consoleutil.platform.JavaPlatform;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
@@ -46,7 +48,8 @@ public class CefWebview extends Webview {
 
         @Override
         public boolean useNuclearOption() {
-            return false;
+            // The scheme only works on Windows for some dumb reason.
+            return ConsoleUtil.getPlatform() != JavaPlatform.WINDOWS;
         }
     };
 
@@ -74,109 +77,6 @@ public class CefWebview extends Webview {
         // Setup the panel
         this.cefPanel = new JPanel();
         this.cefPanel.setLayout(new BorderLayout(0, 0));
-
-        this.client = CefUtil.createCefClient();
-        this.bridge = new CefJavascriptBridge(this.client);
-
-        // Context menu
-        this.client.addContextMenuHandler(new CefContextMenuHandler() {
-            // ID | Name
-            // ---+-------------------------
-            // 01 | Inspect Element
-            // 02 | Reload
-            //
-
-            @Override
-            public void onBeforeContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams params, CefMenuModel model) {
-                model.clear();
-
-//                if ( Bootstrap.isDev() || Bootstrap.getInstance().isDevToolsEnabled()) {
-                model.addItem(2, "Reload");
-
-                model.addCheckItem(1, "Inspect Element");
-                model.setChecked(1, devtools.isOpen());
-
-//                    model.addSeparator();
-//                    model.addItem(99, "Close This Popup");
-//                }
-            }
-
-            @Override
-            public boolean onContextMenuCommand(CefBrowser browser, CefFrame frame, CefContextMenuParams params, int commandId, int eventFlags) {
-                switch (commandId) {
-                    case 1: {
-                        devtools.toggle();
-                        break;
-                    }
-
-                    case 2: {
-                        browser.reloadIgnoreCache();
-                        break;
-                    }
-                }
-                return true;
-            }
-
-            @Override
-            public void onContextMenuDismissed(CefBrowser browser, CefFrame frame) {}
-        });
-
-        // Load handler
-        logger.debug("Loadstate 0");
-        this.getLifeCycleListener().onBrowserPreLoad();
-        this.client.addLoadHandler(new CefLoadHandlerAdapter() {
-            // 0 = about:blank (preload)
-            // 1 = app://index (load)
-            // 2 = ... (completely loaded)
-            private int loadState = 0;
-
-            @Override
-            public void onLoadEnd(CefBrowser _browser, CefFrame _frame, int httpStatusCode) {
-                if (this.loadState == 0) {
-                    logger.debug("Loadstate 1");
-                    getLifeCycleListener().onBrowserInitialLoad();
-                    this.loadState = 2;
-                    logger.debug("Loadstate 2");
-                }
-            }
-
-            @Override
-            public void onLoadStart(CefBrowser _browser, CefFrame _frame, TransitionType transitionType) {
-                if (browser == _browser) {
-                    logger.info("Injected Bridge.");
-                    bridge.injectBridgeScript(browser.getMainFrame());
-                }
-            }
-
-        });
-
-        // Lifespan
-        this.client.addLifeSpanHandler(new CefLifeSpanHandler() {
-
-            @Override
-            public boolean doClose(CefBrowser var1) {
-                return false;
-            }
-
-            @Override
-            public void onAfterCreated(CefBrowser _browser) {
-                if (browser == _browser) {
-                    logger.info("Created window.");
-                    devtools = new CefDevTools(browser);
-                }
-            }
-
-            @Override
-            public void onAfterParentChanged(CefBrowser var1) {}
-
-            @Override
-            public void onBeforeClose(CefBrowser var1) {}
-
-            @Override
-            public boolean onBeforePopup(CefBrowser var1, CefFrame var2, String var3, String var4) {
-                return false;
-            }
-        });
 
         // Create the frame.
         this.frame = ThemeableJFrame.FACTORY.produce();
@@ -247,6 +147,110 @@ public class CefWebview extends Webview {
             }
         });
 
+        // Cef
+        this.client = CefUtil.createCefClient();
+        this.bridge = new CefJavascriptBridge(this.client);
+
+        // Context menu
+        this.client.addContextMenuHandler(new CefContextMenuHandler() {
+            // ID | Name
+            // ---+-------------------------
+            // 01 | Inspect Element
+            // 02 | Reload
+            //
+
+            @Override
+            public void onBeforeContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams params, CefMenuModel model) {
+                model.clear();
+
+//                if ( Bootstrap.isDev() || Bootstrap.getInstance().isDevToolsEnabled()) {
+                model.addItem(2, "Reload");
+
+                model.addCheckItem(1, "Inspect Element");
+                model.setChecked(1, devtools.isOpen());
+
+//                    model.addSeparator();
+//                    model.addItem(99, "Close This Popup");
+//                }
+            }
+
+            @Override
+            public boolean onContextMenuCommand(CefBrowser browser, CefFrame frame, CefContextMenuParams params, int commandId, int eventFlags) {
+                switch (commandId) {
+                    case 1: {
+                        devtools.toggle();
+                        break;
+                    }
+
+                    case 2: {
+                        browser.reloadIgnoreCache();
+                        break;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public void onContextMenuDismissed(CefBrowser browser, CefFrame frame) {}
+        });
+
+        // Load handler
+        logger.debug("Loadstate 0");
+        this.getLifeCycleListener().onBrowserPreLoad();
+        this.client.addLoadHandler(new CefLoadHandlerAdapter() {
+            // 0 = about:blank (preload)
+            // 1 = app://index (load)
+            // 2 = ... (completely loaded)
+            private int loadState = 0;
+
+            @Override
+            public void onLoadEnd(CefBrowser _browser, CefFrame _frame, int httpStatusCode) {
+                if (this.loadState == 0) {
+                    logger.debug("Loadstate 1");
+                    getLifeCycleListener().onBrowserInitialLoad();
+                    this.loadState = 2;
+                    logger.debug("Loadstate 2");
+                }
+            }
+
+            @Override
+            public void onLoadStart(CefBrowser _browser, CefFrame _frame, TransitionType transitionType) {
+                if (browser == _browser) {
+                    logger.info("Injected Bridge.");
+                    bridge.injectBridgeScript(browser.getMainFrame());
+                    bridge.attachBridge(windowState.getBridge());
+                }
+            }
+
+        });
+
+        // Lifespan
+        this.client.addLifeSpanHandler(new CefLifeSpanHandler() {
+
+            @Override
+            public boolean doClose(CefBrowser var1) {
+                return false;
+            }
+
+            @Override
+            public void onAfterCreated(CefBrowser _browser) {
+                if (browser == _browser) {
+                    logger.info("Created window.");
+                    devtools = new CefDevTools(browser);
+                }
+            }
+
+            @Override
+            public void onAfterParentChanged(CefBrowser var1) {}
+
+            @Override
+            public void onBeforeClose(CefBrowser var1) {}
+
+            @Override
+            public boolean onBeforePopup(CefBrowser var1, CefFrame var2, String var3, String var4) {
+                return false;
+            }
+        });
     }
 
     public boolean isMaximized() {
@@ -289,6 +293,7 @@ public class CefWebview extends Webview {
 
             // Add it to the JPanel.
             this.cefPanel.add(this.browser.getUIComponent(), BorderLayout.CENTER);
+            this.frame.setVisible(true);
 
             // Notify
             this.getLifeCycleListener().onBrowserOpen();
@@ -298,6 +303,8 @@ public class CefWebview extends Webview {
     @Override
     public void close() {
         if (this.browser != null) {
+            this.frame.setVisible(false);
+
             // Remove the frame
             this.cefPanel.removeAll();
 
@@ -314,24 +321,36 @@ public class CefWebview extends Webview {
         }
     }
 
-    private void updateAppIcon(String icon) {
-        try {
-            URL iconUrl = WebviewFileUtil.loadResourceAsUrl(String.format("assets/logo/%s.png", icon));
+    private void updateAppIcon(@Nullable String icon) {
+        if (icon != null) {
+            try {
+                URL iconUrl = WebviewFileUtil.loadResourceAsUrl(String.format("assets/logo/%s.png", icon));
 
-            if (iconUrl != null) {
-                ImageIcon img = new ImageIcon(iconUrl);
-                this.frame.setIconImage(img.getImage());
+                if (iconUrl != null) {
+                    ImageIcon img = new ImageIcon(iconUrl);
+                    this.frame.setIconImage(img.getImage());
 
-                FastLogger.logStatic(LogLevel.DEBUG, "Set app icon to %s.", icon);
+                    FastLogger.logStatic(LogLevel.DEBUG, "Set app icon to %s.", icon);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     @Override
     public void destroy() {
         this.frame.dispose();
+    }
+
+    @Override
+    public void focus() {
+        this.frame.toFront();
+    }
+
+    @Override
+    public boolean isOpen() {
+        return this.frame.isVisible();
     }
 
 }

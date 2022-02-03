@@ -28,7 +28,7 @@ public class WebviewFileUtil {
         InputStream in;
 
         if (isDev) {
-            in = new FileInputStream(new File(String.format("../%s/src/main/resources/%s", project, path)));
+            in = new FileInputStream(new File(String.format("../../Webview/%s/src/main/resources/%s", project, path)));
         } else {
             in = WebviewFileUtil.class.getClassLoader().getResourceAsStream(path);
         }

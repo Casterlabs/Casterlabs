@@ -14,7 +14,7 @@
     let color = "white";
 
     onMount(async () => {
-        const { icon } = (await Bridge.query("ui")).data;
+        const { icon } = (await Bridge.query("window")).data;
         const { isDark } = (await Bridge.query("theme")).data;
 
         logo = icon;

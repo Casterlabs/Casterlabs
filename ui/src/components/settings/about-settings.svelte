@@ -7,7 +7,7 @@
     let year = "";
 
     onMount(async () => {
-        logo = (await Bridge.query("ui")).data.icon;
+        logo = (await Bridge.query("window")).data.icon;
         year = new Date().getFullYear();
 
         if ((await Bridge.query("theme")).data.isDark) {

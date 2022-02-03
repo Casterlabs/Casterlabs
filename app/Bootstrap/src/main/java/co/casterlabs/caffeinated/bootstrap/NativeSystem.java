@@ -42,6 +42,8 @@ public abstract class NativeSystem {
 
         // We set it here so we guarantee it gets set.
         Webview.setWebviewFactory(webviewFactory);
+
+        ThemeableJFrame.FACTORY = NativeSystem::getFrame;
     }
 
     public static ThemeableJFrame getFrame() {

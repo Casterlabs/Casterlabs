@@ -5,8 +5,8 @@ import java.io.IOException;
 import co.casterlabs.caffeinated.util.DualConsumer;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.webview.WebviewFileUtil;
-import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
+import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonNull;
@@ -57,9 +57,10 @@ public class WkBridge extends WebviewBridge {
     public void injectBridgeScript() {
         this.eval(bridgeScript);
 
-        // Lifecycle listener. (Outside of the JavaFX thread)
+        // Lifecycle listener. (Outside of the main thread)
         new AsyncTask(() -> {
 //            this.loadPromise.fulfill(null);
+            this.attachBridge(this.webview.getWindowState().getBridge());
             this.webview.getLifeCycleListener().onBrowserInitialLoad();
         });
     }

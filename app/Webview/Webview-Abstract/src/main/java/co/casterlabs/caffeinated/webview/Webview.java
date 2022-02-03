@@ -3,7 +3,6 @@ package co.casterlabs.caffeinated.webview;
 import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.caffeinated.util.Crypto;
-import co.casterlabs.caffeinated.util.Producer;
 import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.caffeinated.webview.scheme.SchemeHandler;
 import lombok.Getter;
@@ -18,7 +17,7 @@ public abstract class Webview {
     public static final String STATE_PASSWORD = new String(Crypto.generateSecureRandomKey());
     public static final boolean isDev = false;
 
-    private static @Getter @Setter Producer<Webview> webviewFactory;
+    private static @Getter @Setter WebviewFactory webviewFactory;
     private static @Getter @Setter SchemeHandler schemeHandler;
 
     private boolean initialized = false;
@@ -26,8 +25,12 @@ public abstract class Webview {
     private @Getter WebviewLifeCycleListener lifeCycleListener;
     protected @Getter WebviewWindowState windowState = new WebviewWindowState();
 
-    public final void initialize() throws Exception {
+    public final void initialize(@Nullable WebviewWindowState windowState) throws Exception {
         assert !this.initialized : "Webview is already initialized.";
+
+        if (windowState != null) {
+            this.windowState = windowState;
+        }
 
         this.initialized = true;
         this.initialize0();
@@ -54,5 +57,9 @@ public abstract class Webview {
     public abstract void close();
 
     public abstract void destroy();
+
+    public abstract void focus();
+
+    public abstract boolean isOpen();
 
 }

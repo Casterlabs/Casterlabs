@@ -20,12 +20,12 @@ import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.app.ui.AppUI;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
-import co.casterlabs.caffeinated.webview.WebviewWindowState;
-import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
+import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
@@ -49,7 +49,7 @@ public class CaffeinatedApp extends Caffeinated {
     private final boolean awtSupported;
     private final boolean isDev;
 
-    private WebviewBridge appBridge;
+    private @Setter WebviewBridge appBridge;
 
     // @formatter:off
     private PluginIntegration plugins = new PluginIntegration();
@@ -61,7 +61,7 @@ public class CaffeinatedApp extends Caffeinated {
 
     private PreferenceFile<PluginIntegrationPreferences> pluginIntegrationPreferences = new PreferenceFile<>("plugins", PluginIntegrationPreferences.class);
     private PreferenceFile<MusicIntegrationPreferences>  musicIntegrationPreferences  = new PreferenceFile<>("music",   MusicIntegrationPreferences.class);
-    private PreferenceFile<WebviewWindowState>                  windowPreferences            = new PreferenceFile<>("window",  WebviewWindowState.class);
+    private PreferenceFile<AppWindowState>               windowPreferences            = new PreferenceFile<>("window",  AppWindowState.class);
     private PreferenceFile<AuthPreferences>              authPreferences              = new PreferenceFile<>("auth",    AuthPreferences.class);
     private PreferenceFile<AppPreferences>               appPreferences               = new PreferenceFile<>("app",     AppPreferences.class).bridge();
     private PreferenceFile<UIPreferences>                uiPreferences                = new PreferenceFile<>("ui",      UIPreferences.class).bridge();
@@ -89,19 +89,26 @@ public class CaffeinatedApp extends Caffeinated {
     }
 
     public void init() {
+        ThemeManager.init();
         this.UI.init();
         this.koi.init();
         this.auth.init();
         this.music.init();
         this.plugins.init();
 
+        this.appBridge.attachBridge(bridge_AppPreferences);
         bridge_AppPreferences.set(this.appPreferences.get());
         this.appPreferences.addSaveListener((pref) -> {
             bridge_AppPreferences.update();
         });
 
+        CaffeinatedApp.getInstance().getAppBridge().attachBridge(
+            // This doesn't update, so we register it and leave it be.
+            new BridgeValue<UIPreferences>("ui:preferences").set(this.uiPreferences.get())
+        );
+
         // This doesn't updating, so we register it and leave it be.
-        new BridgeValue<BuildInfo>("build").set(this.buildInfo);
+        new BridgeValue<BuildInfo>("build").set(this.buildInfo).attachGlobally();
     }
 
     public boolean canCloseUI() {

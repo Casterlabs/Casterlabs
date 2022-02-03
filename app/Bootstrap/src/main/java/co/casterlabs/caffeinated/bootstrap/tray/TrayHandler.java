@@ -21,7 +21,7 @@ import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.FileUtil;
-import co.casterlabs.caffeinated.bootstrap.ui.ApplicationUI;
+import co.casterlabs.caffeinated.webview.Webview;
 import lombok.NonNull;
 
 public class TrayHandler {
@@ -31,7 +31,7 @@ public class TrayHandler {
     private static Image lastImage;
     private static TrayIcon icon;
 
-    public static void tryCreateTray() {
+    public static void tryCreateTray(Webview webview) {
         if (tray == null) {
             // Check the SystemTray support
             if (!SystemTray.isSupported()) {
@@ -45,7 +45,7 @@ public class TrayHandler {
             showCheckbox = new CheckboxMenuItem("Show");
             MenuItem itemExit = new MenuItem("Exit");
 
-            showCheckbox.setState(ApplicationUI.isOpen());
+            showCheckbox.setState(webview.isOpen());
 
             // Add components to popup menu
             popup.add(showCheckbox);
@@ -53,10 +53,10 @@ public class TrayHandler {
             popup.add(itemExit);
 
             showCheckbox.addItemListener((ItemEvent e) -> {
-                if (ApplicationUI.isOpen()) {
-                    ApplicationUI.closeWindow();
+                if (webview.isOpen()) {
+                    webview.close();
                 } else {
-                    ApplicationUI.showWindow();
+                    webview.open(Bootstrap.getAppUrl());
                 }
             });
 
@@ -86,7 +86,7 @@ public class TrayHandler {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if (!e.isPopupTrigger()) {
-                        ApplicationUI.showWindow();
+                        webview.open(Bootstrap.getAppUrl());
                     }
                 }
 
