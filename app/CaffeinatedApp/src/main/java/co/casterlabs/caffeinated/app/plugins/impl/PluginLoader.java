@@ -17,6 +17,7 @@ import java.util.jar.JarFile;
 
 import org.reflections8.Reflections;
 
+import co.casterlabs.caffeinated.app.plugins.GlobalPluginClassLoader;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPluginImplementation;
 import lombok.NonNull;
@@ -31,9 +32,7 @@ public class PluginLoader {
             try {
                 URL url = file.toURI().toURL();
 
-                classLoader = URLClassLoader.newInstance(new URL[] {
-                        url
-                }, PluginLoader.class.getClassLoader());
+                classLoader = GlobalPluginClassLoader.create(url);
 
                 List<Class<?>> types = new LinkedList<>();
 
