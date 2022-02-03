@@ -61,11 +61,11 @@ public class PluginsHandler implements CaffeinatedPlugins {
     /* ---------------- */
 
     public WidgetHandle createApplet(@NonNull String namespace, @Nullable JsonObject settings) {
-        return this.createWidget(namespace, "applet", "Applet", settings, WidgetType.APPLET);
+        return this.createWidget(namespace, namespace + ".applet", "Applet", settings, WidgetType.APPLET);
     }
 
     public WidgetHandle createDock(@NonNull String namespace, @Nullable JsonObject settings) {
-        return this.createWidget(namespace, "dock", "Dock", settings, WidgetType.DOCK);
+        return this.createWidget(namespace, namespace + ".dock", "Dock", settings, WidgetType.DOCK);
     }
 
     public WidgetHandle createWidget(@NonNull String namespace, @NonNull String id, @NonNull String name, @Nullable JsonObject settings) {

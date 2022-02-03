@@ -3,9 +3,8 @@
 
     import ChatViewer from "../../components/chat/chat-viewer.svelte";
 
-    import { onMount, onDestroy } from "svelte";
+    import { onMount } from "svelte";
 
-    let eventHandler;
     let viewerElement = {};
 
     setPageProperties({
@@ -34,13 +33,13 @@
     /* ---------------- */
 
     function onSavePreferences({ detail: data }) {
-        Bridge.emit("ui:save_chat_viewer_preferences", {
-            preferences: data
-        });
+        // Bridge.emit("ui:save_chat_viewer_preferences", {
+        //     preferences: data
+        // });
     }
 
     function onChatSend({ detail: data }) {
-        Bridge.emit("koi:chat_send", data);
+        // Bridge.emit("koi:chat_send", data);
     }
 
     function onModAction({ detail: modAction }) {
@@ -50,10 +49,10 @@
         console.log("[StreamChat]", `onModAction(${type}, ${platform})`);
 
         function sendCommand(command) {
-            Bridge.emit("koi:chat_send", {
-                message: command,
-                platform: platform
-            });
+            // Bridge.emit("koi:chat_send", {
+            //     message: command,
+            //     platform: platform
+            // });
         }
 
         switch (type) {
@@ -96,20 +95,20 @@
 
             case "delete": {
                 if (["TWITCH", "BRIME", "TROVO"].includes(platform)) {
-                    Bridge.emit("koi:chat_delete", {
-                        messageId: event.id,
-                        platform: platform
-                    });
+                    // Bridge.emit("koi:chat_delete", {
+                    //     messageId: event.id,
+                    //     platform: platform
+                    // });
                 }
                 return;
             }
 
             case "upvote": {
                 if (platform == "CAFFEINE") {
-                    Bridge.emit("koi:chat_upvote", {
-                        messageId: event.id,
-                        platform: platform
-                    });
+                    // Bridge.emit("koi:chat_upvote", {
+                    //     messageId: event.id,
+                    //     platform: platform
+                    // });
                 }
                 return;
             }
@@ -143,33 +142,27 @@
     /* Life Cycle   */
     /* ---------------- */
 
-    onDestroy(() => {
-        eventHandler?.destroy();
-    });
-
     onMount(async () => {
-        document.title = "Chat";
+        document.title = "Stream Chat";
 
-        eventHandler = Bridge.createThrowawayEventHandler();
+        // // eventHandler.on("auth:update", bridge_onAuthUpdate);
+        // // bridge_onAuthUpdate((await Bridge.query("auth")).data);
 
-        eventHandler.on("auth:update", bridge_onAuthUpdate);
-        bridge_onAuthUpdate((await Bridge.query("auth")).data);
+        // // eventHandler.on("ui:chatViewerPreferences:update", bridge_onChatViewerPreferencesUpdate);
+        // // bridge_onChatViewerPreferencesUpdate((await Bridge.query("ui:chatViewerPreferences")).data);
 
-        eventHandler.on("ui:chatViewerPreferences:update", bridge_onChatViewerPreferencesUpdate);
-        bridge_onChatViewerPreferencesUpdate((await Bridge.query("ui:chatViewerPreferences")).data);
+        // Koi.on("*", bridge_processEvent);
+        // Koi.eventHistory.forEach(bridge_processEvent);
 
-        eventHandler.on("koi:event", bridge_processEvent);
-        (await Bridge.query("koi:history")).data.forEach(bridge_processEvent);
-
-        for (const [platform, viewers] of Object.entries((await Bridge.query("koi:viewers")).data)) {
-            bridge_processEvent({
-                streamer: {
-                    platform: platform
-                },
-                viewers: viewers,
-                event_type: "VIEWER_LIST"
-            });
-        }
+        // for (const [platform, viewers] of Object.entries(Koi.viewers) {
+        //     bridge_processEvent({
+        //         streamer: {
+        //             platform: platform
+        //         },
+        //         viewers: viewers,
+        //         event_type: "VIEWER_LIST"
+        //     });
+        // }
     });
 </script>
 

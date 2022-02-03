@@ -7,9 +7,7 @@ public enum AppUIEventType {
     APPEARANCE_UPDATE(AppUIAppearanceUpdateEvent.class),
     THEME_LOADED(AppUIThemeLoadedEvent.class),
     OPENLINK(AppUIOpenLinkEvent.class),
-    SAVE_CHAT_VIEWER_PREFERENCES(AppUISaveChatViewerPreferencesEvent.class),
-    POPOUT_CHAT(AppUIPopoutChatEvent.class),
-    POPOUT_VIEWERS(AppUIPopoutViewersEvent.class);
+    SAVE_CHAT_VIEWER_PREFERENCES(AppUISaveChatViewerPreferencesEvent.class);
 
     private @Getter Class<AbstractEvent<AppUIEventType>> eventClass;
 

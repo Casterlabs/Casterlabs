@@ -53,6 +53,7 @@ public class CaffeinatedApp extends Caffeinated {
     private @Setter WebviewBridge appBridge;
     private @Setter Webview webview;
     private @Setter String appUrl;
+    private @Setter String appLoopbackUrl;
 
     // @formatter:off
     private PluginIntegration plugins = new PluginIntegration();

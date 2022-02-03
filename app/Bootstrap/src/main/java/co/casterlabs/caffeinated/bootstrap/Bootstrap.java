@@ -246,6 +246,7 @@ public class Bootstrap implements Runnable {
                 app.setAppBridge(webview.getBridge());
                 app.setWebview(webview);
                 app.setAppUrl(appUrl);
+                app.setAppLoopbackUrl(appLoopbackUrl);
                 app.init();
 
                 try {
