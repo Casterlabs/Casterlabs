@@ -70,7 +70,7 @@ public class LocalServer implements Closeable, HttpProvider {
             .getSora()
             .register(new AppLoopbackPlugin());
 
-        return String.format("http://app-loopback.casterlabs.co:%d", this.port);
+        return String.format("http://app-loopback.widgets.casterlabs.co:%d", this.port);
     }
 
     private class LocalServerPluginWrapper extends SoraPlugin {

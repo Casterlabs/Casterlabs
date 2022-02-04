@@ -39,7 +39,7 @@ public class AppLoopbackPlugin extends SoraPlugin implements HttpProvider {
         // app contents, otherwise we return null and sora will try another HttpProvider
         // (LocalServer function remains unimpeaded)
 
-        if (session.getHost().startsWith("app-loopback.casterlabs.co")) {
+        if (session.getHost().startsWith("app-loopback.widgets.casterlabs.co:")) {
             String uri = session.getUri();
 
             // Append `index.html` to the end when required.
