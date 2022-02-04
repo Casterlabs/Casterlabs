@@ -15,6 +15,7 @@
         <a class="sidebar-category-button" href="/pages/stream-chat"> Chat </a>
         <a class="sidebar-category-button hidden"> Analytics </a>
         <a class="sidebar-category-button" href="/pages/widget-manager"> Widgets </a>
+        <a class="sidebar-category-button" href="/pages/dock-manager"> Docks </a>
     </div>
 
     <!-- Channel -->
