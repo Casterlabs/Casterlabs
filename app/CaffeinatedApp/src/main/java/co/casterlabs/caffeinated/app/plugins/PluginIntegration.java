@@ -115,7 +115,9 @@ public class PluginIntegration {
                     this.plugins.createWidget(details.getNamespace(), id, details.getName(), details.getSettings());
                 }
             } catch (AssertionError | SecurityException | NullPointerException | IllegalArgumentException e) {
-                if ("A factory associated to that widget is not registered.".equals(e.getMessage())) {
+                if ("That widget is not of the expected type of WIDGET".equals(e.getMessage())) {
+                    continue; // Ignore.
+                } else if ("A factory associated to that widget is not registered.".equals(e.getMessage())) {
                     // We can safely ignore it.
                     // TODO let the user know that the widget could not be found.
                     FastLogger.logStatic(LogLevel.WARNING, "Unable to create missing widget: %s (%s)", details.getName(), details.getNamespace());
