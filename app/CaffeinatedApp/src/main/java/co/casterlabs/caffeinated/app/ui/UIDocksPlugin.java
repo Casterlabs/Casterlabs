@@ -10,14 +10,12 @@ import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
-import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails.WidgetDetailsCategory;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstance;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetInstanceMode;
 import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetType;
 import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
 import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.rakurai.json.element.JsonElement;
-import co.casterlabs.rakurai.json.element.JsonString;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import xyz.e3ndr.reflectionlib.ReflectionLib;
@@ -30,6 +28,7 @@ public class UIDocksPlugin extends CaffeinatedPlugin {
     @Override
     public void onInit() {
         this.getPlugins().registerWidget(this, StreamChatDock.DETAILS, StreamChatDock.class);
+        this.getPlugins().registerWidget(this, StreamViewersDock.DETAILS, StreamViewersDock.class);
 
         bridge = new BridgeShim();
         bridge.mergeWith(CaffeinatedApp.getInstance().getAppBridge());
@@ -53,7 +52,7 @@ public class UIDocksPlugin extends CaffeinatedPlugin {
     public static class StreamChatDock extends Widget {
         public static final WidgetDetails DETAILS = new WidgetDetails()
             .withNamespace("co.casterlabs.dock.stream_chat")
-            .withCategory(WidgetDetailsCategory.INTERACTION)
+            .withIcon("message-circle")
             .withType(WidgetType.DOCK)
             .withFriendlyName("Stream Chat");
 
@@ -93,6 +92,36 @@ public class UIDocksPlugin extends CaffeinatedPlugin {
                 "<!DOCTYPE html>" +
                     "<html>" +
                     "<script> location.href = `%s/popout/stream-chat`; </script>" +
+                    "</html",
+                CaffeinatedApp.getInstance().getAppLoopbackUrl()
+            );
+        }
+
+    }
+
+    public static class StreamViewersDock extends Widget {
+        public static final WidgetDetails DETAILS = new WidgetDetails()
+            .withNamespace("co.casterlabs.dock.stream_viewers")
+            .withIcon("eye")
+            .withType(WidgetType.DOCK)
+            .withFriendlyName("Stream Viewers");
+
+        @SneakyThrows
+        @Override
+        public void onInit() {
+            // NEVER do this.
+            WidgetHandle handle = ReflectionLib.getValue(this, "$handle");
+            String newFormat = CaffeinatedApp.getInstance().getAppLoopbackUrl() + "/external/caffeinated/widget.html?pluginId=%s&widgetId=%s&authorization=%s&port=%d&mode=%s";
+
+            ReflectionLib.setValue(handle, "urlFormat", newFormat);
+        }
+
+        @Override
+        public @Nullable String getWidgetHtml(WidgetInstanceMode mode) {
+            return String.format(
+                "<!DOCTYPE html>" +
+                    "<html>" +
+                    "<script> location.href = `%s/popout/stream-viewers`; </script>" +
                     "</html",
                 CaffeinatedApp.getInstance().getAppLoopbackUrl()
             );
