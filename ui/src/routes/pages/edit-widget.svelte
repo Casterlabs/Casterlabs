@@ -13,7 +13,6 @@
     });
 
     let widget = null;
-    let widgetDemoUrl = null;
     let nameEditorTextContent;
     let nameEditor;
 
@@ -70,10 +69,6 @@
                 break;
             }
         }
-
-        Bridge.query("app:preferences").then(({ data }) => {
-            widgetDemoUrl = `https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=${widget.owner}&widgetId=${widget.id}&authorization=${data.conductorKey}&port=${data.conductorPort}&mode=demo`;
-        });
 
         if (!objectEquals(settingsLayout, widget.settingsLayout)) {
             blanking = true;
@@ -227,10 +222,10 @@
                 {/each}
             {/if}
 
-            {#if widget.details.showDemo && widgetDemoUrl}
+            {#if widget.details.showDemo && widget.url}
                 <div class="widget-demo-container">
                     <div class="widget-demo" style="padding-bottom: {widget.details.demoAspectRatio * 100}%;">
-                        <iframe src={widgetDemoUrl} title="Preview" />
+                        <iframe src={widget.url.replace(/&mode=.*/, "&mode=DEMO")} title="Preview" />
                     </div>
                 </div>
             {/if}
