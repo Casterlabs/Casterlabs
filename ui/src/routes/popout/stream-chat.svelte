@@ -142,8 +142,11 @@
     /* Life Cycle   */
     /* ---------------- */
 
-    onMount(async () => {
-        document.title = "Stream Chat";
+    function mount() {
+        if (!window.Koi) {
+            setTimeout(mount, 500);
+            return;
+        }
 
         Widget.on("ui:chatViewerPreferences:update", bridge_onChatViewerPreferencesUpdate);
         Widget.on("auth:update", bridge_onAuthUpdate);
@@ -166,6 +169,11 @@
 
         bridge_onAuthUpdate({ koiAuth: Koi.userStates });
         // bridge_onChatViewerPreferencesUpdate((await Widget.query("ui:chatViewerPreferences")).data);
+    }
+
+    onMount(async () => {
+        document.title = "Stream Chat";
+        mount();
     });
 </script>
 

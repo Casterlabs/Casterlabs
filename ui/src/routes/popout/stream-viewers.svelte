@@ -44,8 +44,11 @@
     /* Life Cycle   */
     /* ---------------- */
 
-    onMount(async () => {
-        document.title = "Stream Viewers";
+    function mount() {
+        if (!window.Koi) {
+            setTimeout(mount, 500);
+            return;
+        }
 
         onAuthUpdate({ koiAuth: Koi.userStates });
 
@@ -63,6 +66,11 @@
                 event_type: "VIEWER_LIST"
             });
         }
+    }
+
+    onMount(async () => {
+        document.title = "Stream Viewers";
+        mount();
     });
 </script>
 
