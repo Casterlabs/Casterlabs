@@ -58,8 +58,9 @@ public abstract class Widget {
 
         public WidgetHandle(Widget w, String conductorKey, int conductorPort) {
             this.widget = w;
+            this.conductorKey = conductorKey;
+            this.conductorPort = conductorPort;
             this.widgetSettings = new WidgetSettings(this.widget);
-
         }
 
         public String getUrl() {
