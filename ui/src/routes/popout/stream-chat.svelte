@@ -13,7 +13,7 @@
     });
 
     /* ---------------- */
-    /* Bridge Events    */
+    /* Widget Events    */
     /* ---------------- */
 
     function bridge_processEvent(event) {
@@ -33,13 +33,13 @@
     /* ---------------- */
 
     function onSavePreferences({ detail: data }) {
-        // Bridge.emit("ui:save_chat_viewer_preferences", {
-        //     preferences: data
-        // });
+        Widget.emit("ui:save_chat_viewer_preferences", {
+            preferences: data
+        });
     }
 
     function onChatSend({ detail: data }) {
-        // Bridge.emit("koi:chat_send", data);
+        Widget.emit("koi:chat_send", data);
     }
 
     function onModAction({ detail: modAction }) {
@@ -49,10 +49,10 @@
         console.log("[StreamChat]", `onModAction(${type}, ${platform})`);
 
         function sendCommand(command) {
-            // Bridge.emit("koi:chat_send", {
-            //     message: command,
-            //     platform: platform
-            // });
+            Widget.emit("koi:chat_send", {
+                message: command,
+                platform: platform
+            });
         }
 
         switch (type) {
@@ -95,20 +95,20 @@
 
             case "delete": {
                 if (["TWITCH", "BRIME", "TROVO"].includes(platform)) {
-                    // Bridge.emit("koi:chat_delete", {
-                    //     messageId: event.id,
-                    //     platform: platform
-                    // });
+                    Widget.emit("koi:chat_delete", {
+                        messageId: event.id,
+                        platform: platform
+                    });
                 }
                 return;
             }
 
             case "upvote": {
                 if (platform == "CAFFEINE") {
-                    // Bridge.emit("koi:chat_upvote", {
-                    //     messageId: event.id,
-                    //     platform: platform
-                    // });
+                    Widget.emit("koi:chat_upvote", {
+                        messageId: event.id,
+                        platform: platform
+                    });
                 }
                 return;
             }
@@ -145,24 +145,27 @@
     onMount(async () => {
         document.title = "Stream Chat";
 
-        // // eventHandler.on("auth:update", bridge_onAuthUpdate);
-        // // bridge_onAuthUpdate((await Bridge.query("auth")).data);
+        Widget.on("ui:chatViewerPreferences:update", bridge_onChatViewerPreferencesUpdate);
+        Widget.on("auth:update", bridge_onAuthUpdate);
+        Widget.on("__eval", eval);
 
-        // // eventHandler.on("ui:chatViewerPreferences:update", bridge_onChatViewerPreferencesUpdate);
-        // // bridge_onChatViewerPreferencesUpdate((await Bridge.query("ui:chatViewerPreferences")).data);
-
-        // Koi.on("*", bridge_processEvent);
         // Koi.eventHistory.forEach(bridge_processEvent);
 
-        // for (const [platform, viewers] of Object.entries(Koi.viewers) {
-        //     bridge_processEvent({
-        //         streamer: {
-        //             platform: platform
-        //         },
-        //         viewers: viewers,
-        //         event_type: "VIEWER_LIST"
-        //     });
-        // }
+        Koi.on("*", (t, event) => bridge_processEvent(event));
+        Koi.eventHistory.forEach(bridge_processEvent);
+
+        for (const [platform, viewers] of Object.entries(Koi.viewers)) {
+            bridge_processEvent({
+                streamer: {
+                    platform: platform
+                },
+                viewers: viewers,
+                event_type: "VIEWER_LIST"
+            });
+        }
+
+        bridge_onAuthUpdate({ koiAuth: Koi.userStates });
+        // bridge_onChatViewerPreferencesUpdate((await Widget.query("ui:chatViewerPreferences")).data);
     });
 </script>
 
