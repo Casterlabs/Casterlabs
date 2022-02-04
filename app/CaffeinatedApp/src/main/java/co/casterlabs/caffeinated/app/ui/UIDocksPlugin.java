@@ -19,6 +19,8 @@ import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.rakurai.json.element.JsonElement;
 import co.casterlabs.rakurai.json.element.JsonString;
 import lombok.NonNull;
+import lombok.SneakyThrows;
+import xyz.e3ndr.reflectionlib.ReflectionLib;
 
 // This is so nasty, I love it.
 public class UIDocksPlugin extends CaffeinatedPlugin {
@@ -62,6 +64,16 @@ public class UIDocksPlugin extends CaffeinatedPlugin {
             "koi:chat_upvote",
             "auth:update"
         );
+
+        @SneakyThrows
+        @Override
+        public void onInit() {
+            // NEVER do this.
+            WidgetHandle handle = ReflectionLib.getValue(this, "$handle");
+            String newFormat = CaffeinatedApp.getInstance().getAppLoopbackUrl() + "/external/caffeinated/widget.html?pluginId=%s&widgetId=%s&authorization=%s&port=%d&mode=%s";
+
+            ReflectionLib.setValue(handle, "urlFormat", newFormat);
+        }
 
         @Override
         public void onNewInstance(@NonNull WidgetInstance instance) {
