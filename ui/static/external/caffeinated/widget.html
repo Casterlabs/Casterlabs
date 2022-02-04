@@ -5,8 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Casterlabs Caffeinated Widget</title>
-        <script src="/caffeinated/eventHandler.js"></script>
-        <script src="/caffeinated/conn.js"></script>
+        <script src="./eventHandler.js"></script>
+        <script src="./conn.js"></script>
         <script>
             const queryParams = (() => {
                 let vars = {};
@@ -205,7 +205,7 @@
             // Listen for events on the conn, fire them off, yeah you get the idea.
             conn.on("init", () => {
                 sandboxFrame = document.createElement("iframe");
-                sandboxFrame.src = "/caffeinated/sandbox.html";
+                sandboxFrame.src = "./sandbox.html";
 
                 let loadState = 0;
                 sandboxFrame.addEventListener("load", async () => {
