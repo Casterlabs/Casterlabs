@@ -211,17 +211,7 @@ public class PluginIntegration {
     public void onPluginIntegrationCopyWidgetUrlEvent(AppPluginIntegrationCopyWidgetUrlEvent event) {
         WidgetHandle handle = this.plugins.getWidgetHandle(event.getId());
 
-        String conductorKey = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorKey();
-        int conductorPort = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorPort();
-        String url = String.format(
-            "https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=%s&widgetId=%s&authorization=%s&port=%d&mode=widget",
-            handle.plugin.getId(),
-            handle.id,
-            conductorKey,
-            conductorPort
-        );
-
-        ClipboardUtil.copy(url);
+        ClipboardUtil.copy(handle.getUrl());
 
         CaffeinatedApp.getInstance().getUI().showToast("Copied link to clipboard", UIBackgroundColor.PRIMARY);
     }

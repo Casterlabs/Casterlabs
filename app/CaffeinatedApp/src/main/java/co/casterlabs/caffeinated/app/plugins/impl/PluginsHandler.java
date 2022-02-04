@@ -81,7 +81,10 @@ public class PluginsHandler implements CaffeinatedPlugins {
 
         List<Widget> pluginWidgetsField = ReflectionLib.getValue(factory.a, "widgets");
 
-        WidgetHandle handle = new WidgetHandle(factory.b.produce()) {
+        String conductorKey = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorKey();
+        int conductorPort = CaffeinatedApp.getInstance().getAppPreferences().get().getConductorPort();
+
+        WidgetHandle handle = new WidgetHandle(factory.b.produce(), conductorKey, conductorPort) {
             @Override
             public void onSettingsUpdate() {
                 CaffeinatedApp.getInstance().getPlugins().save();

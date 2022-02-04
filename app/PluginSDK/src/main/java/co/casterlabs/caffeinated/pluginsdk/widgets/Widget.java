@@ -51,14 +51,37 @@ public abstract class Widget {
         public JsonObject settings = new JsonObject();
         public WidgetSettings widgetSettings;
 
-        public WidgetHandle(Widget w) {
+        public String conductorKey;
+        public int conductorPort;
+
+        private String urlFormat = "https://widgets.casterlabs.co/caffeinated/widget.html?pluginId=%s&widgetId=%s&authorization=%s&port=%d&mode=%s";
+
+        public WidgetHandle(Widget w, String conductorKey, int conductorPort) {
             this.widget = w;
             this.widgetSettings = new WidgetSettings(this.widget);
+
+        }
+
+        public String getUrl() {
+            return String.format(
+                this.urlFormat,
+
+                this.plugin.getId(),
+                this.id,
+                this.conductorKey,
+                this.conductorPort,
+                this.details.getType()
+            );
         }
 
         @JsonSerializationMethod("owner")
         private JsonElement $serialize_owner() {
             return Rson.DEFAULT.toJson(this.plugin.getId());
+        }
+
+        @JsonSerializationMethod("url")
+        private JsonElement $serialize_url() {
+            return Rson.DEFAULT.toJson(this.getUrl());
         }
 
         @Reflective
@@ -111,6 +134,10 @@ public abstract class Widget {
     /* ---------------- */
     /* Framework        */
     /* ---------------- */
+
+    public String getUrl() {
+        return $handle.getUrl();
+    }
 
     /**
      * @deprecated While this is used internally, plugins can use it as well for
