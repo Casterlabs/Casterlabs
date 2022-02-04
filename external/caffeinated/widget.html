@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
-
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Casterlabs Caffeinated Widget</title>
         <script src="/caffeinated/eventHandler.js"></script>
         <script src="/caffeinated/conn.js"></script>
@@ -34,10 +33,7 @@
             }
 
             function escapeHtml(unsafe) {
-                return unsafe
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;");
+                return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             }
         </script>
         <style>
@@ -52,9 +48,7 @@
         </style>
     </head>
 
-    <body>
-
-    </body>
+    <body></body>
 
     <footer>
         <!-- type="module" helps isolate. -->
@@ -92,7 +86,7 @@
 
                 emit(type, data) {
                     conn.emit(type, data);
-                },
+                }
 
                 // getResource(resourceId) {
 
@@ -177,7 +171,7 @@
                             console.debug(platform);
                             return 100; // ?
                     }
-                },
+                }
 
                 // test(event) {
                 //     if (this.isAlive()) {
@@ -187,8 +181,7 @@
                 //         }));
                 //     }
                 // }
-
-            };;
+            };
 
             // The `Music` global.
             let music_data = {};
@@ -203,8 +196,7 @@
                 get activePlayback() {
                     return music_data.activePlayback;
                 }
-
-            };;
+            };
 
             deepFreeze(widgetInstance);
             deepFreeze(koiInstance);
@@ -217,10 +209,9 @@
 
                 let loadState = 0;
                 sandboxFrame.addEventListener("load", async () => {
-                    if (loadState == 0) {
-                        loadState++;
-                        const { contentWindow, contentDocument } = sandboxFrame;
+                    const { contentWindow, contentDocument } = sandboxFrame;
 
+                    if (!contentWindow.Koi) {
                         // Inject our f a v o r i t e globals.
                         Object.defineProperty(contentWindow, "Koi", {
                             value: koiInstance,
@@ -247,6 +238,10 @@
                             writable: false,
                             configurable: false
                         });
+                    }
+
+                    if (loadState == 0) {
+                        loadState++;
 
                         // Load the widget html.
                         const response = await fetch(`http://${address}:${port}/api/plugin/${pluginId}/widget/${widgetId}/html?authorization=${authorization}&mode=${widgetMode}`);
@@ -338,5 +333,4 @@
             });
         </script>
     </footer>
-
 </html>
