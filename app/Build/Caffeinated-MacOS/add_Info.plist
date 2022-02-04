@@ -5,7 +5,7 @@
     <true/>
     <key>NSExceptionDomains</key>
     <dict>
-      <key>127.0.0.1</key>
+      <key>app-loopback.widgets.casterlabs.co</key>
       <dict>
         <key>NSExceptionAllowsInsecureHTTPLoads</key>
         <true/>
