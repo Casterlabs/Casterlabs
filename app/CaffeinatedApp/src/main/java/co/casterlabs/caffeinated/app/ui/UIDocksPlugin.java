@@ -120,9 +120,9 @@ public class UIDocksPlugin extends CaffeinatedPlugin {
 
         @Override
         protected void eval0(@NonNull String script) {
-            for (Widget w : getWidgets()) {
-                w.broadcastToAll("__eval", new JsonString(script));
-            }
+//            for (Widget w : getWidgets()) {
+//                w.broadcastToAll("__eval", new JsonString(script));
+//            }
         }
 
     }
