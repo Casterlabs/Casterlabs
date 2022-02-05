@@ -190,10 +190,12 @@ public class WkWebview extends Webview {
             this.getLifeCycleListener().onCloseRequested();
         });
 
-        display.getMenuBar().addListener(SWT.Activate, (event) -> {
-            event.doit = true;
-            this.getLifeCycleListener().onOpenRequested();
-        });
+        if (display.getMenuBar() != null) {
+            display.getMenuBar().addListener(SWT.Activate, (event) -> {
+                event.doit = true;
+                this.getLifeCycleListener().onOpenRequested();
+            });
+        }
 
         new AsyncTask(() -> {
             // The bridge query code.
