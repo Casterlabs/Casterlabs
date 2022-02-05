@@ -24,7 +24,6 @@
         },
         {
             name: "Appearance",
-            id: "appearance",
             type: "category",
             component: AppearanceSettings
         },
@@ -34,13 +33,11 @@
         },
         {
             name: "Accounts",
-            id: "accounts",
             type: "category",
             component: AccountSettings
         },
         {
             name: "Music Services",
-            id: "music_services",
             type: "category",
             component: MusicServicesSettings
         },
@@ -50,7 +47,6 @@
         },
         {
             name: "About",
-            id: "about",
             type: "category",
             component: AboutSettings
         }

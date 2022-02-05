@@ -35,7 +35,7 @@
                     class="
                         settings-category-button 
                         is-6 
-                        {currentCategory.id == category.id ? 'is-selected' : ''}
+                        {currentCategory == category ? 'is-selected' : ''}
                     "
                     on:click={() => switchCategory(category)}
                 >

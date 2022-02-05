@@ -21,7 +21,6 @@
         },
         {
             name: "Appearance",
-            id: "appearance",
             type: "category",
             component: AppearanceSettings
         },
@@ -31,7 +30,6 @@
         },
         {
             name: "Music Services",
-            id: "music_services",
             type: "category",
             component: MusicServicesSettings
         }
