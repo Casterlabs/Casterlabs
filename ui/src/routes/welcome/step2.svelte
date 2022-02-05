@@ -11,6 +11,7 @@
     // Settings Content
     import SettingsContainer from "../../components/settings/settings-container.svelte";
     import AppearanceSettings from "../../components/settings/appearance-settings.svelte";
+    import MusicServicesSettings from "../../components/settings/music-services-settings.svelte";
     // import StatusIntegrationSettings from "../../components/settings/status-integration-settings.svelte";
 
     const settingsContainerContents = [
@@ -23,6 +24,16 @@
             id: "appearance",
             type: "category",
             component: AppearanceSettings
+        },
+        {
+            name: "User Settings",
+            type: "section"
+        },
+        {
+            name: "Music Services",
+            id: "music_services",
+            type: "category",
+            component: MusicServicesSettings
         }
         // {
         //     name: "Other",
@@ -77,7 +88,7 @@
 
     .welcome-title {
         margin-top: 3.5em;
-        /* margin-left: 175px; */
+        margin-left: 175px;
     }
 
     /* Pad out the settings page */
