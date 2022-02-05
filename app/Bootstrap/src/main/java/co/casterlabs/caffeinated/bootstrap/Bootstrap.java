@@ -10,11 +10,9 @@ import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
 import co.casterlabs.caffeinated.MainThread;
-import co.casterlabs.caffeinated.app.AppPreferences;
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
-import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.localserver.LocalServer;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
@@ -336,17 +334,6 @@ public class Bootstrap implements Runnable {
 
                 case "app:reset": {
                     shutdown(true, true, true);
-                    return;
-                }
-
-                case "app:devfeatures": {
-                    boolean newValue = data.getBoolean("enabled");
-
-                    PreferenceFile<AppPreferences> prefs = CaffeinatedApp.getInstance().getAppPreferences();
-                    prefs.get().setShowDeveloperFeatures(newValue);
-                    prefs.save();
-
-                    shutdown(true, true, false);
                     return;
                 }
 
