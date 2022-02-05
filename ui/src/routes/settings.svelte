@@ -11,6 +11,7 @@
     import AppearanceSettings from "../components/settings/appearance-settings.svelte";
     // import StatusIntegrationSettings from "../components/settings/status-integration-settings.svelte";
     import AboutSettings from "../components/settings/about-settings.svelte";
+    import DeveloperStuff from "../components/settings/developer-stuff.svelte";
 
     setPageProperties({
         showSideBar: false,
@@ -31,6 +32,11 @@
             name: "About",
             type: "category",
             component: AboutSettings
+        },
+        {
+            name: "Developer Stuff",
+            type: "category",
+            component: DeveloperStuff
         },
         {
             name: "Accounts",
