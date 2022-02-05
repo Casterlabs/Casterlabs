@@ -6,6 +6,7 @@
     export let isKoi = false;
 
     onMount(() => {
+        plausible("Sign In", { props: { platform: platform } });
         Bridge.emit("auth:request-oauth-signin", { platform: platform, isKoi: isKoi });
     });
 

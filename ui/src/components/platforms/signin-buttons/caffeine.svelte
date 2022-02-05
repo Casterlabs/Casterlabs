@@ -1,5 +1,15 @@
+<script>
+    import { goto } from "$app/navigation";
+
+    function go() {
+        plausible("Sign In", { props: { platform: "CAFFEINE" } });
+        goto("/signin/caffeine");
+    }
+</script>
+
 <div class="no-select login-button">
-    <a class="button has-text-centered" href="/signin/caffeine">
+    <!-- svelte-ignore a11y-missing-attribute -->
+    <a class="button has-text-centered" on:click={go}>
         <div class="platform-logo">
             <img src="/img/services/caffeine/icon.svg" alt="Caffeine Logo" />
         </div>

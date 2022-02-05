@@ -9,6 +9,7 @@
 
     onMount(() => {
         document.title = "";
+        plausible("Fresh Install");
     });
 </script>
 
