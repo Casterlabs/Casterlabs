@@ -19,13 +19,18 @@
 
     const settingsContainerContents = [
         {
-            name: "App Settings",
+            name: "App",
             type: "section"
         },
         {
             name: "Appearance",
             type: "category",
             component: AppearanceSettings
+        },
+        {
+            name: "About",
+            type: "category",
+            component: AboutSettings
         },
         {
             name: "Accounts",
@@ -40,15 +45,6 @@
             name: "Music Services",
             type: "category",
             component: MusicServicesSettings
-        },
-        {
-            name: "Other",
-            type: "section"
-        },
-        {
-            name: "About",
-            type: "category",
-            component: AboutSettings
         }
         // {
         //     name: "Status Integration",

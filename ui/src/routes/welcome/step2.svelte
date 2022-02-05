@@ -16,7 +16,7 @@
 
     const settingsContainerContents = [
         {
-            name: "App Settings",
+            name: "App",
             type: "section"
         },
         {
