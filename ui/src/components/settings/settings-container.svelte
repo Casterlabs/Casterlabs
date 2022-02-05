@@ -85,7 +85,7 @@
 
     .settings-section {
         margin-left: 10px;
-        margin-bottom: 0 !important;
+        margin-bottom: 3px !important;
     }
 
     .settings-section:not(:first-child) {
