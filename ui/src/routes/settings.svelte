@@ -6,7 +6,7 @@
     import SettingsContainer from "../components/settings/settings-container.svelte";
 
     // Settings Content
-    import AccountSettings from "../components/settings/account-settings.svelte";
+    import StreamingServicesSettings from "../components/settings/streaming-services-settings.svelte";
     import MusicServicesSettings from "../components/settings/music-services-settings.svelte";
     import AppearanceSettings from "../components/settings/appearance-settings.svelte";
     // import StatusIntegrationSettings from "../components/settings/status-integration-settings.svelte";
@@ -28,13 +28,13 @@
             component: AppearanceSettings
         },
         {
-            name: "User Settings",
+            name: "Accounts",
             type: "section"
         },
         {
-            name: "Accounts",
+            name: "Streaming Services",
             type: "category",
-            component: AccountSettings
+            component: StreamingServicesSettings
         },
         {
             name: "Music Services",

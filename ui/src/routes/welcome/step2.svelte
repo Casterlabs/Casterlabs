@@ -25,7 +25,7 @@
             component: AppearanceSettings
         },
         {
-            name: "User Settings",
+            name: "Accounts",
             type: "section"
         },
         {
