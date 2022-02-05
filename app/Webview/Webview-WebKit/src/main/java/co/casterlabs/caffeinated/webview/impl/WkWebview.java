@@ -274,6 +274,8 @@ public class WkWebview extends Webview {
             this.mt_initialize();
 //            this.shell.pack();
             this.shell.open();
+            this.shell.setVisible(true);
+            this.shell.setEnabled(true);
             this.shell.setActive();
 
             this.loadURL(url);
