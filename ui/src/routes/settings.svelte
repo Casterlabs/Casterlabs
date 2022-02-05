@@ -1,7 +1,6 @@
 <script>
     // Meta
     import { setPageProperties } from "./__layout.svelte";
-    import { onMount } from "svelte";
 
     import SettingsContainer from "../components/settings/settings-container.svelte";
 
@@ -59,10 +58,6 @@
         //     component: StatusIntegrationSettings
         // }
     ];
-
-    onMount(() => {
-        document.title = "Settings";
-    });
 </script>
 
 <div class="settings-contents">

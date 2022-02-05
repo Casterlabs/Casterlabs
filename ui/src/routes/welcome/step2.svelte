@@ -56,7 +56,7 @@
     </div>
 
     <div class="welcome-settings">
-        <SettingsContainer categories={settingsContainerContents} />
+        <SettingsContainer categories={settingsContainerContents} updateTitle={false} />
     </div>
 
     <a id="next-page-button" class="button" href="/signin">

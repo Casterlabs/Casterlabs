@@ -1,13 +1,18 @@
 <script>
     import { onMount } from "svelte";
 
-    export let categories = [];
+    export let categories;
+    export let updateTitle = true;
 
     let currentCategory = {};
 
     function switchCategory(category) {
         if (currentCategory !== category) {
             currentCategory = category;
+
+            if (updateTitle) {
+                document.title = `Settings - ${currentCategory.name}`;
+            }
         }
     }
 
