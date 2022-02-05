@@ -442,7 +442,7 @@
         <div id="interact-box">
             <div class="field has-addons">
                 {#if isMultiPlatform}
-                    <div class="control">
+                    <div class="control" style="width: 50px;">
                         <div class="dropdown is-up {chatSendPlatformOpen ? 'is-active' : ''}">
                             <div class="dropdown-trigger">
                                 <button class="button" aria-haspopup="true" aria-controls="chat-send-platform" on:click={toggleChatSendPlatformDropdown}>
@@ -456,7 +456,7 @@
                                 </button>
                             </div>
                             <div class="dropdown-menu" id="chat-send-platform" role="menu">
-                                <div class="dropdown-content" style="width: 52px;">
+                                <div class="dropdown-content" style="width: 50px;">
                                     {#each signedInPlatforms as platform}
                                         <!-- svelte-ignore a11y-missing-attribute -->
                                         <a class="highlight-on-hover is-block" style="height: 30px;" on:click={() => changeSendPlatform(platform)}>
