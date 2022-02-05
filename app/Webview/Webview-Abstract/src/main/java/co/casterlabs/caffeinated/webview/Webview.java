@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import co.casterlabs.caffeinated.util.Crypto;
 import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
 import co.casterlabs.caffeinated.webview.scheme.SchemeHandler;
 import lombok.AccessLevel;
@@ -16,7 +15,6 @@ import lombok.Setter;
 
 public abstract class Webview {
     public static final String WEBVIEW_SCHEME = "app";
-    public static final String STATE_PASSWORD = new String(Crypto.generateSecureRandomKey());
     public static final boolean isDev = false;
 
     private static @Getter(AccessLevel.PROTECTED) Runnable shutdown;
