@@ -25,7 +25,8 @@
         {
             name: "Appearance",
             id: "appearance",
-            type: "category"
+            type: "category",
+            component: AppearanceSettings
         },
         {
             name: "User Settings",
@@ -34,12 +35,14 @@
         {
             name: "Accounts",
             id: "accounts",
-            type: "category"
+            type: "category",
+            component: AccountSettings
         },
         {
             name: "Music Services",
             id: "music_services",
-            type: "category"
+            type: "category",
+            component: MusicServicesSettings
         },
         {
             name: "Other",
@@ -48,12 +51,14 @@
         {
             name: "About",
             id: "about",
-            type: "category"
+            type: "category",
+            component: AboutSettings
         }
         // {
         //     name: "Status Integration",
         //     id: "status_integration",
-        //     type: "category"
+        //     type: "category",
+        //     component: StatusIntegrationSettings
         // }
     ];
 
@@ -84,23 +89,7 @@
     </a>
 
     <div class="settings-body">
-        <SettingsContainer categories={settingsContainerContents}>
-            <section class="hidden" data-id="accounts">
-                <AccountSettings />
-            </section>
-            <section class="hidden" data-id="music_services">
-                <MusicServicesSettings />
-            </section>
-            <section class="hidden" data-id="appearance">
-                <AppearanceSettings />
-            </section>
-            <!-- <section class="hidden" data-id="status_integration">
-                <StatusIntegrationSettings />
-            </section> -->
-            <section class="hidden" data-id="about">
-                <AboutSettings />
-            </section>
-        </SettingsContainer>
+        <SettingsContainer categories={settingsContainerContents} />
     </div>
 </div>
 

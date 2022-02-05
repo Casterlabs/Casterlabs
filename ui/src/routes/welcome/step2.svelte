@@ -21,7 +21,8 @@
         {
             name: "Appearance",
             id: "appearance",
-            type: "category"
+            type: "category",
+            component: AppearanceSettings
         }
         // {
         //     name: "Other",
@@ -30,7 +31,8 @@
         // {
         //     name: "Status Integration",
         //     id: "status_integration",
-        //     type: "category"
+        //     type: "category",
+        //     component: StatusIntegrationSettings
         // }
     ];
 
@@ -45,14 +47,7 @@
     </div>
 
     <div class="welcome-settings">
-        <SettingsContainer categories={settingsContainerContents}>
-            <section class="hidden" data-id="appearance">
-                <AppearanceSettings />
-            </section>
-            <!-- <section class="hidden" data-id="status_integration">
-                <StatusIntegrationSettings />
-            </section> -->
-        </SettingsContainer>
+        <SettingsContainer categories={settingsContainerContents} />
     </div>
 
     <a id="next-page-button" class="button" href="/signin">
