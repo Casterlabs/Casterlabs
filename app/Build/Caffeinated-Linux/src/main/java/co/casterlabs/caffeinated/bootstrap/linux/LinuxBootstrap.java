@@ -3,7 +3,7 @@ package co.casterlabs.caffeinated.bootstrap.linux;
 import co.casterlabs.caffeinated.bootstrap.Bootstrap;
 import co.casterlabs.caffeinated.bootstrap.NativeSystem;
 import co.casterlabs.caffeinated.bootstrap.linux.music.LinuxSystemPlaybackMusicProvider;
-import co.casterlabs.caffeinated.webview.impl.CefWebview;
+import co.casterlabs.caffeinated.webview.impl.WkWebview;
 
 public class LinuxBootstrap {
 
@@ -19,7 +19,7 @@ public class LinuxBootstrap {
             false,
             null,
             playbackProvider,
-            CefWebview.FACTORY // TODO Move to WebKit until CEF gets their shit together.
+            WkWebview.FACTORY // TODO We use WebKit only until CEF gets their shit together.
         );
 
         Bootstrap.main(args);

@@ -61,13 +61,13 @@
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>co.casterlabs</groupId>
 			<artifactId>Webview-CEF</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>
-
 		<!-- <dependency>
 			<groupId>me.friwi</groupId>
 			<artifactId>jcef-natives-windows-amd64</artifactId>
