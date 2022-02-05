@@ -158,6 +158,8 @@ public class MusicIntegration extends Music {
                         }
                     }
                 }
+
+                CaffeinatedApp.getInstance().getApi().sendSong();
             } catch (Exception e) {
                 e.printStackTrace();
             }

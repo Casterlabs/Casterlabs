@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import co.casterlabs.caffeinated.app.api.AppApi;
 import co.casterlabs.caffeinated.app.auth.AppAuth;
 import co.casterlabs.caffeinated.app.auth.AuthPreferences;
 import co.casterlabs.caffeinated.app.chatbot.AppChatbot;
@@ -61,6 +62,7 @@ public class CaffeinatedApp extends Caffeinated {
     private AppChatbot        chatbot = new AppChatbot();
     private GlobalKoi         koi     = new GlobalKoi();
     private AppAuth           auth    = new AppAuth();
+    private AppApi            api     = new AppApi();
     private AppUI             UI      = new AppUI();
 
     private PreferenceFile<PluginIntegrationPreferences> pluginIntegrationPreferences = new PreferenceFile<>("plugins", PluginIntegrationPreferences.class);
@@ -94,7 +96,9 @@ public class CaffeinatedApp extends Caffeinated {
 
     public void init() {
         ThemeManager.init();
+
         this.UI.init();
+        this.api.init();
         this.koi.init();
         this.auth.init();
         this.music.init();
@@ -113,6 +117,8 @@ public class CaffeinatedApp extends Caffeinated {
 
         // This doesn't updating, so we register it and leave it be.
         new BridgeValue<BuildInfo>("build").set(this.buildInfo).attachGlobally();
+
+        this.appPreferences.save();
     }
 
     public boolean canCloseUI() {

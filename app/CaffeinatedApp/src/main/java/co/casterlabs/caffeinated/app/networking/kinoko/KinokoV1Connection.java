@@ -6,7 +6,9 @@ import java.net.URLEncoder;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
@@ -15,8 +17,9 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 public class KinokoV1Connection implements Closeable {
     private static final String KINOKOV1_URL = "wss://api.casterlabs.co/v1/kinoko?channel=%s&type=%s&proxy=%b";
 
+    private @Nullable @Getter FastLogger logger;
+
     private KinokoV1Listener listener;
-    private FastLogger logger;
     private KinokoSocket socket;
 
     public KinokoV1Connection(@NonNull KinokoV1Listener listener) {
