@@ -117,6 +117,7 @@ public class AppAuth {
                     inst.getUserData().getPlatform().name(),
                     new JsonObject()
                         .put("tokenId", inst.getTokenId())
+                        .put("token", inst.getToken())
                         .put("userData", userData)
                         .put("streamData", streamData)
                 );

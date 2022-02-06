@@ -11,6 +11,7 @@
     // import StatusIntegrationSettings from "../components/settings/status-integration-settings.svelte";
     import AboutSettings from "../components/settings/about-settings.svelte";
     import DeveloperStuff from "../components/settings/developer-stuff.svelte";
+    import PairADevice from "../components/settings/pair-a-device.svelte";
 
     setPageProperties({
         showSideBar: false,
@@ -50,6 +51,11 @@
             name: "Music Services",
             type: "category",
             component: MusicServicesSettings
+        },
+        {
+            name: "Pair a Device",
+            type: "category",
+            component: PairADevice
         }
         // {
         //     name: "Status Integration",

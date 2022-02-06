@@ -27,7 +27,7 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class AuthInstance implements KoiLifeCycleHandler, Closeable {
     private @Getter String tokenId;
-    private String token;
+    private @Getter String token;
 
     private FastLogger logger;
     private KoiConnection koi;
