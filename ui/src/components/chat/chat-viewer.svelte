@@ -10,12 +10,14 @@
     const DISPLAYABLE_EVENTS = ["FOLLOW", "CHAT", "DONATION", "SUBSCRIPTION", /*"VIEWER_JOIN",*/ /*"VIEWER_LEAVE",*/ "RAID", "CHANNEL_POINTS", "CLEARCHAT", "PLATFORM_MESSAGE"];
 
     let chatHistory = {};
-    let isMultiPlatform = true;
+    let isMultiPlatform = false;
     let chatboxContainer;
     let chatbox;
+    let chatInput;
     let signedInPlatforms = [];
-
     let showJumpToBottomButton = false;
+
+    let blurBackground = false;
 
     let showChatSettings = false;
 
@@ -275,6 +277,8 @@
 
                 console.log("[ChatViewer]", "Sending chat message:", chatSendPlatform, ">", chatSendMessage);
                 chatSendMessage = "";
+
+                chatInput.blur();
             }
         }, 0);
     }
@@ -335,6 +339,10 @@
         });
     });
 </script>
+
+{#if blurBackground}
+    <div id="background-cover" />
+{/if}
 
 <div
     class="stream-chat-container 
@@ -475,7 +483,27 @@
                     </div>
                 {/if}
                 <div class="control is-expanded" style="position: relative;">
-                    <input class="input" type="text" placeholder="Send a message" bind:value={chatSendMessage} on:keydown={commandPaletteListener} on:keypress={sendChatMessage} />
+                    <input
+                        class="input"
+                        type="text"
+                        placeholder="Send a message"
+                        bind:this={chatInput}
+                        bind:value={chatSendMessage}
+                        on:keydown={commandPaletteListener}
+                        on:keypress={sendChatMessage}
+                        on:touchstart={(e) => {
+                            // When a mobile device touches the input, move it near the top of the screen
+                            e.preventDefault();
+                            e.target.style = "position: fixed; top: 15vh; left: 1em; width: calc(100% - 2em); z-index: 200 !important;";
+                            e.target.focus();
+                            blurBackground = true;
+                        }}
+                        on:blur={(e) => {
+                            // When the input loses focus, move it back to its original position
+                            e.target.style = "";
+                            blurBackground = false;
+                        }}
+                    />
 
                     <!-- svelte-ignore a11y-missing-attribute -->
                     <a class="chat-settings-button heavy-highlight-on-hover" on:click={toggleChatSettings}>
@@ -508,6 +536,15 @@
     :root {
         --interact-height: 40.5px;
         --interact-margin: 15px;
+    }
+
+    #background-cover {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
     }
 
     .stream-chat-container {
@@ -601,7 +638,7 @@
         right: 20px;
         bottom: calc(var(--interact-margin) + var(--interact-height));
         height: 0px;
-        width: 200px;
+        width: 13em;
         visibility: hidden;
         opacity: 0;
         transition: 0.35s;
