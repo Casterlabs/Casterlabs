@@ -154,7 +154,7 @@ public class WkWebview extends Webview {
                     title.equals("null") ||
                     title.equals("undefined") ||
                     title.isEmpty() ||
-                    title.contains("://app-loopback.casterlabs.co:") ||
+                    title.contains("://app-loopback.widgets.casterlabs.co:") ||
                     title.contains("://127.0.0.1:") ||
                     title.contains("://localhost:")) {
                     title = "Casterlabs Caffeinated";
