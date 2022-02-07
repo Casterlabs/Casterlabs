@@ -301,9 +301,12 @@ public class WkWebview extends Webview {
 
     @Override
     public void destroy() {
-        display.syncExec(() -> {
-            this.shell.dispose();
-        });
+        if (!display.isDisposed()) {
+            display.syncExec(() -> {
+                this.shell.setVisible(false);
+                this.shell.dispose();
+            });
+        }
     }
 
     @SneakyThrows
