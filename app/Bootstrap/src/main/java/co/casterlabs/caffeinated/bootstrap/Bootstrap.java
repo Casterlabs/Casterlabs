@@ -128,7 +128,7 @@ public class Bootstrap implements Runnable {
         ReflectionLib.setStaticValue(WebviewFileUtil.class, "isDev", isDev);
         buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
 
-        Files.write(new File("./current_build_info.json").toPath(), FileUtil.loadResourceBytes("build_info.json"));
+        writeAppFile("current_build_info.json", FileUtil.loadResourceBytes("build_info.json"));
 
         ReflectionLib.setStaticValue(CaffeinatedPlugin.class, "devEnvironment", isDev);
 
@@ -168,6 +168,24 @@ public class Bootstrap implements Runnable {
 
         this.registerThemes();
         this.startApp();
+    }
+
+    private static void writeAppFile(String filename, byte[] bytes) throws IOException {
+        switch (ConsoleUtil.getPlatform()) {
+            case MAC:
+                if (new File("./").getCanonicalPath().contains(".app")) {
+                    Files.write(new File("../../../", filename).toPath(), bytes);
+                }
+                // Otherwise, break free.
+
+            case UNIX:
+            case WINDOWS:
+            case UNKNOWN:
+            default:
+                Files.write(new File(filename).toPath(), bytes);
+                break;
+
+        }
     }
 
     private void registerThemes() {
@@ -321,7 +339,7 @@ public class Bootstrap implements Runnable {
 
         // If all of that succeeds, we write a file to let the updater know that
         // everything's okay.
-        new File("./.build_ok").createNewFile();
+        writeAppFile(".build_ok", new byte[0]);
     }
 
     private void onBridgeEvent(String type, JsonObject data) {
