@@ -154,11 +154,15 @@ public class WkWebview extends Webview {
                     title.equals("null") ||
                     title.equals("undefined") ||
                     title.isEmpty() ||
-                    getCurrentURL().contains(title)) {
-                    shell.setText("Casterlabs Caffeinated");
+                    title.contains("://app-loopback.casterlabs.co:") ||
+                    title.contains("://127.0.0.1:") ||
+                    title.contains("://localhost:")) {
+                    title = "Casterlabs Caffeinated";
                 } else {
-                    shell.setText("Casterlabs Caffeinated - " + title);
+                    title = "Casterlabs Caffeinated - " + title;
                 }
+
+                shell.setText(title);
             }
         });
 
@@ -242,9 +246,11 @@ public class WkWebview extends Webview {
 
     @Override
     public void executeJavaScript(@NonNull String script) {
-        display.asyncExec(() -> {
-            this.browser.execute(script);
-        });
+        if (!display.isDisposed()) {
+            display.asyncExec(() -> {
+                this.browser.execute(script);
+            });
+        }
     }
 
     private Object eval(String line) {
