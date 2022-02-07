@@ -26,6 +26,7 @@ import co.casterlabs.caffeinated.window.theming.Theme;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -170,11 +171,14 @@ public class Bootstrap implements Runnable {
         this.startApp();
     }
 
-    private static void writeAppFile(String filename, byte[] bytes) throws IOException {
+    private static void writeAppFile(@NonNull String filename, byte[] bytes) throws IOException {
+        File file;
+
         switch (ConsoleUtil.getPlatform()) {
             case MAC:
                 if (new File("./").getCanonicalPath().contains(".app")) {
-                    Files.write(new File("../../../", filename).toPath(), bytes);
+                    file = new File("../../../", filename);
+                    break;
                 }
                 // Otherwise, break free.
 
@@ -182,9 +186,14 @@ public class Bootstrap implements Runnable {
             case WINDOWS:
             case UNKNOWN:
             default:
-                Files.write(new File(filename).toPath(), bytes);
+                file = new File(filename);
                 break;
+        }
 
+        if (bytes == null) {
+            file.createNewFile();
+        } else {
+            Files.write(file.toPath(), bytes);
         }
     }
 
@@ -339,7 +348,7 @@ public class Bootstrap implements Runnable {
 
         // If all of that succeeds, we write a file to let the updater know that
         // everything's okay.
-        writeAppFile(".build_ok", new byte[0]);
+        writeAppFile(".build_ok", null);
     }
 
     private void onBridgeEvent(String type, JsonObject data) {
