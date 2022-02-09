@@ -63,12 +63,12 @@ public class AppLoopbackPlugin extends SoraPlugin implements HttpProvider {
                     mimeType = MimeTypes.getMimeForType(split[split.length - 1]);
                 }
 
-                FastLogger.logStatic(LogLevel.TRACE, "200: Remapped app://app.local%s -> app%s (%s)", session.getUri(), uri, mimeType);
+                FastLogger.logStatic(LogLevel.TRACE, "200: Remapped %s -> app%s (%s)", session.getUri(), uri, mimeType);
 
                 return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content)
                     .setMimeType(mimeType);
             } catch (IOException | NullPointerException e) {
-                FastLogger.logStatic(LogLevel.SEVERE, "404: Could not remap app://%s -> app%s", session.getUri(), uri);
+                FastLogger.logStatic(LogLevel.SEVERE, "404: Could not remap %s -> app%s", session.getUri(), uri);
             }
         }
 
