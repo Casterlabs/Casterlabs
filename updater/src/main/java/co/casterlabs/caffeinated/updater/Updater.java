@@ -149,25 +149,40 @@ public class Updater {
 
                 updateFile.delete();
 
-                // Unquarantine the app on MacOS.
-                if (ConsoleUtil.getPlatform() == JavaPlatform.MAC) {
-                    String app = '"' + appDirectory.getAbsolutePath() + "/Casterlabs-Caffeinated.app" + '"';
-                    String command = "xattr -rd com.apple.quarantine " + app + " && chmod -R u+x " + app;
-
-                    dialog.setStatus("Waiting for permission...");
+                // Make the executable... executable on Linux.
+                if (ConsoleUtil.getPlatform() == JavaPlatform.UNIX) {
+                    String executable = appDirectory.getAbsolutePath() + "/Casterlabs-Caffeinated";
 
                     new ProcessBuilder()
                         .command(
-                            "osascript",
-                            "-e",
-                            "do shell script \"" + command.replace("\"", "\\\"") + "\" with prompt \"Casterlabs Caffeinated would like to make changes.\" with administrator privileges"
+                            "chmod", "+x", executable
                         )
                         .inheritIO()
                         .start()
 
                         // Wait for exit.
                         .waitFor();
-                }
+                } else
+
+                    // Unquarantine the app on MacOS.
+                    if (ConsoleUtil.getPlatform() == JavaPlatform.MAC) {
+                        String app = '"' + appDirectory.getAbsolutePath() + "/Casterlabs-Caffeinated.app" + '"';
+                        String command = "xattr -rd com.apple.quarantine " + app + " && chmod -R u+x " + app;
+
+                        dialog.setStatus("Waiting for permission...");
+
+                        new ProcessBuilder()
+                            .command(
+                                "osascript",
+                                "-e",
+                                "do shell script \"" + command.replace("\"", "\\\"") + "\" with prompt \"Casterlabs Caffeinated would like to make changes.\" with administrator privileges"
+                            )
+                            .inheritIO()
+                            .start()
+
+                            // Wait for exit.
+                            .waitFor();
+                    }
             }
         } catch (Exception e) {
             throw new UpdaterException(UpdaterException.Error.DOWNLOAD_FAILED, "Update failed :(", e);
