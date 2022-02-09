@@ -123,7 +123,7 @@ public class CefWebview extends Webview {
         if (ConsoleUtil.getPlatform() == JavaPlatform.UNIX) {
             // This is so stupid, but it convinces CEF that it should resize (and is quite
             // effective at it)
-            Timer resizeTimer = new Timer(500, (e) -> {
+            Timer resizeTimer = new Timer(200, (e) -> {
                 this.cefPanel.removeAll();
                 this.cefPanel.add(this.browser.getUIComponent(), BorderLayout.CENTER);
             });
