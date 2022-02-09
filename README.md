@@ -50,7 +50,15 @@
 ##  The one-stop shop for stream widgets & alerts.
 Casterlabs is a simple to use, free, and feature-rich application for streamers.
 
-**CURRENTLY IN ALPHA**
+**CURRENTLY IN BETA**
+
+
+
+## Thank-yous
+ - [v1p3rhax](https://twitch.tv/v1p3r_hax): Spent many hours debugging Linux support and provided some early MacOS builds. (@vip3r_hax)
+ - [Redd56](https://twitch.tv/redd_ztone): Put a lot of work into researching some deeper system-level integrations on Linux and helped test a lot of builds. (@Redd56)
+
+
 
 ## For developers
 We have a <a href="https://casterlabs.github.io/caffeinated-sdk/" target="_blank">plugin sdk</a>.
