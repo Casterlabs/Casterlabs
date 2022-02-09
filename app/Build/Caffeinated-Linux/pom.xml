@@ -64,14 +64,8 @@
 
 		<dependency>
 			<groupId>co.casterlabs</groupId>
-			<artifactId>Webview-WebKit</artifactId>
+			<artifactId>Webview-CEF</artifactId>
 			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.swt</groupId>
-			<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
-			<version>4.6.1</version>
 			<scope>compile</scope>
 		</dependency>
 
