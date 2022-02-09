@@ -67,7 +67,7 @@ public class AppLoopbackPlugin extends SoraPlugin implements HttpProvider {
 
                 return HttpResponse.newFixedLengthResponse(StandardHttpStatus.OK, content)
                     .setMimeType(mimeType);
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 FastLogger.logStatic(LogLevel.SEVERE, "404: Could not remap app://%s -> app%s", session.getUri(), uri);
             }
         }
