@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.UIManager;
 
 import co.casterlabs.caffeinated.updater.animations.KamihinokinaiAnimation;
+import co.casterlabs.caffeinated.updater.animations.ValentinesAnimation;
 import co.casterlabs.caffeinated.updater.animations.WinterSeasonAnimation;
 import co.casterlabs.caffeinated.updater.window.UpdaterDialog;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
@@ -46,6 +47,16 @@ public class Launcher {
 
                 if (isFeburay && isTheTenth) {
                     dialog.getPane().setCurrentAnimation(new KamihinokinaiAnimation());
+                }
+            }
+
+            // Enable the Valentine's animation on FEB 14.
+            {
+                boolean isFeburay = calendarMonth == Calendar.FEBRUARY;
+                boolean isTheFourteenth = calendarDate == 14;
+
+                if (isFeburay && isTheFourteenth) {
+                    dialog.getPane().setCurrentAnimation(new ValentinesAnimation());
                 }
             }
         }
