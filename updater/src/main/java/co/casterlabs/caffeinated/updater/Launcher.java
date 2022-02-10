@@ -44,7 +44,7 @@ public class Launcher {
                 boolean isFeburay = calendarMonth == Calendar.FEBRUARY;
                 boolean isTheTenth = calendarDate == 10;
 
-                if (isFeburay || isTheTenth) {
+                if (isFeburay && isTheTenth) {
                     dialog.getPane().setCurrentAnimation(new KamihinokinaiAnimation());
                 }
             }
