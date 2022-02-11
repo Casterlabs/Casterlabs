@@ -204,7 +204,7 @@
         </div>
 
         <div class="widget-settings allow-select has-text-left">
-            {#if !blanking}
+            {#if !blanking && widgetSections.length > 0}
                 {#each widgetSections[currentWidgetSection].items as widgetSettingsOption}
                     <div style="display: flex; margin-bottom: 1em;">
                         <div class="has-text-right" style="flex: 1; margin-right: 1.5em;">
