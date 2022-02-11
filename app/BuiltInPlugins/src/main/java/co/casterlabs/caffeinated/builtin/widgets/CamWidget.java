@@ -69,6 +69,11 @@ public class CamWidget extends Widget implements KinokoV1Listener {
         this.onClose(true);
     }
 
+    @Override
+    protected void onDestroy() {
+        this.kinoko.close();
+    }
+
     @SneakyThrows
     @Override
     public void onNewInstance(@NonNull WidgetInstance instance) {
