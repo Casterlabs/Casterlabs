@@ -102,6 +102,7 @@ public abstract class Widget {
             if (newSettings != null) {
                 this.settings = newSettings;
                 this.onSettingsUpdate();
+                this.widget.onSettingsUpdate();
 
                 for (WidgetInstance widgetInstance : this.widgetInstances) {
                     try {
