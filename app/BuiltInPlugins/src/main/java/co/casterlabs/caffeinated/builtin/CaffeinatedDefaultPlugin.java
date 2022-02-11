@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.jetbrains.annotations.Nullable;
 
+import co.casterlabs.caffeinated.builtin.widgets.CamWidget;
 import co.casterlabs.caffeinated.builtin.widgets.ChatWidget;
 import co.casterlabs.caffeinated.builtin.widgets.EmojiRainWidget;
 import co.casterlabs.caffeinated.builtin.widgets.NowPlayingWidget;
@@ -62,6 +63,7 @@ public class CaffeinatedDefaultPlugin extends CaffeinatedPlugin {
 
         // Other
         this.getPlugins().registerWidget(this, NowPlayingWidget.DETAILS, NowPlayingWidget.class);
+        this.getPlugins().registerWidget(this, CamWidget.DETAILS, CamWidget.class);
 //        this.getPlugins().registerWidget(this, KeyboardWidget.DETAILS, KeyboardWidget.class);
         // TODO Video Share
 
