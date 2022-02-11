@@ -8,11 +8,13 @@ import java.util.function.Consumer;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import co.casterlabs.koi.api.types.events.KoiEvent;
+import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonElement;
+import co.casterlabs.rakurai.json.element.JsonNull;
 import co.casterlabs.rakurai.json.element.JsonObject;
-import co.casterlabs.rakurai.json.element.JsonString;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -60,8 +62,13 @@ public abstract class WidgetInstance implements Closeable {
     public abstract @NonNull String getRemoteIpAddress();
 
     // Convenience method for #emit(String, JsonElement)
-    public void emit(@NonNull String type, @NonNull String message) throws IOException {
-        this.emit(type, new JsonString(message));
+    public void emit(@NonNull String type, @Nullable String message) throws IOException {
+        this.emit(type, Rson.DEFAULT.toJson(message));
+    }
+
+    // Convenience method for #emit(String, JsonElement)
+    public void emit(@NonNull String type) throws IOException {
+        this.emit(type, JsonNull.INSTANCE);
     }
 
     /* ------------ */

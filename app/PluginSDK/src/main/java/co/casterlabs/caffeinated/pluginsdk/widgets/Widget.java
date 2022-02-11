@@ -229,7 +229,23 @@ public abstract class Widget {
     /* Events           */
     /* ---------------- */
 
+    public void broadcastToAll(@NonNull String type) {
+        for (WidgetInstance inst : $handle.widgetInstances) {
+            try {
+                inst.emit(type);
+            } catch (IOException ignored) {}
+        }
+    }
+
     public void broadcastToAll(@NonNull String type, @NonNull JsonElement message) {
+        for (WidgetInstance inst : $handle.widgetInstances) {
+            try {
+                inst.emit(type, message);
+            } catch (IOException ignored) {}
+        }
+    }
+
+    public void broadcastToAll(@NonNull String type, @Nullable String message) {
         for (WidgetInstance inst : $handle.widgetInstances) {
             try {
                 inst.emit(type, message);
