@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.app.networking.kinoko;
+package co.casterlabs.caffeinated.pluginsdk.kinoko;
 
 public interface KinokoV1Listener {
 

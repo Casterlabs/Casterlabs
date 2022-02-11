@@ -1,8 +1,8 @@
 package co.casterlabs.caffeinated.app.api;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.app.networking.kinoko.KinokoV1Connection;
-import co.casterlabs.caffeinated.app.networking.kinoko.KinokoV1Listener;
+import co.casterlabs.caffeinated.pluginsdk.kinoko.KinokoV1Connection;
+import co.casterlabs.caffeinated.pluginsdk.kinoko.KinokoV1Listener;
 import co.casterlabs.rakurai.json.Rson;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;

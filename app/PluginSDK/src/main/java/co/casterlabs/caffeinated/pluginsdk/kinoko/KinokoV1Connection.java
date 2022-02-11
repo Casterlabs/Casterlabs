@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.app.networking.kinoko;
+package co.casterlabs.caffeinated.pluginsdk.kinoko;
 
 import java.io.Closeable;
 import java.net.URI;
