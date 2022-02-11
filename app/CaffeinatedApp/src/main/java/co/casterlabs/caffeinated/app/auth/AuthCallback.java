@@ -2,6 +2,7 @@ package co.casterlabs.caffeinated.app.auth;
 
 import java.util.concurrent.TimeUnit;
 
+import co.casterlabs.caffeinated.pluginsdk.kinoko.KinokoV1Connection;
 import co.casterlabs.caffeinated.pluginsdk.kinoko.KinokoV1Listener;
 import co.casterlabs.caffeinated.util.Crypto;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
