@@ -4,9 +4,9 @@ public interface KinokoV1Listener {
 
     public void onOpen();
 
-    public void onOrphaned();
+    default void onOrphaned() {}
 
-    public void onAdopted();
+    default void onAdopted() {}
 
     public void onMessage(String message);
 
