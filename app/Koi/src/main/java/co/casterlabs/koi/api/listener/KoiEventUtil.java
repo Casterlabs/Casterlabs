@@ -13,6 +13,7 @@ public class KoiEventUtil {
             if (method.isAnnotationPresent(KoiEventHandler.class) &&
                 (method.getParameterCount() == 1) &&
                 method.getParameterTypes()[0].isAssignableFrom(event.getClass())) {
+                method.setAccessible(true);
                 method.invoke(listener, event);
             }
         }
