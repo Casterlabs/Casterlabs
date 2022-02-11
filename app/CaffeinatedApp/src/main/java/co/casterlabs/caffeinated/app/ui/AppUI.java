@@ -57,7 +57,9 @@ public class AppUI {
 
     public AppUI() {
         handler.register(this);
+    }
 
+    public void init() {
         new AsyncTask(() -> {
             try {
                 GraphicsEnvironment ge = GraphicsEnvironment
@@ -113,16 +115,14 @@ public class AppUI {
             Collections.sort(allFonts);
 
             this.allFonts = Collections.unmodifiableList(allFonts);
+
+            CaffeinatedApp.getInstance().getAppBridge().attachValue(
+                // This doesn't update, so we register it and leave it be.
+                new BridgeValue<List<String>>("ui:fonts").set(this.allFonts)
+            );
         });
-    }
 
-    public void init() {
         CaffeinatedApp.getInstance().getAppBridge().attachValue(bridge_ChatViewerPreferences);
-
-        CaffeinatedApp.getInstance().getAppBridge().attachValue(
-            // This doesn't update, so we register it and leave it be.
-            new BridgeValue<List<String>>("ui:fonts").set(this.allFonts)
-        );
 
         bridge_ChatViewerPreferences.set(CaffeinatedApp.getInstance().getUiPreferences().get().getChatViewerPreferences());
     }
