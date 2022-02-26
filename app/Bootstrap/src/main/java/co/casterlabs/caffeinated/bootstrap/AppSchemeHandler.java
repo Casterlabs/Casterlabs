@@ -2,19 +2,21 @@ package co.casterlabs.caffeinated.bootstrap;
 
 import java.io.IOException;
 
-import co.casterlabs.caffeinated.webview.scheme.SchemeHandler;
-import co.casterlabs.caffeinated.webview.scheme.http.HttpRequest;
-import co.casterlabs.caffeinated.webview.scheme.http.HttpResponse;
-import co.casterlabs.caffeinated.webview.scheme.http.StandardHttpStatus;
+import org.jetbrains.annotations.Nullable;
+
+import co.casterlabs.kaimen.util.functional.ConsumingProducer;
+import co.casterlabs.rakurai.io.http.HttpResponse;
+import co.casterlabs.rakurai.io.http.HttpSession;
 import co.casterlabs.rakurai.io.http.MimeTypes;
+import co.casterlabs.rakurai.io.http.StandardHttpStatus;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class AppSchemeHandler implements SchemeHandler {
+public class AppSchemeHandler implements ConsumingProducer<HttpSession, co.casterlabs.rakurai.io.http.HttpResponse> {
 
     @Override
-    public HttpResponse onRequest(HttpRequest request) {
-        String uri = request.getUri().substring(Bootstrap.getAppUrl().length());
+    public @Nullable HttpResponse produce(@Nullable HttpSession request) throws InterruptedException {
+        String uri = request.getUri();
 
         // Append `index.html` to the end when required.
         if (!uri.contains(".")) {

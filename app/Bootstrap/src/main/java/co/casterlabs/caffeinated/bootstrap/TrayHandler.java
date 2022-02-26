@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
-import co.casterlabs.caffeinated.webview.Webview;
+import co.casterlabs.kaimen.webview.Webview;
 import lombok.NonNull;
 
 public class TrayHandler {
@@ -56,7 +56,7 @@ public class TrayHandler {
                     if (webview.isOpen()) {
                         webview.close();
                     } else {
-                        webview.open(Bootstrap.getAppUrl());
+                        webview.open(CaffeinatedApp.getInstance().getAppUrl());
                     }
                 });
 
@@ -86,7 +86,7 @@ public class TrayHandler {
                     @Override
                     public void mouseReleased(MouseEvent e) {
                         if (!e.isPopupTrigger()) {
-                            webview.open(Bootstrap.getAppUrl());
+                            webview.open(CaffeinatedApp.getInstance().getAppUrl());
                         }
                     }
 

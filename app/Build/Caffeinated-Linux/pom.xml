@@ -42,8 +42,8 @@
 
 	<repositories>
 		<repository>
-			<id>maven-eclipse-repo</id>
-			<url>https://maven-eclipse.github.io/maven</url>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 
@@ -62,12 +62,7 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>co.casterlabs</groupId>
-			<artifactId>Webview-CEF</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
+		<!-- TODO -->
 
 	</dependencies>
 </project>

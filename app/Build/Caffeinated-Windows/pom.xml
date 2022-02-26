@@ -42,8 +42,8 @@
 
 	<repositories>
 		<repository>
-			<id>jcef-maven</id>
-			<url>https://friwi.me/jcef/maven</url>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 
@@ -63,17 +63,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>co.casterlabs</groupId>
-			<artifactId>Webview-CEF</artifactId>
-			<version>${project.parent.version}</version>
+			<groupId>com.github.casterlabs.Kaimen</groupId>
+			<artifactId>Windows-amd64</artifactId>
+			<version>502f70a</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- <dependency>
-			<groupId>me.friwi</groupId>
-			<artifactId>jcef-natives-windows-amd64</artifactId>
-			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
-			<scope>compile</scope>
-		</dependency> -->
 
 		<!-- JNA -->
 		<dependency>

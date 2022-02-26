@@ -9,20 +9,20 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
-import co.casterlabs.caffeinated.MainThread;
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
-import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.localserver.LocalServer;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.Currencies;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
-import co.casterlabs.caffeinated.webview.Webview;
-import co.casterlabs.caffeinated.webview.WebviewFileUtil;
-import co.casterlabs.caffeinated.webview.WebviewLifeCycleListener;
-import co.casterlabs.caffeinated.window.theming.Theme;
+import co.casterlabs.kaimen.app.App;
+import co.casterlabs.kaimen.app.ui.UIServer;
+import co.casterlabs.kaimen.util.threading.MainThread;
+import co.casterlabs.kaimen.webview.Webview;
+import co.casterlabs.kaimen.webview.WebviewFactory;
+import co.casterlabs.kaimen.webview.WebviewLifeCycleListener;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
@@ -40,8 +40,6 @@ import xyz.e3ndr.reflectionlib.ReflectionLib;
 @Getter
 @Command(name = "start", mixinStandardHelpOptions = true, version = "Caffeinated", description = "Starts Caffeinated")
 public class Bootstrap implements Runnable {
-    private static @Getter String appUrl = "app://app.local";
-    private static @Getter String appLoopbackUrl;
 
     @Option(names = {
             "-D",
@@ -76,10 +74,13 @@ public class Bootstrap implements Runnable {
     private static @Getter Bootstrap instance;
     private static @Getter Webview webview;
     private static LocalServer localServer;
+    private static UIServer uiServer;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Enable assertions programatically.
         ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true);
+
+        App.setName("Casterlabs-Caffeinated");
 
         System.out.println(" > System.out.println(\"Hello World!\");\nHello World!\n\n");
 
@@ -126,7 +127,6 @@ public class Bootstrap implements Runnable {
 
         isDev = this.devAddress != null;
         ReflectionLib.setStaticValue(FileUtil.class, "isDev", isDev);
-        ReflectionLib.setStaticValue(WebviewFileUtil.class, "isDev", isDev);
         buildInfo = Rson.DEFAULT.fromJson(FileUtil.loadResource("build_info.json"), BuildInfo.class);
 
         writeAppFile("current_build_info.json", FileUtil.loadResourceBytes("build_info.json"));
@@ -167,7 +167,6 @@ public class Bootstrap implements Runnable {
         // Setup the native system
         ReflectionLib.setStaticValue(MusicIntegration.class, "systemPlaybackMusicProvider", NativeSystem.getSystemPlaybackMusicProvider());
 
-        this.registerThemes();
         this.startApp();
     }
 
@@ -197,22 +196,6 @@ public class Bootstrap implements Runnable {
         }
     }
 
-    private void registerThemes() {
-        // Light theme
-        ThemeManager.registerTheme(
-            new Theme("co.casterlabs.light", "Light")
-                .withCssFiles(false, "/css/bulma.min.css")
-        );
-
-        // Dark theme
-        ThemeManager.registerTheme(
-            new Theme("co.casterlabs.dark", "Dark")
-                .withCssFiles(false, "/css/bulma.min.css", "/css/bulma-prefers-dark.min.css")
-                .withClasses("bulma-dark-mode")
-                .withDark(true)
-        );
-    }
-
     private void startApp() throws Exception {
         CaffeinatedApp app = new CaffeinatedApp(buildInfo, isDev, NativeSystem.isAwtSupported());
 
@@ -226,9 +209,6 @@ public class Bootstrap implements Runnable {
         logger.info("bootstrap.args               | %s", System.getProperty("sun.java.command"));
         logger.info("");
 
-        useAppLoopback = Webview.getWebviewFactory().useNuclearOption() && !isDev ||
-            System.getProperty("caffeinated.nuclearoption.force", "").equals("true");
-
         // Init and start the local server.
         try {
             localServer = new LocalServer(app.getAppPreferences().get().getConductorPort());
@@ -239,25 +219,15 @@ public class Bootstrap implements Runnable {
             FastLogger.logException(e);
         }
 
-        // App url
-        appLoopbackUrl = isDev ? this.devAddress : localServer.initLoopback();
+        uiServer = new UIServer();
+        uiServer.setHandler(new AppSchemeHandler());
+        uiServer.start();
 
-        if (useAppLoopback) {
-            // This is the nuclear option.
-            // https://bitbucket.org/chromiumembedded/java-cef/issues/365/custom-scheme-onloaderror-not-called
-            appUrl = appLoopbackUrl;
-        } else {
-            appUrl = isDev ? this.devAddress : appUrl;
-        }
+        String appUrl = isDev ? this.devAddress : uiServer.getAddress();
 
         // Setup the webview.
         logger.info("Initializing UI (this may take some time)");
-        webview = Webview.getWebviewFactory().produce();
-
-        ReflectionLib.setStaticValue(Webview.class, "shutdown", (Runnable) Bootstrap::shutdown);
-
-        // Register the custom schemes.
-        webview.setSchemeHandler(new AppSchemeHandler());
+        webview = WebviewFactory.get().produce();
 
         // Register the lifecycle listener.
         WebviewLifeCycleListener uiLifeCycleListener = new WebviewLifeCycleListener() {
@@ -271,7 +241,6 @@ public class Bootstrap implements Runnable {
                 app.setAppBridge(webview.getBridge());
                 app.setWebview(webview);
                 app.setAppUrl(appUrl);
-                app.setAppLoopbackUrl(appLoopbackUrl);
                 app.init();
 
                 try {
@@ -418,6 +387,12 @@ public class Bootstrap implements Runnable {
                 // UI
                 TrayHandler.destroy();
                 webview.destroy();
+
+                try {
+                    uiServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 // App
                 CaffeinatedApp.getInstance().shutdown();

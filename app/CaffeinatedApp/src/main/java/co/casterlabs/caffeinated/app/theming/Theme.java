@@ -1,4 +1,4 @@
-package co.casterlabs.caffeinated.window.theming;
+package co.casterlabs.caffeinated.app.theming;
 
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import lombok.AccessLevel;

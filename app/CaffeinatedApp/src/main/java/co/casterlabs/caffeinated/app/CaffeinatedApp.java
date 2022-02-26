@@ -21,9 +21,9 @@ import co.casterlabs.caffeinated.app.theming.ThemeManager;
 import co.casterlabs.caffeinated.app.ui.AppUI;
 import co.casterlabs.caffeinated.app.ui.UIPreferences;
 import co.casterlabs.caffeinated.pluginsdk.Caffeinated;
-import co.casterlabs.caffeinated.webview.Webview;
-import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
-import co.casterlabs.caffeinated.webview.bridge.WebviewBridge;
+import co.casterlabs.kaimen.webview.Webview;
+import co.casterlabs.kaimen.webview.bridge.BridgeValue;
+import co.casterlabs.kaimen.webview.bridge.WebviewBridge;
 import co.casterlabs.rakurai.json.element.JsonObject;
 import lombok.Getter;
 import lombok.NonNull;
@@ -54,7 +54,6 @@ public class CaffeinatedApp extends Caffeinated {
     private @Setter WebviewBridge appBridge;
     private @Setter Webview webview;
     private @Setter String appUrl;
-    private @Setter String appLoopbackUrl;
 
     // @formatter:off
     private PluginIntegration plugins = new PluginIntegration();
@@ -90,8 +89,6 @@ public class CaffeinatedApp extends Caffeinated {
         this.isDev = isDev;
         this.awtSupported = awtSupported;
         instance = this;
-
-        ThemeManager.setTheme(this.uiPreferences.get().getTheme(), "co.casterlabs.dark");
     }
 
     public void init() {

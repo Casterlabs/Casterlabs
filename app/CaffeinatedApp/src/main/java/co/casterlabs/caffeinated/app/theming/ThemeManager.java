@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
-import co.casterlabs.caffeinated.window.theming.Theme;
-import co.casterlabs.caffeinated.window.theming.ThemeableJFrame;
+import co.casterlabs.kaimen.app.App;
+import co.casterlabs.kaimen.app.App.Appearance;
+import co.casterlabs.kaimen.webview.bridge.BridgeValue;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -20,6 +20,22 @@ public class ThemeManager {
     private static BridgeValue<Collection<Theme>> bridge_Themes = new BridgeValue<>("themes");
 
     public static void init() {
+        // Light theme
+        ThemeManager.registerTheme(
+            new Theme("co.casterlabs.light", "Light")
+                .withCssFiles(false, "/css/bulma.min.css")
+        );
+
+        // Dark theme
+        ThemeManager.registerTheme(
+            new Theme("co.casterlabs.dark", "Dark")
+                .withCssFiles(false, "/css/bulma.min.css", "/css/bulma-prefers-dark.min.css")
+                .withClasses("bulma-dark-mode")
+                .withDark(true)
+        );
+
+        setTheme(CaffeinatedApp.getInstance().getUiPreferences().get().getTheme(), "co.casterlabs.dark");
+
         CaffeinatedApp.getInstance().getAppBridge().attachValue(bridge_Theme);
         CaffeinatedApp.getInstance().getAppBridge().attachValue(bridge_Themes);
     }
@@ -41,7 +57,7 @@ public class ThemeManager {
         currentTheme = theme;
         bridge_Theme.set(theme);
 
-        ThemeableJFrame.setDarkMode(theme.isDark());
+        App.setAppearance(theme.isDark() ? Appearance.DARK : Appearance.LIGHT);
     }
 
 }

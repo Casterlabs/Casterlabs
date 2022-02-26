@@ -21,7 +21,6 @@ import co.casterlabs.caffeinated.app.plugins.impl.PluginContext;
 import co.casterlabs.caffeinated.app.plugins.impl.PluginsHandler;
 import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
 import co.casterlabs.caffeinated.app.ui.UIBackgroundColor;
-import co.casterlabs.caffeinated.app.ui.UIDocksPlugin;
 import co.casterlabs.caffeinated.builtin.CaffeinatedDefaultPlugin;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.widgets.Widget.WidgetHandle;
@@ -29,7 +28,7 @@ import co.casterlabs.caffeinated.pluginsdk.widgets.WidgetDetails;
 import co.casterlabs.caffeinated.pluginsdk.widgets.settings.WidgetSettingsButton;
 import co.casterlabs.caffeinated.util.ClipboardUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
-import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
+import co.casterlabs.kaimen.webview.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.annotating.JsonClass;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -80,13 +79,13 @@ public class PluginIntegration {
             this.contexts.add(this.plugins.unsafe_loadPlugins(Arrays.asList(defaultPlugin), "Caffeinated"));
         }
 
-        // Load the UI docks.
-        {
-            CaffeinatedPlugin uiDocksPlugin = new UIDocksPlugin();
-
-            ReflectionLib.setValue(uiDocksPlugin, "plugins", this.plugins);
-            this.contexts.add(this.plugins.unsafe_loadPlugins(Arrays.asList(uiDocksPlugin), "Caffeinated"));
-        }
+        // TODO Load the UI docks.
+//        {
+//            CaffeinatedPlugin uiDocksPlugin = new UIDocksPlugin();
+//
+//            ReflectionLib.setValue(uiDocksPlugin, "plugins", this.plugins);
+//            this.contexts.add(this.plugins.unsafe_loadPlugins(Arrays.asList(uiDocksPlugin), "Caffeinated"));
+//        }
 
         for (File file : pluginsDir.listFiles()) {
             String fileName = file.getName();

@@ -42,8 +42,8 @@
 
 	<repositories>
 		<repository>
-			<id>maven-eclipse-repo</id>
-			<url>https://maven-eclipse.github.io/maven</url>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 
@@ -63,15 +63,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>co.casterlabs</groupId>
-			<artifactId>Webview-WebKit</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.swt</groupId>
-			<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
-			<version>4.6.1</version>
+			<groupId>com.github.casterlabs.Kaimen</groupId>
+			<artifactId>MacOS-aarch64</artifactId>
+			<version>502f70a</version>
 			<scope>compile</scope>
 		</dependency>
 
