@@ -3,4 +3,4 @@ This is the monorepo that holds Caffeinated, Casterlabs Studio, and all the shar
 
 
 
-[Click here to view the Caffeinated project](/Caffeinated)
+[Click here to view the Caffeinated project](/caffeinated)
