@@ -153,7 +153,7 @@ public class InstanceManager {
                     String line = ipc.read();
 
                     if (line.equals("SUMMON")) {
-                        Bootstrap.getWebview().open(Bootstrap.getAppUrl());
+                        Bootstrap.getWebview().open(CaffeinatedApp.getInstance().getAppUrl());
                         Bootstrap.getWebview().focus();
                     } else if (line.equals("SHUTDOWN")) {
                         Bootstrap.shutdown();

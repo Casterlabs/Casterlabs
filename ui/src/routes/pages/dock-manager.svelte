@@ -23,7 +23,7 @@
     }
 
     onMount(async () => {
-        document.title = "Docks";
+        document.title = "Casterlabs-Caffeinated - Docks";
 
         render((await Bridge.query("plugins")).data);
     });

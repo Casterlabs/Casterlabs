@@ -11,7 +11,7 @@
             currentCategory = category;
 
             if (updateTitle) {
-                document.title = `Settings - ${currentCategory.name}`;
+                document.title = `Casterlabs-Caffeinated - Settings - ${currentCategory.name}`;
             }
         }
     }

@@ -172,7 +172,7 @@
     }
 
     onMount(async () => {
-        document.title = "Stream Chat";
+        document.title = "Casterlabs-Caffeinated - Stream Chat";
         mount();
     });
 </script>

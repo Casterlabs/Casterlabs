@@ -3,10 +3,12 @@ package co.casterlabs.caffeinated.app.ui;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,8 +28,8 @@ import co.casterlabs.caffeinated.app.ui.events.AppUISaveChatViewerPreferencesEve
 import co.casterlabs.caffeinated.app.ui.events.AppUIThemeLoadedEvent;
 import co.casterlabs.caffeinated.util.WebUtil;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
-import co.casterlabs.caffeinated.webview.Webview;
-import co.casterlabs.caffeinated.webview.bridge.BridgeValue;
+import co.casterlabs.kaimen.app.App;
+import co.casterlabs.kaimen.webview.bridge.BridgeValue;
 import co.casterlabs.rakurai.json.Rson;
 import co.casterlabs.rakurai.json.element.JsonArray;
 import co.casterlabs.rakurai.json.element.JsonElement;
@@ -35,6 +37,7 @@ import co.casterlabs.rakurai.json.element.JsonObject;
 import co.casterlabs.rakurai.json.serialization.JsonParseException;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import okhttp3.Request;
 import xyz.e3ndr.eventapi.EventHandler;
 import xyz.e3ndr.eventapi.listeners.EventListener;
@@ -146,7 +149,7 @@ public class AppUI {
         uiPrefs.setMinimizeToTray(event.isMinimizeToTray());
         CaffeinatedApp.getInstance().getUiPreferences().save();
 
-        Webview.getWebviewFactory().setIcon(uiPrefs.getIcon());
+        this.updateIcon();
 
         ThemeManager.setTheme(event.getTheme(), "co.casterlabs.dark");
     }
@@ -164,6 +167,7 @@ public class AppUI {
             this.navigate("/welcome/step1");
         } else {
             AppAuth auth = CaffeinatedApp.getInstance().getAuth();
+
             if (!auth.isSignedIn()) {
                 this.navigate("/signin");
             } else if (auth.isAuthorized()) {
@@ -227,6 +231,20 @@ public class AppUI {
                     .getEventClass()
             )
         );
+    }
+
+    @SneakyThrows
+    public void updateIcon() {
+        String path = String.format("assets/logo/%s.png", CaffeinatedApp.getInstance().getUiPreferences().get().getIcon());
+        URL resource;
+
+        if (CaffeinatedApp.getInstance().isDev()) {
+            resource = new File("./src/main/resources/", path).toURI().toURL();
+        } else {
+            resource = AppUI.class.getClassLoader().getResource(path);
+        }
+
+        App.setIcon(resource);
     }
 
 }

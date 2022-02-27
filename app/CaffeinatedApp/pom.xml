@@ -45,9 +45,8 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>co.casterlabs</groupId>
-			<artifactId>Webview-Abstract</artifactId>
-			<version>${project.parent.version}</version>
+			<groupId>co.casterlabs.kaimen</groupId>
+			<artifactId>App</artifactId>
 			<scope>compile</scope>
 		</dependency>
 
