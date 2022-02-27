@@ -10,8 +10,23 @@
     <a href="#">
         <img src="https://img.shields.io/tokei/lines/github/Casterlabs/Casterlabs" />
     </a>
-    <a href="#">
-        <img src="https://img.shields.io/badge/Hotel%3F-Trivago-green" />
+</p>
+
+<p align="center">
+    <a href="https://casterlabs.co/">
+      Website
+    </a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://casterlabs.co/socials">
+      Socials
+    </a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://casterlabs.co/terms-of-service">
+      Terms of Service
+    </a>
+    &nbsp;&bull;&nbsp;
+    <a href="https://casterlabs.co/privacy-policy">
+      Privacy Policy
     </a>
 </p>
 
