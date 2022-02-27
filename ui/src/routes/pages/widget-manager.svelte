@@ -58,7 +58,7 @@
     }
 
     onMount(async () => {
-        document.title = "Widgets";
+        document.title = "Casterlabs-Caffeinated - Widgets";
 
         render((await Bridge.query("plugins")).data);
     });

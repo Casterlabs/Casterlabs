@@ -69,7 +69,7 @@
     }
 
     onMount(async () => {
-        document.title = "Stream Viewers";
+        document.title = "Casterlabs-Caffeinated - Stream Viewers";
         mount();
     });
 </script>

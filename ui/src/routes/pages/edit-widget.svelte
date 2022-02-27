@@ -100,7 +100,7 @@
     });
 
     onMount(async () => {
-        document.title = "Widget Editor";
+        document.title = "Casterlabs-Caffeinated - Widget Editor";
 
         eventHandler = Bridge.createThrowawayEventHandler();
         eventHandler.on("plugins:update", parseBridgeData);
