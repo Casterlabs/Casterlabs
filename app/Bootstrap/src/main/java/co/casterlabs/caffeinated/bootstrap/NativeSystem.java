@@ -13,7 +13,6 @@ public abstract class NativeSystem {
     private static boolean INITIALIZED = false;
 
     private static @Getter SystemPlaybackMusicProvider systemPlaybackMusicProvider = null;
-    private static @Getter boolean awtSupported;
 
     static {
         try {
@@ -24,12 +23,9 @@ public abstract class NativeSystem {
     @Deprecated
     @SneakyThrows
     // Something being null = unsupported.
-    public static void initialize(boolean startedOnFirstThread, @Nullable SystemPlaybackMusicProvider systemPlaybackMusicProvider) {
+    public static void initialize(@Nullable SystemPlaybackMusicProvider systemPlaybackMusicProvider) {
         assert !INITIALIZED : "NativeSystemProvider has already been initialized.";
         INITIALIZED = true;
-
-        awtSupported = !startedOnFirstThread; // AWT will not work on the first thread.
-        System.setProperty("awt.supported", String.valueOf(awtSupported));
 
         NativeSystem.systemPlaybackMusicProvider = systemPlaybackMusicProvider;
     }

@@ -2,8 +2,8 @@ package co.casterlabs.caffeinated.bootstrap;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -12,14 +12,20 @@ import java.util.concurrent.TimeUnit;
 import co.casterlabs.caffeinated.app.BuildInfo;
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
 import co.casterlabs.caffeinated.app.music_integration.MusicIntegration;
+import co.casterlabs.caffeinated.bootstrap.impl.NativeBootstrap;
+import co.casterlabs.caffeinated.bootstrap.impl.linux.common.LinuxBootstrap;
+import co.casterlabs.caffeinated.bootstrap.impl.macos.common.MacOSBootstrap;
+import co.casterlabs.caffeinated.bootstrap.impl.windows.common.WindowsBootstrap;
 import co.casterlabs.caffeinated.localserver.LocalServer;
 import co.casterlabs.caffeinated.pluginsdk.CaffeinatedPlugin;
 import co.casterlabs.caffeinated.pluginsdk.Currencies;
 import co.casterlabs.caffeinated.util.async.AsyncTask;
 import co.casterlabs.caffeinated.util.async.Promise;
 import co.casterlabs.kaimen.app.App;
+import co.casterlabs.kaimen.app.AppBootstrap;
+import co.casterlabs.kaimen.app.AppEntry;
 import co.casterlabs.kaimen.app.ui.UIServer;
-import co.casterlabs.kaimen.util.threading.MainThread;
+import co.casterlabs.kaimen.util.platform.Platform;
 import co.casterlabs.kaimen.webview.Webview;
 import co.casterlabs.kaimen.webview.WebviewFactory;
 import co.casterlabs.kaimen.webview.WebviewLifeCycleListener;
@@ -76,48 +82,38 @@ public class Bootstrap implements Runnable {
     private static LocalServer localServer;
     private static UIServer uiServer;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        // Enable assertions programatically.
-        ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true);
+    // FOR TESTING.
+    public static void main(String[] args) throws InvocationTargetException, InterruptedException {
+        AppBootstrap.main(args);
+    }
 
+    @AppEntry
+    public static void main() throws Exception {
         App.setName("Casterlabs-Caffeinated");
 
         System.out.println(" > System.out.println(\"Hello World!\");\nHello World!\n\n");
 
-        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                if (!(e instanceof ThreadDeath)) {
-                    e.printStackTrace();
+        NativeBootstrap nb = null;
 
-                    if (e instanceof UnsatisfiedLinkError) {
-                        // TODO show fatal popup detailing the error and let the user know that the
-                        // program is about to close.
-                    }
-                }
-            }
-        });
+        switch (Platform.os) {
+            case LINUX:
+                nb = new LinuxBootstrap();
+                break;
 
-        ConsoleUtil.getPlatform(); // Init ConsoleUtil.
+            case MACOSX:
+                nb = new MacOSBootstrap();
+                break;
 
-//        // This dependency is found in PluginSDK.
-//        try {
-//            // Mute it's logger.
-//            Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
-//
-//            logger.setLevel(Level.WARNING);
-//            logger.setUseParentHandlers(false);
-//
-//            // Enable it.
-//            GlobalScreen.registerNativeHook();
-//        } catch (Throwable t) {
-//            FastLogger.logStatic(LogLevel.SEVERE, "An error occurred whilst enabling the global keyboard hook.");
-//            FastLogger.logException(t);
-//        }
+            case WINDOWS:
+                nb = new WindowsBootstrap();
+                break;
+        }
 
-        MainThread.park(() -> {
-            new CommandLine(new Bootstrap()).execute(args); // Calls #run()
-        });
+        assert nb != null : "Unsupported platform: " + Platform.os;
+
+        nb.init();
+
+        new CommandLine(new Bootstrap()).execute(App.getArgs()); // Calls #run()
     }
 
     @SneakyThrows
@@ -197,7 +193,7 @@ public class Bootstrap implements Runnable {
     }
 
     private void startApp() throws Exception {
-        CaffeinatedApp app = new CaffeinatedApp(buildInfo, isDev, NativeSystem.isAwtSupported());
+        CaffeinatedApp app = new CaffeinatedApp(buildInfo, isDev);
 
         logger.info("Entry                        | Value", buildInfo.getVersionString());
         logger.info("-----------------------------+-------------------------");
@@ -205,7 +201,6 @@ public class Bootstrap implements Runnable {
         logger.info("buildInfo.author             | %s", buildInfo.getAuthor());
         logger.info("buildInfo.isDev              | %b", isDev);
         logger.info("system.platform              | %s", ConsoleUtil.getPlatform().name());
-        logger.info("nativeSystem.awtSupported    | %b", app.isAwtSupported());
         logger.info("bootstrap.args               | %s", System.getProperty("sun.java.command"));
         logger.info("");
 
@@ -214,7 +209,7 @@ public class Bootstrap implements Runnable {
             localServer = new LocalServer(app.getAppPreferences().get().getConductorPort());
 
             localServer.start();
-        } catch (IOException e) {
+        } catch (Exception e) {
             FastLogger.logStatic(LogLevel.SEVERE, "Unable to start LocalServer (conductor):");
             FastLogger.logException(e);
         }

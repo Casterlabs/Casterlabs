@@ -48,7 +48,6 @@ public class CaffeinatedApp extends Caffeinated {
     private static @Getter CaffeinatedApp instance;
 
     private final BuildInfo buildInfo;
-    private final boolean awtSupported;
     private final boolean isDev;
 
     private @Setter WebviewBridge appBridge;
@@ -84,11 +83,12 @@ public class CaffeinatedApp extends Caffeinated {
         new File(appDataDir, "preferences").mkdirs();
     }
 
-    public CaffeinatedApp(@NonNull BuildInfo buildInfo, boolean isDev, boolean awtSupported) {
+    public CaffeinatedApp(@NonNull BuildInfo buildInfo, boolean isDev) {
         this.buildInfo = buildInfo;
         this.isDev = isDev;
-        this.awtSupported = awtSupported;
         instance = this;
+
+        this.UI.updateIcon();
     }
 
     public void init() {

@@ -45,9 +45,8 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.casterlabs.kaimen</groupId>
+			<groupId>co.casterlabs.kaimen</groupId>
 			<artifactId>App</artifactId>
-			<version>502f70a</version>
 			<scope>compile</scope>
 		</dependency>
 

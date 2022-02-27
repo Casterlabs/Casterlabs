@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>co.casterlabs</groupId>
 	<artifactId>Casterlabs-Caffeinated</artifactId>
@@ -20,6 +18,7 @@
 	</modules>
 
 	<properties>
+		<kaimen.version>efac314</kaimen.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -54,6 +53,45 @@
 		</plugins>
 	</build>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>co.casterlabs.kaimen</groupId>
+				<artifactId>App</artifactId>
+				<version>${kaimen.version}</version>
+			</dependency>
+
+			<!-- NEVER DO THIS. -->
+
+			<dependency>
+				<groupId>co.casterlabs.kaimen</groupId>
+				<artifactId>Windows-amd64</artifactId>
+				<version>${kaimen.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>co.casterlabs.kaimen</groupId>
+				<artifactId>Windows-x86</artifactId>
+				<version>${kaimen.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>co.casterlabs.kaimen</groupId>
+				<artifactId>Windows-aarch64</artifactId>
+				<version>${kaimen.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>co.casterlabs.kaimen</groupId>
+				<artifactId>MacOS-amd64</artifactId>
+				<version>${kaimen.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>co.casterlabs.kaimen</groupId>
+				<artifactId>MacOS-aarch64</artifactId>
+				<version>${kaimen.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 
 		<!-- Code related packages -->
@@ -63,7 +101,8 @@
 			<version>1.18.22</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency> <!-- For Eclipse users -->
+		<dependency>
+			<!-- For Eclipse users -->
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
 			<version>19.0.0</version>

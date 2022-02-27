@@ -12,14 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import co.casterlabs.caffeinated.app.CaffeinatedApp;
-import co.casterlabs.caffeinated.app.preferences.PreferenceFile;
-import co.casterlabs.caffeinated.app.ui.UIPreferences;
+import co.casterlabs.kaimen.app.App;
 import co.casterlabs.kaimen.webview.Webview;
 import lombok.NonNull;
 
@@ -65,12 +64,8 @@ public class TrayHandler {
                 });
 
                 // Setup the tray icon.
-                icon = new TrayIcon(createImage("assets/logo/casterlabs.png", "Casterlabs Logo"));
-
-                changeTrayIcon(CaffeinatedApp.getInstance().getUiPreferences().get().getIcon());
-                CaffeinatedApp.getInstance().getUiPreferences().addSaveListener((PreferenceFile<UIPreferences> uiPreferences) -> {
-                    changeTrayIcon(uiPreferences.get().getIcon());
-                });
+                icon = new TrayIcon(new ImageIcon(App.getIconURL(), "Casterlabs Logo").getImage());
+                App.appIconChangeEvent.on(TrayHandler::changeTrayIcon);
 
                 icon.setImageAutoSize(true);
                 icon.setPopupMenu(popup);
@@ -112,12 +107,12 @@ public class TrayHandler {
         }
     }
 
-    private static void changeTrayIcon(String logo) {
+    private static void changeTrayIcon(URL url) {
         if (lastImage != null) {
             lastImage.flush();
         }
 
-        Image image = createImage(String.format("assets/logo/%s.png", logo), "Casterlabs Logo");
+        Image image = new ImageIcon(url, "").getImage();
         lastImage = image;
 
         icon.setImage(image);
@@ -132,15 +127,6 @@ public class TrayHandler {
             SwingUtilities.invokeLater(() -> {
                 tray.remove(icon);
             });
-        }
-    }
-
-    private static Image createImage(String path, String description) {
-        try {
-            return new ImageIcon(FileUtil.loadResourceAsUrl(path), description).getImage();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
