@@ -337,6 +337,7 @@
         chatboxContainer.addEventListener("scroll", () => {
             showJumpToBottomButton = !isNearBottom();
         });
+        dispatch("mount");
     });
 </script>
 
