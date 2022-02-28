@@ -104,5 +104,5 @@ try {
 
 // No theme was selected, so load the default.
 if (!getCurrentTheme()) {
-    changeTheme("co.casterlabs.light");
+    changeTheme("system");
 }
