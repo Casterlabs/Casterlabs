@@ -31,8 +31,6 @@
     <b>Select a sub-project to see what's happenin'</b>
 </p>
 
-<br />
-
 <p align="center">
     <a href="/caffeinated">
         Caffeinated
