@@ -30,6 +30,7 @@
 <section class="loading has-text-centered">
     <div class="casterlabs-wordmark">
         <img class="light-show" src="/img/wordmark/casterlabs/black.svg" width="300px" height="auto" alt="Casterlabs Studio Logo" />
+        <img class="dark-show" src="/img/wordmark/casterlabs/white.svg" width="300px" height="auto" alt="Casterlabs Studio Logo" />
     </div>
 
     <br />
