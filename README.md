@@ -33,5 +33,9 @@
 <p align="center">
     <a href="/caffeinated">
         Caffeinated
-        </a>
+    </a>
+    &nbsp;&bull;&nbsp;
+    <a href="/studio">
+        Studio
+    </a>
 </p>
