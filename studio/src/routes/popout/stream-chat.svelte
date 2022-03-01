@@ -161,7 +161,7 @@
     }
 
     onMount(async () => {
-        document.title = "Casterlabs-Caffeinated - Stream Chat";
+        document.title = "Casterlabs Caffeinated - Stream Chat";
 
         const conn = await import("https://widgets.casterlabs.co/caffeinated/widget.mjs");
 

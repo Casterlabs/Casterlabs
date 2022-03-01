@@ -61,7 +61,7 @@
     }
 
     onMount(async () => {
-        document.title = "Casterlabs-Caffeinated - Stream Viewers";
+        document.title = "Casterlabs Caffeinated - Stream Viewers";
 
         const conn = await import("https://widgets.casterlabs.co/caffeinated/widget.mjs");
 
