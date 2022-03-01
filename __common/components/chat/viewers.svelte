@@ -51,7 +51,7 @@
         {viewersList.length}
     </span>
 
-    <ul>
+    <ul class="allow-select">
         {#each viewersList as viewer}
             <li>
                 {viewer.displayname}
