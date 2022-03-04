@@ -1,6 +1,18 @@
 # Casterlabs
 
 <p align="center">
+    <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/production">
+        Prod: <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/production.svg?style=shield" />
+    </a>
+    <br />
+    <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/test">
+        Test: <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/test.svg?style=shield" />
+    </a>
+</p>
+
+<br />
+
+<p align="center">
     <a href="https://casterlabs.co/">
         Website
     </a>
@@ -23,6 +35,12 @@
 <p align="center">
     This is the monorepo that holds Caffeinated, Casterlabs Studio, and all the shared code between them.
 </p>
+
+<br />
+
+<a href="https://app.circleci.com/pipelines/github/Casterlabs/Casterlabs?filter=all&status=canceled&status=failed&status=failing&status=on_hold&status=queued&status=running&status=success">
+    CircleCI
+</a>
 
 <br />
 <br />
