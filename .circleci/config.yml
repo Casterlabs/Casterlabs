@@ -11,7 +11,7 @@ jobs:
       
       - run:
           name: Build Caffeinated
-          command: cd caffeinated && bash build.sh
+          command: cd caffeinated && bash build.sh && mkdir dist/artifacts
 
       # Produce the Windows Artifact
       - run:
