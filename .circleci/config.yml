@@ -16,25 +16,25 @@ jobs:
       # Produce the Windows Artifact
       - run:
           name: ZIP the Windows (AMD64) Artifact
-          command: zip -r dist/artifacts/Windows-amd64.zip dist/Windows-amd64
+          command: zip -r caffeinated/dist/artifacts/Windows-amd64.zip caffeinated/dist/Windows-amd64
       - store_artifacts:
-          path: dist/artifacts/Windows-amd64.zip
+          path: caffeinated/dist/artifacts/Windows-amd64.zip
           destination: Windows-amd64.zip
 
       # Produce the macOS Artifact
       - run:
           name: ZIP the macOS (AMD64) Artifact
-          command: zip -r dist/artifacts/macOS-amd64.zip dist/macOS-amd64
+          command: zip -r caffeinated/dist/artifacts/macOS-amd64.zip caffeinated/dist/macOS-amd64
       - store_artifacts:
-          path: dist/artifacts/macOS-amd64.zip
+          path: caffeinated/dist/artifacts/macOS-amd64.zip
           destination: macOS-amd64.zip
 
       # Produce the Linux Artifact
       - run:
           name: ZIP the Linux (AMD64) Artifact
-          command: zip -r dist/artifacts/Linux-amd64.zip dist/Linux-amd64
+          command: zip -r caffeinated/dist/artifacts/Linux-amd64.zip caffeinated/dist/Linux-amd64
       - store_artifacts:
-          path: dist/artifacts/Linux-amd64.zip
+          path: caffeinated/dist/artifacts/Linux-amd64.zip
           destination: Linux-amd64.zip
 
 
