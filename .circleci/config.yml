@@ -2,35 +2,48 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-caffeinated:
-    # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
-    # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # Be sure to update the Docker image tag below to openjdk version of your application.
-    # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     docker:
       - image: cimg/openjdk:11.0-node
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
-      # Checkout the code as the first step.
       - checkout
-      # Use mvn clean and package as the standard maven build phase
+      
       - run:
-          name: Build
+          name: Build Caffeinated
           command: cd caffeinated && bash build.sh
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+      # Produce the Windows Artifact
+      - run:
+          name: ZIP the Windows (AMD64) Artifact
+          command: zip -r dist/artifacts/Windows-amd64.zip dist/Windows-amd64
+      - store_artifacts:
+          path: dist/artifacts/Windows-amd64.zip
+          destination: Windows-amd64.zip
+
+      # Produce the macOS Artifact
+      - run:
+          name: ZIP the macOS (AMD64) Artifact
+          command: zip -r dist/artifacts/macOS-amd64.zip dist/macOS-amd64
+      - store_artifacts:
+          path: dist/artifacts/macOS-amd64.zip
+          destination: macOS-amd64.zip
+
+      # Produce the Linux Artifact
+      - run:
+          name: ZIP the Linux (AMD64) Artifact
+          command: zip -r dist/artifacts/Linux-amd64.zip dist/Linux-amd64
+      - store_artifacts:
+          path: dist/artifacts/Linux-amd64.zip
+          destination: Linux-amd64.zip
+
+
 workflows:
-  build: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  build:
     jobs:
       - build-caffeinated:
           filters:
               branches:
                 only:
                   - production
+                  - test
