@@ -6,6 +6,8 @@ jobs:
   build-caffeinated:
     docker:
       - image: cimg/openjdk:11.0-node
+    resource_class: small
+
     steps:
       - checkout
       
