@@ -58,11 +58,13 @@ function applyTheme(theme, id = theme.id) {
 }
 
 function applySystemTheme() {
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        applyTheme(THEME_DATA["co.casterlabs.dark"], "system");
-    } else {
-        applyTheme(THEME_DATA["co.casterlabs.light"], "system");
+    if (window.matchMedia) {
+        if (!window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            applyTheme(THEME_DATA["co.casterlabs.light"], "system");
+        }
     }
+
+    applyTheme(THEME_DATA["co.casterlabs.dark"], "system");
 }
 
 // The listener code for system theme.
