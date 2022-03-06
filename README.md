@@ -38,9 +38,11 @@
 
 <br />
 
-<a href="https://app.circleci.com/pipelines/github/Casterlabs/Casterlabs?filter=all&status=canceled&status=failed&status=failing&status=on_hold&status=queued&status=running&status=success">
-    CircleCI
-</a>
+<p align="center">
+    <a href="https://app.circleci.com/pipelines/github/Casterlabs/Casterlabs?filter=all&status=canceled&status=failed&status=failing&status=on_hold&status=queued&status=running&status=success">
+        CircleCI
+    </a>
+</p>
 
 <br />
 <br />
