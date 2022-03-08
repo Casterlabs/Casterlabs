@@ -51,7 +51,7 @@ jobs:
       # Produce the Windows Artifact
       - run:
           name: ZIP the Windows (AMD64) Artifact
-          command: caffeinated/updater/dist/windows && zip -r ../artifacts/Windows.zip * && cd -
+          command: cd caffeinated/updater/dist/windows && zip -r ../artifacts/Windows.zip * && cd -
       - store_artifacts:
           path: caffeinated/updater/dist/artifacts/Windows.zip
           destination: Updater-Windows.zip
@@ -59,7 +59,7 @@ jobs:
       # Produce the macOS Artifact
       - run:
           name: ZIP the macOS (AMD64) Artifact
-          command: caffeinated/updater/dist/macos && tar -czvf ../artifacts/macOS.zip * && cd -
+          command: cd caffeinated/updater/dist/macos && tar -czvf ../artifacts/macOS.zip * && cd -
       - store_artifacts:
           path: caffeinated/updater/dist/artifacts/macOS.zip
           destination: Updater-macOS.zip
@@ -67,7 +67,7 @@ jobs:
       # Produce the Linux Artifact
       - run:
           name: ZIP the Linux (AMD64) Artifact
-          command: caffeinated/updater/dist/linux && tar -czvf ../artifacts/Linux.zip * && cd -
+          command: cd caffeinated/updater/dist/linux && tar -czvf ../artifacts/Linux.zip * && cd -
       - store_artifacts:
           path: caffeinated/updater/dist/artifacts/Linux.zip
           destination: Updater-Linux.zip
