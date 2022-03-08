@@ -37,11 +37,52 @@ jobs:
           path: caffeinated/dist/artifacts/Linux-amd64.zip
           destination: Linux-amd64.zip
 
+  build-caffeinated-updater:
+    docker:
+      - image: cimg/openjdk:11.0 # We need JDK 11.
+    resource_class: small
+    steps:
+      - checkout
+      
+      - run:
+          name: Build Caffeinated Updater
+          command: cd caffeinated/updater && bash build.sh && mkdir dist/artifacts
+
+      # Produce the Windows Artifact
+      - run:
+          name: ZIP the Windows (AMD64) Artifact
+          command: zip -r caffeinated/dist/artifacts/Windows.zip caffeinated/dist/Windows
+      - store_artifacts:
+          path: caffeinated/dist/artifacts/Windows.zip
+          destination: Updater-Windows.zip
+
+      # Produce the macOS Artifact
+      - run:
+          name: ZIP the macOS (AMD64) Artifact
+          command: zip -r caffeinated/dist/artifacts/macOS.zip caffeinated/dist/macOS
+      - store_artifacts:
+          path: caffeinated/dist/artifacts/macOS.zip
+          destination: Updater-macOS.zip
+
+      # Produce the Linux Artifact
+      - run:
+          name: ZIP the Linux (AMD64) Artifact
+          command: zip -r caffeinated/dist/artifacts/Linux.zip caffeinated/dist/Linux
+      - store_artifacts:
+          path: caffeinated/dist/artifacts/Linux.zip
+          destination: Updater-Linux.zip
+
 
 workflows:
   build:
     jobs:
       - build-caffeinated:
+          filters:
+              branches:
+                only:
+                  - production
+                  - test
+      - build-caffeinated-updater:
           filters:
               branches:
                 only:
