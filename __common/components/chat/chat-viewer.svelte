@@ -323,7 +323,13 @@
     }
 
     export function onAuthUpdate({ koiAuth }) {
-        signedInPlatforms = Object.keys(koiAuth);
+        const platforms = [];
+
+        for (const data of Object.values(koiAuth)) {
+            platforms.push(data.userData.platform);
+        }
+
+        signedInPlatforms = platforms;
         isMultiPlatform = signedInPlatforms.length > 1;
 
         if (!signedInPlatforms.includes(chatSendPlatform)) {
