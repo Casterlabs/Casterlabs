@@ -1,11 +1,10 @@
 <script>
-    import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
-
     import { onMount } from "svelte";
 
-    let isConnected = false;
-
+    import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
     import ChatViewer from "$lib/components/chat/chat-viewer.svelte";
+
+    let isConnected = false;
 
     let viewerElement = {};
 
@@ -17,8 +16,20 @@
         viewerElement.processEvent(event);
     }
 
-    function bridge_onAuthUpdate(data) {
-        viewerElement.onAuthUpdate(data);
+    function bridge_onAuthUpdate({ koiAuth: data }) {
+        let auth = {};
+
+        // Just need to convert to a different format.
+        for (const [key, value] of Object.entries(data)) {
+            auth[key] = {
+                userData: value.streamer
+            };
+        }
+
+        auth = { koiAuth: auth };
+
+        console.log(auth);
+        viewerElement.onAuthUpdate(auth);
     }
 
     /* ---------------- */
@@ -30,7 +41,8 @@
     }
 
     function onChatSend({ detail: data }) {
-        Widget.emit("koi:chat_send", data);
+        const { platform, message } = data;
+        Koi.sendChat(platform, message);
     }
 
     function onModAction({ detail: modAction }) {
@@ -40,10 +52,7 @@
         console.log("[StreamChat]", `onModAction(${type}, ${platform})`);
 
         function sendCommand(command) {
-            Widget.emit("koi:chat_send", {
-                message: command,
-                platform: platform
-            });
+            Koi.sendChat(platform, command);
         }
 
         switch (type) {
@@ -86,20 +95,14 @@
 
             case "delete": {
                 if (["TWITCH", "BRIME", "TROVO"].includes(platform)) {
-                    Widget.emit("koi:chat_delete", {
-                        messageId: event.id,
-                        platform: platform
-                    });
+                    Koi.deleteChat(platform, event.id);
                 }
                 return;
             }
 
             case "upvote": {
                 if (platform == "CAFFEINE") {
-                    Widget.emit("koi:chat_upvote", {
-                        messageId: event.id,
-                        platform: platform
-                    });
+                    Koi.upvoteChat(platform, event.id);
                 }
                 return;
             }
