@@ -48,13 +48,17 @@
     }
 
     function savePreferences() {
+        const [viewersListX, viewersListY] = viewersListElement?.getPosition();
+
         dispatch("savepreferences", {
             showChatTimestamps: showChatTimestamps,
             showModActions: showModActions,
             showProfilePictures: showProfilePictures,
             showBadges: showBadges,
             showViewers: showViewers,
-            showViewersList: showViewersList
+            showViewersList: showViewersList,
+            viewersListX: viewersListX,
+            viewersListY: viewersListY
         });
     }
 
@@ -65,6 +69,10 @@
         showBadges = config.showBadges;
         showViewers = config.showViewers;
         showViewersList = config.showViewersList;
+        viewersListElement.setPosition(
+            config.viewersListX || 205,
+            config.viewersListY || 5
+        );
     }
 
     // TODO better processing of messages, this works for now.
@@ -377,7 +385,7 @@
     </a>
 
     <div style="display: {showViewersList ? 'block' : 'none'}">
-        <Viewers bind:this={viewersListElement} />
+        <Viewers bind:this={viewersListElement}  on:move={savePreferences} />
     </div>
 
     <div id="chat-settings" class="box">
