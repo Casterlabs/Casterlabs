@@ -376,7 +376,7 @@
         </svg>
     </a>
 
-    <div id="viewers-list" style="display: {showViewersList ? 'block' : 'none'}">
+    <div style="display: {showViewersList ? 'block' : 'none'}">
         <Viewers bind:this={viewersListElement} />
     </div>
 
@@ -631,15 +631,6 @@
     #chat-settings label {
         display: block;
         padding-bottom: 2px;
-    }
-
-    /* Viewers List */
-    #viewers-list {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 200px;
-        height: 275px;
     }
 
     /* Command Palette */
