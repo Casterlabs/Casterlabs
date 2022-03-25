@@ -3,8 +3,8 @@ version: 2.1
 jobs:
   build-caffeinated:
     docker:
-      - image: cimg/openjdk:11.0.10-node # We need JDK 11 and NodeJS. We use this version for a slightly less broken version of maven.
-    resource_class: medium               # `small` is just *barely* enough, so we spec up a tier. 
+      - image: cimg/openjdk:11.0-node # We need JDK 11 and NodeJS.
+    resource_class: medium            # `small` is just *barely* enough, so we spec up a tier. 
 
     steps:
       - checkout
