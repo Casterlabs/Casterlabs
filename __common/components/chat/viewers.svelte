@@ -320,8 +320,16 @@
         viewersList = list;
     }
 
-    function copyViewersList() {
-        Caffeinated.copyText(viewersList.join("\n"), "Copied the viewer list to your clipboard");
+    function copyViewersList(e) {
+        e.preventDefault();
+
+        const list = [];
+
+        for (const viewer of viewersList) {
+            list.push(viewer.displayname);
+        }
+
+        Caffeinated.copyText(list.join("\n"), "Copied the viewer list to your clipboard");
     }
 </script>
 
