@@ -31,7 +31,7 @@
                 minHeight = 300,
 
                 maxWidth = 150,
-                maxHeight = 300,
+                maxHeight = 300
             } = options;
 
             this.posX = posX;
@@ -152,9 +152,7 @@
                     try {
                         listener(this);
                     } catch (e) {
-                        console.error(
-                            "An event listener produced an exception: "
-                        );
+                        console.error("An event listener produced an exception: ");
                         console.error(e);
                     }
                 });
@@ -210,8 +208,7 @@
             let height = this.element.style.height;
 
             if (height.endsWith("%")) {
-                height =
-                    parseFloat(height.substring(0, height.length - 1)) / 100;
+                height = parseFloat(height.substring(0, height.length - 1)) / 100;
             } else {
                 const parentHeight = this.parent.offsetHeight;
 
@@ -283,7 +280,7 @@
 
             dispatch("move", {
                 x: x,
-                y: y,
+                y: y
             });
         });
     });
@@ -322,25 +319,17 @@
 
         viewersList = list;
     }
+
+    function copyViewersList() {
+        Caffeinated.copyText(viewersList.join("\n"), "Copied the viewer list to your clipboard");
+    }
 </script>
 
-<div class="viewers-list-container">
+<div class="viewers-list-container" on:contextmenu={copyViewersList}>
     <div id="viewers-list" bind:this={rootElement} class="draggable">
         <div class="container box">
             <span id="total-count">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="feather feather-eye"
-                    style="transform: translateY(1.5px);"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye" style="transform: translateY(1.5px);">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                     <circle cx="12" cy="12" r="3" />
                 </svg>
