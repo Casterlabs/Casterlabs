@@ -59,36 +59,151 @@ function KinokoV1() {
                 const data = message.data;
 
                 switch (data) {
-                    case ":ping": {
-                        if (!proxyMode) {
-                            ws.send(":ping");
+                    case ":ping":
+                        {
+                            if (!proxyMode) {
+                                ws.send(":ping");
+                                return;
+                            }
+                            break;
+                        }
+
+                    case ":orphaned":
+                        {
+                            eventHandler.emit("orphaned");
                             return;
                         }
-                        break;
-                    }
 
-                    case ":orphaned": {
-                        eventHandler.emit("orphaned");
-                        return;
-                    }
-
-                    case ":adopted": {
-                        eventHandler.emit("adopted");
-                        return;
-                    }
-
-                    default: {
-                        if (proxyMode) {
-                            eventHandler.emit("message", { message: data });
-                        } else {
-                            try {
-                                eventHandler.emit("message", { message: JSON.parse(data) });
-                            } catch (ignored) {
-                                eventHandler.emit("message", { message: data });
-                            }
+                    case ":adopted":
+                        {
+                            eventHandler.emit("adopted");
+                            return;
                         }
-                        return
-                    }
+
+                    default:
+                        {
+                            if (proxyMode) {
+                                eventHandler.emit("message", { message: data });
+                            } else {
+                                try {
+                                    eventHandler.emit("message", { message: JSON.parse(data) });
+                                } catch (ignored) {
+                                    eventHandler.emit("message", { message: data });
+                                }
+                            }
+                            return
+                        }
+                }
+            };
+        },
+
+        disconnect() {
+            if (this.isOpen()) {
+                ws.close();
+            }
+        }
+
+    };
+
+    Object.freeze(kinoko);
+
+    return kinoko;
+}
+
+function KinokoV2() {
+    const eventHandler = new EventHandler();
+
+    let ws;
+
+    const kinoko = {
+        on: eventHandler.on,
+        once: eventHandler.once,
+        off: eventHandler.off,
+        id: null,
+        channelMembers: [],
+
+        isOpen() {
+            return (ws && (ws.readyState == WebSocket.OPEN));
+        },
+
+        send(payload, target) {
+            if (this.isOpen()) {
+                ws.send({
+                    type: "MESSAGE",
+                    payload: payload,
+                    target: target
+                });
+            }
+        },
+
+        connect(channel) {
+            const uri = `wss://api.casterlabs.co/v2/kinoko/${encodeURI(channel)}`;
+
+            this.disconnect();
+            this.id = null;
+            this.channelMembers = [];
+
+            const inst = this;
+
+            ws = new WebSocket(uri);
+
+            ws.onerror = () => {
+                setTimeout(() => {
+                    this.connect(channel, type, proxy);
+                }, 1000);
+            }
+
+            ws.onclose = () => {
+                eventHandler.emit("close");
+            };
+
+            ws.onmessage = (message) => {
+                const payload = JSON.parse(message.data);
+
+                switch (payload.type) {
+                    case "PING":
+                        {
+                            ws.send({
+                                type: "PING",
+                                payload: {},
+                                target: undefined
+                            });
+                            return;
+                        }
+
+                    case "LIST":
+                        {
+                            inst.channelMembers = payload.data.list;
+                            return;
+                        }
+
+                    case "ID":
+                        {
+                            inst.id = payload.data.id;
+                            eventHandler.emit("open", inst.id);
+                            return;
+                        }
+
+                    case "JOIN":
+                        {
+                            inst.channelMembers.push(payload.data.id);
+                            eventHandler.emit("join", payload.data.id);
+                            return;
+                        }
+
+                    case "LEAVE":
+                        {
+                            inst.channelMembers.splice(inst.channelMembers.indexOf(payload.data.id), 1);
+                            eventHandler.emit("leave", payload.data.id);
+                            return;
+                        }
+
+                    case "MESSAGE":
+                        {
+
+                            eventHandler.emit("message", [payload.data, payload.sender]);
+                            return;
+                        }
                 }
             };
         },
@@ -181,5 +296,6 @@ class AuthCallback {
 
 export {
     KinokoV1,
+    KinokoV2,
     AuthCallback
 };
