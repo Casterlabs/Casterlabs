@@ -80,11 +80,10 @@ workflows:
           filters:
               branches:
                 only:
-                  - production
-                  - test
+                  - beta
+                  - stable
       - build-caffeinated-updater:
           filters:
               branches:
                 only:
-                  - production
-                  - test
+                  - stable
