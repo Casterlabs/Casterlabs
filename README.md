@@ -1,12 +1,12 @@
 # Casterlabs
 
 <p align="center">
-    <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/production">
-        Prod: <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/production.svg?style=shield" />
+    <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/stable">
+        Stable: <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/stable.svg?style=shield" />
     </a>
     <br />
-    <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/test">
-        Test: <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/test.svg?style=shield" />
+    <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/beta">
+        Beta: <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/beta.svg?style=shield" />
     </a>
 </p>
 
