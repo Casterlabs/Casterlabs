@@ -15,7 +15,7 @@ jobs:
 
       # Produce the Windows Artifact
       - run:
-          name: ZIP the Windows (AMD64) Artifact
+          name: Compress the Windows-amd64 Artifact
           command: cd caffeinated/dist/Windows-amd64 && zip -r ../artifacts/Windows-amd64.zip * && cd -
       - store_artifacts:
           path: caffeinated/dist/artifacts/Windows-amd64.zip
@@ -23,7 +23,7 @@ jobs:
 
       # Produce the macOS Artifact
       - run:
-          name: ZIP the macOS (AMD64) Artifact
+          name: Compress the macOS-amd64 Artifact
           command: cd caffeinated/dist/macOS-amd64 && zip -r ../artifacts/macOS-amd64.zip * && cd -
       - store_artifacts:
           path: caffeinated/dist/artifacts/macOS-amd64.zip
@@ -31,7 +31,7 @@ jobs:
 
       # Produce the Linux Artifact
       - run:
-          name: ZIP the Linux (AMD64) Artifact
+          name: Compress the Linux-amd64 Artifact
           command: cd caffeinated/dist/Linux-amd64 && zip -r ../artifacts/Linux-amd64.zip * && cd -
       - store_artifacts:
           path: caffeinated/dist/artifacts/Linux-amd64.zip
@@ -50,27 +50,27 @@ jobs:
 
       # Produce the Windows Artifact
       - run:
-          name: ZIP the Windows (AMD64) Artifact
+          name: Compress the Windows-amd64 Artifact
           command: cd caffeinated/updater/dist/windows && zip -r ../artifacts/Windows.zip * && cd -
       - store_artifacts:
-          path: caffeinated/updater/dist/artifacts/Windows.zip
-          destination: Updater-Windows.zip
+          path: caffeinated/updater/dist/artifacts/Windows.tar.gz
+          destination: Updater-Windows.tar.gz
 
       # Produce the macOS Artifact
       - run:
-          name: ZIP the macOS (AMD64) Artifact
-          command: cd caffeinated/updater/dist/macos && tar -czvf ../artifacts/macOS.zip * && cd -
+          name: Compress the macOS-amd64 Artifact
+          command: cd caffeinated/updater/dist/macos && tar -czvf ../artifacts/macOS.tar.gz * && cd -
       - store_artifacts:
-          path: caffeinated/updater/dist/artifacts/macOS.zip
-          destination: Updater-macOS.zip
+          path: caffeinated/updater/dist/artifacts/macOS.tar.gz
+          destination: Updater-macOS.tar.gz
 
       # Produce the Linux Artifact
       - run:
-          name: ZIP the Linux (AMD64) Artifact
-          command: cd caffeinated/updater/dist/linux && tar -czvf ../artifacts/Linux.zip * && cd -
+          name: Compress the Linux-amd64 Artifact
+          command: cd caffeinated/updater/dist/linux && tar -czvf ../artifacts/Linux.tar.gz * && cd -
       - store_artifacts:
-          path: caffeinated/updater/dist/artifacts/Linux.zip
-          destination: Updater-Linux.zip
+          path: caffeinated/updater/dist/artifacts/Linux.tar.gz
+          destination: Updater-Linux.tar.gz
 
 
 workflows:
