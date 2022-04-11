@@ -76,5 +76,17 @@ jobs:
 workflows:
   build:
     jobs:
-      - build-caffeinated
-      - build-caffeinated-updater
+      - build-caffeinated:
+          filters:
+              branches:
+                only:
+                  - alpha
+                  - beta
+                  - stable
+      - build-caffeinated-updater:
+          filters:
+              branches:
+                only:
+                  - alpha
+                  - beta
+                  - stable
