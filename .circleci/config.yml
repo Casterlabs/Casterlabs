@@ -54,7 +54,7 @@ jobs:
           command: cd caffeinated/updater/dist/windows && zip -r ../artifacts/Windows.zip * && cd -
       - store_artifacts:
           path: caffeinated/updater/dist/artifacts/Windows.zip
-          destination: Updater-Windows.zip
+          destination: Casterlabs-Caffeinated-Windows.zip
 
       # Produce the macOS Artifact
       - run:
@@ -62,7 +62,7 @@ jobs:
           command: cd caffeinated/updater/dist/macos && tar -czvf ../artifacts/macOS.tar.gz * && cd -
       - store_artifacts:
           path: caffeinated/updater/dist/artifacts/macOS.tar.gz
-          destination: Updater-macOS.tar.gz
+          destination: Casterlabs-Caffeinated-macOS.tar.gz
 
       # Produce the Linux Artifact
       - run:
@@ -70,7 +70,7 @@ jobs:
           command: cd caffeinated/updater/dist/linux && tar -czvf ../artifacts/Linux.tar.gz * && cd -
       - store_artifacts:
           path: caffeinated/updater/dist/artifacts/Linux.tar.gz
-          destination: Updater-Linux.tar.gz
+          destination: Casterlabs-Caffeinated-Linux.tar.gz
 
 
 workflows:
