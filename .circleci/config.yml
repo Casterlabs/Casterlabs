@@ -53,8 +53,8 @@ jobs:
           name: Compress the Windows-amd64 Artifact
           command: cd caffeinated/updater/dist/windows && zip -r ../artifacts/Windows.zip * && cd -
       - store_artifacts:
-          path: caffeinated/updater/dist/artifacts/Windows.tar.gz
-          destination: Updater-Windows.tar.gz
+          path: caffeinated/updater/dist/artifacts/Windows.zip
+          destination: Updater-Windows.zip
 
       # Produce the macOS Artifact
       - run:
