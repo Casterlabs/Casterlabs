@@ -24,7 +24,10 @@
     let isPlatformMessage = koiEvent.event_type == "PLATFORM_MESSAGE";
 
     function escapeHtml(unsafe) {
-        return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
     }
 
     let eventHasModIcons = false;
@@ -33,7 +36,9 @@
         const { host, viewers } = koiEvent;
 
         highlight = true;
-        messageHtml = `${host.displayname} just raided with ${viewers} ${viewers == 1 ? "viewer" : "viewers"}`;
+        messageHtml = `${host.displayname} just raided with ${viewers} ${
+            viewers == 1 ? "viewer" : "viewers"
+        }`;
     } else if (koiEvent.event_type == "FOLLOW") {
         highlight = true;
         messageHtml = `${koiEvent.follower.displayname} just followed!`;
@@ -42,11 +47,19 @@
 
         switch (event.sub_type) {
             case "SUB":
-                messageHtml = `${subscriber.displayname} just subscribed for ${months} ${months == 1 ? "month" : "months"}`;
+                messageHtml = `${
+                    subscriber.displayname
+                } just subscribed for ${months} ${
+                    months == 1 ? "month" : "months"
+                }`;
                 break;
 
             case "RESUB":
-                messageHtml = `${subscriber.displayname} just resubscribed for ${months} ${months == 1 ? "month" : "months"}`;
+                messageHtml = `${
+                    subscriber.displayname
+                } just resubscribed for ${months} ${
+                    months == 1 ? "month" : "months"
+                }`;
                 break;
 
             case "SUBGIFT":
@@ -69,26 +82,40 @@
         highlight = true;
     } else if (koiEvent.event_type == "CHANNEL_POINTS") {
         const reward = koiEvent.reward;
-        const imageHtml = `<img class="vcimage" src = "${reward.reward_image || reward.default_reward_image}" /> `;
+        const imageHtml = `<img class="vcimage" src = "${
+            reward.reward_image || reward.default_reward_image
+        }" /> `;
 
         highlight = true;
         messageHtml = `${koiEvent.sender.displayname} just redeemed ${imageHtml}${reward.title}`;
     } else if (koiEvent.event_type == "CLEARCHAT") {
         highlight = true;
         messageHtml = `<i>Chat was cleared.</i>`;
-    } else if (["CHAT", "DONATION", "PLATFORM_MESSAGE"].includes(koiEvent.event_type) /* Normal chat messages */) {
+    } else if (
+        ["CHAT", "DONATION", "PLATFORM_MESSAGE"].includes(
+            koiEvent.event_type
+        ) /* Normal chat messages */
+    ) {
         messageHtml = escapeHtml(koiEvent.message);
         sender = koiEvent.sender;
         isMessageFromSelf = sender.UPID == koiEvent.streamer.UPID;
 
         for (const [name, image] of Object.entries(koiEvent.emotes)) {
-            messageHtml = messageHtml.split(name).join(`<img class="inline-image" title="${name}" src="${image}" />`);
+            messageHtml = messageHtml
+                .split(name)
+                .join(
+                    `<img class="inline-image" title="${name}" src="${image}" />`
+                );
         }
 
         for (const pattern of koiEvent.links) {
-            const link = pattern.includes("://") ? pattern : "https://" + pattern;
+            const link = pattern.includes("://")
+                ? pattern
+                : "https://" + pattern;
 
-            messageHtml = messageHtml.split(pattern).join(`<a href="${link}" rel="external">${pattern}</a>`);
+            messageHtml = messageHtml
+                .split(pattern)
+                .join(`<a href="${link}" rel="external">${pattern}</a>`);
         }
 
         if (koiEvent.donations) {
@@ -108,8 +135,14 @@
 </script>
 
 <!-- svelte-ignore a11y-missing-attribute -->
-<span class="chat-message {isDeleted ? 'is-deleted' : ''} {highlight ? 'highlighted' : ''} {isPlatformMessage ? 'no-select' : ''}">
-    <span class="message-timestamp"> {new Date(timestamp).toLocaleTimeString()} </span>
+<span
+    class="chat-message {isDeleted ? 'is-deleted' : ''} {highlight
+        ? 'highlighted'
+        : ''} {isPlatformMessage ? 'no-select' : ''}"
+>
+    <span class="message-timestamp">
+        {new Date(timestamp).toLocaleTimeString()}
+    </span>
     <span class="message-container">
         {#if eventHasModIcons}
             <span class="mod-actions">
@@ -134,7 +167,10 @@
                 {/if}
 
                 {#if PLATFORMS_WITH_TIMEOUT.includes(koiEvent.streamer.platform) && !isMessageFromSelf}
-                    <a on:click={() => modAction("timeout", koiEvent)} title="Timeout">
+                    <a
+                        on:click={() => modAction("timeout", koiEvent)}
+                        title="Timeout"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="14"
@@ -154,7 +190,10 @@
                 {/if}
 
                 {#if PLATFORMS_WITH_DELETE.includes(koiEvent.streamer.platform)}
-                    <a on:click={() => modAction("delete", koiEvent)} title="Delete Message">
+                    <a
+                        on:click={() => modAction("delete", koiEvent)}
+                        title="Delete Message"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="14"
@@ -168,8 +207,15 @@
                             class="feather feather-trash-2"
                         >
                             <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                            <line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />
+                            <path
+                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                            />
+                            <line x1="10" y1="11" x2="10" y2="17" /><line
+                                x1="14"
+                                y1="11"
+                                x2="14"
+                                y2="17"
+                            />
                         </svg>
                     </a>
                 {/if}
@@ -184,7 +230,9 @@
                         <img
                             src="/img/services/{koiEvent.sender.username.toLowerCase()}/icon.svg"
                             alt="{koiEvent.sender.displayname} Logo"
-                            style={koiEvent.sender.username != "casterlabs" ? "filter: invert(var(--white-invert-factor));" : ""}
+                            style={koiEvent.sender.username != "casterlabs"
+                                ? "filter: invert(var(--white-invert-factor));"
+                                : ""}
                         />
                     </span>
                     >
@@ -194,7 +242,11 @@
                 <!-- ItzLcyx test -->
                 <!-- becomes: -->
                 <!-- ItzLcyx > test -->
-                <User userData={sender} /><span style="opacity: 0; font-size: 0;"> &gt; </span>
+                <User userData={sender} /><span
+                    style="opacity: 0; font-size: 0;"
+                >
+                    &gt;
+                </span>
             {/if}
         {/if}
 
