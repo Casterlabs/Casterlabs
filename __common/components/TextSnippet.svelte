@@ -1,6 +1,8 @@
 <script>
     import { onMount, onDestroy } from "svelte";
 
+    export let escapeHtml = true;
+
     const unregister = [];
 
     let emojiProvider = "system";
@@ -11,16 +13,19 @@
 
     function render() {
         if (typeof window != "undefined" && emojiProvider != "system") {
-            fetch(`https://api.casterlabs.co/v3/emojis/detect?provider=${emojiProvider}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    text: text,
-                    responseFormat: "HTML"
-                })
-            })
+            fetch(
+                `https://api.casterlabs.co/v3/emojis/detect?provider=${emojiProvider}&escape=${escapeHtml}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        responseFormat: "HTML",
+                    }),
+                }
+            )
                 .then((response) => response.text())
                 .then((text) => {
                     content = text;
@@ -31,12 +36,14 @@
     }
 
     onMount(() => {
-        unregister.push(
-            Caffeinated.UI.mutate("preferences", (preferences) => {
-                console.log(preferences);
-                emojiProvider = preferences.emojiProvider;
-            })
-        );
+        if (window.Caffeinated) {
+            unregister.push(
+                Caffeinated.UI.mutate("preferences", (preferences) => {
+                    // console.log(preferences);
+                    emojiProvider = preferences.emojiProvider;
+                })
+            );
+        }
     });
 
     onDestroy(() => {
@@ -47,7 +54,7 @@
         }
     });
 
-    $: slotElement, (text = slotElement?.innerText);
+    $: slotElement, (text = slotElement?.innerText.replace(/:/g, "&#58;"));
 
     // Rerender on emoji provider change
     $: emojiProvider, render();

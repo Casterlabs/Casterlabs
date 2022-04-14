@@ -1,6 +1,7 @@
 <svelte:options accessors />
 
 <script>
+    import TextSnippet from "../TextSnippet.svelte";
     import User from "./user.svelte";
 
     const PLATFORMS_WITH_BAN = ["TWITCH", "TROVO"];
@@ -198,7 +199,9 @@
         {/if}
 
         <span>
-            {@html messageHtml}
+            <TextSnippet>
+                {@html messageHtml}
+            </TextSnippet>
         </span>{#if upvotes > 0}
             <sup class="upvote-counter">
                 {#if upvotes < 10}
