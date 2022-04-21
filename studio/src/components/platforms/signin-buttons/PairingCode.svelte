@@ -26,7 +26,7 @@
 
         kinoko.on("message", ({ message }) => {
             if (message == "what") {
-                kinoko.send("what:Casterlabs Studio", false);
+                kinoko.send("what:Casterlabs Studio:PLATFORM_AUTH", false);
             } else if (message.startsWith("token:")) {
                 kinoko.send("success", false);
 
