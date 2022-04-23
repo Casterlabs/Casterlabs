@@ -121,12 +121,7 @@
             }
         }
 
-        {
-            let koiAuth = {};
-            koiAuth[Koi.userData.streamer.platform] = {};
-
-            viewerElement.onAuthUpdate({ koiAuth });
-        }
+        viewerElement.onAuthUpdate([Koi.userData.streamer.platform]);
 
         koiEventHandler.on("*", (type, event) => {
             viewerElement.processEvent(event);

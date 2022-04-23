@@ -16,20 +16,8 @@
         viewerElement.processEvent(event);
     }
 
-    function bridge_onAuthUpdate({ koiAuth: data }) {
-        let auth = {};
-
-        // Just need to convert to a different format.
-        for (const [key, value] of Object.entries(data)) {
-            auth[key] = {
-                userData: value.streamer
-            };
-        }
-
-        auth = { koiAuth: auth };
-
-        console.log(auth);
-        viewerElement.onAuthUpdate(auth);
+    function bridge_onAuthUpdate(platforms) {
+        viewerElement.onAuthUpdate(platforms);
     }
 
     /* ---------------- */
@@ -144,7 +132,7 @@
             }
         }
 
-        Widget.on("auth:update", bridge_onAuthUpdate);
+        Widget.on("auth:update", ({ koiAuth }) => bridge_onAuthUpdate(Object.keys(koiAuth)));
         Widget.on("__eval", eval);
 
         Koi.on("*", (t, event) => bridge_processEvent(event));
@@ -160,7 +148,7 @@
             });
         }
 
-        bridge_onAuthUpdate({ koiAuth: Koi.userStates });
+        bridge_onAuthUpdate(Object.keys(Koi.userStates));
     }
 
     onMount(async () => {

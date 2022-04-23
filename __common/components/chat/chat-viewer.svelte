@@ -7,7 +7,16 @@
 
     const dispatch = createEventDispatcher();
 
-    const DISPLAYABLE_EVENTS = ["FOLLOW", "CHAT", "DONATION", "SUBSCRIPTION", /*"VIEWER_JOIN",*/ /*"VIEWER_LEAVE",*/ "RAID", "CHANNEL_POINTS", "CLEARCHAT", "PLATFORM_MESSAGE"];
+    const DISPLAYABLE_EVENTS = [
+        "FOLLOW",
+        "CHAT",
+        "DONATION",
+        "SUBSCRIPTION",
+        /*"VIEWER_JOIN",*/ /*"VIEWER_LEAVE",*/ "RAID",
+        "CHANNEL_POINTS",
+        "CLEARCHAT",
+        "PLATFORM_MESSAGE",
+    ];
 
     let chatHistory = {};
     let isMultiPlatform = false;
@@ -58,7 +67,7 @@
             showViewers: showViewers,
             showViewersList: showViewersList,
             viewersListX: viewersListX,
-            viewersListY: viewersListY
+            viewersListY: viewersListY,
         });
     }
 
@@ -88,7 +97,10 @@
             for (const chatMessage of Object.values(chatHistory)) {
                 const koiEvent = chatMessage.koiEvent;
 
-                if (koiEvent.sender && koiEvent.sender.UPID == event.user_upid) {
+                if (
+                    koiEvent.sender &&
+                    koiEvent.sender.UPID == event.user_upid
+                ) {
                     chatMessage.isDeleted = true;
                 }
             }
@@ -117,10 +129,10 @@
                     modAction: (type, event) => {
                         dispatch("modaction", {
                             type: type,
-                            event: event
+                            event: event,
                         });
-                    }
-                }
+                    },
+                },
             });
 
             if (event.id) {
@@ -139,7 +151,8 @@
     }
 
     function generateCommandPalette() {
-        let commandSections = CommandPaletteGenerator.generate(signedInPlatforms);
+        let commandSections =
+            CommandPaletteGenerator.generate(signedInPlatforms);
 
         // Generate the indexes.
         let idx = 0;
@@ -162,7 +175,7 @@
         for (const section of commandSections) {
             const filteredSection = {
                 ...section,
-                commands: []
+                commands: [],
             };
 
             for (const command of section.commands) {
@@ -196,7 +209,9 @@
     }
 
     function isNearBottom() {
-        const scrollPercent = (chatboxContainer.scrollTop + chatboxContainer.clientHeight) / chatboxContainer.scrollHeight;
+        const scrollPercent =
+            (chatboxContainer.scrollTop + chatboxContainer.clientHeight) /
+            chatboxContainer.scrollHeight;
         return scrollPercent >= 0.9;
     }
 
@@ -210,11 +225,15 @@
             // These keys are used to navigate the command palette.
             if (e.key == "ArrowUp") {
                 e.preventDefault();
-                selectedCommandIndex = selectedCommandIndex < 0 ? maxCommandIndex : selectedCommandIndex - 1;
+                selectedCommandIndex =
+                    selectedCommandIndex < 0
+                        ? maxCommandIndex
+                        : selectedCommandIndex - 1;
                 return;
             } else if (e.key == "ArrowDown") {
                 e.preventDefault();
-                selectedCommandIndex = (selectedCommandIndex + 1) % maxCommandIndex;
+                selectedCommandIndex =
+                    (selectedCommandIndex + 1) % maxCommandIndex;
                 return;
             } else if (e.key == "Escape") {
                 // No selection.
@@ -232,7 +251,9 @@
                         // We go ahead and send it anyways.
                         sendChatMessage();
                     } else {
-                        const hasCommandFilled = chatSendMessage.startsWith(currentCommand.command);
+                        const hasCommandFilled = chatSendMessage.startsWith(
+                            currentCommand.command
+                        );
 
                         if (hasCommandFilled) {
                             // If they completed a command and it's still filled
@@ -280,10 +301,16 @@
             if (chatSendMessage.length > 0) {
                 dispatch("chatsend", {
                     platform: chatSendPlatform,
-                    message: chatSendMessage
+                    message: chatSendMessage,
                 });
 
-                console.log("[ChatViewer]", "Sending chat message:", chatSendPlatform, ">", chatSendMessage);
+                console.log(
+                    "[ChatViewer]",
+                    "Sending chat message:",
+                    chatSendPlatform,
+                    ">",
+                    chatSendMessage
+                );
                 chatSendMessage = "";
 
                 chatInput.blur();
@@ -330,13 +357,7 @@
         }
     }
 
-    export function onAuthUpdate({ koiAuth }) {
-        const platforms = [];
-
-        for (const data of Object.values(koiAuth)) {
-            platforms.push(data.userData.platform);
-        }
-
+    export function onAuthUpdate(platforms) {
         signedInPlatforms = platforms;
         isMultiPlatform = signedInPlatforms.length > 1;
 
@@ -369,7 +390,9 @@
 
         {showChatSettings ? 'chat-settings-open' : ''} 
         {isMultiPlatform ? 'is-multi-platform' : ''} 
-        {showCommandPalette && commandPalette.length > 0 ? 'chat-command-palette-open' : ''} 
+        {showCommandPalette && commandPalette.length > 0
+        ? 'chat-command-palette-open'
+        : ''} 
     "
 >
     <div id="chat-box" bind:this={chatboxContainer}>
@@ -377,35 +400,68 @@
     </div>
 
     <!-- svelte-ignore a11y-missing-attribute -->
-    <a class="jump-button" on:click={jumpToBottom} style="opacity: {showJumpToBottomButton ? 1 : 0};">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down">
+    <a
+        class="jump-button"
+        on:click={jumpToBottom}
+        style="opacity: {showJumpToBottomButton ? 1 : 0};"
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-arrow-down"
+        >
             <line x1="12" y1="5" x2="12" y2="19" />
             <polyline points="19 12 12 19 5 12" />
         </svg>
     </a>
 
     <div style="display: {showViewersList ? 'block' : 'none'}">
-        <Viewers bind:this={viewersListElement}  on:move={savePreferences} />
+        <Viewers bind:this={viewersListElement} on:move={savePreferences} />
     </div>
 
     <div id="chat-settings" class="box">
-        <span class="is-size-6" style="font-weight: 700;"> Chat Preferences </span>
+        <span class="is-size-6" style="font-weight: 700;">
+            Chat Preferences
+        </span>
         <div>
             <label class="checkbox">
                 <span class="label-text">Show Timestamps</span>
-                <input type="checkbox" bind:checked={showChatTimestamps} on:change={savePreferences} />
+                <input
+                    type="checkbox"
+                    bind:checked={showChatTimestamps}
+                    on:change={savePreferences}
+                />
             </label>
             <label class="checkbox">
                 <span class="label-text">Show Mod Actions</span>
-                <input type="checkbox" bind:checked={showModActions} on:change={savePreferences} />
+                <input
+                    type="checkbox"
+                    bind:checked={showModActions}
+                    on:change={savePreferences}
+                />
             </label>
             <label class="checkbox">
                 <span class="label-text">Show Avatars</span>
-                <input type="checkbox" bind:checked={showProfilePictures} on:change={savePreferences} />
+                <input
+                    type="checkbox"
+                    bind:checked={showProfilePictures}
+                    on:change={savePreferences}
+                />
             </label>
             <label class="checkbox">
                 <span class="label-text">Show Badges</span>
-                <input type="checkbox" bind:checked={showBadges} on:change={savePreferences} />
+                <input
+                    type="checkbox"
+                    bind:checked={showBadges}
+                    on:change={savePreferences}
+                />
             </label>
             <!-- <label class="checkbox">
                 <span class="label-text">Show Viewers</span>
@@ -413,7 +469,11 @@
             </label> -->
             <label class="checkbox">
                 <span class="label-text">Show Viewers List</span>
-                <input type="checkbox" bind:checked={showViewersList} on:change={savePreferences} />
+                <input
+                    type="checkbox"
+                    bind:checked={showViewersList}
+                    on:change={savePreferences}
+                />
             </label>
         </div>
     </div>
@@ -421,23 +481,40 @@
     <div id="chat-command-palette" class="box">
         {#each commandPalette as commandSection}
             <div class="command-section">
-                <h1 class="title is-size-6 is-light" style="margin-left: 8px; margin-bottom: 7px; font-weight: 700;">
+                <h1
+                    class="title is-size-6 is-light"
+                    style="margin-left: 8px; margin-bottom: 7px; font-weight: 700;"
+                >
                     {commandSection.platform}
                 </h1>
                 {#each commandSection.commands as command}
-                    <div class="command {selectedCommandIndex == command.index ? 'highlight' : ''}" style="padding-left: 8px; padding-bottom: 4px; border-radius: 3px; cursor: pointer;" on:click={() => completeCommandPalette(command)} on:mouseenter={() => (selectedCommandIndex = command.index)}>
+                    <div
+                        class="command {selectedCommandIndex == command.index
+                            ? 'highlight'
+                            : ''}"
+                        style="padding-left: 8px; padding-bottom: 4px; border-radius: 3px; cursor: pointer;"
+                        on:click={() => completeCommandPalette(command)}
+                        on:mouseenter={() =>
+                            (selectedCommandIndex = command.index)}
+                    >
                         <span class="command-name">
-                            <span class="command-name-text is-size-6" style="font-weight: 500;">
+                            <span
+                                class="command-name-text is-size-6"
+                                style="font-weight: 500;"
+                            >
                                 {command.command}
                             </span>
                             {#if command.args}
                                 {#each command.args as arg}
-                                    <span class="command-name-arg">{arg}</span>&nbsp;
+                                    <span class="command-name-arg">{arg}</span
+                                    >&nbsp;
                                 {/each}
                             {/if}
                         </span>
                         <span class="command-description">
-                            <h2 class="subtitle is-size-7 is-light">{command.description}</h2>
+                            <h2 class="subtitle is-size-7 is-light">
+                                {command.description}
+                            </h2>
                         </span>
                     </div>
                 {/each}
@@ -450,21 +527,50 @@
             <div class="field has-addons">
                 {#if isMultiPlatform}
                     <div class="control" style="width: 50px;">
-                        <div class="dropdown is-up {chatSendPlatformOpen ? 'is-active' : ''}">
+                        <div
+                            class="dropdown is-up {chatSendPlatformOpen
+                                ? 'is-active'
+                                : ''}"
+                        >
                             <div class="dropdown-trigger">
-                                <button class="button" aria-haspopup="true" aria-controls="chat-send-platform" on:click={toggleChatSendPlatformDropdown}>
+                                <button
+                                    class="button"
+                                    aria-haspopup="true"
+                                    aria-controls="chat-send-platform"
+                                    on:click={toggleChatSendPlatformDropdown}
+                                >
                                     <span>
-                                        <img src="/img/services/{chatSendPlatform.toLowerCase()}/icon.svg" alt={chatSendPlatform} style="height: 18px; width: 18px; filter: invert(var(--white-invert-factor)); margin-top: 8px;" />
+                                        <img
+                                            src="/img/services/{chatSendPlatform.toLowerCase()}/icon.svg"
+                                            alt={chatSendPlatform}
+                                            style="height: 18px; width: 18px; filter: invert(var(--white-invert-factor)); margin-top: 8px;"
+                                        />
                                     </span>
                                 </button>
                             </div>
-                            <div class="dropdown-menu" id="chat-send-platform" role="menu">
-                                <div class="dropdown-content" style="width: 50px;">
+                            <div
+                                class="dropdown-menu"
+                                id="chat-send-platform"
+                                role="menu"
+                            >
+                                <div
+                                    class="dropdown-content"
+                                    style="width: 50px;"
+                                >
                                     {#each signedInPlatforms as platform}
                                         <!-- svelte-ignore a11y-missing-attribute -->
-                                        <a class="highlight-on-hover is-block" style="height: 30px;" on:click={() => changeSendPlatform(platform)}>
+                                        <a
+                                            class="highlight-on-hover is-block"
+                                            style="height: 30px;"
+                                            on:click={() =>
+                                                changeSendPlatform(platform)}
+                                        >
                                             <div class="dropdown-item">
-                                                <img src="/img/services/{platform.toLowerCase()}/icon.svg" alt={platform} style="height: 18px; width: 18px; filter: invert(var(--white-invert-factor));" />
+                                                <img
+                                                    src="/img/services/{platform.toLowerCase()}/icon.svg"
+                                                    alt={platform}
+                                                    style="height: 18px; width: 18px; filter: invert(var(--white-invert-factor));"
+                                                />
                                             </div>
                                         </a>
                                     {/each}
@@ -485,7 +591,8 @@
                         on:touchstart={(e) => {
                             // When a mobile device touches the input, move it near the top of the screen
                             e.preventDefault();
-                            e.target.style = "position: fixed; top: 15vh; left: 1em; width: calc(100% - 2em); z-index: 200 !important;";
+                            e.target.style =
+                                "position: fixed; top: 15vh; left: 1em; width: calc(100% - 2em); z-index: 200 !important;";
                             e.target.focus();
                             blurBackground = true;
                         }}
@@ -497,15 +604,31 @@
                     />
 
                     <!-- svelte-ignore a11y-missing-attribute -->
-                    <a class="chat-settings-button heavy-highlight-on-hover" on:click={toggleChatSettings}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings">
+                    <a
+                        class="chat-settings-button heavy-highlight-on-hover"
+                        on:click={toggleChatSettings}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="white"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-settings"
+                        >
                             <circle cx="12" cy="12" r="3" />
-                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                            />
                         </svg>
                     </a>
                 </div>
                 <div class="control">
-                    <button class="button" on:click={sendChatMessage}> Send </button>
+                    <button class="button" on:click={sendChatMessage}>
+                        Send
+                    </button>
                 </div>
             </div>
         </div>
@@ -538,7 +661,10 @@
     #chat-box {
         position: absolute;
         top: 0;
-        bottom: calc(var(--interact-margin) + var(--interact-height) + var(--interact-margin));
+        bottom: calc(
+            var(--interact-margin) + var(--interact-height) +
+                var(--interact-margin)
+        );
         left: 0;
         right: 0;
         font-size: 1.05em;
@@ -561,7 +687,10 @@
     .stream-chat-container::after {
         content: "";
         position: absolute;
-        bottom: calc(var(--interact-margin) + var(--interact-height) + var(--interact-margin) - 10px);
+        bottom: calc(
+            var(--interact-margin) + var(--interact-height) +
+                var(--interact-margin) - 10px
+        );
         left: 0;
         width: 100%;
         height: 10px;
@@ -574,7 +703,10 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: calc(var(--interact-margin) + var(--interact-height) + var(--interact-margin));
+        height: calc(
+            var(--interact-margin) + var(--interact-height) +
+                var(--interact-margin)
+        );
         background-color: var(--background-color);
         z-index: 10;
     }
