@@ -4,6 +4,10 @@ import enAU from "./lang/en-AU.mjs";
 
 import fr from "./lang/fr.mjs";
 
+import createConsole from "./console-helper.mjs";
+
+const console = createConsole("translate");
+
 const languages = {
     "en": enUS, // English (United States) is the default English locale
     "en-GB": enGB,
@@ -46,6 +50,10 @@ export default function translate(locale, key, opts = {}) {
 
     if (result == key) {
         result = languages["en"][key] ?? key;
+
+        if (result != key) {
+            console.error(`Missing translation for key: ${key} in locale ${locale}, defaulting to English.`);
+        }
     }
 
     if (!result || result == key) {
@@ -64,6 +72,10 @@ export default function translate(locale, key, opts = {}) {
 
                 if (result == key) {
                     result = ext["en"][key] ?? key;
+
+                    if (result != key) {
+                        console.error(`Missing translation for key: ${key} in locale ${locale} (external localization), defaulting to English.`);
+                    }
                 }
             }
         }
@@ -77,7 +89,7 @@ export default function translate(locale, key, opts = {}) {
                 if (opts[item]) {
                     result = result.replace(match, opts[item]);
                 } else {
-                    console.warn("[Lang]", "Could not find missing option for", item, "in", opts, "for", key);
+                    console.warn("Could not find missing option for", item, "in", opts, "for", key);
                 }
             });
     } else {
