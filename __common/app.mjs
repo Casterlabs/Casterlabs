@@ -2,7 +2,11 @@ import EventHandler from './event-handler.mjs';
 
 const eventHandler = new EventHandler();
 
-let store = {};
+let store = {
+    "language": "en-US",
+    "emojiProvider": "system",
+    "theme": "co.casterlabs.dark"
+};
 
 export default {
 
