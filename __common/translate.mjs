@@ -13,6 +13,12 @@ const languages = {
 
 };
 
+let externalLocalization = {};
+
+export function defineExternalLocale(id, data) {
+    externalLocalization[id] = data;
+}
+
 let supportedLanguages = [];
 
 for (const lang of Object.values(languages)) {
@@ -34,8 +40,33 @@ export default function translate(locale, key, opts = {}) {
     }
 
     const [languageCode] = locale.split("-");
-    if (result == key && languages[languageCode]) {
+    if (result == key && languages[languageCode] && languages[languageCode][key]) {
         result = languages[languageCode][key];
+    }
+
+    if (result == key) {
+        result = languages["en"][key] ?? key;
+    }
+
+    if (!result || result == key) {
+        for (const ext of Object.values(externalLocalization)) {
+            if (result != key) {
+                break;
+            } else if (ext) {
+                if (ext[locale] && ext[locale][key]) {
+                    result = ext[locale][key];
+                }
+
+                const [languageCode] = locale.split("-");
+                if (result == key && ext[languageCode] && ext[languageCode][key]) {
+                    result = ext[languageCode][key];
+                }
+
+                if (result == key) {
+                    result = ext["en"][key] ?? key;
+                }
+            }
+        }
     }
 
     if (result) {
