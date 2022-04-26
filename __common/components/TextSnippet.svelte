@@ -1,5 +1,6 @@
 <script>
     import { onMount, onDestroy } from "svelte";
+    import App from "../app.mjs";
 
     export let escapeHtml = true;
 
@@ -38,9 +39,8 @@
     onMount(() => {
         if (window.Caffeinated) {
             unregister.push(
-                Caffeinated.UI.mutate("preferences", (preferences) => {
-                    // console.log(preferences);
-                    emojiProvider = preferences.emojiProvider;
+                App.on("emojiProvider", (v) => {
+                    emojiProvider = v;
                 })
             );
         }
@@ -49,7 +49,7 @@
     onDestroy(() => {
         for (const un of unregister) {
             try {
-                Bridge.off(un[0], un[1]);
+                App.off(un[0], un[1]);
             } catch (ignored) {}
         }
     });
