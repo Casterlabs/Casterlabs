@@ -2,6 +2,7 @@
     import * as CommandPaletteGenerator from "./commandPaletteGenerator.js";
     import ChatMessage from "./chat-message.svelte";
     import Viewers from "./viewers.svelte";
+    import LocalizedText from "../LocalizedText.svelte";
 
     import { createEventDispatcher, onMount } from "svelte";
 
@@ -428,11 +429,15 @@
 
     <div id="chat-settings" class="box">
         <span class="is-size-6" style="font-weight: 700;">
-            Chat Preferences
+            <LocalizedText key="chat.viewer.preferences.title" />
         </span>
         <div>
             <label class="checkbox">
-                <span class="label-text">Show Timestamps</span>
+                <span class="label-text">
+                    <LocalizedText
+                        key="chat.viewer.preferences.show_timestamps"
+                    />
+                </span>
                 <input
                     type="checkbox"
                     bind:checked={showChatTimestamps}
@@ -440,7 +445,11 @@
                 />
             </label>
             <label class="checkbox">
-                <span class="label-text">Show Mod Actions</span>
+                <span class="label-text">
+                    <LocalizedText
+                        key="chat.viewer.preferences.show_mod_actions"
+                    />
+                </span>
                 <input
                     type="checkbox"
                     bind:checked={showModActions}
@@ -448,7 +457,9 @@
                 />
             </label>
             <label class="checkbox">
-                <span class="label-text">Show Avatars</span>
+                <span class="label-text">
+                    <LocalizedText key="chat.viewer.preferences.show_avatars" />
+                </span>
                 <input
                     type="checkbox"
                     bind:checked={showProfilePictures}
@@ -456,7 +467,9 @@
                 />
             </label>
             <label class="checkbox">
-                <span class="label-text">Show Badges</span>
+                <span class="label-text">
+                    <LocalizedText key="chat.viewer.preferences.show_badges" />
+                </span>
                 <input
                     type="checkbox"
                     bind:checked={showBadges}
@@ -468,7 +481,11 @@
                 <input type="checkbox" bind:checked={showViewers} on:change={savePreferences} />
             </label> -->
             <label class="checkbox">
-                <span class="label-text">Show Viewers List</span>
+                <span class="label-text">
+                    <LocalizedText
+                        key="chat.viewer.preferences.show_viewers_list"
+                    />
+                </span>
                 <input
                     type="checkbox"
                     bind:checked={showViewersList}
@@ -583,7 +600,7 @@
                     <input
                         class="input"
                         type="text"
-                        placeholder="Send a message"
+                        placeholder=""
                         bind:this={chatInput}
                         bind:value={chatSendMessage}
                         on:keydown={commandPaletteListener}
@@ -627,7 +644,7 @@
                 </div>
                 <div class="control">
                     <button class="button" on:click={sendChatMessage}>
-                        Send
+                        <LocalizedText key="chat.viewer.send_message" />
                     </button>
                 </div>
             </div>

@@ -78,4 +78,13 @@ export default {
     "settings.pair_a_device.success.description": "You have successfully paired with {deviceType}.",
     "settings.pair_a_device.again": "Pair Another?",
 
+    "chat.viewer.send_message": "Send",
+    "chat.viewer.preferences.title": "Chat Preferences",
+    "chat.viewer.preferences.show_timestamps": "Show Timestamps",
+    "chat.viewer.preferences.show_mod_actions": "Show Mod Actions",
+    "chat.viewer.preferences.show_avatars": "Show Avatars",
+    "chat.viewer.preferences.show_badges": "Show Badges",
+    "chat.viewer.preferences.show_viewers_list": "Show Viewers List",
+
+
 }
