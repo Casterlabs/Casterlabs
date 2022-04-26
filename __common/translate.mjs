@@ -86,7 +86,7 @@ export default function translate(locale, key, opts = {}) {
             .forEach((match) => {
                 const item = match.substring(1, match.length - 1);
 
-                if (opts[item]) {
+                if (opts[item] != undefined) {
                     result = result.replace(match, opts[item]);
                 } else {
                     console.warn("Could not find missing option for", item, "in", opts, "for", key);
