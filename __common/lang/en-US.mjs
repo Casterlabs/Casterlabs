@@ -86,5 +86,12 @@ export default {
     "chat.viewer.preferences.show_badges": "Show Badges",
     "chat.viewer.preferences.show_viewers_list": "Show Viewers List",
 
-
+    "chat.message.cleared": "Chat was cleared",
+    "chat.message.channelpoints": "{displayname} just redeemed {imageHtml}{reward}",
+    "chat.message.raid": "{displayname} just raided with {viewers} viewers",
+    "chat.message.follow": "{displayname} just followed",
+    "chat.message.sub.SUB": "{displayname} just subscribed for {months} months",
+    "chat.message.sub.RESUB": "{displayname} just resubscribed for {months} months",
+    "chat.message.sub.SUBGIFT": "{gifter} just gifted {recipient} a {months} month subscription",
+    "chat.message.sub.ANONSUBGIFT": "Anonymous just gifted {recipient} a {months} month subscription",
 }

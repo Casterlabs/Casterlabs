@@ -4,6 +4,9 @@
     import EmojiText from "../EmojiText.svelte";
     import User from "./user.svelte";
 
+    import translate from "../../translate.mjs";
+    import App from "../../app.mjs";
+
     const PLATFORMS_WITH_BAN = ["TWITCH", "TROVO"];
     const PLATFORMS_WITH_TIMEOUT = ["TWITCH", "TROVO"];
     const PLATFORMS_WITH_DELETE = ["TWITCH" /*, "BRIME" */, "TROVO"];
@@ -36,46 +39,66 @@
         const { host, viewers } = koiEvent;
 
         highlight = true;
-        messageHtml = `${host.displayname} just raided with ${viewers} ${
-            viewers == 1 ? "viewer" : "viewers"
-        }`;
+        messageHtml = translate(App.get("language"), "chat.message.raid", {
+            displayname: host.displayname,
+            viewers: viewers,
+        });
     } else if (koiEvent.event_type == "FOLLOW") {
+        const { follower } = koiEvent;
+
         highlight = true;
-        messageHtml = `${koiEvent.follower.displayname} just followed!`;
+        messageHtml = translate(App.get("language"), "chat.message.follow", {
+            displayname: follower.displayname,
+        });
     } else if (koiEvent.event_type == "SUBSCRIPTION") {
         const { gift_recipient, subscriber, months } = koiEvent;
 
-        switch (event.sub_type) {
+        switch (koiEvent.sub_type) {
             case "SUB":
-                messageHtml = `${
-                    subscriber.displayname
-                } just subscribed for ${months} ${
-                    months == 1 ? "month" : "months"
-                }`;
+                messageHtml = translate(
+                    App.get("language"),
+                    "chat.message.sub.SUB",
+                    {
+                        displayname: subscriber.displayname,
+                        months: months,
+                    }
+                );
                 break;
 
             case "RESUB":
-                messageHtml = `${
-                    subscriber.displayname
-                } just resubscribed for ${months} ${
-                    months == 1 ? "month" : "months"
-                }`;
-                break;
-
-            case "SUBGIFT":
-                messageHtml = `${subscriber.displayname} just gifted ${gift_recipient.displayname} a ${months} month subscription`;
+                messageHtml = translate(
+                    App.get("language"),
+                    "chat.message.sub.RESUB",
+                    {
+                        displayname: subscriber.displayname,
+                        months: months,
+                    }
+                );
                 break;
 
             case "RESUBGIFT":
-                messageHtml = `${subscriber.displayname} just gifted ${gift_recipient.displayname} a ${months} month resubscription`;
-                break;
-
-            case "ANONSUBGIFT":
-                messageHtml = `Anonymous just gifted ${gift_recipient.displayname} a ${months} month subscription`;
+            case "SUBGIFT":
+                messageHtml = translate(
+                    App.get("language"),
+                    "chat.message.sub.SUBGIFT",
+                    {
+                        gifter: subscriber.displayname,
+                        months: months,
+                        recipient: gift_recipient.displayname,
+                    }
+                );
                 break;
 
             case "ANONRESUBGIFT":
-                messageHtml = `Anonymous just gifted ${gift_recipient.displayname} a ${months} month resubscription`;
+            case "ANONSUBGIFT":
+                messageHtml = translate(
+                    App.get("language"),
+                    "chat.message.sub.ANONSUBGIFT",
+                    {
+                        months: months,
+                        recipient: gift_recipient.displayname,
+                    }
+                );
                 break;
         }
 
@@ -87,10 +110,18 @@
         }" /> `;
 
         highlight = true;
-        messageHtml = `${koiEvent.sender.displayname} just redeemed ${imageHtml}${reward.title}`;
+        messageHtml = translate(
+            App.get("language"),
+            "chat.message.channelpoints",
+            {
+                displayname: koiEvent.sender.displayname,
+                imageHtml: imageHtml,
+                reward: reward.title,
+            }
+        );
     } else if (koiEvent.event_type == "CLEARCHAT") {
         highlight = true;
-        messageHtml = `<i>Chat was cleared.</i>`;
+        messageHtml = translate(App.get("language"), "chat.message.cleared");
     } else if (
         ["CHAT", "DONATION", "PLATFORM_MESSAGE"].includes(
             koiEvent.event_type
@@ -302,7 +333,7 @@
         margin-top: 15px;
         margin-bottom: 15px;
         /* text-align: center; */
-        background-color: rgba(0, 0, 0, 0.15);
+        background-color: rgba(100, 100, 100, 0.15);
     }
 
     .is-deleted {
