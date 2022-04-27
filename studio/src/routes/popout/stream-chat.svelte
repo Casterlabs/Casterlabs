@@ -25,7 +25,7 @@
     /* ---------------- */
 
     function onSavePreferences({ detail: data }) {
-        localStorage.setItem("cl_studio:chat_viewer:preferences", JSON.stringify(data));
+        Widget.emit("savePreferences", data);
     }
 
     function onChatSend({ detail: data }) {
@@ -125,12 +125,11 @@
     /* ---------------- */
 
     function initViewer() {
-        {
-            const prefs = localStorage.getItem("cl_studio:chat_viewer:preferences");
-            if (prefs) {
-                viewerElement.loadConfig(JSON.parse(prefs));
-            }
-        }
+        viewerElement.loadConfig(Widget.getSetting("preferences") || {});
+
+        Widget.on("update", () => {
+            viewerElement.loadConfig(Widget.getSetting("preferences") || {});
+        });
 
         Widget.on("auth:update", ({ koiAuth }) => bridge_onAuthUpdate(Object.keys(koiAuth)));
         Widget.on("__eval", eval);
