@@ -46,6 +46,7 @@ export default {
     "settings.appearance.icon": "Icon",
     "settings.appearance.emojis": "Emojis",
     "settings.appearance.emojis.system": "System",
+    "settings.appearance.language": "Language",
     "settings.appearance.close_to_tray": "Close button sends to tray",
     "settings.appearance.mikeys_mode": "Mikey's Mode",
 

@@ -47,6 +47,7 @@ export default {
     "settings.appearance.icon": "Icône",
     "settings.appearance.emojis": "Émoticônes",
     "settings.appearance.emojis.system": "Émoticônes du système",
+    "settings.appearance.language": "Langue",
     "settings.appearance.close_to_tray": "Le bouton de fermeture envoie l'application au bac",
     "settings.appearance.mikeys_mode": "Le mode de Mikey",
 
