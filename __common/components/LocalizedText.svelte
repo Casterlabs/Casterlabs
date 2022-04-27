@@ -71,9 +71,13 @@
                 );
             }
 
-            contentElement?.replaceChildren(...newContents);
+            if (contentElement) {
+                replaceChildren(contentElement, newContents);
+            }
         } else {
-            contentElement?.replaceChildren(key);
+            if (contentElement) {
+                replaceChildren(contentElement, [key]);
+            }
         }
     }
 
@@ -93,6 +97,11 @@
             } catch (ignored) {}
         }
     });
+
+    function replaceChildren(el, nodes) {
+        el.innerHTML = "";
+        el.append(...nodes);
+    }
 
     // Rerender on change
     $: key, render();
