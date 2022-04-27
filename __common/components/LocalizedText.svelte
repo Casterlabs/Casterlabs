@@ -15,6 +15,21 @@
     let contentElement;
 
     function render() {
+        if (typeof key != "string") {
+            if (contentElement) {
+                console.error(
+                    "[LocalizedText] Invalid key:",
+                    key,
+                    contentElement
+                );
+
+                contentElement.replaceChildren(
+                    `<span style="background: red" title="INVALID TRANSLATION KEY">INVALID</span>`
+                );
+            }
+            return;
+        }
+
         if (language) {
             const { result, usedFallback } = translate(
                 language,
@@ -58,7 +73,7 @@
 
             contentElement?.replaceChildren(...newContents);
         } else {
-            contentElement?.replaceChildren(...[key]);
+            contentElement?.replaceChildren(key);
         }
     }
 
