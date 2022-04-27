@@ -1,4 +1,4 @@
-import enGB from "./en-US.mjs"
+import enGB from "./en-GB.mjs";
 
 export default {
     ...enGB,

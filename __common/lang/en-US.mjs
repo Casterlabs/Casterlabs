@@ -32,8 +32,8 @@ export default {
     "generic.yes": "Yes",
     "generic.no": "No",
     "generic.next": "Next",
-    "generic.leftquote": "“",
-    "generic.rightquote": "”",
+    "generic.leftquote": '"',
+    "generic.rightquote": '"',
 
     /* ------------------------ */
     /* Settings                 */

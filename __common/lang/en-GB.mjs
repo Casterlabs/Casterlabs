@@ -1,4 +1,4 @@
-import enUS from "./en-US.mjs"
+import enUS from "./en-US.mjs";
 
 export default {
     ...enUS,
@@ -9,6 +9,10 @@ export default {
 
     "ui.greeting.hello": "Hello!",
     "ui.greeting.good_day": "Hello, {name}.",
+
+    // They use single quotes
+    "generic.leftquote": "'",
+    "generic.rightquote": "'",
 
     /* ------------------------ */
     /* ize -> ise               */
