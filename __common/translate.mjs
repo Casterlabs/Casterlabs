@@ -9,12 +9,11 @@ import createConsole from "./console-helper.mjs";
 const console = createConsole("translate");
 
 const languages = {
-    "en": enUS, // English (United States) is the default English locale
+    en: enUS, // English (United States) is the default English locale
     "en-GB": enGB,
     "en-AU": enAU,
 
-    "fr": fr,
-
+    fr: fr
 };
 
 let externalLocalization = {};
@@ -27,10 +26,10 @@ let supportedLanguages = [];
 
 for (const lang of Object.values(languages)) {
     supportedLanguages.push({
-        "name": lang["meta.name"],
-        "code": lang["meta.code"],
-        "flag": lang["meta.flag"],
-        "direction": lang["meta.direction"],
+        name: lang["meta.name"],
+        code: lang["meta.code"],
+        flag: lang["meta.flag"],
+        direction: lang["meta.direction"]
     });
 }
 
@@ -50,7 +49,7 @@ export default function translate(locale, key, opts = {}, simpleResponse = true)
     }
 
     if (result == key) {
-        result = languages["en"][key] ?? key;
+        result = languages["en"][key] || key;
 
         if (result != key) {
             console.error(`Missing translation for key: ${key} in locale ${locale}, defaulting to English.`);
@@ -73,7 +72,7 @@ export default function translate(locale, key, opts = {}, simpleResponse = true)
                 }
 
                 if (result == key) {
-                    result = ext["en"][key] ?? key;
+                    result = ext["en"][key] || key;
 
                     if (result != key) {
                         console.error(`Missing translation for key: ${key} in locale ${locale} (external localization), defaulting to English.`);
@@ -86,25 +85,23 @@ export default function translate(locale, key, opts = {}, simpleResponse = true)
 
     if (result) {
         // Replace placeholders
-        (result.match(/{\w+}/g) || [])
-            .forEach((match) => {
-                const item = match.slice(1, -1);
+        (result.match(/{\w+}/g) || []).forEach((match) => {
+            const item = match.slice(1, -1);
 
-                if (opts[item] != undefined) {
-                    result = result.replace(match, opts[item]);
-                } else {
-                    console.warn("Could not find missing option for", item, "in", opts, "for", key);
-                }
-            });
+            if (opts[item] != undefined) {
+                result = result.replace(match, opts[item]);
+            } else {
+                console.warn("Could not find missing option for", item, "in", opts, "for", key);
+            }
+        });
 
         // Replace localized placeholders
-        (result.match(/\[[\w\.]+\]/g) || [])
-            .forEach((match) => {
-                const item = match.slice(1, -1);
-                const tItem = translate(locale, item, {}, true);
+        (result.match(/\[[\w\.]+\]/g) || []).forEach((match) => {
+            const item = match.slice(1, -1);
+            const tItem = translate(locale, item, {}, true);
 
-                result = result.replace(match, tItem);
-            });
+            result = result.replace(match, tItem);
+        });
     } else {
         result = key;
     }
@@ -114,7 +111,7 @@ export default function translate(locale, key, opts = {}, simpleResponse = true)
     } else {
         return {
             result: result,
-            usedFallback: usedFallback,
+            usedFallback: usedFallback
         };
     }
-} 
+}
