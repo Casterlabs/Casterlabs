@@ -87,6 +87,7 @@ export default {
 
     "chat.viewer": "Chat",
     "chat.viewer.send_message": "Send",
+    "chat.viewer.send_message.placeholder": "Send a message",
     "chat.viewer.preferences.title": "Chat Preferences",
     "chat.viewer.preferences.show_timestamps": "Show Timestamps",
     "chat.viewer.preferences.show_mod_actions": "Show Mod Actions",
@@ -105,4 +106,10 @@ export default {
     "chat.message.sub.ANONSUBGIFT": "Anonymous just gifted {recipient} a {months} month subscription",
     "chat.message.viewer.join": "{displayname} joined",
     "chat.message.viewer.leave": "{displayname} left",
+
+    "chat.action.ban": "Ban",
+    "chat.action.timeout": "Timeout",
+    "chat.action.delete_message": "Delete Message",
+
+
 }

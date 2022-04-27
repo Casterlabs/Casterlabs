@@ -5,6 +5,8 @@
     import LocalizedText from "../LocalizedText.svelte";
 
     import { createEventDispatcher, onMount } from "svelte";
+    import translate from "../../translate.mjs";
+    import App from "../../app.mjs";
 
     const dispatch = createEventDispatcher();
 
@@ -603,7 +605,10 @@
                     <input
                         class="input"
                         type="text"
-                        placeholder=""
+                        placeholder={translate(
+                            App.get("language"),
+                            "chat.viewer.send_message.placeholder"
+                        )}
                         bind:this={chatInput}
                         bind:value={chatSendMessage}
                         on:keydown={commandPaletteListener}
