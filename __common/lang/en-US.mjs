@@ -84,6 +84,7 @@ export default {
     "chat.viewer.preferences.show_mod_actions": "Show Mod Actions",
     "chat.viewer.preferences.show_avatars": "Show Avatars",
     "chat.viewer.preferences.show_badges": "Show Badges",
+    "chat.viewer.preferences.show_viewers": "Show Viewers",
     "chat.viewer.preferences.show_viewers_list": "Show Viewers List",
 
     "chat.message.cleared": "Chat was cleared",
@@ -94,4 +95,6 @@ export default {
     "chat.message.sub.RESUB": "{displayname} just resubscribed for {months} months",
     "chat.message.sub.SUBGIFT": "{gifter} just gifted {recipient} a {months} month subscription",
     "chat.message.sub.ANONSUBGIFT": "Anonymous just gifted {recipient} a {months} month subscription",
+    "chat.message.viewer.join": "{displayname} joined",
+    "chat.message.viewer.leave": "{displayname} left",
 }

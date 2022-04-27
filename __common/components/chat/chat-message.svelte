@@ -35,12 +35,42 @@
 
     let eventHasModIcons = false;
 
-    if (koiEvent.event_type == "RAID") {
+    if (koiEvent.event_type == "VIEWER_JOIN") {
+        const { viewer } = koiEvent;
+        const link =
+            viewer.id == "CASTERLABS_SYSTEM_ANONYMOUS" ? null : viewer.link;
+
+        highlight = false;
+        messageHtml = translate(
+            App.get("language"),
+            "chat.message.viewer.join",
+            {
+                displayname: `<a href="${link}" target="${
+                    !link || "_blank"
+                }" style="color: ${viewer.color}">${viewer.displayname}</a>`,
+            }
+        );
+    } else if (koiEvent.event_type == "VIEWER_LEAVE") {
+        const { viewer } = koiEvent;
+        const link =
+            viewer.id == "CASTERLABS_SYSTEM_ANONYMOUS" ? null : viewer.link;
+
+        highlight = false;
+        messageHtml = translate(
+            App.get("language"),
+            "chat.message.viewer.leave",
+            {
+                displayname: `<a href="${link}" target="${
+                    !link || "_blank"
+                }" style="color: ${viewer.color}">${viewer.displayname}</a>`,
+            }
+        );
+    } else if (koiEvent.event_type == "RAID") {
         const { host, viewers } = koiEvent;
 
         highlight = true;
         messageHtml = translate(App.get("language"), "chat.message.raid", {
-            displayname: host.displayname,
+            displayname: `<a href="${host.link}" target="_blank" style="color: ${host.color}">${host.displayname}</a>`,
             viewers: viewers,
         });
     } else if (koiEvent.event_type == "FOLLOW") {
@@ -48,7 +78,7 @@
 
         highlight = true;
         messageHtml = translate(App.get("language"), "chat.message.follow", {
-            displayname: follower.displayname,
+            displayname: `<a href="${follower.link}" target="_blank" style="color: ${follower.color}">${follower.displayname}</a>`,
         });
     } else if (koiEvent.event_type == "SUBSCRIPTION") {
         const { gift_recipient, subscriber, months } = koiEvent;
@@ -59,7 +89,7 @@
                     App.get("language"),
                     "chat.message.sub.SUB",
                     {
-                        displayname: subscriber.displayname,
+                        displayname: `<a href="${subscriber.link}" target="_blank" style="color: ${subscriber.color}">${subscriber.displayname}</a>`,
                         months: months,
                     }
                 );
@@ -70,7 +100,7 @@
                     App.get("language"),
                     "chat.message.sub.RESUB",
                     {
-                        displayname: subscriber.displayname,
+                        displayname: `<a href="${subscriber.link}" target="_blank" style="color: ${subscriber.color}">${subscriber.displayname}</a>`,
                         months: months,
                     }
                 );
@@ -82,9 +112,9 @@
                     App.get("language"),
                     "chat.message.sub.SUBGIFT",
                     {
-                        gifter: subscriber.displayname,
+                        gifter: `<a href="${subscriber.link}" target="_blank" style="color: ${subscriber.color}">${subscriber.displayname}</a>`,
                         months: months,
-                        recipient: gift_recipient.displayname,
+                        recipient: `<a href="${gift_recipient.link}" target="_blank" style="color: ${gift_recipient.color}">${gift_recipient.displayname}</a>`,
                     }
                 );
                 break;
@@ -96,7 +126,7 @@
                     "chat.message.sub.ANONSUBGIFT",
                     {
                         months: months,
-                        recipient: gift_recipient.displayname,
+                        recipient: `<a href="${gift_recipient.link}" target="_blank" style="color: ${gift_recipient.color}">${gift_recipient.displayname}</a>`,
                     }
                 );
                 break;
@@ -114,7 +144,7 @@
             App.get("language"),
             "chat.message.channelpoints",
             {
-                displayname: koiEvent.sender.displayname,
+                displayname: `<a href="${koiEvent.sender.link}" target="_blank" style="color: ${koiEvent.sender.color}">${koiEvent.sender.displayname}</a>`,
                 imageHtml: imageHtml,
                 reward: reward.title,
             }
@@ -167,9 +197,12 @@
 
 <!-- svelte-ignore a11y-missing-attribute -->
 <span
-    class="chat-message {isDeleted ? 'is-deleted' : ''} {highlight
-        ? 'highlighted'
-        : ''} {isPlatformMessage ? 'no-select' : ''}"
+    class="chat-message"
+    class:is-deleted={isDeleted}
+    class:highlighted={highlight}
+    class:no-select={isPlatformMessage}
+    class:presence-message={koiEvent.event_type == "VIEWER_JOIN" ||
+        koiEvent.event_type == "VIEWER_LEAVE"}
 >
     <span class="message-timestamp">
         {new Date(timestamp).toLocaleTimeString()}
