@@ -133,5 +133,12 @@ export default {
     "chat.action.timeout": "Timeout",
     "chat.action.delete_message": "Delete Message",
 
+    "widgets.manager": "Widgets",
+    "widgets.manager.alerts": "Alerts",
+    "widgets.manager.labels": "Labels",
+    "widgets.manager.interaction": "Interaction",
+    "widgets.manager.goals": "Goals",
+    "widgets.manager.other": "Other",
+
 
 }
