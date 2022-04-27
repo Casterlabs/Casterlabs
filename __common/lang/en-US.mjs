@@ -139,6 +139,7 @@ export default {
     "widgets.manager.interaction": "Interaction",
     "widgets.manager.goals": "Goals",
     "widgets.manager.other": "Other",
-
+    "widgets.editor": "Widget Editor",
+    "widgets.editor.preview": "Preview",
 
 }
