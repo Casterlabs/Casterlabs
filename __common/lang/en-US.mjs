@@ -78,6 +78,14 @@ export default {
     "settings.pair_a_device.success.description": "You have successfully paired with {deviceType}.",
     "settings.pair_a_device.again": "Pair Another?",
 
+    "sidebar.home": "Home",
+    "sidebar.your_stream": "Your Stream",
+    "sidebar.management": "Management",
+    "sidebar.chatbot_manager": "Chat Bot",
+    "sidebar.widget_manager": "Widgets",
+    "sidebar.dock_manager": "Docks",
+
+    "chat.viewer": "Chat",
     "chat.viewer.send_message": "Send",
     "chat.viewer.preferences.title": "Chat Preferences",
     "chat.viewer.preferences.show_timestamps": "Show Timestamps",
