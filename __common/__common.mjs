@@ -25,6 +25,10 @@ let themeStylesheet;
 export const themes = Object.values(THEME_DATA); // Yuck!
 
 export function changeTheme(id) {
+    if (!id) {
+        return;
+    }
+
     if (id == "system") {
         applySystemTheme();
         return;

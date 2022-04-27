@@ -2,8 +2,11 @@
     import * as CommandPaletteGenerator from "./commandPaletteGenerator.js";
     import ChatMessage from "./chat-message.svelte";
     import Viewers from "./viewers.svelte";
+    import LocalizedText from "../LocalizedText.svelte";
 
     import { createEventDispatcher, onMount } from "svelte";
+    import translate from "../../translate.mjs";
+    import App from "../../app.mjs";
 
     const dispatch = createEventDispatcher();
 
@@ -12,7 +15,9 @@
         "CHAT",
         "DONATION",
         "SUBSCRIPTION",
-        /*"VIEWER_JOIN",*/ /*"VIEWER_LEAVE",*/ "RAID",
+        "VIEWER_JOIN",
+        "VIEWER_LEAVE",
+        "RAID",
         "CHANNEL_POINTS",
         "CLEARCHAT",
         "PLATFORM_MESSAGE",
@@ -381,19 +386,16 @@
 {/if}
 
 <div
-    class="stream-chat-container 
-
-        {showChatTimestamps ? 'show-timestamps' : ''} 
-        {showModActions ? 'enable-mod-actions' : ''} 
-        {showProfilePictures ? 'show-profile-pictures' : ''} 
-        {showBadges ? 'show-badges' : ''} 
-
-        {showChatSettings ? 'chat-settings-open' : ''} 
-        {isMultiPlatform ? 'is-multi-platform' : ''} 
-        {showCommandPalette && commandPalette.length > 0
-        ? 'chat-command-palette-open'
-        : ''} 
-    "
+    class="stream-chat-container"
+    class:show-timestamps={showChatTimestamps}
+    class:enable-mod-actions={showModActions}
+    class:show-profile-pictures={showProfilePictures}
+    class:show-badges={showBadges}
+    class:chat-settings-open={showChatSettings}
+    class:is-multi-platform={isMultiPlatform}
+    class:chat-command-palette-open={showCommandPalette &&
+        commandPalette.length > 0}
+    class:show-viewers={showViewers}
 >
     <div id="chat-box" bind:this={chatboxContainer}>
         <ul bind:this={chatbox} />
@@ -428,11 +430,15 @@
 
     <div id="chat-settings" class="box">
         <span class="is-size-6" style="font-weight: 700;">
-            Chat Preferences
+            <LocalizedText key="chat.viewer.preferences.title" />
         </span>
         <div>
             <label class="checkbox">
-                <span class="label-text">Show Timestamps</span>
+                <span class="label-text">
+                    <LocalizedText
+                        key="chat.viewer.preferences.show_timestamps"
+                    />
+                </span>
                 <input
                     type="checkbox"
                     bind:checked={showChatTimestamps}
@@ -440,7 +446,11 @@
                 />
             </label>
             <label class="checkbox">
-                <span class="label-text">Show Mod Actions</span>
+                <span class="label-text">
+                    <LocalizedText
+                        key="chat.viewer.preferences.show_mod_actions"
+                    />
+                </span>
                 <input
                     type="checkbox"
                     bind:checked={showModActions}
@@ -448,7 +458,9 @@
                 />
             </label>
             <label class="checkbox">
-                <span class="label-text">Show Avatars</span>
+                <span class="label-text">
+                    <LocalizedText key="chat.viewer.preferences.show_avatars" />
+                </span>
                 <input
                     type="checkbox"
                     bind:checked={showProfilePictures}
@@ -456,19 +468,31 @@
                 />
             </label>
             <label class="checkbox">
-                <span class="label-text">Show Badges</span>
+                <span class="label-text">
+                    <LocalizedText key="chat.viewer.preferences.show_badges" />
+                </span>
                 <input
                     type="checkbox"
                     bind:checked={showBadges}
                     on:change={savePreferences}
                 />
             </label>
-            <!-- <label class="checkbox">
-                <span class="label-text">Show Viewers</span>
-                <input type="checkbox" bind:checked={showViewers} on:change={savePreferences} />
-            </label> -->
             <label class="checkbox">
-                <span class="label-text">Show Viewers List</span>
+                <span class="label-text">
+                    <LocalizedText key="chat.viewer.preferences.show_viewers" />
+                </span>
+                <input
+                    type="checkbox"
+                    bind:checked={showViewers}
+                    on:change={savePreferences}
+                />
+            </label>
+            <label class="checkbox">
+                <span class="label-text">
+                    <LocalizedText
+                        key="chat.viewer.preferences.show_viewers_list"
+                    />
+                </span>
                 <input
                     type="checkbox"
                     bind:checked={showViewersList}
@@ -489,9 +513,8 @@
                 </h1>
                 {#each commandSection.commands as command}
                     <div
-                        class="command {selectedCommandIndex == command.index
-                            ? 'highlight'
-                            : ''}"
+                        class="command"
+                        class:highlight={selectedCommandIndex == command.index}
                         style="padding-left: 8px; padding-bottom: 4px; border-radius: 3px; cursor: pointer;"
                         on:click={() => completeCommandPalette(command)}
                         on:mouseenter={() =>
@@ -528,9 +551,8 @@
                 {#if isMultiPlatform}
                     <div class="control" style="width: 50px;">
                         <div
-                            class="dropdown is-up {chatSendPlatformOpen
-                                ? 'is-active'
-                                : ''}"
+                            class="dropdown is-up"
+                            class:is-active={chatSendPlatformOpen}
                         >
                             <div class="dropdown-trigger">
                                 <button
@@ -583,7 +605,10 @@
                     <input
                         class="input"
                         type="text"
-                        placeholder="Send a message"
+                        placeholder={translate(
+                            App.get("language"),
+                            "chat.viewer.send_message.placeholder"
+                        )}
                         bind:this={chatInput}
                         bind:value={chatSendMessage}
                         on:keydown={commandPaletteListener}
@@ -627,7 +652,7 @@
                 </div>
                 <div class="control">
                     <button class="button" on:click={sendChatMessage}>
-                        Send
+                        <LocalizedText key="chat.viewer.send_message" />
                     </button>
                 </div>
             </div>
@@ -671,6 +696,14 @@
         padding-top: 10px;
         overflow-y: auto;
         overflow-x: hidden;
+    }
+
+    :global(.presence-message) {
+        display: none !important;
+    }
+
+    :global(.show-viewers .presence-message) {
+        display: block !important;
     }
 
     .stream-chat-container::before {
