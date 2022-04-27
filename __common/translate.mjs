@@ -36,7 +36,7 @@ for (const lang of Object.values(languages)) {
 
 export { supportedLanguages };
 
-export default function translate(locale, key, opts = {}, simpleResponse = false) {
+export default function translate(locale, key, opts = {}, simpleResponse = true) {
     let result = key;
     let usedFallback = false;
 
@@ -85,15 +85,25 @@ export default function translate(locale, key, opts = {}, simpleResponse = false
     }
 
     if (result) {
+        // Replace placeholders
         (result.match(/{\w+}/g) || [])
             .forEach((match) => {
-                const item = match.substring(1, match.length - 1);
+                const item = match.slice(1, -1);
 
                 if (opts[item] != undefined) {
                     result = result.replace(match, opts[item]);
                 } else {
                     console.warn("Could not find missing option for", item, "in", opts, "for", key);
                 }
+            });
+
+        // Replace localized placeholders
+        (result.match(/\[[\w\.]+\]/g) || [])
+            .forEach((match) => {
+                const item = match.slice(1, -1);
+                const tItem = translate(locale, item, {}, true);
+
+                result = result.replace(match, tItem);
             });
     } else {
         result = key;

@@ -32,6 +32,8 @@ export default {
     "generic.yes": "Yes",
     "generic.no": "No",
     "generic.next": "Next",
+    "generic.leftquote": "“",
+    "generic.rightquote": "”",
 
     /* ------------------------ */
     /* Settings                 */
@@ -82,9 +84,28 @@ export default {
     "sidebar.home": "Home",
     "sidebar.your_stream": "Your Stream",
     "sidebar.management": "Management",
-    "sidebar.chatbot_manager": "Chat Bot",
-    "sidebar.widget_manager": "Widgets",
-    "sidebar.dock_manager": "Docks",
+
+    "chatbot_manager": "Chat Bot",
+    "chatbot_manager.tab.COMMANDS": "COMMANDS",
+    "chatbot_manager.tab.SHOUTS": "SHOUTS",
+    "chatbot_manager.tab.TIMERS": "TIMERS",
+    "chatbot_manager.commands.mention": "Mention sender when replying: %checkbox%",
+    "chatbot_manager.commands.runs": "runs",
+    "chatbot_manager.commands.mentions": "mentions",
+    "chatbot_manager.commands.format.COMMAND": "When someone from %platform% %action% <b>!</b>%action_target%, send: %message%",
+    "chatbot_manager.commands.format.CONTAINS": "When someone from %platform% %action% <b>[generic.leftquote]</b>%action_target%<b>[generic.rightquote]</b>, reply with: %message%",
+    "chatbot_manager.shouts.format": "When someone from %platform% %action% say: %message%",
+    "chatbot_manager.shouts.DONATION": "donates",
+    "chatbot_manager.shouts.FOLLOW": "follows",
+    "chatbot_manager.shouts.RAID": "raids",
+    "chatbot_manager.shouts.SUBSCRIPTION": "subscribes",
+    "chatbot_manager.timers.format": "Every %seconds% seconds, send one of the following:",
+    "chatbot_manager.example.command": "Checkout casterlabs.co!",
+    "chatbot_manager.example.shout": "Thank you for the follow!",
+    "chatbot_manager.example.timer": "I love Casterlabs!",
+
+    "widget_manager": "Widgets",
+    "dock_manager": "Docks",
 
     "chat.viewer": "Chat",
     "chat.viewer.send_message": "Send",
