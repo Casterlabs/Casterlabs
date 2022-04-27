@@ -36,8 +36,9 @@ for (const lang of Object.values(languages)) {
 
 export { supportedLanguages };
 
-export default function translate(locale, key, opts = {}) {
+export default function translate(locale, key, opts = {}, simpleResponse = false) {
     let result = key;
+    let usedFallback = false;
 
     if (languages[locale] && languages[locale][key]) {
         result = languages[locale][key];
@@ -53,6 +54,7 @@ export default function translate(locale, key, opts = {}) {
 
         if (result != key) {
             console.error(`Missing translation for key: ${key} in locale ${locale}, defaulting to English.`);
+            usedFallback = true;
         }
     }
 
@@ -75,6 +77,7 @@ export default function translate(locale, key, opts = {}) {
 
                     if (result != key) {
                         console.error(`Missing translation for key: ${key} in locale ${locale} (external localization), defaulting to English.`);
+                        usedFallback = true;
                     }
                 }
             }
@@ -96,5 +99,12 @@ export default function translate(locale, key, opts = {}) {
         result = key;
     }
 
-    return result;
-}
+    if (simpleResponse) {
+        return result;
+    } else {
+        return {
+            result: result,
+            usedFallback: usedFallback,
+        };
+    }
+} 

@@ -13,7 +13,18 @@
 
     function render() {
         if (language) {
-            content = translate(language, key, opts);
+            const { result, usedFallback } = translate(
+                language,
+                key,
+                opts,
+                false
+            );
+
+            if (usedFallback) {
+                content = `<span style="background: red" title="NO TRANSLATION KEY">${result}</span>`;
+            } else {
+                content = result;
+            }
         } else {
             content = null;
         }
