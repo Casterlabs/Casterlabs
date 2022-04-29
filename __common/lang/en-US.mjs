@@ -34,6 +34,9 @@ export default {
     "generic.next": "Next",
     "generic.leftquote": '"',
     "generic.rightquote": '"',
+    "generic.email": "Email",
+    "generic.password": "Password",
+    "generic.name": "Name",
 
     /* ------------------------ */
     /* Settings                 */
@@ -61,6 +64,28 @@ export default {
     "settings.about": "About",
     "settings.about.enable_stupidly_unsafe_settings": "Enable Stupidly Unsafe Settings",
     "settings.about.credits": "Credits",
+
+    "settings.casterlabs_account": "Casterlabs Account",
+    "casterlabs_account.name": "Name: {name}",
+    "casterlabs_account.email": "Email: {email}",
+    "casterlabs_account.email_verified": "Email verified: %tickbox% %verify%",
+    "casterlabs_account.send_verification_email": "Send verification email.",
+    "casterlabs_account.send_verification_email.sent": "Sent.",
+    "casterlabs_account.invalid_email": "That email is invalid.",
+    "casterlabs_account.error": "Something went wrong.",
+    "casterlabs_account.request_password_reset": "Request Password Reset",
+    "casterlabs_account.request_password_reset.success": "We've sent you an email with a link to reset your password.",
+    "casterlabs_account.back_to_login": "Back to Login screen",
+    "casterlabs_account.know_your_password": "Know your password?",
+    "casterlabs_account.forgot_your_password": "Forgot your password?",
+    "casterlabs_account.send_email": "Send Email",
+    "casterlabs_account.login": "Login",
+    "casterlabs_account.register": "Register",
+    "casterlabs_account.login_to_casterlabs": "Login to Casterlabs",
+    "casterlabs_account.logout": "Logout",
+    "casterlabs_account.need_an_account": "Need an account?",
+    "casterlabs_account.create_an_account": "Create an account",
+    "casterlabs_account.already_have_an_account": "Already have an account?",
 
     "settings.accounts": "Accounts",
     "accounts.signin": "Sign into your favorite platform.",

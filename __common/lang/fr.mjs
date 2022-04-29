@@ -34,6 +34,9 @@ export default {
     "generic.next": "Suivant",
     "generic.leftquote": '«',
     "generic.rightquote": '»',
+    "generic.email": "Email",
+    "generic.password": "Mot de passe",
+    "generic.name": "Nom",
 
     /* ------------------------ */
     /* Settings                 */
@@ -61,6 +64,28 @@ export default {
     "settings.about": "Sur",
     "settings.about.enable_stupidly_unsafe_settings": "Activer les paramètres stupidement dangereux",
     "settings.about.credits": "Crédits",
+
+    "settings.casterlabs_account": "Compte Casterlabs",
+    "casterlabs_account.name": "Nom: {name}",
+    "casterlabs_account.email": "Email: {email}",
+    "casterlabs_account.email_verified": "Courriel vérifié: %tickbox% %verify%",
+    "casterlabs_account.send_verification_email": "Envoyer email de vérification.",
+    "casterlabs_account.send_verification_email.sent": "Envoyé.",
+    "casterlabs_account.invalid_email": "Cet email est invalide.",
+    "casterlabs_account.error": "Quelque chose s'est mal passé.",
+    "casterlabs_account.request_password_reset": "Demander la réinitialisation du mot de passe",
+    "casterlabs_account.request_password_reset.success": "Nous vous avons envoyé un e-mail avec un lien pour réinitialiser votre mot de passe.",
+    "casterlabs_account.back_to_login": "Retour à l'écran de connexion",
+    "casterlabs_account.know_your_password": "Rappelez-vous votre mot de passe?",
+    "casterlabs_account.forgot_your_password": "Mot de passe oublié?",
+    "casterlabs_account.send_email": "Envoyer un email",
+    "casterlabs_account.login": "Connexion",
+    "casterlabs_account.register": "S'inscrire",
+    "casterlabs_account.login_to_casterlabs": "Se connecter à Casterlabs",
+    "casterlabs_account.logout": "Se déconnecter",
+    "casterlabs_account.need_an_account": "Besoin d'un compte?",
+    "casterlabs_account.create_an_account": "Créer un compte",
+    "casterlabs_account.already_have_an_account": "Vous avez déjà un compte?",
 
     "settings.accounts": "Comptes",
     "accounts.signin": "Connectez-vous avec votre plateforme préférée.",
