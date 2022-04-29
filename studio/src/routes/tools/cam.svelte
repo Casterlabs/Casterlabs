@@ -144,7 +144,16 @@
 
             // Begin handshake.
 
-            peer = new Peer();
+            peer = new Peer({
+                config: {
+                    iceServers: [
+                        //
+                        { urls: "stun:stun.l.google.com:19302" },
+                        { urls: "turn:ovh-2b116f94.casterlabs.co:3478", username: "casterlabs", password: "rox" }
+                    ],
+                    sdpSemantics: "unified-plan"
+                }
+            });
 
             peer.on("open", (id) => {
                 kinoko.send({
