@@ -69,6 +69,7 @@ export default {
     "casterlabs_account.name": "Nom: {name}",
     "casterlabs_account.email": "Email: {email}",
     "casterlabs_account.email_verified": "Courriel vérifié: %tickbox% %verify%",
+    "casterlabs_account.has_casterlabs_plus": "A Casterlabs Plus: %tickbox% %manage%",
     "casterlabs_account.send_verification_email": "Envoyer email de vérification.",
     "casterlabs_account.send_verification_email.sent": "Envoyé.",
     "casterlabs_account.invalid_email": "Cet email est invalide.",
