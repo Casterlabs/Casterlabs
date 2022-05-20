@@ -1,5 +1,7 @@
 import { AuthCallback } from "$lib/kinoko.mjs";
 
+const CLIENT_ID = "LmHG2ux992BxqQ7w9RJrfhkW";
+
 const OAUTH_LINKS = {
     twitch: {
         type: "caffeinated_twitch",
@@ -32,7 +34,7 @@ class OAuthSignin {
         return new Promise((resolve, reject) => {
             const { type, link } = OAUTH_LINKS[platform.toLowerCase()];
 
-            this.oauthCallback = new AuthCallback(type);
+            this.oauthCallback = new AuthCallback(type, CLIENT_ID);
 
             const tab = window.open(`${link}?state=${this.oauthCallback.getStateString()}`, "_blank");
 

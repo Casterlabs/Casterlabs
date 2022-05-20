@@ -16,7 +16,7 @@ function KinokoV1() {
         },
 
         isOpen() {
-            return (ws && (ws.readyState == WebSocket.OPEN));
+            return ws && ws.readyState == WebSocket.OPEN;
         },
 
         send(message, isJson = true) {
@@ -45,7 +45,7 @@ function KinokoV1() {
                 setTimeout(() => {
                     this.connect(channel, type, proxy);
                 }, 1000);
-            }
+            };
 
             ws.onopen = () => {
                 eventHandler.emit("open");
@@ -91,7 +91,7 @@ function KinokoV1() {
                                     eventHandler.emit("message", { message: data });
                                 }
                             }
-                            return
+                            return;
                         }
                 }
             };
@@ -102,7 +102,6 @@ function KinokoV1() {
                 ws.close();
             }
         }
-
     };
 
     Object.freeze(kinoko);
@@ -123,7 +122,7 @@ function KinokoV2() {
         channelMembers: [],
 
         isOpen() {
-            return (ws && (ws.readyState == WebSocket.OPEN));
+            return ws && ws.readyState == WebSocket.OPEN;
         },
 
         send(payload, target) {
@@ -151,7 +150,7 @@ function KinokoV2() {
                 setTimeout(() => {
                     this.connect(channel, type, proxy);
                 }, 1000);
-            }
+            };
 
             ws.onclose = () => {
                 eventHandler.emit("close");
@@ -200,7 +199,6 @@ function KinokoV2() {
 
                     case "MESSAGE":
                         {
-
                             eventHandler.emit("message", [payload.data, payload.sender]);
                             return;
                         }
@@ -213,7 +211,6 @@ function KinokoV2() {
                 ws.close();
             }
         }
-
     };
 
     Object.freeze(kinoko);
@@ -227,14 +224,19 @@ function generateUnsafePassword(len = 32) {
     return Array(len)
         .fill(chars)
         .map((x) => {
-            return x[Math.floor(Math.random() * x.length)]
-        }).join("");
+            return x[Math.floor(Math.random() * x.length)];
+        })
+        .join("");
 }
 
 class AuthCallback {
-
-    constructor(type = "unknown") {
+    constructor(type = "unknown", koiClientId) {
         this.id = `auth_redirect:${generateUnsafePassword(128)}:${type}`;
+
+        if (koiClientId) {
+            this.id += `:${koiClientId}`;
+        }
+
         this.cancelled = false;
     }
 
@@ -249,13 +251,16 @@ class AuthCallback {
             this.kinoko = new KinokoV1();
 
             let fufilled = false;
-            const id = (timeout > 0) ? setTimeout(() => {
-                if (!fufilled) {
-                    fufilled = true;
-                    this.cancel();
-                    reject("TOKEN_TIMEOUT");
-                }
-            }, timeout) : -1;
+            const id =
+                timeout > 0 ?
+                setTimeout(() => {
+                    if (!fufilled) {
+                        fufilled = true;
+                        this.cancel();
+                        reject("TOKEN_TIMEOUT");
+                    }
+                }, timeout) :
+                -1;
 
             this.kinoko.connect(this.id, "parent");
 
@@ -291,11 +296,6 @@ class AuthCallback {
     getStateString() {
         return this.id;
     }
-
 }
 
-export {
-    KinokoV1,
-    KinokoV2,
-    AuthCallback
-};
+export { KinokoV1, KinokoV2, AuthCallback };
