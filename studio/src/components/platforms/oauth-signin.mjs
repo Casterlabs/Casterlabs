@@ -3,19 +3,23 @@ import { AuthCallback } from "$lib/kinoko.mjs";
 const OAUTH_LINKS = {
     twitch: {
         type: "caffeinated_twitch",
-        link: "https://casterlabs.co/auth/redirect/twitch"
+        link: "https://casterlabs.co/auth/redirect"
     },
     trovo: {
         type: "caffeinated_trovo",
-        link: "https://casterlabs.co/auth/redirect/trovo"
+        link: "https://casterlabs.co/auth/redirect"
     },
     glimesh: {
         type: "caffeinated_glimesh",
-        link: "https://casterlabs.co/auth/redirect/glimesh"
+        link: "https://casterlabs.co/auth/redirect"
     },
     brime: {
         type: "caffeinated_brime",
-        link: "https://casterlabs.co/auth/redirect/brime"
+        link: "https://casterlabs.co/auth/redirect"
+    },
+    youtube: {
+        type: "caffeinated_youtube",
+        link: "https://casterlabs.co/auth/redirect"
     }
 };
 
@@ -45,13 +49,12 @@ class OAuthSignin {
                 .finally(() => {
                     tab.close();
                 });
-        })
+        });
     }
 
     cancel() {
         this.oauthCallback && this.oauthCallback.cancel();
     }
-
 }
 
 export default OAuthSignin;
