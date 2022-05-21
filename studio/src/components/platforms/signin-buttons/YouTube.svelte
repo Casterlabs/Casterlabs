@@ -33,7 +33,7 @@
         <div class="platform-logo">
             <img src="https://cdn.casterlabs.co/services/youtube/icon.svg" alt="YouTube Logo" />
         </div>
-        <span> YouTube </span>
+        <span> YouTube (BETA) </span>
     </button>
 </div>
 

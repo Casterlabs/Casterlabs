@@ -10,6 +10,7 @@
     import TrovoButton from "../../components/platforms/signin-buttons/Trovo.svelte";
     import GlimeshButton from "../../components/platforms/signin-buttons/Glimesh.svelte";
     import BrimeButton from "../../components/platforms/signin-buttons/Brime.svelte";
+    import YouTubeButton from "../../components/platforms/signin-buttons/YouTube.svelte";
     import PairingCodeButton from "../../components/platforms/signin-buttons/PairingCode.svelte";
 
     let loginState = "loading";
@@ -46,6 +47,7 @@
             <TrovoButton />
             <GlimeshButton />
             <BrimeButton />
+            <YouTubeButton />
             <br />
             <PairingCodeButton />
             <br />
