@@ -9,7 +9,7 @@
 <span>
     <a href={userData.link} rel="external" style="user-select: none;" target="_blank">
         <img src={userData.image_link} class="inline-image profile-picture" alt={userData.displayname} />
-        <span title={prettifyString(userData.platform)} style="color: {userData.color}">
+        <span title={prettifyString(userData.platform)} style="color: {userData.color}; user-select: text !important;">
             {userData.displayname}
 
             <span class="user-platform">

@@ -683,6 +683,10 @@
         right: 0;
     }
 
+    .stream-chat-container * {
+        user-select: text !important;
+    }
+
     #chat-box {
         position: absolute;
         top: 0;

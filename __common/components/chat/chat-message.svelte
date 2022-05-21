@@ -27,156 +27,105 @@
     let isPlatformMessage = koiEvent.event_type == "PLATFORM_MESSAGE";
 
     function escapeHtml(unsafe) {
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
+        return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
     let eventHasModIcons = false;
 
     if (koiEvent.event_type == "VIEWER_JOIN") {
         const { viewer } = koiEvent;
-        const link =
-            viewer.id == "CASTERLABS_SYSTEM_ANONYMOUS" ? null : viewer.link;
+        const link = viewer.id == "CASTERLABS_SYSTEM_ANONYMOUS" ? null : viewer.link;
 
         highlight = false;
-        messageHtml = translate(
-            App.get("language"),
-            "chat.message.viewer.join",
-            {
-                displayname: `<a href="${link}" target="${
-                    !link || "_blank"
-                }" style="color: ${viewer.color}">${viewer.displayname}</a>`,
-            }
-        );
+        messageHtml = translate(App.get("language"), "chat.message.viewer.join", {
+            displayname: `<a href="${link}" target="${!link || "_blank"}" style="color: ${viewer.color}">${viewer.displayname}</a>`
+        });
     } else if (koiEvent.event_type == "VIEWER_LEAVE") {
         const { viewer } = koiEvent;
-        const link =
-            viewer.id == "CASTERLABS_SYSTEM_ANONYMOUS" ? null : viewer.link;
+        const link = viewer.id == "CASTERLABS_SYSTEM_ANONYMOUS" ? null : viewer.link;
 
         highlight = false;
-        messageHtml = translate(
-            App.get("language"),
-            "chat.message.viewer.leave",
-            {
-                displayname: `<a href="${link}" target="${
-                    !link || "_blank"
-                }" style="color: ${viewer.color}">${viewer.displayname}</a>`,
-            }
-        );
+        messageHtml = translate(App.get("language"), "chat.message.viewer.leave", {
+            displayname: `<a href="${link}" target="${!link || "_blank"}" style="color: ${viewer.color}">${viewer.displayname}</a>`
+        });
     } else if (koiEvent.event_type == "RAID") {
         const { host, viewers } = koiEvent;
 
         highlight = true;
         messageHtml = translate(App.get("language"), "chat.message.raid", {
             displayname: `<a href="${host.link}" target="_blank" style="color: ${host.color}">${host.displayname}</a>`,
-            viewers: viewers,
+            viewers: viewers
         });
     } else if (koiEvent.event_type == "FOLLOW") {
         const { follower } = koiEvent;
 
         highlight = true;
         messageHtml = translate(App.get("language"), "chat.message.follow", {
-            displayname: `<a href="${follower.link}" target="_blank" style="color: ${follower.color}">${follower.displayname}</a>`,
+            displayname: `<a href="${follower.link}" target="_blank" style="color: ${follower.color}">${follower.displayname}</a>`
         });
     } else if (koiEvent.event_type == "SUBSCRIPTION") {
         const { gift_recipient, subscriber, months } = koiEvent;
 
         switch (koiEvent.sub_type) {
             case "SUB":
-                messageHtml = translate(
-                    App.get("language"),
-                    "chat.message.sub.SUB",
-                    {
-                        displayname: `<a href="${subscriber.link}" target="_blank" style="color: ${subscriber.color}">${subscriber.displayname}</a>`,
-                        months: months,
-                    }
-                );
+                messageHtml = translate(App.get("language"), "chat.message.sub.SUB", {
+                    displayname: `<a href="${subscriber.link}" target="_blank" style="color: ${subscriber.color}">${subscriber.displayname}</a>`,
+                    months: months
+                });
                 break;
 
             case "RESUB":
-                messageHtml = translate(
-                    App.get("language"),
-                    "chat.message.sub.RESUB",
-                    {
-                        displayname: `<a href="${subscriber.link}" target="_blank" style="color: ${subscriber.color}">${subscriber.displayname}</a>`,
-                        months: months,
-                    }
-                );
+                messageHtml = translate(App.get("language"), "chat.message.sub.RESUB", {
+                    displayname: `<a href="${subscriber.link}" target="_blank" style="color: ${subscriber.color}">${subscriber.displayname}</a>`,
+                    months: months
+                });
                 break;
 
             case "RESUBGIFT":
             case "SUBGIFT":
-                messageHtml = translate(
-                    App.get("language"),
-                    "chat.message.sub.SUBGIFT",
-                    {
-                        gifter: `<a href="${subscriber.link}" target="_blank" style="color: ${subscriber.color}">${subscriber.displayname}</a>`,
-                        months: months,
-                        recipient: `<a href="${gift_recipient.link}" target="_blank" style="color: ${gift_recipient.color}">${gift_recipient.displayname}</a>`,
-                    }
-                );
+                messageHtml = translate(App.get("language"), "chat.message.sub.SUBGIFT", {
+                    gifter: `<a href="${subscriber.link}" target="_blank" style="color: ${subscriber.color}">${subscriber.displayname}</a>`,
+                    months: months,
+                    recipient: `<a href="${gift_recipient.link}" target="_blank" style="color: ${gift_recipient.color}">${gift_recipient.displayname}</a>`
+                });
                 break;
 
             case "ANONRESUBGIFT":
             case "ANONSUBGIFT":
-                messageHtml = translate(
-                    App.get("language"),
-                    "chat.message.sub.ANONSUBGIFT",
-                    {
-                        months: months,
-                        recipient: `<a href="${gift_recipient.link}" target="_blank" style="color: ${gift_recipient.color}">${gift_recipient.displayname}</a>`,
-                    }
-                );
+                messageHtml = translate(App.get("language"), "chat.message.sub.ANONSUBGIFT", {
+                    months: months,
+                    recipient: `<a href="${gift_recipient.link}" target="_blank" style="color: ${gift_recipient.color}">${gift_recipient.displayname}</a>`
+                });
                 break;
         }
 
         highlight = true;
     } else if (koiEvent.event_type == "CHANNEL_POINTS") {
         const reward = koiEvent.reward;
-        const imageHtml = `<img class="vcimage" src = "${
-            reward.reward_image || reward.default_reward_image
-        }" /> `;
+        const imageHtml = `<img class="vcimage" src = "${reward.reward_image || reward.default_reward_image}" /> `;
 
         highlight = true;
-        messageHtml = translate(
-            App.get("language"),
-            "chat.message.channelpoints",
-            {
-                displayname: `<a href="${koiEvent.sender.link}" target="_blank" style="color: ${koiEvent.sender.color}">${koiEvent.sender.displayname}</a>`,
-                imageHtml: imageHtml,
-                reward: reward.title,
-            }
-        );
+        messageHtml = translate(App.get("language"), "chat.message.channelpoints", {
+            displayname: `<a href="${koiEvent.sender.link}" target="_blank" style="color: ${koiEvent.sender.color}">${koiEvent.sender.displayname}</a>`,
+            imageHtml: imageHtml,
+            reward: reward.title
+        });
     } else if (koiEvent.event_type == "CLEARCHAT") {
         highlight = true;
         messageHtml = translate(App.get("language"), "chat.message.cleared");
-    } else if (
-        ["CHAT", "DONATION", "PLATFORM_MESSAGE"].includes(
-            koiEvent.event_type
-        ) /* Normal chat messages */
-    ) {
+    } else if (["CHAT", "DONATION", "PLATFORM_MESSAGE"].includes(koiEvent.event_type) /* Normal chat messages */) {
         messageHtml = escapeHtml(koiEvent.message);
         sender = koiEvent.sender;
         isMessageFromSelf = sender.UPID == koiEvent.streamer.UPID;
 
         for (const [name, image] of Object.entries(koiEvent.emotes)) {
-            messageHtml = messageHtml
-                .split(name)
-                .join(
-                    `<img class="inline-image" title="${name}" src="${image}" />`
-                );
+            messageHtml = messageHtml.split(name).join(`<img class="inline-image" title="${name}" src="${image}" />`);
         }
 
         for (const pattern of koiEvent.links) {
-            const link = pattern.includes("://")
-                ? pattern
-                : "https://" + pattern;
+            const link = pattern.includes("://") ? pattern : "https://" + pattern;
 
-            messageHtml = messageHtml
-                .split(pattern)
-                .join(`<a href="${link}" rel="external">${pattern}</a>`);
+            messageHtml = messageHtml.split(pattern).join(`<a href="${link}" rel="external">${pattern}</a>`);
         }
 
         if (koiEvent.donations) {
@@ -196,14 +145,7 @@
 </script>
 
 <!-- svelte-ignore a11y-missing-attribute -->
-<span
-    class="chat-message"
-    class:is-deleted={isDeleted}
-    class:highlighted={highlight}
-    class:no-select={isPlatformMessage}
-    class:presence-message={koiEvent.event_type == "VIEWER_JOIN" ||
-        koiEvent.event_type == "VIEWER_LEAVE"}
->
+<span class="chat-message" class:is-deleted={isDeleted} class:highlighted={highlight} class:no-select={isPlatformMessage} class:presence-message={koiEvent.event_type == "VIEWER_JOIN" || koiEvent.event_type == "VIEWER_LEAVE"}>
     <span class="message-timestamp">
         {new Date(timestamp).toLocaleTimeString()}
     </span>
@@ -212,18 +154,7 @@
             <span class="mod-actions">
                 {#if PLATFORMS_WITH_BAN.includes(koiEvent.streamer.platform) && !isMessageFromSelf}
                     <a on:click={() => modAction("ban", koiEvent)} title="Ban">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="var(--text-color)"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-slash"
-                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash">
                             <circle cx="12" cy="12" r="10" />
                             <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
                         </svg>
@@ -231,22 +162,8 @@
                 {/if}
 
                 {#if PLATFORMS_WITH_TIMEOUT.includes(koiEvent.streamer.platform) && !isMessageFromSelf}
-                    <a
-                        on:click={() => modAction("timeout", koiEvent)}
-                        title="Timeout"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="var(--text-color)"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-clock"
-                        >
+                    <a on:click={() => modAction("timeout", koiEvent)} title="Timeout">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
                             <circle cx="12" cy="12" r="10" />
                             <polyline points="12 6 12 12 16 14" />
                         </svg>
@@ -254,32 +171,11 @@
                 {/if}
 
                 {#if PLATFORMS_WITH_DELETE.includes(koiEvent.streamer.platform)}
-                    <a
-                        on:click={() => modAction("delete", koiEvent)}
-                        title="Delete Message"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="var(--text-color)"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-trash-2"
-                        >
+                    <a on:click={() => modAction("delete", koiEvent)} title="Delete Message">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
                             <polyline points="3 6 5 6 21 6" />
-                            <path
-                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                            />
-                            <line x1="10" y1="11" x2="10" y2="17" /><line
-                                x1="14"
-                                y1="11"
-                                x2="14"
-                                y2="17"
-                            />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />
                         </svg>
                     </a>
                 {/if}
@@ -291,13 +187,7 @@
                 <!-- Only show the little icon if multiplatform, otherwise it's left out. -->
                 <small class="platform-message-user">
                     <span class="platform-logo">
-                        <img
-                            src="/img/services/{koiEvent.sender.username.toLowerCase()}/icon.svg"
-                            alt="{koiEvent.sender.displayname} Logo"
-                            style={koiEvent.sender.username != "casterlabs"
-                                ? "filter: invert(var(--white-invert-factor));"
-                                : ""}
-                        />
+                        <img src="/img/services/{koiEvent.sender.username.toLowerCase()}/icon.svg" alt="{koiEvent.sender.displayname} Logo" style={koiEvent.sender.username != "casterlabs" ? "filter: invert(var(--white-invert-factor));" : ""} />
                     </span>
                     >
                 </small>
@@ -306,11 +196,7 @@
                 <!-- ItzLcyx test -->
                 <!-- becomes: -->
                 <!-- ItzLcyx > test -->
-                <User userData={sender} /><span
-                    style="opacity: 0; font-size: 0;"
-                >
-                    &gt;
-                </span>
+                <User userData={sender} /><span style="opacity: 0; font-size: 0;"> &gt; </span>
             {/if}
         {/if}
 
@@ -349,6 +235,7 @@
 
     .message-timestamp {
         display: none;
+        user-select: none !important;
     }
 
     :global(.show-timestamps) .message-container {
