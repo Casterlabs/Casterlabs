@@ -66,16 +66,12 @@
             }
 
             case "delete": {
-                if (["TWITCH", "BRIME", "TROVO"].includes(platform)) {
-                    Koi.deleteMessage(event.id);
-                }
+                Koi.deleteMessage(event.id);
                 return;
             }
 
             case "upvote": {
-                if (platform == "CAFFEINE") {
-                    Koi.upvoteMessage(event.id);
-                }
+                Koi.upvoteMessage(event.id);
                 return;
             }
 
