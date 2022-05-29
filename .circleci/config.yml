@@ -88,6 +88,4 @@ workflows:
           filters:
               branches:
                 only:
-                  - alpha
-                  - beta
-                  - stable
+                  - updater-release
