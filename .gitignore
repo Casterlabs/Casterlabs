@@ -1,3 +1,5 @@
 
 .metadata/
 .DS_Store
+caffeinated/app/Bootstrap/webview.dll
+caffeinated/app/Bootstrap/WebView2Loader.dll
