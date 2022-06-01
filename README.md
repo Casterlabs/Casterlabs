@@ -1,15 +1,40 @@
 # Casterlabs
 
-<p align="center">
-    <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/stable">
-        Stable: <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/stable.svg?style=shield" />
-    </a>
-    <br />
-    <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/beta">
-        Beta: <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/beta.svg?style=shield" />
-    </a>
-</p>
-
+<div align="center">
+    <table>
+        <tr>
+            <td align="right" width=96>
+                <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/stable">
+                    Stable
+                </a>
+            </td>
+            <td align="left">
+                <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/stable.svg?style=shield" />
+            </td>
+        </tr>
+        <tr>
+            <td align="right" width=96>
+                <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/beta">
+                    Beta
+                </a>
+            </td>
+            <td align="left">
+                <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/beta.svg?style=shield" />
+            </td>
+        </tr>
+        <tr>
+            <td align="right" width=96>
+                <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/dev">
+                    Development
+                </a>
+            </td>
+            <td align="left">
+                <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/dev.svg?style=shield" />
+            </td>
+        </tr>
+    </table>
+</div>
+<br />
 <br />
 
 <p align="center">
@@ -44,7 +69,6 @@
     </a>
 </p>
 
-<br />
 <br />
 
 <p align="center">
