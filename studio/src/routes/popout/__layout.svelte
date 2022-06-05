@@ -54,6 +54,15 @@
             subtree: true,
             childList: true
         });
+
+        // AppContext.on("theme-update", (theme) => {
+        //     if (theme.id == "co.casterlabs.dark") {
+        document.documentElement.classList.add("bulma-dark-mode");
+        //     } else {
+        //         document.documentElement.classList.remove("bulma-dark-mode");
+        //     }
+        // });
+        // AppContext.broadcast("theme-update", AppContext.currentTheme);
     });
 </script>
 
