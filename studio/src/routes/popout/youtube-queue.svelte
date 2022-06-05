@@ -238,7 +238,7 @@
             {#each videoQueue as video, idx}
                 <li class="box">
                     <a class="clicker" title="Video Title" on:click={() => Widget.emit("play", idx)}>
-                        <span> {escapeHtml(video.title)} </span>
+                        <span> {escapeHtml(video.title || "")} </span>
                     </a>
                     <a class="remove" title="Remove" on:click={() => Widget.emit("remove", idx)}>
                         <svg
