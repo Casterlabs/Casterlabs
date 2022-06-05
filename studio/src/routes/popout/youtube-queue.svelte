@@ -135,9 +135,9 @@
     Widget.on("update", (settings) => {
         console.log(settings);
 
-        videoQueue = settings.queue;
-        shouldAutoplay = settings.autoplay;
+        videoQueue = settings.queue || [];
         volume = settings.volume || 0.5;
+        shouldAutoplay = settings.autoplay;
 
         if (player) {
             checkMute();
