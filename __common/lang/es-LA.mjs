@@ -1,7 +1,7 @@
 export default {
-    "meta.name": "Español  (España)",
+    "meta.name": "Español (America Latina)",
     "meta.code": "es-LA",
-    "meta.flag": "🇪🇸",
+    "meta.flag": "🇲🇽",
     "meta.direction": "ltr",
 
     "app.terms_of_service": "Terminos de Servicios",
