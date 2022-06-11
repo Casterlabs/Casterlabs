@@ -6,9 +6,9 @@ export default {
 
     "app.terms_of_service": "Terminos de Servicios",
     "app.privacy_policy": "Politica de Privacidad",
-    "app.footer": "Hecho con ♥ de Casterlabs.<br/>  Derechos del Autor© {year} Casterlabs. Todos rechos reservados. De nada. -eg",
     "app.service_disclaimer":
         `Por iniciando sesion, tu aceptas nuestros
+    "app.footer": "Hecho con ♥ de Casterlabs.<br/>  Derechos del Autor© {year} Casterlabs. Todos rechos reservados.",
         <a href="https://casterlabs.co/terms-of-service" class="fade-on-hover" rel="external">Terminos de Servicios</a>
         y tu reconoces que nuestro
         <a href="https://casterlabs.co/privacy-policy" class="fade-on-hover" rel="external">Politica de Privacidad</a>
