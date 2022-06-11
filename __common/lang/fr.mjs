@@ -3,6 +3,7 @@ export default {
     "meta.code": "fr",
     "meta.flag": "🇫🇷",
     "meta.direction": "ltr",
+    "meta.translators": " ",
 
     "app.terms_of_service": "Conditions d'utilisation",
     "app.privacy_policy": "Politique de confidentialité",
