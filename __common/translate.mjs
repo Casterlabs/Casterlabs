@@ -4,16 +4,20 @@ import enAU from "./lang/en-AU.mjs";
 
 import fr from "./lang/fr.mjs";
 
+import esLA from "./lang/es-LA.mjs";
+
 import createConsole from "./console-helper.mjs";
 
 const console = createConsole("translate");
 
 const languages = {
-    en: enUS, // English (United States) is the default English locale
+    "en": enUS, // English (United States) is the default English locale
     "en-GB": enGB,
     "en-AU": enAU,
 
-    fr: fr
+    "fr": fr,
+
+    "es-LA": esLA
 };
 
 let externalLocalization = {};
