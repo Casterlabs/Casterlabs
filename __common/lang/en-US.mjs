@@ -8,12 +8,7 @@ export default {
     "app.terms_of_service": "Terms of Service",
     "app.privacy_policy": "Privacy Policy",
     "app.footer": "Made with ♥ by Casterlabs.<br/>Copyright © {year} Casterlabs. All rights reserved.",
-    "app.service_disclaimer":
-        `By signing in, you agree to our
-        <a href="https://casterlabs.co/terms-of-service" class="fade-on-hover" rel="external">Terms of Service</a>
-        and acknowledge that our
-        <a href="https://casterlabs.co/privacy-policy" class="fade-on-hover" rel="external">Privacy Policy</a>
-        applies to you.`,
+    "app.service_disclaimer": "By signing in, you agree to our %tos% and acknowledge that our %privacy% applies to you.",
 
     "ui.welcome": "Welcome to Casterlabs",
     "ui.welcome.sub": "The free stream suite.",

@@ -5,15 +5,10 @@ export default {
     "meta.direction": "ltr",
     "meta.translators": " ",
 
-    "app.terms_of_service": "Conditions d'utilisation",
-    "app.privacy_policy": "Politique de confidentialité",
+    "app.terms_of_service": "Conditions d'Utilisation",
+    "app.privacy_policy": "Politique de Confidentialité",
     "app.footer": "Fait avec ♥ par Casterlabs.<br/>Copyright © {year} Casterlabs. Tous les droits sont réservés.",
-    "app.service_disclaimer": `
-        En vous connectant, vous acceptez nos
-        <a href="https://casterlabs.co/terms-of-service" class="fade-on-hover" rel="external">conditions d'utilisation</a>
-        et reconnaissez que notre
-        <a href="https://casterlabs.co/privacy-policy" class="fade-on-hover" rel="external">politique de confidentialité</a>
-        s'applique à vous.`,
+    "app.service_disclaimer": "En vous connectant, vous acceptez nos %tos% et reconnaissez que notre %privacy% s'applique à vous.",
 
     "ui.welcome": "Bienvenue à Casterlabs",
     "ui.welcome.sub": "La suite de diffusion en direct gratuite.",
