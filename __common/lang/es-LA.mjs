@@ -10,9 +10,9 @@ export default {
     "app.service_disclaimer": "Por iniciando sesion, tu aceptas nuestros %tos% y tu reconoces que nuestro %privacy% aplica a ti.",
     "app.footer": "Hecho con ♥ de Casterlabs.<br/>  Derechos del Autor © {year} Casterlabs. Todos rechos reservados.",
 
-    "ui.welcome": "Bienvenido a Casterlabs.",
+    "ui.welcome": "Bienvenido a Casterlabs",
     "ui.welcome.sub": "El gratis suite de transmisión.",
-    "ui.welcome.start": "Vamos a empezar.",
+    "ui.welcome.start": "Vamos a empezar",
     "ui.welcome.customize": "Personalicemos Casterlabs",
 
     "ui.want_to_go_back": "¿Quieres ir para atras?",
