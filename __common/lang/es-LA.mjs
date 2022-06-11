@@ -61,7 +61,6 @@ export default {
     "settings.plugins.open_folder": "Abrir Folder de Plugins",
     "settings.plugins.load": "Cargar",
 
-
     "settings.about": "About",
     "settings.about.enable_stupidly_unsafe_settings": "Encendir Estúpidamente No Seguro Configuraciones",
     "settings.about.credits": "Creditos",
@@ -168,3 +167,5 @@ export default {
     "widgets.manager.other": "Otro",
     "widgets.editor": "Editor de Widgets",
     "widgets.editor.preview": "Avance",
+
+};
