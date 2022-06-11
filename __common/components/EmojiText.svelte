@@ -3,6 +3,7 @@
     import App from "../app.mjs";
 
     export let escapeHtml = true;
+    export let forceProvider = null;
 
     const unregister = [];
 
@@ -15,7 +16,7 @@
     function render() {
         if (typeof window != "undefined" && emojiProvider != "system") {
             fetch(
-                `https://api.casterlabs.co/v3/emojis/detect?provider=${emojiProvider}&escape=${escapeHtml}`,
+                `https://api.casterlabs.co/v3/emojis/detect?provider=${forceProvider || emojiProvider}&escape=${escapeHtml}`,
                 {
                     method: "POST",
                     headers: {
