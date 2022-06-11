@@ -17,7 +17,7 @@ export default {
     "ui.welcome": "Bienvenido a Casterlabs.",
     "ui.welcome.sub": "El gratis suite de transmisión.",
     "ui.welcome.start": "Vamos a empezar.",
-    "ui.welcome.customize": "Let's customize Casterlabs",
+    "ui.welcome.customize": "Personalicemos Casterlabs",
 
     "ui.want_to_go_back": "¿Quieres ir para atras?",
 
