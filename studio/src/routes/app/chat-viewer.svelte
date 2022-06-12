@@ -171,8 +171,4 @@
         right: 1em;
         z-index: 130;
     }
-
-    :global(#viewers-list) {
-        transform: translateY(3.25em);
-    }
 </style>
