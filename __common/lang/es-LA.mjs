@@ -17,7 +17,7 @@ export default {
 
     "ui.want_to_go_back": "¿Quieres ir para atras?",
 
-    "ui.greeting.hello": "Hola!",
+    "ui.greeting.hello": "¡Hola!",
     "ui.greeting.good_morning": "Buenos dias, {name}.",
     "ui.greeting.good_day": "Hola, {name}.",
     "ui.greeting.good_afternoon": "Buenas tardes, {name}.",
