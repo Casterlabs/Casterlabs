@@ -164,4 +164,17 @@ export default {
     "widgets.editor": "Editor de Widgets",
     "widgets.editor.preview": "Avance",
 
+    "stream.title": "Titulo",
+    "stream.category": "Juego/Categoría",
+    "stream.content_rating": "Calificación de Contenido",
+    "stream.language": "Idioma",
+    "stream.tags": "Etiquetas",
+    "stream.thumbnail": "Thumbnail",
+    "stream.thumbnail.choose": "Escoger una idioma",
+    "stream.thumbnail.clear": "Borrar",
+    "stream.update_info": "Actualizar Info",
+    "stream.content_rating.FAMILY_FRIENDLY": "Para Todos Años",
+    "stream.content_rating.PG": "13+",
+    "stream.content_rating.MATURE": "17+",
+    
 };
