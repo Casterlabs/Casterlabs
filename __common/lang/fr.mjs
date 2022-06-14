@@ -162,5 +162,19 @@ export default {
     "widgets.manager.goals": "Objectifs",
     "widgets.manager.other": "Autre",
     "widgets.editor": "Éditeur de widget",
-    "widgets.editor.preview": "Aperçu"
+    "widgets.editor.preview": "Aperçu",
+    
+    "stream.title": "Titre",
+    "stream.category": "Jeu vidéo/Catégorie",
+    "stream.content_rating": "Évaluation du contenu",
+    "stream.language": "Langue",
+    "stream.tags": "Tags",
+    "stream.thumbnail": "Vignette de la direct",
+    "stream.thumbnail.choose": "Choisissez une image",
+    "stream.thumbnail.clear": "Effacer",
+    "stream.update_info": "Mettre à jour",
+    "stream.content_rating.FAMILY_FRIENDLY": "Tous Publics",
+    "stream.content_rating.PG": "13+",
+    "stream.content_rating.MATURE": "17+",
+
 };
