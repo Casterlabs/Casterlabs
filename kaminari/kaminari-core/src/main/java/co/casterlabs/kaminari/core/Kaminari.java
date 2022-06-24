@@ -161,6 +161,10 @@ public class Kaminari implements Closeable {
             // Render.
             long renderStart = System.currentTimeMillis();
 
+            // Loop over the sources and notify them.
+            this.sources.forEach((source) -> source.onRender());
+
+            // Render
             Graphics2D g = this.frameBuffer.createGraphics();
             this.panel.paint(g);
             g.dispose();

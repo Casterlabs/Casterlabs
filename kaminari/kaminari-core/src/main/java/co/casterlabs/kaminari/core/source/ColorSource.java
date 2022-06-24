@@ -13,16 +13,6 @@ public class ColorSource extends Source {
         this.panel.setOpaque(true); // We need the background to be opaque.
     }
 
-    @Override
-    public void onMount() throws ColorException {
-        // NO-OP
-    }
-
-    @Override
-    public void onDestroy() {
-        // NO-OP
-    }
-
     public void setColor(String color) throws ColorException {
         this.panel.setBackground(
             Color

@@ -56,8 +56,10 @@ public abstract class Source {
     /* Life Cycle       */
     /* ---------------- */
 
-    public abstract void onMount() throws Throwable;
+    public void onMount() throws Throwable {}
 
-    public abstract void onDestroy();
+    public void onDestroy() {}
+
+    public void onRender() {}
 
 }
