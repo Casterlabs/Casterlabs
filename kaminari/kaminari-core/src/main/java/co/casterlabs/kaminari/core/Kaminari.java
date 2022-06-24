@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -47,7 +47,7 @@ public class Kaminari implements Closeable {
     private @Getter int width = -1; // Pixels
     private @Getter int height = -1; // Pixels
 
-    private Set<Source> sources = new HashSet<>();
+    private List<Source> sources = new ArrayList<>();
 
     private @Getter @Setter OutputStream target;
     private byte[] currentFrameData;
@@ -219,9 +219,11 @@ public class Kaminari implements Closeable {
         int top    = (int) (source.getY()      * this.height);
         int width  = (int) (source.getWidth()  * this.width );
         int height = (int) (source.getHeight() * this.height);
+        int zIndex = this.sources.indexOf(source);
         // @formatter:on
 
         source.panel.setBounds(left, top, width, height);
+        this.panel.setComponentZOrder(source.panel, zIndex);
 
 //        this.logger.debug(
 //            "[%s/%s] Pack: left=%d, top=%d, width=%d, height=%d",
