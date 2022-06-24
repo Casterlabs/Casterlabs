@@ -3,7 +3,6 @@ package co.casterlabs.kaminari.core.source;
 import co.casterlabs.kaminari.core.Kaminari;
 import lombok.NonNull;
 import xyz.e3ndr.javawebcolor.Color;
-import xyz.e3ndr.javawebcolor.ColorException;
 
 public class ColorSource extends Source {
 
@@ -13,13 +12,12 @@ public class ColorSource extends Source {
         this.panel.setOpaque(true); // We need the background to be opaque.
     }
 
-    public void setColor(String color) throws ColorException {
+    public void setColor(String color) {
         this.panel.setBackground(
             Color
                 .parseCSSColor(color)
                 .toAWTColor()
         );
-        this.panel.revalidate();
     }
 
 }
