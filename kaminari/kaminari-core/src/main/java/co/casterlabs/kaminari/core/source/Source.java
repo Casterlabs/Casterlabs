@@ -1,7 +1,6 @@
 package co.casterlabs.kaminari.core.source;
 
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 
 import co.casterlabs.kaminari.core.Kaminari;
 import lombok.Getter;
@@ -13,8 +12,7 @@ public abstract class Source {
 
     public String name;
 
-    public final JPanel panel;
-    private SpringLayout layout;
+    public final JPanel panel = new JPanel();
 
     private @Getter float width, height; // Percent
     private @Getter float x, y;          // Percent
@@ -26,8 +24,6 @@ public abstract class Source {
         this.id = id;
         this.name = name;
 
-        this.layout = new SpringLayout();
-        this.panel = new JPanel(this.layout);
         this.panel.setOpaque(false);
     }
 
