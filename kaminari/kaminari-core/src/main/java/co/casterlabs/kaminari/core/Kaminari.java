@@ -181,15 +181,10 @@ public class Kaminari implements Closeable {
 
             // Debug stats.
             this.frameTime = renderEnd - renderStart;
-            this.lastRender += this.frameInterval; // Doing it this way allows the renderer to crank out missed frames rather than
-                                                   // skip them.
             this.framesRendered++;
             this.framesTargeted = ((this.lastRender - this.startTime) / this.frameInterval) - 1; // TODO figure out where this one comes from.
-
-            if (shouldLog) {
-                this.logger.debug("Rendered frame #%d in %dms.", this.framesRendered, this.frameTime);
-                this.logger.debug("Render stats: %d/%d", this.framesRendered, this.framesTargeted);
-            }
+            this.lastRender += this.frameInterval; // Doing it this way allows the renderer to crank out missed frames rather than
+                                                   // skip them.
         }
 
         this.currentFrameData = null; // Free memory.
