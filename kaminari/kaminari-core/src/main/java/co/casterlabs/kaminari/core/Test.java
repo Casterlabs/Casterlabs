@@ -23,25 +23,48 @@ public class Test {
         kaminari.setFramerate(30);
 
         // Setup ffplay.
-        Process ffplayProcess = new ProcessBuilder()
+        Process ffProcess = new ProcessBuilder()
             .command(
-                "ffplay",
+                // "ffplay",
+//                "-hide_banner",
+//                "-v", "warning",
+
+                // Input
+//                "-f", "rawvideo",
+//                "-vcodec", "rawvideo",
+//                "-pixel_format", Kaminari.IMAGE_FORMAT,
+////                "-framerate", String.valueOf(kaminari.getFrameRate()),
+//                "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
+//                "pipe:0"
+
+                "ffmpeg",
                 "-hide_banner",
                 "-v", "warning",
+
+                // Input
                 "-f", "rawvideo",
                 "-vcodec", "rawvideo",
                 "-pixel_format", Kaminari.IMAGE_FORMAT,
-//                "-framerate", String.valueOf(kaminari.getFrameRate()),
+                "-framerate", String.valueOf(kaminari.getFrameRate()),
                 "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
-                "pipe:0"
+                "-i", "pipe:0",
+
+                // Output
+                "-vcodec", "libx264",
+                "-framerate", String.valueOf(kaminari.getFrameRate()),
+                "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
+                "-preset", "fast",
+                "-vb", "3000k",
+                "-pixel_format", "yuv420p",
+                "-f", "flv",
+                "rtmp://dfw.contribute.live-video.net/app/" + args[0] // STREAMKEY
             )
             .inheritIO()
             .redirectInput(Redirect.PIPE)
             .start();
 
-        OutputStream ffplayStream = ffplayProcess.getOutputStream();
-
-        kaminari.setTarget(ffplayStream);
+        OutputStream target = ffProcess.getOutputStream();
+        kaminari.setTarget(target);
 
         // Test source.
         ColorSource testSource = new ColorSource(kaminari, UUID.randomUUID().toString(), "Test");
