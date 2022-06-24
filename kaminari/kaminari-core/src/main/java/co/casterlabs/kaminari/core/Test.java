@@ -87,6 +87,8 @@ public class Test {
             }
         });
 
+        kaminari.add(new DebugTextSource(kaminari));
+
         colorCycler.setDaemon(true);
         colorCycler.start();
 
