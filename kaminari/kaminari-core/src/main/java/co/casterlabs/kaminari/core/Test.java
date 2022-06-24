@@ -5,12 +5,14 @@ import java.lang.ProcessBuilder.Redirect;
 import java.util.UUID;
 
 import co.casterlabs.kaminari.core.source.ColorSource;
+import co.casterlabs.kaminari.core.source.DebugTextSource;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class Test {
 
+    @SuppressWarnings("deprecation")
     @SneakyThrows
     public static void main(String[] args) {
         FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
@@ -25,19 +27,7 @@ public class Test {
         // Setup ffplay.
         Process ffProcess = new ProcessBuilder()
             .command(
-                // "ffplay",
-//                "-hide_banner",
-//                "-v", "warning",
-
-                // Input
-//                "-f", "rawvideo",
-//                "-vcodec", "rawvideo",
-//                "-pixel_format", Kaminari.IMAGE_FORMAT,
-////                "-framerate", String.valueOf(kaminari.getFrameRate()),
-//                "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
-//                "pipe:0"
-
-                "ffmpeg",
+                "ffplay",
                 "-hide_banner",
                 "-v", "warning",
 
@@ -45,19 +35,31 @@ public class Test {
                 "-f", "rawvideo",
                 "-vcodec", "rawvideo",
                 "-pixel_format", Kaminari.IMAGE_FORMAT,
-                "-framerate", String.valueOf(kaminari.getFrameRate()),
+//                "-framerate", String.valueOf(kaminari.getFrameRate()),
                 "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
-                "-i", "pipe:0",
+                "pipe:0"
 
-                // Output
-                "-vcodec", "libx264",
-                "-framerate", String.valueOf(kaminari.getFrameRate()),
-                "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
-                "-preset", "fast",
-                "-vb", "3000k",
-                "-pixel_format", "yuv420p",
-                "-f", "flv",
-                "rtmp://dfw.contribute.live-video.net/app/" + args[0] // STREAMKEY
+//                "ffmpeg",
+//                "-hide_banner",
+//                "-v", "warning",
+//
+//                // Input
+//                "-f", "rawvideo",
+//                "-vcodec", "rawvideo",
+//                "-pixel_format", Kaminari.IMAGE_FORMAT,
+//                "-framerate", String.valueOf(kaminari.getFrameRate()),
+//                "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
+//                "-i", "pipe:0",
+//
+//                // Output
+//                "-vcodec", "libx264",
+//                "-framerate", String.valueOf(kaminari.getFrameRate()),
+//                "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
+//                "-preset", "fast",
+//                "-vb", "3000k",
+//                "-pixel_format", "yuv420p",
+//                "-f", "flv",
+//                "rtmp://dfw.contribute.live-video.net/app/" + args[0] // STREAMKEY
             )
             .inheritIO()
             .redirectInput(Redirect.PIPE)

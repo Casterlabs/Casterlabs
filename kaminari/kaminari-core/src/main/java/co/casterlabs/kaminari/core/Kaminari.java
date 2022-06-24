@@ -128,8 +128,6 @@ public class Kaminari implements Closeable {
         assert this.isRenderable() : "This instance is NOT renderable.";
         assert !this.shouldRender : "This instance is already rendering!";
 
-        this.startTime = System.nanoTime();
-        this.lastRender = this.startTime + this.frameInterval;
         this.shouldRender = true;
         this.framesRendered = 0;
         this.framesTargeted = 1;
@@ -141,9 +139,10 @@ public class Kaminari implements Closeable {
         this.targetWriteThread.setDaemon(true);
         this.targetWriteThread.start();
 
-        while (this.shouldRender) {
-            boolean shouldLog = this.framesRendered % this.frameRate == 0;
+        this.startTime = System.nanoTime();
+        this.lastRender = this.startTime + this.frameInterval;
 
+        while (this.shouldRender) {
             // Frame interval check/sleep.
             {
                 long now = System.nanoTime();
@@ -169,9 +168,11 @@ public class Kaminari implements Closeable {
             this.panel.paint(g);
             g.dispose();
 
+            // Dump the frame buffer data.
             this.currentFrameData = this.getFrameBufferData();
 
             if (this.target != null) {
+                // Tell the target writer to write.
                 synchronized (this.targetWriteThread) {
                     this.targetWriteThread.notify();
                 }
