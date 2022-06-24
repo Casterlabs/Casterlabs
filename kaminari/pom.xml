@@ -87,6 +87,12 @@
 			<version>65b2385</version> <!-- 1.9.0-BLEEDING -->
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.github.e3ndr</groupId>
+			<artifactId>JavaWebColor</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
 
 	</dependencies>
 
