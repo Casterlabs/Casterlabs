@@ -7,15 +7,15 @@ import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import co.casterlabs.kaminari.core.Kaminari;
+import co.casterlabs.kaminari.core.scene.Scene;
 import lombok.NonNull;
 import xyz.e3ndr.javawebcolor.Color;
 
 public class TextSource extends Source {
     protected JLabel label = new JLabel();
 
-    public TextSource(@NonNull Kaminari kaminari, @NonNull String id, @NonNull String name) {
-        super(kaminari, id, name);
+    public TextSource(@NonNull Scene scene, @NonNull String id, @NonNull String name) {
+        super(scene, id, name);
 
         this.panel.setLayout(new BorderLayout());
         this.panel.add(this.label);

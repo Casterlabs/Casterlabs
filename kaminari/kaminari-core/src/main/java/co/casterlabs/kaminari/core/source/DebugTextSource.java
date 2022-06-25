@@ -3,14 +3,15 @@ package co.casterlabs.kaminari.core.source;
 import java.awt.Font;
 
 import co.casterlabs.kaminari.core.Kaminari;
+import co.casterlabs.kaminari.core.scene.Scene;
 import lombok.NonNull;
 import xyz.e3ndr.javawebcolor.Color;
 
 @Deprecated
 public class DebugTextSource extends TextSource {
 
-    public DebugTextSource(@NonNull Kaminari kaminari) {
-        super(kaminari, "DEBUG-SOURCE", "Debug Source");
+    public DebugTextSource(@NonNull Scene scene) {
+        super(scene, "DEBUG-SOURCE", "Debug Source");
 
         // Styling.
         this.setTextColor("white");
@@ -24,11 +25,13 @@ public class DebugTextSource extends TextSource {
 
     @Override
     public void onRender() {
+        Kaminari kaminari = this.scene.getKaminari();
+
         String[] lines = {
         // @formatter:off
-        String.format("Rendered frames: %d/%d",         this.kaminari.getFramesRendered(), this.kaminari.getFramesTargeted()),
-        String.format("Frame time:      %dms",          this.kaminari.getFrameTime()),
-        String.format("Video:           %dx%d @ %dfps", this.kaminari.getWidth(), this.kaminari.getHeight(), this.kaminari.getFrameRate())
+        String.format("Rendered frames: %d/%d",         kaminari.getFramesRendered(), kaminari.getFramesTargeted()),
+        String.format("Frame time:      %dms",          kaminari.getFrameTime()),
+        String.format("Video:           %dx%d @ %dfps", kaminari.getWidth(), kaminari.getHeight(), kaminari.getFrameRate())
         // @formatter:on
         };
 

@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.UUID;
 
+import co.casterlabs.kaminari.core.scene.Scene;
 import co.casterlabs.kaminari.core.source.ColorSource;
 import co.casterlabs.kaminari.core.source.DebugTextSource;
 import lombok.SneakyThrows;
@@ -68,31 +69,39 @@ public class Test {
         OutputStream target = ffProcess.getOutputStream();
         kaminari.setTarget(target);
 
-        // Test source.
-        ColorSource testSource = new ColorSource(kaminari, UUID.randomUUID().toString(), "Test");
+        // Setup the test scene
+        {
+            Scene testScene = new Scene(kaminari, "test", "Test");
 
-        testSource.setPosition(.5f, .5f); // Percent
-        testSource.setSize(.25f, .25f); // Percent
+            // Test source.
+            ColorSource testSource = new ColorSource(testScene, UUID.randomUUID().toString(), "Test");
 
-        kaminari.add(testSource);
+            testSource.setPosition(.5f, .5f); // Percent
+            testSource.setSize(.25f, .25f); // Percent
 
-        Thread colorCycler = new Thread(() -> {
-            while (true) {
-                try {
-                    testSource.setColor("red");
-                    Thread.sleep(1000);
-                    testSource.setColor("green");
-                    Thread.sleep(1000);
-                    testSource.setColor("blue");
-                    Thread.sleep(1000);
-                } catch (Exception ignored) {}
-            }
-        });
+            testScene.add(testSource);
 
-        kaminari.add(new DebugTextSource(kaminari));
+            Thread colorCycler = new Thread(() -> {
+                while (true) {
+                    try {
+                        testSource.setColor("red");
+                        Thread.sleep(1000);
+                        testSource.setColor("green");
+                        Thread.sleep(1000);
+                        testSource.setColor("blue");
+                        Thread.sleep(1000);
+                    } catch (Exception ignored) {}
+                }
+            });
 
-        colorCycler.setDaemon(true);
-        colorCycler.start();
+            colorCycler.setDaemon(true);
+            colorCycler.start();
+
+            testScene.add(new DebugTextSource(testScene));
+
+            kaminari.setCurrentSceneIndex(0);
+            kaminari.scenes.add(testScene);
+        }
 
         kaminari.start();
     }

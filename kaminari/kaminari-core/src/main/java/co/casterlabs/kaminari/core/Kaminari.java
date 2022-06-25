@@ -1,25 +1,16 @@
 package co.casterlabs.kaminari.core;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.awt.image.Raster;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
-
-import co.casterlabs.kaminari.core.source.Source;
+import co.casterlabs.kaminari.core.scene.Scene;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 
 public class Kaminari implements Closeable {
@@ -32,9 +23,6 @@ public class Kaminari implements Closeable {
 
     private @Getter String name;
 
-    private JPanel panel;
-
-    private @Getter BufferedImage frameBuffer;
     private @Getter long framesRendered;
     private @Getter long framesTargeted;
     private @Getter long frameTime;
@@ -47,7 +35,10 @@ public class Kaminari implements Closeable {
     private @Getter int width = -1; // Pixels
     private @Getter int height = -1; // Pixels
 
-    private List<Source> sources = new ArrayList<>();
+    private byte[] blankFrameData;
+
+    private @Getter @Setter int currentSceneIndex = 0;
+    public final List<Scene> scenes = new ArrayList<>();
 
     private @Getter @Setter OutputStream target;
     private byte[] currentFrameData;
@@ -63,13 +54,7 @@ public class Kaminari implements Closeable {
         this.name = name;
         this.logger = new FastLogger("Kaminari: " + name);
 
-        this.panel = new JPanel();
-        this.panel.setBackground(Color.BLACK);
-
         this.setFramerate(30);
-
-        // Convince the panel to be renderable.
-        this.panel.addNotify();
     }
 
     /* ---------------- */
@@ -87,12 +72,11 @@ public class Kaminari implements Closeable {
 
         this.width = width;
         this.height = height;
-        this.panel.setSize(width, height);
 
-        this.frameBuffer = new BufferedImage(this.width, this.height, BUFFER_FORMAT);
+        this.blankFrameData = new byte[width * height * 4];
 
-        for (Source source : this.sources) {
-            this.pack(source);
+        for (Scene scene : this.scenes) {
+            scene.setSize(width, height);
         }
     }
 
@@ -101,7 +85,7 @@ public class Kaminari implements Closeable {
     /* ---------------- */
 
     public boolean isRenderable() {
-        return this.frameBuffer != null;
+        return this.width != -1;
     }
 
     private void _asyncWriteTarget() {
@@ -160,16 +144,22 @@ public class Kaminari implements Closeable {
             // Render.
             long renderStart = System.currentTimeMillis();
 
-            // Loop over the sources and notify them.
-            this.sources.forEach((source) -> source.onRender());
+            if (this.scenes.isEmpty()) {
+                // There are no scenes to render, show black instead.
+                this.currentFrameData = this.blankFrameData;
+            } else {
+                // Bounds check.
+                if ((this.currentSceneIndex < 0) || (this.currentSceneIndex >= this.scenes.size())) {
+                    this.currentSceneIndex = 0;
+                }
 
-            // Render
-            Graphics2D g = this.frameBuffer.createGraphics();
-            this.panel.paint(g);
-            g.dispose();
+                // Tell the scene to render.
+                Scene currentScene = this.scenes.get(this.currentSceneIndex);
+                currentScene.render();
 
-            // Dump the frame buffer data.
-            this.currentFrameData = this.getFrameBufferData();
+                // Dump the frame buffer data.
+                this.currentFrameData = currentScene.currentFrameData;
+            }
 
             if (this.target != null) {
                 // Tell the target writer to write.
@@ -199,64 +189,6 @@ public class Kaminari implements Closeable {
     @Override
     public void close() {
         this.stop();
-    }
-
-    /* ---------------- */
-    /* Sources          */
-    /* ---------------- */
-
-    public void pack(@NonNull Source source) {
-        if (!this.sources.contains(source)) {
-            return; // NO-OP
-        }
-
-        // @formatter:off
-        int left   = (int) (source.getX()      * this.width );
-        int top    = (int) (source.getY()      * this.height);
-        int width  = (int) (source.getWidth()  * this.width );
-        int height = (int) (source.getHeight() * this.height);
-        int zIndex = this.sources.indexOf(source);
-        // @formatter:on
-
-        source.panel.setBounds(left, top, width, height);
-        this.panel.setComponentZOrder(source.panel, zIndex);
-
-//        this.logger.debug(
-//            "[%s/%s] Pack: left=%d, top=%d, width=%d, height=%d",
-//            source.name, source.id,
-//            left, top, width, height
-//        );
-    }
-
-    @SneakyThrows
-    public void add(@NonNull Source source) {
-        assert !this.sources.contains(source) : "That source is already registered.";
-
-        this.sources.add(source);
-        this.panel.add(source.panel);
-        this.pack(source);
-
-        source.onMount();
-    }
-
-    public void remove(@NonNull Source source) {
-        assert this.sources.contains(source) : "That source is not registered.";
-
-        this.panel.remove(source.panel);
-        this.sources.remove(source);
-        source.onDestroy();
-    }
-
-    public byte[] getFrameBufferData() {
-        Raster raster = this.frameBuffer.getRaster();
-        DataBufferInt buffer = (DataBufferInt) raster.getDataBuffer();
-        int[] data = buffer.getData();
-
-        ByteBuffer byteBuffer = ByteBuffer.allocate(data.length * 4);
-        IntBuffer intBuffer = byteBuffer.asIntBuffer();
-        intBuffer.put(data);
-
-        return byteBuffer.array();
     }
 
 }

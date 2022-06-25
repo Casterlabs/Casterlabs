@@ -2,13 +2,13 @@ package co.casterlabs.kaminari.core.source;
 
 import javax.swing.JPanel;
 
-import co.casterlabs.kaminari.core.Kaminari;
+import co.casterlabs.kaminari.core.scene.Scene;
 import lombok.Getter;
 import lombok.NonNull;
 
 public abstract class Source {
     public final String id;
-    public final Kaminari kaminari;
+    public final Scene scene;
 
     public String name;
 
@@ -19,8 +19,8 @@ public abstract class Source {
 
     private @Getter boolean hasErrored = false;
 
-    public Source(@NonNull Kaminari kaminari, @NonNull String id, @NonNull String name) {
-        this.kaminari = kaminari;
+    public Source(@NonNull Scene scene, @NonNull String id, @NonNull String name) {
+        this.scene = scene;
         this.id = id;
         this.name = name;
 
@@ -38,14 +38,14 @@ public abstract class Source {
         this.width = width;
         this.height = height;
 
-        this.kaminari.pack(this);
+        this.scene.pack(this);
     }
 
     public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
 
-        this.kaminari.pack(this);
+        this.scene.pack(this);
     }
 
     /* ---------------- */
@@ -57,5 +57,7 @@ public abstract class Source {
     public void onDestroy() {}
 
     public void onRender() {}
+
+    public void onPack() {}
 
 }
