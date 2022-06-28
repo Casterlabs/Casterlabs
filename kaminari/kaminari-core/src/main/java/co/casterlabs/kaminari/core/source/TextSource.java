@@ -21,6 +21,9 @@ public class TextSource extends Source {
         this.panel.add(this.label);
         this.label.setSize(100000, 100000); // Any large number works.
 
+        this.setTextColor("white");
+        this.setFont("Arial", 12);
+
         this.label.setVerticalAlignment(SwingConstants.TOP);
     }
 

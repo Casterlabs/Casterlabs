@@ -137,7 +137,7 @@ public class Kaminari implements Closeable {
                     this.logger.trace("Waiting %dms and then rendering.", wait);
                     Thread.sleep(wait);
                 } else {
-                    this.logger.severe("We're behind!"); // Always log.
+//                    this.logger.severe("We're behind!"); // Always log.
                 }
             }
 

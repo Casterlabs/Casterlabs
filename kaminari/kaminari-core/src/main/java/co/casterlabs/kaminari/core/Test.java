@@ -2,11 +2,13 @@ package co.casterlabs.kaminari.core;
 
 import java.io.OutputStream;
 import java.lang.ProcessBuilder.Redirect;
+import java.time.Instant;
 import java.util.UUID;
 
 import co.casterlabs.kaminari.core.scene.Scene;
 import co.casterlabs.kaminari.core.source.ColorSource;
 import co.casterlabs.kaminari.core.source.DebugTextSource;
+import co.casterlabs.kaminari.core.source.TextSource;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
@@ -96,6 +98,25 @@ public class Test {
 
             colorCycler.setDaemon(true);
             colorCycler.start();
+
+            TextSource timeSource = new TextSource(testScene, UUID.randomUUID().toString(), "Time");
+
+            timeSource.setPosition(.25f, .25f); // Percent
+            timeSource.setSize(.25f, .5f); // Percent
+
+            testScene.add(timeSource);
+
+            Thread timekeeper = new Thread(() -> {
+                while (true) {
+                    try {
+                        timeSource.setText(Instant.now().toString());
+                        Thread.sleep(50);
+                    } catch (Exception ignored) {}
+                }
+            });
+
+            timekeeper.setDaemon(true);
+            timekeeper.start();
 
             testScene.add(new DebugTextSource(testScene));
 
