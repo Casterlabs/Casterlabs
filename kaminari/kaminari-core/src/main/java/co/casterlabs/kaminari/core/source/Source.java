@@ -2,6 +2,7 @@ package co.casterlabs.kaminari.core.source;
 
 import javax.swing.JPanel;
 
+import co.casterlabs.kaminari.core.audio.AudioContext;
 import co.casterlabs.kaminari.core.scene.Scene;
 import lombok.Getter;
 import lombok.NonNull;
@@ -46,6 +47,24 @@ public abstract class Source {
         this.y = y;
 
         this.scene.pack(this);
+    }
+
+    /**
+     * @implNote Sources that are audio-only still get added to the main render
+     *           panel, though the user will be unable to interact with it. Note
+     *           that visual life cycle things like {@link #onRender()} will still
+     *           be called as if this had video.
+     */
+    public boolean hasVideo() {
+        return true;
+    }
+
+    public boolean hasAudio() {
+        return false;
+    }
+
+    public AudioContext getAudioContext() {
+        throw new UnsupportedOperationException("This source does not have an audio context attached to it. (Developers, override this to add one!)");
     }
 
     /* ---------------- */
