@@ -1,10 +1,11 @@
-package co.casterlabs.kaminari.core;
+package co.casterlabs.kaminari.test;
 
 import java.io.OutputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.time.Instant;
 import java.util.UUID;
 
+import co.casterlabs.kaminari.core.Kaminari;
 import co.casterlabs.kaminari.core.scene.Scene;
 import co.casterlabs.kaminari.core.source.ColorSource;
 import co.casterlabs.kaminari.core.source.DebugTextSource;
@@ -13,9 +14,9 @@ import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
-public class Test {
+@SuppressWarnings("deprecation")
+public class VideoTest {
 
-    @SuppressWarnings("deprecation")
     @SneakyThrows
     public static void main(String[] args) {
         FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
