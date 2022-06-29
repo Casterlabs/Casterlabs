@@ -9,7 +9,6 @@ import java.lang.ProcessBuilder.Redirect;
 
 import co.casterlabs.kaminari.core.audio.AudioConstants;
 import co.casterlabs.kaminari.core.audio.AudioMixer;
-import co.casterlabs.kaminari.core.audio.AudioVolumeController;
 import co.casterlabs.kaminari.core.audio.PCMTransformer;
 import co.casterlabs.rakurai.io.IOUtil;
 
@@ -77,11 +76,8 @@ public class AudioTest extends AudioConstants {
         // Audio file #2
         new Thread(() -> {
             PCMTransformer transformer = new PCMTransformer();
-            AudioVolumeController vol = new AudioVolumeController();
-
-            vol.context = transformer;
-            vol.volume = .05f;
-            mixer.contexts.add(vol);
+            transformer.volume = .05f;
+            mixer.contexts.add(transformer);
 
             try (FileInputStream fin = new FileInputStream(audioFile2)) {
                 transformer.start();

@@ -3,11 +3,13 @@ package co.casterlabs.kaminari.core.audio;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudioMixer extends AudioConstants implements AudioContext {
+import org.jetbrains.annotations.Nullable;
+
+public class AudioMixer extends AudioContext {
     public final List<AudioContext> contexts = new ArrayList<>();
 
     @Override
-    public float[] read() {
+    protected @Nullable float[] read0() {
         float[] result = new float[AUDIO_CHANNELS];
         int mixCount = 0;
 
@@ -37,18 +39,6 @@ public class AudioMixer extends AudioConstants implements AudioContext {
     @Override
     public void close() {
         // NOOP
-    }
-
-    private static float range(float min, float max, float value) {
-        if (value < min) {
-            return min;
-        }
-
-        if (value > max) {
-            return max;
-        }
-
-        return value;
     }
 
 }

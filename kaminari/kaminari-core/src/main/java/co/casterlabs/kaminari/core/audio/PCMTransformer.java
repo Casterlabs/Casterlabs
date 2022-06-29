@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import lombok.SneakyThrows;
 
-public class PCMTransformer extends AudioConstants implements AudioContext {
+public class PCMTransformer extends AudioContext {
     // @formatter:off
     private static final String[] FFMPEG_CONVERSION = {
           "ffmpeg",
@@ -36,7 +36,7 @@ public class PCMTransformer extends AudioConstants implements AudioContext {
 
     @SneakyThrows
     @Override
-    public @Nullable float[] read() {
+    protected @Nullable float[] read0() {
         if (!this.isOpen()) {
             return null;
         }

@@ -25,4 +25,16 @@ public class AudioConstants {
         return bb.array();
     }
 
+    public static float range(float min, float max, float value) {
+        if (value < min) {
+            return min;
+        }
+
+        if (value > max) {
+            return max;
+        }
+
+        return value;
+    }
+
 }
