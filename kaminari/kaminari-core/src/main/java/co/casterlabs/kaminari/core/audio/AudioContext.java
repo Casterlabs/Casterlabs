@@ -1,7 +1,11 @@
 package co.casterlabs.kaminari.core.audio;
 
 import java.io.Closeable;
-import java.io.IOException;
+
+import org.jetbrains.annotations.Nullable;
 
 public interface AudioContext extends Closeable {
+
+    public @Nullable float[] read();
+
 }
