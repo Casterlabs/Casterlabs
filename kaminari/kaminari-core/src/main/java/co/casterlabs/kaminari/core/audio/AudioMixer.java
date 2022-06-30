@@ -27,6 +27,7 @@ public class AudioMixer extends AudioContext {
         }
 
         if (mixCount > 0) {
+            // Duck all the audio levels to prevent clipping.
             for (int channel = 0; channel < AUDIO_CHANNELS; channel++) {
                 result[channel] /= mixCount;
                 result[channel] = range(-1, 1, result[channel]);
