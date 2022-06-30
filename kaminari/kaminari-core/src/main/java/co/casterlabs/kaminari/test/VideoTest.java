@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import co.casterlabs.kaminari.core.Kaminari;
 import co.casterlabs.kaminari.core.scene.Scene;
-import co.casterlabs.kaminari.core.source.ColorSource;
 import co.casterlabs.kaminari.core.source.DebugTextSource;
+import co.casterlabs.kaminari.core.source.ImageSource;
 import co.casterlabs.kaminari.core.source.TextSource;
 import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
@@ -72,34 +72,20 @@ public class VideoTest {
         OutputStream target = ffProcess.getOutputStream();
         kaminari.setTarget(target);
 
+        Scene testScene = new Scene(kaminari, "test", "Test");
+
         // Setup the test scene
         {
-            Scene testScene = new Scene(kaminari, "test", "Test");
-
             // Test source.
-            ColorSource testSource = new ColorSource(testScene, UUID.randomUUID().toString(), "Test");
+            ImageSource testSource = new ImageSource(testScene, UUID.randomUUID().toString(), "Test");
 
             testSource.setPosition(.5f, .5f); // Percent
             testSource.setSize(.25f, .25f); // Percent
+            testSource.setImageFromDataUri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8z8AARIQB46hC+ioEAGX8E/cKr6qsAAAAAElFTkSuQmCC");
 
             testScene.add(testSource);
-
-            Thread colorCycler = new Thread(() -> {
-                while (true) {
-                    try {
-                        testSource.setColor("red");
-                        Thread.sleep(1000);
-                        testSource.setColor("green");
-                        Thread.sleep(1000);
-                        testSource.setColor("blue");
-                        Thread.sleep(1000);
-                    } catch (Exception ignored) {}
-                }
-            });
-
-            colorCycler.setDaemon(true);
-            colorCycler.start();
-
+        }
+        {
             TextSource timeSource = new TextSource(testScene, UUID.randomUUID().toString(), "Time");
 
             timeSource.setPosition(.25f, .25f); // Percent
