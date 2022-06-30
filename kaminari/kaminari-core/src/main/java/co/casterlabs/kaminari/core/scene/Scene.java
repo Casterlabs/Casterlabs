@@ -14,6 +14,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import co.casterlabs.kaminari.core.Kaminari;
+import co.casterlabs.kaminari.core.audio.AudioMixer;
 import co.casterlabs.kaminari.core.source.Source;
 import lombok.Getter;
 import lombok.NonNull;
@@ -37,6 +38,8 @@ public class Scene {
     private @Getter int height = -1; // Pixels
 
     private List<Source> sources = new ArrayList<>();
+
+    public final AudioMixer mixer = new AudioMixer();
 
     public Scene(@NonNull Kaminari kaminari, @NonNull String id, @NonNull String name) {
         this.kaminari = kaminari;
@@ -137,6 +140,10 @@ public class Scene {
         this.panel.add(source.panel);
         this.pack(source);
 
+        if (source.hasAudio()) {
+            this.mixer.contexts.add(source.getAudioContext());
+        }
+
         source.onMount();
     }
 
@@ -145,6 +152,11 @@ public class Scene {
 
         this.panel.remove(source.panel);
         this.sources.remove(source);
+
+        if (source.hasAudio()) {
+            this.mixer.contexts.remove(source.getAudioContext());
+        }
+
         source.onDestroy();
     }
 

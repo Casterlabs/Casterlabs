@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 public class AudioConstants {
     public static final int AUDIO_BYTES_PER_SAMPLE = Float.BYTES;
     public static final int AUDIO_CHANNELS = 2;
-    public static final int AUDIO_RATE = 48000;
+    public static final int AUDIO_RATE = 44100;
 
     public static final String AUDIO_FORMAT = "f32le";
 

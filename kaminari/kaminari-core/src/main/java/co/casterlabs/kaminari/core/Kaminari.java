@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.casterlabs.kaminari.core.audio.AudioConstants;
 import co.casterlabs.kaminari.core.scene.Scene;
 import lombok.Getter;
 import lombok.NonNull;
@@ -41,8 +42,10 @@ public class Kaminari implements Closeable {
     public final List<Scene> scenes = new ArrayList<>();
 
     private @Getter @Setter OutputStream target;
+    private @Getter @Setter OutputStream audioTarget;
     private byte[] currentFrameData;
     private Thread targetWriteThread;
+    private Thread audioProcessThread;
 
     private boolean shouldRender = false;
 
@@ -98,13 +101,43 @@ public class Kaminari implements Closeable {
                 try {
                     this.target.write(this.currentFrameData);
                 } catch (IOException e) {
-                    this.logger.severe("Unable to write to target, stopping stream.\n%s", e);
+                    this.logger.severe("Unable to write to video target, stopping stream.\n%s", e);
                     this.stop();
                 }
             }
         } catch (InterruptedException e) {
             Thread.interrupted(); // Clear
             // Exit.
+        }
+    }
+
+    private void _asyncProcessAudio() {
+        while (this.shouldRender) {
+            // Bounds check.
+            if ((this.currentSceneIndex < 0) || (this.currentSceneIndex >= this.scenes.size())) {
+                this.currentSceneIndex = 0;
+            }
+
+            // Tell the scene to render.
+            Scene currentScene = this.scenes.get(this.currentSceneIndex);
+
+            float[] chunk = currentScene.mixer.read();
+            if (this.audioTarget == null) continue; // Discard.
+
+            if (chunk == null) {
+                chunk = new float[AudioConstants.AUDIO_CHANNELS];
+            }
+
+            try {
+                for (float sample : chunk) {
+                    byte[] bytes = AudioConstants.destructSample(sample);
+
+                    this.audioTarget.write(bytes);
+                }
+            } catch (IOException e) {
+                this.logger.severe("Unable to write to audio target, stopping stream.\n%s", e);
+                this.stop();
+            }
         }
     }
 
@@ -119,10 +152,17 @@ public class Kaminari implements Closeable {
 
         // Setup the write thread.
         this.targetWriteThread = new Thread(this::_asyncWriteTarget);
-        this.targetWriteThread.setName("Kaminari Async Write Thread: " + name);
+        this.targetWriteThread.setName("Kaminari Async Video Write Thread: " + this.name);
         this.targetWriteThread.setDaemon(true);
         this.targetWriteThread.start();
 
+        // Setup the audio processing thread.
+        this.audioProcessThread = new Thread(this::_asyncProcessAudio);
+        this.audioProcessThread.setName("Kaminari Async Audio Process Thread: " + this.name);
+        this.audioProcessThread.setDaemon(true);
+        this.audioProcessThread.start();
+
+        // Timing stuffs.
         this.startTime = System.nanoTime();
         this.lastRender = this.startTime + this.frameInterval;
 
@@ -179,10 +219,12 @@ public class Kaminari implements Closeable {
         }
 
         this.currentFrameData = null; // Free memory.
+        this.stop();
     }
 
     public void stop() {
-        this.targetWriteThread.interrupt();
+        if (this.targetWriteThread != null) this.targetWriteThread.interrupt();
+        if (this.audioProcessThread != null) this.audioProcessThread.interrupt();
         this.shouldRender = false;
     }
 
