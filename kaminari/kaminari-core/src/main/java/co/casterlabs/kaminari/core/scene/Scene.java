@@ -2,16 +2,14 @@ package co.casterlabs.kaminari.core.scene;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JPanel;
 
 import co.casterlabs.kaminari.core.Kaminari;
 import co.casterlabs.kaminari.core.audio.AudioMixer;
@@ -25,8 +23,6 @@ public class Scene {
 
     private @Getter String id;
     private @Getter String name;
-
-    private JPanel panel = new JPanel();
 
     private @Getter BufferedImage frameBuffer;
     private Graphics2D g;
@@ -46,11 +42,6 @@ public class Scene {
         this.id = id;
         this.name = name;
 
-        // Convince the panel to be renderable.
-        this.panel.setOpaque(true);
-        this.panel.setBackground(Color.BLACK);
-        this.panel.addNotify();
-
         this.setSize(kaminari.getWidth(), kaminari.getHeight());
     }
 
@@ -64,9 +55,8 @@ public class Scene {
 
         this.width = width;
         this.height = height;
-        this.panel.setSize(width, height);
 
-        this.frameBuffer = new BufferedImage(this.width, this.height, Kaminari.BUFFER_FORMAT);
+        this.frameBuffer = Kaminari.createImage(this.width, this.height);
         this.g = this.frameBuffer.createGraphics();
 
         for (Source source : this.sources) {
@@ -82,22 +72,24 @@ public class Scene {
         return this.frameBuffer != null;
     }
 
-    public void render() throws InterruptedException, IOException {
+    public void render() {
         assert this.isRenderable() : "This instance is NOT renderable.";
 
-        long lastFrame = this.kaminari.getFramesRendered();
+        long lastFrame = this.kaminari.getVideoLooper().getFramesRendered();
 
         if (this.lastFrameRendered == lastFrame) {
             return; // Already rendered.
         }
         this.lastFrameRendered = lastFrame;
 
-        // Loop over the sources and notify them.
-        this.sources.forEach((source) -> source.onRender());
-
         // Render
 //        this.g.clearRect(0, 0, this.width, this.height);
-        this.panel.paint(this.g);
+        this.g.setColor(Color.BLACK);
+        this.g.fillRect(0, 0, this.width, this.height);
+
+        for (Source source : this.sources) {
+            source.render(this.g);
+        }
 
         // Dump the frame buffer data.
         this.currentFrameData = this.getFrameBufferData();
@@ -117,11 +109,9 @@ public class Scene {
         int top    = (int) (source.getY()      * this.height);
         int width  = (int) (source.getWidth()  * this.width );
         int height = (int) (source.getHeight() * this.height);
-        int zIndex = this.sources.indexOf(source);
         // @formatter:on
 
-        source.panel.setBounds(left, top, width, height);
-        this.panel.setComponentZOrder(source.panel, zIndex);
+        source.setBounds(new Rectangle(left, top, width, height));
 
         source.onPack();
 
@@ -137,7 +127,6 @@ public class Scene {
         assert !this.sources.contains(source) : "That source is already registered.";
 
         this.sources.add(source);
-        this.panel.add(source.panel);
         this.pack(source);
 
         if (source.hasAudio()) {
@@ -150,7 +139,6 @@ public class Scene {
     public void remove(@NonNull Source source) {
         assert this.sources.contains(source) : "That source is not registered.";
 
-        this.panel.remove(source.panel);
         this.sources.remove(source);
 
         if (source.hasAudio()) {
@@ -161,7 +149,8 @@ public class Scene {
     }
 
     private byte[] getFrameBufferData() {
-        Raster raster = this.frameBuffer.getRaster();
+        BufferedImage snapshot = this.frameBuffer;// .getSnapshot();
+        Raster raster = snapshot.getRaster();
         DataBufferInt buffer = (DataBufferInt) raster.getDataBuffer();
         int[] data = buffer.getData();
 

@@ -1,5 +1,8 @@
 package co.casterlabs.kaminari.core;
 
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.IOException;
@@ -12,11 +15,13 @@ import co.casterlabs.kaminari.core.scene.Scene;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import xyz.e3ndr.fastloggingframework.logging.FastLogger;
+import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class Kaminari implements Closeable {
-    public static final String IMAGE_FORMAT = "argb"; // Note that Kaminari's output will NEVER utilize opacity.
-    public static final int BUFFER_FORMAT = BufferedImage.TYPE_INT_ARGB;
+    public static final String IMAGE_FORMAT; // We don't take advantage of transparency, ignore all transparent pixels.
+    public static final int BUFFER_FORMAT;
 
     private static final long NANO = (long) 1e+9;
 
@@ -24,13 +29,8 @@ public class Kaminari implements Closeable {
 
     private @Getter String name;
 
-    private @Getter long framesRendered;
-    private @Getter long framesTargeted;
-    private @Getter long frameTime;
-
-    private long startTime = -1;
-    private long frameInterval;
-    private long lastRender;
+    private @Getter Looper videoLooper = new Looper();
+    private @Getter Looper audioLooper = new Looper();
 
     private @Getter int frameRate;
     private @Getter int width = -1; // Pixels
@@ -45,12 +45,64 @@ public class Kaminari implements Closeable {
     private @Getter @Setter OutputStream audioTarget;
     private byte[] currentFrameData;
     private Thread targetWriteThread;
-    private Thread audioProcessThread;
-
-    private boolean shouldRender = false;
 
     static {
         ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true);
+
+        BUFFER_FORMAT = createImage(1, 1)
+//            .getSnapshot()
+            .getType();
+
+        switch (BUFFER_FORMAT) {
+            case BufferedImage.TYPE_INT_RGB: {
+                IMAGE_FORMAT = "rgb32";
+                break;
+            }
+
+            case BufferedImage.TYPE_INT_ARGB:
+            case BufferedImage.TYPE_INT_ARGB_PRE: {
+                IMAGE_FORMAT = "argb";
+                break;
+            }
+
+            case BufferedImage.TYPE_4BYTE_ABGR:
+            case BufferedImage.TYPE_4BYTE_ABGR_PRE:
+            case BufferedImage.TYPE_INT_BGR: {
+                IMAGE_FORMAT = "bgr32";
+                break;
+            }
+
+            case BufferedImage.TYPE_3BYTE_BGR: {
+                IMAGE_FORMAT = "bgr24";
+                break;
+            }
+
+            case BufferedImage.TYPE_USHORT_565_RGB: {
+                IMAGE_FORMAT = "rgb565";
+                break;
+            }
+
+            case BufferedImage.TYPE_USHORT_555_RGB: {
+                IMAGE_FORMAT = "rgb555";
+                break;
+            }
+
+            case BufferedImage.TYPE_BYTE_GRAY: {
+                IMAGE_FORMAT = "gray";
+                break;
+            }
+
+            case BufferedImage.TYPE_USHORT_GRAY: {
+                IMAGE_FORMAT = "gray16be"; // OR le, TODO
+                break;
+            }
+
+            // BYTE_BINARY and BYTE_INDEXED are stupid.
+
+            default: {
+                throw new RuntimeException("Volatile image type unsupported: " + BUFFER_FORMAT);
+            }
+        }
     }
 
     public Kaminari(@NonNull String name) {
@@ -66,7 +118,8 @@ public class Kaminari implements Closeable {
 
     public void setFramerate(int rate) {
         this.frameRate = rate;
-        this.frameInterval = NANO / rate;
+        this.videoLooper.setFrameInterval(NANO / rate);
+        this.audioLooper.setFrameInterval(NANO / AudioConstants.AUDIO_RATE);
     }
 
     public void setSize(int width, int height) {
@@ -111,48 +164,71 @@ public class Kaminari implements Closeable {
         }
     }
 
+    private void _asyncProcessVideo() {
+        if (this.scenes.isEmpty()) {
+            // There are no scenes to render, show black instead.
+            this.currentFrameData = this.blankFrameData;
+        } else {
+            // Bounds check.
+            if ((this.currentSceneIndex < 0) || (this.currentSceneIndex >= this.scenes.size())) {
+                this.currentSceneIndex = 0;
+            }
+
+            // Tell the scene to render.
+            Scene currentScene = this.scenes.get(this.currentSceneIndex);
+            currentScene.render();
+
+            // Dump the frame buffer data.
+            this.currentFrameData = currentScene.currentFrameData;
+        }
+
+        if (this.currentFrameData == null) {
+            this.currentFrameData = this.blankFrameData;
+        }
+
+        if (this.target != null) {
+            // Tell the target writer to write.
+            synchronized (this.targetWriteThread) {
+                this.targetWriteThread.notify();
+            }
+        }
+    }
+
     private void _asyncProcessAudio() {
-        while (this.shouldRender) {
-            float[] chunk = null;
+        float[] chunk = null;
 
-            if (!this.scenes.isEmpty()) {
-                // Bounds check.
-                if ((this.currentSceneIndex < 0) || (this.currentSceneIndex >= this.scenes.size())) {
-                    this.currentSceneIndex = 0;
-                }
-
-                // Tell the scene to render.
-                Scene currentScene = this.scenes.get(this.currentSceneIndex);
-
-                chunk = currentScene.mixer.read();
-                if (this.audioTarget == null) continue; // Discard.
+        if (!this.scenes.isEmpty()) {
+            // Bounds check.
+            if ((this.currentSceneIndex < 0) || (this.currentSceneIndex >= this.scenes.size())) {
+                this.currentSceneIndex = 0;
             }
 
-            if (chunk == null) {
-                chunk = new float[AudioConstants.AUDIO_CHANNELS];
-            }
+            // Tell the scene to render.
+            Scene currentScene = this.scenes.get(this.currentSceneIndex);
 
-            try {
-                for (float sample : chunk) {
-                    byte[] bytes = AudioConstants.destructSample(sample);
+            chunk = currentScene.mixer.read();
+            if (this.audioTarget == null) return; // Discard.
+        }
 
-                    this.audioTarget.write(bytes);
-                }
-            } catch (IOException e) {
-                this.logger.severe("Unable to write to audio target, stopping stream.\n%s", e);
-                this.stop();
+        if (chunk == null) {
+            chunk = new float[AudioConstants.AUDIO_CHANNELS];
+        }
+
+        try {
+            for (float sample : chunk) {
+                byte[] bytes = AudioConstants.destructSample(sample);
+
+                this.audioTarget.write(bytes);
             }
+        } catch (IOException e) {
+            this.logger.severe("Unable to write to audio target, stopping stream.\n%s", e);
+            this.stop();
         }
     }
 
     public void start() throws InterruptedException, IOException {
         assert this.isRenderable() : "This instance is NOT renderable.";
-        assert !this.shouldRender : "This instance is already rendering!";
-
-        this.shouldRender = true;
-        this.framesRendered = 0;
-        this.framesTargeted = 1;
-        this.frameTime = 0;
+        assert !this.videoLooper.isRunning() : "This instance is already rendering!";
 
         // Setup the write thread.
         this.targetWriteThread = new Thread(this::_asyncWriteTarget);
@@ -160,81 +236,40 @@ public class Kaminari implements Closeable {
         this.targetWriteThread.setDaemon(true);
         this.targetWriteThread.start();
 
-        // Setup the audio processing thread.
-        this.audioProcessThread = new Thread(this::_asyncProcessAudio);
-        this.audioProcessThread.setName("Kaminari Async Audio Process Thread: " + this.name);
-        this.audioProcessThread.setDaemon(true);
-        this.audioProcessThread.start();
-
-        // Timing stuffs.
-        this.startTime = System.nanoTime();
-        this.lastRender = this.startTime + this.frameInterval;
-
-        while (this.shouldRender) {
-            // Frame interval check/sleep.
-            {
-                long now = System.nanoTime();
-                long delta = (now - this.lastRender);
-                long wait = (long) ((this.frameInterval - delta) / 1e+6);
-
-                if (wait > 0) {
-                    this.logger.trace("Waiting %dms and then rendering.", wait);
-                    Thread.sleep(wait);
-                } else {
-//                    this.logger.severe("We're behind!"); // Always log.
-                }
-            }
-
-            // Render.
-            long renderStart = System.currentTimeMillis();
-
-            if (this.scenes.isEmpty()) {
-                // There are no scenes to render, show black instead.
-                this.currentFrameData = this.blankFrameData;
-            } else {
-                // Bounds check.
-                if ((this.currentSceneIndex < 0) || (this.currentSceneIndex >= this.scenes.size())) {
-                    this.currentSceneIndex = 0;
-                }
-
-                // Tell the scene to render.
-                Scene currentScene = this.scenes.get(this.currentSceneIndex);
-                currentScene.render();
-
-                // Dump the frame buffer data.
-                this.currentFrameData = currentScene.currentFrameData;
-            }
-
-            if (this.target != null) {
-                // Tell the target writer to write.
-                synchronized (this.targetWriteThread) {
-                    this.targetWriteThread.notify();
-                }
-            }
-
-            long renderEnd = System.currentTimeMillis();
-
-            // Debug stats.
-            this.frameTime = renderEnd - renderStart;
-            this.framesRendered++;
-            this.framesTargeted = ((this.lastRender - this.startTime) / this.frameInterval) - 1; // TODO figure out where this one comes from.
-            this.lastRender += this.frameInterval; // Doing it this way allows the renderer to crank out missed frames rather than
-                                                   // skip them.
-        }
+        // Go.
+        this.audioLooper.startAsync(this::_asyncProcessAudio, "Kaminari Async Audio Process Thread: " + this.name);
+        this.videoLooper.start(this::_asyncProcessVideo);
 
         this.currentFrameData = null; // Free memory.
         this.stop();
     }
 
     public void stop() {
+        this.videoLooper.stop();
+        this.audioLooper.stop();
+
         if (this.targetWriteThread != null) this.targetWriteThread.interrupt();
-        if (this.audioProcessThread != null) this.audioProcessThread.interrupt();
-        this.shouldRender = false;
     }
 
     @Override
     public void close() {
         this.stop();
+    }
+
+    @SneakyThrows
+    public static BufferedImage createImage(int width, int height) {
+        BufferedImage img;
+
+        if (GraphicsEnvironment.isHeadless()) {
+            img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
+            FastLogger.logStatic(LogLevel.WARNING, "GraphicsEnvironment.isHeadless() returned true, expect video rendering to consume more CPU than normal.");
+        } else {
+            GraphicsConfiguration gcfg = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+            img = gcfg.createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+        }
+
+        img.setAccelerationPriority(1);
+        return img;
     }
 
 }

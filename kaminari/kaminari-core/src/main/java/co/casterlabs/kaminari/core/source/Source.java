@@ -1,11 +1,13 @@
 package co.casterlabs.kaminari.core.source;
 
-import javax.swing.JPanel;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 
 import co.casterlabs.kaminari.core.audio.AudioContext;
 import co.casterlabs.kaminari.core.scene.Scene;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 public abstract class Source {
     public final String id;
@@ -13,7 +15,7 @@ public abstract class Source {
 
     public String name;
 
-    public final JPanel panel = new JPanel();
+    protected @Getter @Setter Rectangle bounds;
 
     private @Getter float width, height; // Percent
     private @Getter float x, y;          // Percent
@@ -24,8 +26,6 @@ public abstract class Source {
         this.scene = scene;
         this.id = id;
         this.name = name;
-
-        this.panel.setOpaque(false);
     }
 
     /* ---------------- */
@@ -75,8 +75,8 @@ public abstract class Source {
 
     public void onDestroy() {}
 
-    public void onRender() {}
-
     public void onPack() {}
+
+    public abstract void render(Graphics g);
 
 }

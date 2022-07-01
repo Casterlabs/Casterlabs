@@ -21,6 +21,7 @@ import co.casterlabs.rakurai.io.IOUtil;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
+@SuppressWarnings("deprecation")
 public class MuxerTest extends AudioConstants {
 
     public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException {
@@ -56,6 +57,7 @@ public class MuxerTest extends AudioConstants {
 
         // Muxer.
         {
+            @SuppressWarnings("resource")
             NUTContainerizer containerizer = new NUTContainerizer(
                 target,
                 Kaminari.IMAGE_FORMAT, kaminari.getWidth(), kaminari.getHeight(),

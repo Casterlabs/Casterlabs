@@ -7,33 +7,15 @@ import java.io.IOException;
 import java.util.Base64;
 
 import javax.imageio.ImageIO;
-import javax.swing.JComponent;
 
 import co.casterlabs.kaminari.core.scene.Scene;
 import lombok.NonNull;
 
 public class ImageSource extends Source {
-    private JComponent dummyComponent = new JComponent() {
-        private static final long serialVersionUID = -6345831411588137979L;
-
-        @Override
-        public void paintComponent(Graphics g) {
-            if (image != null) {
-                int width = panel.getWidth();
-                int height = panel.getHeight();
-
-                g.drawImage(image, 0, 0, width, height, panel);
-            }
-        }
-    };
-
     private Image image;
 
     public ImageSource(@NonNull Scene scene, @NonNull String id, @NonNull String name) {
         super(scene, id, name);
-
-        this.panel.add(this.dummyComponent);
-        this.dummyComponent.setSize(100000, 100000); // Any large number works.
     }
 
     public void setImageFromDataUri(String dataUri) throws IOException {
@@ -65,6 +47,11 @@ public class ImageSource extends Source {
         }
 
         return this.image.getHeight(null) / this.image.getWidth(null);
+    }
+
+    @Override
+    public void render(Graphics g) {
+        g.drawImage(this.image, this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height, null);
     }
 
 }
