@@ -11,6 +11,8 @@
 
     const console = createConsole("Cam");
 
+    let iceServers = [];
+
     let deviceMeta;
     let connectionId;
 
@@ -89,6 +91,8 @@
         deviceMeta = getDeviceMeta();
         connectionId = deviceMeta.queryParameters.id;
 
+        iceServers = (await (await fetch("https://cdn.casterlabs.co/api.json")).json()).ice_servers;
+
         if (!connectionId) {
             display = "ERROR_CANNOT_CONNECT";
             return;
@@ -146,11 +150,7 @@
 
             peer = new Peer({
                 config: {
-                    iceServers: [
-                        //
-                        { urls: "stun:stun.l.google.com:19302" },
-                        { urls: "turn:ovh-2b116f94.casterlabs.co:3478", username: "casterlabs", password: "rox" }
-                    ],
+                    iceServers: iceServers,
                     sdpSemantics: "unified-plan"
                 }
             });
