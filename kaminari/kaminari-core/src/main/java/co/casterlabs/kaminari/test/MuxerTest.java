@@ -56,15 +56,14 @@ public class MuxerTest extends AudioConstants {
 
         // Muxer.
         {
-            final String VCODEC = "h264";
-            final String ACODEC = "aac";
-
             NUTContainerizer containerizer = new NUTContainerizer(
                 target,
                 Kaminari.IMAGE_FORMAT, kaminari.getWidth(), kaminari.getHeight(),
-                VCODEC,
                 AudioConstants.AUDIO_FORMAT, AudioConstants.AUDIO_CHANNELS, AudioConstants.AUDIO_RATE,
-                ACODEC
+                // @formatter:off
+                "-acodec", "aac",
+                "-vcodec", "h264"
+                // @formatter:on
             );
 
             kaminari.setTarget(containerizer.getVideoSink());
@@ -76,7 +75,7 @@ public class MuxerTest extends AudioConstants {
         // Test Audio.
         new Thread(() -> {
             PCMTransformer transformer = new PCMTransformer();
-            transformer.volume = .1f;
+            transformer.volume = .5f;
             testScene.mixer.contexts.add(transformer);
 
             try (FileInputStream fin = new FileInputStream(audioFile1)) {
@@ -119,10 +118,10 @@ public class MuxerTest extends AudioConstants {
             timekeeper.start();
 
             testScene.add(new DebugTextSource(testScene));
-
-            kaminari.setCurrentSceneIndex(0);
-            kaminari.scenes.add(testScene);
         }
+
+        kaminari.setCurrentSceneIndex(0);
+        kaminari.scenes.add(testScene);
 
         kaminari.start();
     }

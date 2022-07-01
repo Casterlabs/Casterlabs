@@ -6,6 +6,9 @@ import java.io.OutputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import co.casterlabs.rakurai.io.IOUtil;
 import lombok.Getter;
@@ -20,44 +23,48 @@ public class NUTContainerizer implements Closeable {
     public NUTContainerizer(
         OutputStream target,
         String vPixelFormat, int vWidth, int vHeight,
-        String targetVCodec,
         String aFormat, int aChannels, int aRate,
-        String targetACodec
+        String... targetParams
     ) throws IOException {
         int aPort = this.getRandomEphemeralPort();
 
         // We pass video directly to the containerizer to lighten the load on the
         // system.
+        List<String> containerizerCmd = new LinkedList<>();
+
+        //@formatter:off
+        containerizerCmd.addAll(Arrays.asList(
+            "ffmpeg",
+            "-hide_banner",
+            "-v", "error",
+            
+            "-f", aFormat,
+            "-acodec", "pcm_" + aFormat,
+            "-ac", String.valueOf(aChannels),
+            "-ar", String.valueOf(aRate),
+            "-i", "tcp://127.0.0.1:" + aPort + "?listen",
+
+            "-f", "rawvideo",
+            "-vcodec", "rawvideo",
+            "-pixel_format", vPixelFormat,
+            "-video_size", String.format("%dx%d", vWidth, vHeight),
+            "-i", "pipe:0"
+        ));
+        containerizerCmd.addAll(Arrays.asList(
+            targetParams
+        ));
+        containerizerCmd.addAll(Arrays.asList(
+            "-f", "nut",
+            "pipe:1"
+        ));
+        //@formatter:on
+
         this.containerizerProcess = new ProcessBuilder()
-            .command(
-            //@formatter:off
-                "ffmpeg",
-                "-hide_banner",
-                "-v", "warning",
-                
-                "-f", aFormat,
-                "-acodec", "pcm_" + aFormat,
-                "-ac", String.valueOf(aChannels),
-                "-ar", String.valueOf(aRate),
-                "-i", "tcp://127.0.0.1:" + aPort + "?listen",
-
-                "-f", "rawvideo",
-                "-vcodec", "rawvideo",
-                "-pixel_format", vPixelFormat,
-                "-video_size", String.format("%dx%d", vWidth, vHeight),
-                "-i", "pipe:0",
-
-                "-vcodec", targetVCodec,
-                "-acodec", targetACodec,
-                "-f", "nut",
-                "pipe:1"
-                //@formatter:on
-            )
+            .command(containerizerCmd)
             .inheritIO()
             .redirectInput(Redirect.PIPE)
             .redirectOutput(Redirect.PIPE)
             .start();
-
         this.videoSink = this.containerizerProcess.getOutputStream();
 
         this.aStreamProcess = new ProcessBuilder()
@@ -65,7 +72,7 @@ public class NUTContainerizer implements Closeable {
             //@formatter:off
                 "ffmpeg",
                 "-hide_banner",
-                "-v", "warning",
+                "-v", "error",
 
                 "-f", aFormat,
                 "-acodec", "pcm_" + aFormat,
@@ -97,7 +104,7 @@ public class NUTContainerizer implements Closeable {
                 } catch (IOException ignored) {}
             }
         });
-        thread.setDaemon(false);
+        thread.setDaemon(true);
         thread.setName("NUT Containerizer Write Thread");
         thread.start();
     }
