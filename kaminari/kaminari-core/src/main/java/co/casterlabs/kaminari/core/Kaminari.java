@@ -113,16 +113,20 @@ public class Kaminari implements Closeable {
 
     private void _asyncProcessAudio() {
         while (this.shouldRender) {
-            // Bounds check.
-            if ((this.currentSceneIndex < 0) || (this.currentSceneIndex >= this.scenes.size())) {
-                this.currentSceneIndex = 0;
+            float[] chunk = null;
+
+            if (!this.scenes.isEmpty()) {
+                // Bounds check.
+                if ((this.currentSceneIndex < 0) || (this.currentSceneIndex >= this.scenes.size())) {
+                    this.currentSceneIndex = 0;
+                }
+
+                // Tell the scene to render.
+                Scene currentScene = this.scenes.get(this.currentSceneIndex);
+
+                chunk = currentScene.mixer.read();
+                if (this.audioTarget == null) continue; // Discard.
             }
-
-            // Tell the scene to render.
-            Scene currentScene = this.scenes.get(this.currentSceneIndex);
-
-            float[] chunk = currentScene.mixer.read();
-            if (this.audioTarget == null) continue; // Discard.
 
             if (chunk == null) {
                 chunk = new float[AudioConstants.AUDIO_CHANNELS];
