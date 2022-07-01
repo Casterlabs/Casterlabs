@@ -20,7 +20,8 @@ import xyz.e3ndr.fastloggingframework.logging.FastLogger;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class Kaminari implements Closeable {
-    public static final String IMAGE_FORMAT; // We don't take advantage of transparency, ignore all transparent pixels.
+    public static final String IMAGE_FORMAT; // Transparency may be used, always render over a black background if you want
+                                             // opaque video.
     public static final int IMAGE_FORMAT_BITS;
     public static final int BUFFER_FORMAT;
 
