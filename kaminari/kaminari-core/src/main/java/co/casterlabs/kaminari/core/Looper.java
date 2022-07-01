@@ -11,8 +11,8 @@ public class Looper implements Closeable {
     private @Getter long framesTargeted;
     private @Getter long frameTime;
 
+    private @Getter @Setter long frameInterval;
     private long startTime = -1;
-    private @Setter long frameInterval;
     private long lastRender;
 
     private @Getter boolean running = false;

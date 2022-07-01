@@ -21,6 +21,7 @@ import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 public class Kaminari implements Closeable {
     public static final String IMAGE_FORMAT; // We don't take advantage of transparency, ignore all transparent pixels.
+    public static final int IMAGE_FORMAT_BITS;
     public static final int BUFFER_FORMAT;
 
     private static final long NANO = (long) 1e+9;
@@ -56,12 +57,14 @@ public class Kaminari implements Closeable {
         switch (BUFFER_FORMAT) {
             case BufferedImage.TYPE_INT_RGB: {
                 IMAGE_FORMAT = "rgb32";
+                IMAGE_FORMAT_BITS = 32;
                 break;
             }
 
             case BufferedImage.TYPE_INT_ARGB:
             case BufferedImage.TYPE_INT_ARGB_PRE: {
                 IMAGE_FORMAT = "argb";
+                IMAGE_FORMAT_BITS = 32;
                 break;
             }
 
@@ -69,31 +72,37 @@ public class Kaminari implements Closeable {
             case BufferedImage.TYPE_4BYTE_ABGR_PRE:
             case BufferedImage.TYPE_INT_BGR: {
                 IMAGE_FORMAT = "bgr32";
+                IMAGE_FORMAT_BITS = 32;
                 break;
             }
 
             case BufferedImage.TYPE_3BYTE_BGR: {
                 IMAGE_FORMAT = "bgr24";
+                IMAGE_FORMAT_BITS = 24;
                 break;
             }
 
             case BufferedImage.TYPE_USHORT_565_RGB: {
                 IMAGE_FORMAT = "rgb565";
+                IMAGE_FORMAT_BITS = 16;
                 break;
             }
 
             case BufferedImage.TYPE_USHORT_555_RGB: {
                 IMAGE_FORMAT = "rgb555";
+                IMAGE_FORMAT_BITS = 15;
                 break;
             }
 
             case BufferedImage.TYPE_BYTE_GRAY: {
                 IMAGE_FORMAT = "gray";
+                IMAGE_FORMAT_BITS = 8;
                 break;
             }
 
             case BufferedImage.TYPE_USHORT_GRAY: {
                 IMAGE_FORMAT = "gray16be"; // OR le, TODO
+                IMAGE_FORMAT_BITS = 16;
                 break;
             }
 
