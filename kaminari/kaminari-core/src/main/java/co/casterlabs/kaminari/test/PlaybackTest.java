@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.ProcessBuilder.Redirect;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -16,13 +14,13 @@ import co.casterlabs.kaminari.core.scene.Scene;
 import co.casterlabs.kaminari.core.source.DebugTextSource;
 import co.casterlabs.kaminari.core.source.ImageSource;
 import co.casterlabs.kaminari.core.source.TextSource;
-import co.casterlabs.kaminari.core.targets.NUTContainerizer;
+import co.casterlabs.kaminari.core.targets.FFPlayTarget;
 import co.casterlabs.rakurai.io.IOUtil;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @SuppressWarnings("deprecation")
-public class MuxerTest extends AudioConstants {
+public class PlaybackTest extends AudioConstants {
 
     public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException {
         FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
@@ -33,43 +31,19 @@ public class MuxerTest extends AudioConstants {
         // Setup Kaminari.
         Kaminari kaminari = new Kaminari("Test Instance");
 
-        kaminari.setSize(1280, 720);
-        kaminari.setFramerate(30);
+        kaminari.setSize(1920, 1080);
+        kaminari.setFramerate(60);
 
-        // Setup ffplay.
-        Process ffProcess = new ProcessBuilder()
-            .command(
-                "ffplay",
-                "-hide_banner",
-                "-v", "warning",
-
-                // Input
-//                "-f", "nut",
-//                "-vcodec", VCODEC,
-//                "-acodec", ACODEC,
-                "pipe:0"
-            )
-            .inheritIO()
-            .redirectInput(Redirect.PIPE)
-            .start();
-
-        OutputStream target = ffProcess.getOutputStream();
-
-        // Muxer.
+        // FFPLAY.
         {
             @SuppressWarnings("resource")
-            NUTContainerizer containerizer = new NUTContainerizer(
-                target,
+            FFPlayTarget ffplay = new FFPlayTarget(
                 Kaminari.IMAGE_FORMAT, kaminari.getWidth(), kaminari.getHeight(),
-                AudioConstants.AUDIO_FORMAT, AudioConstants.AUDIO_CHANNELS, AudioConstants.AUDIO_RATE,
-                // @formatter:off
-                "-acodec", "aac",
-                "-vcodec", "h264"
-                // @formatter:on
+                AudioConstants.AUDIO_FORMAT, AudioConstants.AUDIO_CHANNELS, AudioConstants.AUDIO_RATE
             );
 
-            kaminari.setTarget(containerizer.getVideoSink());
-            kaminari.setAudioTarget(containerizer.getAudioSink());
+            kaminari.setTarget(ffplay.getVideoSink());
+            kaminari.setAudioTarget(ffplay.getAudioSink());
         }
 
         Scene testScene = new Scene(kaminari, "test", "Test");

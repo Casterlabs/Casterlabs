@@ -1,78 +1,68 @@
 package co.casterlabs.kaminari.test;
 
-import java.io.OutputStream;
-import java.lang.ProcessBuilder.Redirect;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
 
 import co.casterlabs.kaminari.core.Kaminari;
+import co.casterlabs.kaminari.core.audio.AudioConstants;
+import co.casterlabs.kaminari.core.audio.PCMTransformer;
 import co.casterlabs.kaminari.core.scene.Scene;
 import co.casterlabs.kaminari.core.source.DebugTextSource;
 import co.casterlabs.kaminari.core.source.ImageSource;
 import co.casterlabs.kaminari.core.source.TextSource;
-import lombok.SneakyThrows;
+import co.casterlabs.kaminari.core.targets.TwitchTarget;
+import co.casterlabs.rakurai.io.IOUtil;
 import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @SuppressWarnings("deprecation")
-public class VideoTest {
+public class TwitchTest extends AudioConstants {
 
-    @SneakyThrows
-    public static void main(String[] args) {
+    @SuppressWarnings("resource")
+    public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException {
         FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
         FastLoggingFramework.setColorEnabled(false);
+
+        final File audioFile1 = new File(args[0]);
 
         // Setup Kaminari.
         Kaminari kaminari = new Kaminari("Test Instance");
 
         kaminari.setSize(1280, 720);
-        kaminari.setFramerate(30);
+        kaminari.setFramerate(60);
 
-        // Setup ffplay.
-        Process ffProcess = new ProcessBuilder()
-            .command(
-                "ffplay",
-                "-hide_banner",
-                "-v", "warning",
+        // Twitch.
+        {
+            TwitchTarget target = new TwitchTarget(
+                kaminari,
+                Kaminari.IMAGE_FORMAT, kaminari.getWidth(), kaminari.getHeight(),
+                AudioConstants.AUDIO_FORMAT, AudioConstants.AUDIO_CHANNELS, AudioConstants.AUDIO_RATE,
+                args[1] // Stream key.
+            );
 
-                // Input
-                "-f", "rawvideo",
-                "-vcodec", "rawvideo",
-                "-pixel_format", Kaminari.IMAGE_FORMAT,
-//                "-framerate", String.valueOf(kaminari.getFrameRate()),
-                "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
-                "pipe:0"
-
-//                "ffmpeg",
-//                "-hide_banner",
-//                "-v", "warning",
-//
-//                // Input
-//                "-f", "rawvideo",
-//                "-vcodec", "rawvideo",
-//                "-pixel_format", Kaminari.IMAGE_FORMAT,
-//                "-framerate", String.valueOf(kaminari.getFrameRate()),
-//                "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
-//                "-i", "pipe:0",
-//
-//                // Output
-//                "-vcodec", "libx264",
-//                "-framerate", String.valueOf(kaminari.getFrameRate()),
-//                "-video_size", String.format("%dx%d", kaminari.getWidth(), kaminari.getHeight()),
-//                "-preset", "fast",
-//                "-vb", "3000k",
-//                "-pixel_format", "yuv420p",
-//                "-f", "flv",
-//                "rtmp://dfw.contribute.live-video.net/app/" + args[0] // STREAMKEY
-            )
-            .inheritIO()
-            .redirectInput(Redirect.PIPE)
-            .start();
-
-        OutputStream target = ffProcess.getOutputStream();
-        kaminari.setTarget(target);
+            kaminari.setTarget(target.getVideoSink());
+            kaminari.setAudioTarget(target.getAudioSink());
+        }
 
         Scene testScene = new Scene(kaminari, "test", "Test");
+
+        // Test Audio.
+        new Thread(() -> {
+            PCMTransformer transformer = new PCMTransformer();
+            transformer.volume = .5f;
+            testScene.mixer.contexts.add(transformer);
+
+            try (FileInputStream fin = new FileInputStream(audioFile1)) {
+                transformer.start();
+                IOUtil.writeInputStreamToOutputStream(fin, transformer.getInput());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
 
         // Setup the test scene
         {
@@ -106,10 +96,10 @@ public class VideoTest {
             timekeeper.start();
 
             testScene.add(new DebugTextSource(testScene));
-
-            kaminari.setCurrentSceneIndex(0);
-            kaminari.scenes.add(testScene);
         }
+
+        kaminari.setCurrentSceneIndex(0);
+        kaminari.scenes.add(testScene);
 
         kaminari.start();
     }
