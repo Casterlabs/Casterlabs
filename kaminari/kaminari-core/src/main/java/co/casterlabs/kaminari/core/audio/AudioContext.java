@@ -1,26 +1,31 @@
 package co.casterlabs.kaminari.core.audio;
 
-import java.io.Closeable;
+import static co.casterlabs.kaminari.core.audio.AudioConstants.*;
 
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AudioContext extends AudioConstants implements Closeable {
+public abstract class AudioContext {
     public float volume = 1;
 
-    public final @Nullable float[] read() {
-        float[] chunk = this.read0();
+    public final @Nullable float[] readChunk() {
+        float[] chunk = this.readChunk0();
         if (chunk == null) return null;
 
-        for (int channel = 0; channel < AUDIO_CHANNELS; channel++) {
-            float sample = chunk[channel] * this.volume;
-            sample = range(-1, 1, sample);
+        // Apply volume scaling.
+        {
+            for (int sIdx = 0; sIdx < chunk.length; sIdx++) {
+                float sample = chunk[sIdx];
 
-            chunk[channel] = sample;
+                sample *= this.volume;
+                sample = range(-1, 1, sample);
+
+                chunk[sIdx] = sample;
+            }
         }
 
         return chunk;
     }
 
-    protected abstract @Nullable float[] read0();
+    protected abstract @Nullable float[] readChunk0();
 
 }

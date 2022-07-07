@@ -20,7 +20,7 @@ import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @SuppressWarnings("deprecation")
-public class PlaybackTest extends AudioConstants {
+public class PlaybackTest {
 
     public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException {
         FastLoggingFramework.setDefaultLevel(LogLevel.DEBUG);
@@ -31,7 +31,7 @@ public class PlaybackTest extends AudioConstants {
         // Setup Kaminari.
         Kaminari kaminari = new Kaminari("Test Instance");
 
-        kaminari.setSize(1920, 1080);
+        kaminari.setSize(1280, 720);
         kaminari.setFramerate(60);
 
         // FFPLAY.

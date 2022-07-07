@@ -1,14 +1,14 @@
 package co.casterlabs.kaminari.core.audio;
 
+import static co.casterlabs.kaminari.core.audio.AudioConstants.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.jetbrains.annotations.Nullable;
-
 import lombok.SneakyThrows;
 
-public class PCMTransformer extends AudioContext {
+public class PCMTransformer extends StreamedAudioContext {
     // @formatter:off
     private static final String[] FFMPEG_CONVERSION = {
           "ffmpeg",
@@ -32,29 +32,25 @@ public class PCMTransformer extends AudioContext {
         this.process = Runtime.getRuntime().exec(FFMPEG_CONVERSION);
         this.ffmpegOut = this.process.getInputStream();
         this.ffmpegIn = this.process.getOutputStream();
+
+        this.startReading();
     }
 
     @SneakyThrows
     @Override
-    protected @Nullable float[] read0() {
+    protected int read(byte[] buf, int off, int len) {
         if (!this.isOpen()) {
-            return null;
+            return 0;
         }
 
         try {
-            float[] result = new float[AUDIO_CHANNELS];
+            int read = this.ffmpegOut.read(buf, off, len);
 
-            for (int channel = 0; channel < AUDIO_CHANNELS; channel++) {
-                byte[] sample = this.ffmpegOut.readNBytes(AUDIO_BYTES_PER_SAMPLE);
-
-                result[channel] = makeSample(sample);
-            }
-
-            return result;
+            return read;
         } catch (IOException e) {
             e.printStackTrace();
             this.close();
-            return null;
+            return 0;
         }
     }
 
@@ -68,6 +64,8 @@ public class PCMTransformer extends AudioContext {
 
     @Override
     public void close() throws IOException {
+        super.close();
+
         if (this.process != null) {
             this.process.destroy();
             this.process = null;

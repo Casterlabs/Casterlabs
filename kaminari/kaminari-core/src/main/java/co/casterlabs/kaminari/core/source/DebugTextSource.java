@@ -8,12 +8,9 @@ import co.casterlabs.kaminari.core.Looper;
 import co.casterlabs.kaminari.core.audio.AudioConstants;
 import co.casterlabs.kaminari.core.scene.Scene;
 import lombok.NonNull;
-import xyz.e3ndr.javawebcolor.Color;
 
 @Deprecated
 public class DebugTextSource extends TextSource {
-    private java.awt.Color backgroundColor;
-
     private String frameBandwidth;
     private String audioBandwidth;
 
@@ -23,7 +20,6 @@ public class DebugTextSource extends TextSource {
         // Styling.
         this.setTextColor("white");
         this.setFont(Font.MONOSPACED, 16);
-        this.backgroundColor = (Color.parseCSSColor("rgba(0, 0, 0, .2)").toAWTColor());
 
         // Span the whole area.
         this.setPosition(0, 0);
@@ -67,12 +63,10 @@ public class DebugTextSource extends TextSource {
             String.format("Frame format:      %s",            Kaminari.IMAGE_FORMAT),
             String.format("Audio:             %dch @ %.1fk",  AudioConstants.AUDIO_CHANNELS, AudioConstants.AUDIO_RATE / 1000d),
             String.format("Audio bandwidth:   %s",            this.audioBandwidth),
-            String.format("Sample format:     %s",            AudioConstants.AUDIO_FORMAT)
+            String.format("Sample format:     %s",            AudioConstants.AUDIO_FORMAT),
+            String.format("Sampling interval: %dms",          AudioConstants.AUDIO_BUFFER_TIME)
         // @formatter:on
         );
-
-//        g.setColor(this.backgroundColor);
-//        g.fillRect(0, 0, this.bounds.width, this.bounds.height);
 
         super.render(g);
     }

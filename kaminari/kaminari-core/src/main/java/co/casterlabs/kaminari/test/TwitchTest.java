@@ -20,7 +20,7 @@ import xyz.e3ndr.fastloggingframework.FastLoggingFramework;
 import xyz.e3ndr.fastloggingframework.logging.LogLevel;
 
 @SuppressWarnings("deprecation")
-public class TwitchTest extends AudioConstants {
+public class TwitchTest {
 
     @SuppressWarnings("resource")
     public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException {

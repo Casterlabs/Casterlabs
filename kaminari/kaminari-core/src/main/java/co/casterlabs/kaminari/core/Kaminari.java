@@ -129,7 +129,7 @@ public class Kaminari implements Closeable {
     public void setFramerate(int rate) {
         this.frameRate = rate;
         this.videoLooper.setFrameInterval(NANO / rate);
-        this.audioLooper.setFrameInterval(NANO / AudioConstants.AUDIO_RATE);
+        this.audioLooper.setFrameInterval(NANO / ((1000 / AudioConstants.AUDIO_BUFFER_TIME) * 2)); // Fire at twice the sample interval.
     }
 
     public void setSize(int width, int height) {
@@ -205,31 +205,24 @@ public class Kaminari implements Closeable {
     }
 
     private void _asyncProcessAudio() {
-        float[] chunk = null;
-
-        if (!this.scenes.isEmpty()) {
-            // Bounds check.
-            if ((this.currentSceneIndex < 0) || (this.currentSceneIndex >= this.scenes.size())) {
-                this.currentSceneIndex = 0;
-            }
-
-            // Tell the scene to render.
-            Scene currentScene = this.scenes.get(this.currentSceneIndex);
-
-            chunk = currentScene.mixer.read();
-            if (this.audioTarget == null) return; // Discard.
+        if (this.scenes.isEmpty()) {
+            return;
         }
 
-        if (chunk == null) {
-            chunk = new float[AudioConstants.AUDIO_CHANNELS];
+        // Bounds check.
+        if ((this.currentSceneIndex < 0) || (this.currentSceneIndex >= this.scenes.size())) {
+            this.currentSceneIndex = 0;
         }
+
+        Scene currentScene = this.scenes.get(this.currentSceneIndex);
+
+        float[] chunk = currentScene.mixer.readChunk();
+        if (chunk == null) return;
 
         try {
-            for (float sample : chunk) {
-                byte[] bytes = AudioConstants.destructSample(sample);
+            byte[] bytes = AudioConstants.destructSamples(chunk);
 
-                this.audioTarget.write(bytes);
-            }
+            this.audioTarget.write(bytes);
         } catch (IOException e) {
             this.logger.severe("Unable to write to audio target, stopping stream.\n%s", e);
             this.stop();
