@@ -7,6 +7,7 @@
 
 	<modules>
 		<module>Kaminari-Core</module>
+		<module>jlibsrt</module>
 	</modules>
 
 	<properties>
@@ -70,27 +71,9 @@
 
 		<!-- Utilities -->
 		<dependency>
-			<groupId>com.github.casterlabs.rakurai</groupId>
-			<artifactId>Json</artifactId>
-			<version>1.14.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.casterlabs.rakurai</groupId>
-			<artifactId>Util</artifactId>
-			<version>1.14.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.github.e3ndr</groupId>
 			<artifactId>FastLoggingFramework</artifactId>
 			<version>65b2385</version> <!-- 1.9.0-BLEEDING -->
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.e3ndr</groupId>
-			<artifactId>JavaWebColor</artifactId>
-			<version>1.1.0</version>
 			<scope>compile</scope>
 		</dependency>
 

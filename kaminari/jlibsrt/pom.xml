@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>Kaminari-Core</artifactId>
+	<artifactId>jlibsrt</artifactId>
 
 	<parent>
 		<groupId>co.casterlabs</groupId>
@@ -35,23 +35,17 @@
 
 	<dependencies>
 
-		<!-- Utilities -->
+		<!-- JNA -->
 		<dependency>
-			<groupId>com.github.casterlabs.rakurai</groupId>
-			<artifactId>Json</artifactId>
-			<version>1.14.1</version>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>5.10.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.casterlabs.rakurai</groupId>
-			<artifactId>Util</artifactId>
-			<version>1.14.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.e3ndr</groupId>
-			<artifactId>JavaWebColor</artifactId>
-			<version>1.1.0</version>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna-platform</artifactId>
+			<version>5.10.0</version>
 			<scope>compile</scope>
 		</dependency>
 
