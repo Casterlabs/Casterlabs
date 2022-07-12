@@ -10,7 +10,7 @@ import com.sun.jna.Structure;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 
-public class SockAddrIn extends Structure {
+class N_SockAddrIn extends Structure {
     public static final int AF_INET = 2;
 
     // @formatter:off
@@ -20,11 +20,11 @@ public class SockAddrIn extends Structure {
     protected byte[] sin_zero = new byte[8];
     // @formatter:on
 
-    public SockAddrIn() {
+    public N_SockAddrIn() {
         // NOOP
     }
 
-    public SockAddrIn(int family, @NonNull InetSocketAddress addr) {
+    public N_SockAddrIn(int family, @NonNull InetSocketAddress addr) {
         this.sin_family = (short) (0xffff & family);
         this.sin_port = (short) addr.getPort();
         this.sin_addr = addr.getAddress().getAddress();

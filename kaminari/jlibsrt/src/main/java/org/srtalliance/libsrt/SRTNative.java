@@ -81,7 +81,7 @@ public interface SRTNative extends Library {
      * @return           -1 if error, otherwise 0.
      */
     default int srt_bind(int $socket, InetSocketAddress addr) {
-        SockAddrIn name = new SockAddrIn(SockAddrIn.AF_INET, addr);
+        N_SockAddrIn name = new N_SockAddrIn(N_SockAddrIn.AF_INET, addr);
 
         return this.srt_bind($socket, name.getPointer(), name.size());
     }
@@ -147,15 +147,15 @@ public interface SRTNative extends Library {
      * 
      * @return           The address of the peer.
      */
-    default SockAddrIn srt_getpeername(int $socket) {
-        SockAddrIn dest = new SockAddrIn();
+    default InetSocketAddress srt_getpeername(int $socket) {
+        N_SockAddrIn dest = new N_SockAddrIn();
 
         int result = this.srt_getpeername($socket, dest.getPointer(), dest.size());
         if (result == SRT_ERROR) {
             throw new RuntimeException("An error occurred.");
         }
 
-        return dest;
+        return dest.getAddr();
     }
 
     /**
@@ -177,15 +177,15 @@ public interface SRTNative extends Library {
      * 
      * @return           -1 if error, otherwise 0.
      */
-    default SockAddrIn srt_getsockname(int $socket) {
-        SockAddrIn dest = new SockAddrIn();
+    default InetSocketAddress srt_getsockname(int $socket) {
+        N_SockAddrIn dest = new N_SockAddrIn();
 
         int result = this.srt_getsockname($socket, dest.getPointer(), dest.size());
         if (result == SRT_ERROR) {
             throw new RuntimeException("An error occurred.");
         }
 
-        return dest;
+        return dest.getAddr();
     }
 
     // TODO srt_getsockopt
