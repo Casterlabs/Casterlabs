@@ -1,5 +1,7 @@
 package org.srtalliance.libsrt;
 
+import java.net.InetSocketAddress;
+
 import com.sun.jna.Library;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
@@ -21,9 +23,11 @@ public interface SRTNative extends Library {
 
     public static final int SRT_ERROR = -1;
 
-    /* The init functions are automatically called for us. */
+    /* -------------------- */
+    /* Initialization */
+    /* -------------------- */
 
-    public String srt_getlasterror_str();
+    // The init functions are automatically called for us.
 
     /* -------------------- */
     /* Creating/Configuring Sockets */
@@ -37,6 +41,12 @@ public interface SRTNative extends Library {
      * @return   A pointer to the socket.
      */
     public int srt_create_socket();
+
+    /**
+     * @deprecated Use {@link #srt_bind(int, InetSocketAddress)}.
+     */
+    @Deprecated
+    public int srt_bind(int $socket, Pointer $name, int namelen);
 
     /**
      * Binds a socket to a local address and port. Binding specifies the local
@@ -64,17 +74,19 @@ public interface SRTNative extends Library {
      *                   that purpose.
      * 
      * @param    $socket the pointer to the socket.
-     * @param    name    TODO
-     * @param    namelen TODO
+     * @param    addr    the address and port to bind on.
      * 
      * @implSpec         https://github.com/Haivision/srt/blob/master/docs/API/API-functions.md#srt_bind
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
-    public int srt_bind(int $socket, Void /* sockaddr */ name, int namelen);
+    default int srt_bind(int $socket, InetSocketAddress addr) {
+        SockAddrIn name = new SockAddrIn(SockAddrIn.AF_INET, addr);
+
+        return this.srt_bind($socket, name.getPointer(), name.size());
+    }
 
     // TODO srt_bind_acquire
-
     // TODO srt_getsockstate
     // TODO srt_getsendbuffer
     // TODO srt_close
@@ -103,20 +115,17 @@ public interface SRTNative extends Library {
      * 
      * @implSpec         https://github.com/Haivision/srt/blob/master/docs/API/API-functions.md#srt_listen
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
     public int srt_listen(int $socket, int backlog);
 
     // TODO srt_accept
     // TODO srt_accept_bond
     // TODO srt_connect_callback
-
     // TODO srt_connect
     // TODO srt_connect_debug
     // TODO srt_connect_bind
-
     // TODO srt_rendezvous
-
     // TODO srt_connect_callback
 
     /* -------------------- */
@@ -124,17 +133,36 @@ public interface SRTNative extends Library {
     /* -------------------- */
 
     /**
+     * @deprecated Use {@link #srt_getpeername(int)}.
+     */
+    @Deprecated
+    public int srt_getpeername(int $socket, Pointer $name, int namelen);
+
+    /**
      * Retrieves the remote address to which the socket is connected.
      * 
      * @param    $socket the pointer to the socket.
-     * @param    name    TODO
-     * @param    namelen TODO
      * 
      * @implSpec         https://github.com/Haivision/srt/blob/master/docs/API/API-functions.md#srt_getpeername
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           The address of the peer.
      */
-    public int srt_getpeername(int $socket, Void /* sockaddr */ name, int namelen);
+    default SockAddrIn srt_getpeername(int $socket) {
+        SockAddrIn dest = new SockAddrIn();
+
+        int result = this.srt_getpeername($socket, dest.getPointer(), dest.size());
+        if (result == SRT_ERROR) {
+            throw new RuntimeException("An error occurred.");
+        }
+
+        return dest;
+    }
+
+    /**
+     * @deprecated Use {@link #srt_getsockname(int)}.
+     */
+    @Deprecated
+    public int srt_getsockname(int $socket, Pointer $name, int namelen);
 
     /**
      * Extracts the address to which the socket was bound. Although you should know
@@ -144,14 +172,23 @@ public interface SRTNative extends Library {
      * the port number after it has been autoselected.
      * 
      * @param    $socket the pointer to the socket.
-     * @param    name    TODO
-     * @param    namelen TODO
      * 
      * @implSpec         https://github.com/Haivision/srt/blob/master/docs/API/API-functions.md#srt_getsockname
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
-    public int srt_getsockname(int $socket, Void /* sockaddr */ name, int namelen);
+    default SockAddrIn srt_getsockname(int $socket) {
+        SockAddrIn dest = new SockAddrIn();
+
+        int result = this.srt_getsockname($socket, dest.getPointer(), dest.size());
+        if (result == SRT_ERROR) {
+            throw new RuntimeException("An error occurred.");
+        }
+
+        return dest;
+    }
+
+    // TODO srt_getsockopt
 
     /**
      * 
@@ -173,14 +210,14 @@ public interface SRTNative extends Library {
      *                   and
      *                   https://github.com/Haivision/srt/blob/master/docs/API/API-socket-options.md
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
     default int srt_getsockflag_int(int $socket, int sockopt) {
         Memory dest = new Memory(4);
 
-        int retcode = this.srt_getsockflag($socket, sockopt, dest, (int) dest.size());
-        if (retcode == SRT_ERROR) {
-            throw new RuntimeException(this.srt_getlasterror_str());
+        int result = this.srt_getsockflag($socket, sockopt, dest, (int) dest.size());
+        if (result == SRT_ERROR) {
+            throw new RuntimeException("An error occurred.");
         }
 
         return dest.getInt(0);
@@ -197,14 +234,14 @@ public interface SRTNative extends Library {
      *                   and
      *                   https://github.com/Haivision/srt/blob/master/docs/API/API-socket-options.md
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
     default long srt_getsockflag_long(int $socket, int sockopt) {
         Memory dest = new Memory(8);
 
-        int retcode = this.srt_getsockflag($socket, sockopt, dest, (int) dest.size());
-        if (retcode == SRT_ERROR) {
-            throw new RuntimeException(this.srt_getlasterror_str());
+        int result = this.srt_getsockflag($socket, sockopt, dest, (int) dest.size());
+        if (result == SRT_ERROR) {
+            throw new RuntimeException("An error occurred.");
         }
 
         return dest.getLong(0);
@@ -221,7 +258,7 @@ public interface SRTNative extends Library {
      *                   and
      *                   https://github.com/Haivision/srt/blob/master/docs/API/API-socket-options.md
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
     default boolean srt_getsockflag_boolean(int $socket, int sockopt) {
         int value = this.srt_getsockflag_int($socket, sockopt);
@@ -240,20 +277,22 @@ public interface SRTNative extends Library {
      *                   and
      *                   https://github.com/Haivision/srt/blob/master/docs/API/API-socket-options.md
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
     default String srt_getsockflag_string(int $socket, int sockopt) {
         Memory dest = new Memory(256); // TODO figureout.
 
-        int retcode = this.srt_getsockflag($socket, sockopt, dest, (int) dest.size());
-        if (retcode == SRT_ERROR) {
-            throw new RuntimeException(this.srt_getlasterror_str());
+        int result = this.srt_getsockflag($socket, sockopt, dest, (int) dest.size());
+        if (result == SRT_ERROR) {
+            throw new RuntimeException("An error occurred.");
         }
 
         return dest.getString(0);
     }
 
     // TODO linger.
+
+    // TODO srt_setsockopt
 
     /**
      * 
@@ -276,7 +315,7 @@ public interface SRTNative extends Library {
      *                   and
      *                   https://github.com/Haivision/srt/blob/master/docs/API/API-socket-options.md
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
     default int srt_setsockflag(int $socket, int sockopt, int val) {
         Pointer ref = new IntByReference(val).getPointer();
@@ -295,7 +334,7 @@ public interface SRTNative extends Library {
      *                   and
      *                   https://github.com/Haivision/srt/blob/master/docs/API/API-socket-options.md
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
     default int srt_setsockflag(int $socket, int sockopt, boolean val) {
         return this.srt_setsockflag($socket, sockopt, val ? 1 : 0);
@@ -312,7 +351,7 @@ public interface SRTNative extends Library {
      *                   and
      *                   https://github.com/Haivision/srt/blob/master/docs/API/API-socket-options.md
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
     default int srt_setsockflag(int $socket, int sockopt, long val) {
         Pointer ref = new LongByReference(val).getPointer();
@@ -331,7 +370,7 @@ public interface SRTNative extends Library {
      *                   and
      *                   https://github.com/Haivision/srt/blob/master/docs/API/API-socket-options.md
      * 
-     * @return           -1 if error, otherwise 0
+     * @return           -1 if error, otherwise 0.
      */
     @SneakyThrows
     default int srt_setsockflag(int $socket, int sockopt, String val) {
@@ -370,24 +409,68 @@ public interface SRTNative extends Library {
     /* Transmission         */
     /* -------------------- */
 
+    // TODO srt_send
+    // TODO srt_sendmsg
+    // TODO srt_sendmsg2
+    // TODO srt_recv
+    // TODO srt_recvmsg
+    // TODO srt_recvmsg2
+    // TODO srt_sendfile
+    // TODO srt_recvfile
+
     /* -------------------- */
     /* Performance Tracking */
     /* -------------------- */
+
+    // TODO srt_bstats
+    // TODO srt_bistats
 
     /* -------------------- */
     /* Async/Epoll          */
     /* -------------------- */
 
+    // TODO srt_epoll_create
+    // TODO srt_epoll_add_usock
+    // TODO srt_epoll_add_ssock
+    // TODO srt_epoll_update_usock
+    // TODO srt_epoll_update_ssock
+    // TODO srt_epoll_remove_usock
+    // TODO srt_epoll_remove_ssock
+    // TODO srt_epoll_wait
+    // TODO srt_epoll_uwait
+    // TODO srt_epoll_clear_usocks
+    // TODO srt_epoll_set
+    // TODO srt_epoll_release
+
     /* -------------------- */
     /* Logging              */
     /* -------------------- */
+
+    // TODO srt_setloglevel
+    // TODO srt_addlogfa
+    // TODO srt_dellogfa
+    // TODO srt_resetlogfa
+    // TODO srt_setloghandler
+    // TODO srt_setlogflags
 
     /* -------------------- */
     /* Time Access          */
     /* -------------------- */
 
+    // TODO srt_time_now
+    // TODO srt_connection_time
+    // TODO srt_clock_type
+
     /* -------------------- */
     /* Diagnostics          */
     /* -------------------- */
+
+    // TODO srt_getlasterror
+    // TODO srt_strerror
+    // TODO srt_getlasterror_str
+    // TODO srt_clearlasterror
+    // TODO srt_rejectreason_str
+    // TODO srt_setrejectreason
+    // TODO srt_getrejectreason
 
 }
