@@ -1,2 +1,4 @@
 # DLL, SO, DyLib, etc.
-srt.*
+srt.dll
+srt.dylib
+srt.so

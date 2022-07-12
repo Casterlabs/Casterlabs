@@ -386,18 +386,7 @@ public interface SRTNative extends Library {
 
     /**
      * Get SRT version value. The version format in hex is 0xXXYYZZ for x.y.z in
-     * human readable form, where x = ("%d", (version>>16) & 0xff), etc. <br />
-     * <br />
-     * Here's a snippet for parsing the hex value into a human readable string:
-     * 
-     * <pre>
-     * String versionHex = String.format("%06x", NATIVE.srt_getversion()); // Expect 6 digits, pad if needed.
-     * int major = Integer.parseInt(versionHex.substring(0, 2), 16);
-     * int minor = Integer.parseInt(versionHex.substring(2, 4), 16);
-     * int patch = Integer.parseInt(versionHex.substring(4, 6), 16);
-     *
-     * SRT_VERSION = String.format("v%d.%d.%d", major, minor, patch);
-     * </pre>
+     * human readable form, where x = ("%d", (version>>16) & 0xff), etc.
      *
      * @implSpec https://github.com/Haivision/srt/blob/master/docs/API/API-functions.md#srt_getversion
      * 
