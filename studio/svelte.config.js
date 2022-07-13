@@ -4,7 +4,10 @@ import adapter from '@sveltejs/adapter-static';
 const config = {
 	kit: {
 		prerender: { default: true},
-		adapter: adapter()
+		adapter: adapter(),
+		files: {
+			lib: "../__common"
+		}
 	}
 };
 
