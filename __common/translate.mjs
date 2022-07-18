@@ -1,10 +1,13 @@
 import enUS from "./lang/en-US.mjs";
 import enGB from "./lang/en-GB.mjs";
 import enAU from "./lang/en-AU.mjs";
+import enThorn from "./lang/en-Thorn.mjs";
 
 import fr from "./lang/fr.mjs";
 
 import esLA from "./lang/es-LA.mjs";
+
+// ----------------
 
 import createConsole from "./console-helper.mjs";
 
@@ -14,6 +17,7 @@ const languages = {
     "en": enUS, // English (United States) is the default English locale
     "en-GB": enGB,
     "en-AU": enAU,
+    "en-Thorn": enThorn,
 
     "fr": fr,
 
