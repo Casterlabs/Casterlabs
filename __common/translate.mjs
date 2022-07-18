@@ -15,6 +15,10 @@ import enShakespearean from "./lang/en-Shakespearean.mjs";
 
 // ----------------
 
+// {placeholder}: text placeholder
+// [placeholder]: external localization
+// %placeholder%: ui component
+
 import createConsole from "./console-helper.mjs";
 
 const console = createConsole("translate");
@@ -24,7 +28,7 @@ const languages = {
     "en-GB": enGB,
     "en-AU": enAU,
     "en-Thorn": enThorn,
-    "Shakespearean English": enShakespearean,
+    "en-Shakespear": enShakespearean,
 
     "fr": fr,
 
@@ -119,6 +123,12 @@ export default function translate(locale, key, opts = {}, simpleResponse = true)
         });
     } else {
         result = key;
+    }
+
+    if (locale == "en-Thorn") {
+        result = result //
+            .replaceAll(/(?<![{\[%])Th(?![\w\s]*[}\}%])/g, "Þ") //
+            .replaceAll(/(?<![{\[%])th(?![\w\s]*[}\}%])/g, "þ"); //
     }
 
     if (simpleResponse) {
