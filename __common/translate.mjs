@@ -1,11 +1,17 @@
+// English
 import enUS from "./lang/en-US.mjs";
 import enGB from "./lang/en-GB.mjs";
 import enAU from "./lang/en-AU.mjs";
 import enThorn from "./lang/en-Thorn.mjs";
 
+// French
 import fr from "./lang/fr.mjs";
 
+// Spanish
 import esLA from "./lang/es-LA.mjs";
+
+// Jokes
+import enShakespearean from "./lang/en-Shakespearean.mjs";
 
 // ----------------
 
@@ -18,6 +24,7 @@ const languages = {
     "en-GB": enGB,
     "en-AU": enAU,
     "en-Thorn": enThorn,
+    "Shakespearean English": enShakespearean,
 
     "fr": fr,
 
