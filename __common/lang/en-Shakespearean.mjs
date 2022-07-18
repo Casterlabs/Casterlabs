@@ -39,7 +39,7 @@ export default {
 
     "settings.plugins.load": "Loadeth",
 
-    "settings.casterlabs_account": "Your Chronicle of Cast'rlabs",
+    "settings.casterlabs_account": "Ye Chronicle of Cast'rlabs",
 
     "settings.accounts": "Accounts",
     "accounts.signin": "Signeth into thy fav'rite platf'rm",
