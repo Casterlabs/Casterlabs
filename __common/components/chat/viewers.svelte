@@ -62,7 +62,7 @@
     }
 </script>
 
-<div class="viewers-list-container" on:contextmenu={copyViewersList}>
+<div class="viewers-list-container" on:contextmenu={copyViewersList} on:dblclick={copyViewersList}>
     <Draggable bind:this={draggable} on:update={onUpdate}>
         <div id="viewers-list">
             <span id="total-count">
