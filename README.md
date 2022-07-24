@@ -9,7 +9,9 @@
                 </a>
             </td>
             <td align="left">
-                <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/stable.svg?style=shield" />
+                <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/stable">
+                    <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/stable.svg?style=shield" />
+                </a>
             </td>
         </tr>
         <tr>
@@ -19,17 +21,9 @@
                 </a>
             </td>
             <td align="left">
-                <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/beta.svg?style=shield" />
-            </td>
-        </tr>
-        <tr>
-            <td align="right" width=96>
-                <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/dev">
-                    Development
+                <a href="https://circleci.com/gh/Casterlabs/Casterlabs/tree/beta">
+                    <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/beta.svg?style=shield" />
                 </a>
-            </td>
-            <td align="left">
-                <img style="vertical-align: middle;" src="https://circleci.com/gh/Casterlabs/Casterlabs/tree/dev.svg?style=shield" />
             </td>
         </tr>
     </table>
