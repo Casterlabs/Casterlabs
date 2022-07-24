@@ -62,6 +62,7 @@ export default {
     "settings.about.credits": "Credits",
 
     "settings.casterlabs_account": "Casterlabs Account",
+    "casterlabs_account.upgrade": "Upgrade to Casterlabs Plus to unlock this feature.",
     "casterlabs_account.name": "Name: {name}",
     "casterlabs_account.email": "Email: {email}",
     "casterlabs_account.email_verified": "Email verified: %tickbox% %verify%",
@@ -111,6 +112,7 @@ export default {
     "chatbot_manager.tab.COMMANDS": "COMMANDS",
     "chatbot_manager.tab.SHOUTS": "SHOUTS",
     "chatbot_manager.tab.TIMERS": "TIMERS",
+    "chatbot_manager.tab.SETTINGS": "SETTINGS",
     "chatbot_manager.commands.mention": "Mention sender when replying: %checkbox%",
     "chatbot_manager.commands.runs": "runs",
     "chatbot_manager.commands.mentions": "mentions",
@@ -125,6 +127,12 @@ export default {
     "chatbot_manager.example.command": "Checkout casterlabs.co!",
     "chatbot_manager.example.shout": "Thank you for the follow!",
     "chatbot_manager.example.timer": "I love Casterlabs!",
+    "chatbot_manager.settings.sender": "Send messages from %dropdown% account.",
+    "chatbot_manager.settings.sender.SYSTEM": "the @Casterlabs",
+    "chatbot_manager.settings.sender.CLIENT": "your",
+    "chatbot_manager.settings.hide_commands_from_chat": "Hide commands from chat: %checkbox%",
+    "chatbot_manager.settings.hide_timers_from_chat": "Hide timers from chat: %checkbox%",
+    "chatbot_manager.settings.hide_from_chatbots": "Hide these accounts from chat:",
 
     "widget_manager": "Widgets",
     "dock_manager": "Docks",

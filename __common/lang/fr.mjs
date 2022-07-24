@@ -62,6 +62,7 @@ export default {
     "settings.about.credits": "Crédits",
 
     "settings.casterlabs_account": "Compte Casterlabs",
+    "casterlabs_account.upgrade": "Passez à Casterlabs Plus pour déverrouiller cette fonctionnalité.",
     "casterlabs_account.name": "Nom: {name}",
     "casterlabs_account.email": "Email: {email}",
     "casterlabs_account.email_verified": "Courriel vérifié: %tickbox% %verify%",
@@ -111,6 +112,7 @@ export default {
     "chatbot_manager.tab.COMMANDS": "COMMANDES",
     "chatbot_manager.tab.SHOUTS": "DES CRIS",
     "chatbot_manager.tab.TIMERS": "MINUTEURS",
+    "chatbot_manager.tab.SETTINGS": "PARAMÈTRES",
     "chatbot_manager.commands.mention": "Mentionner l'expéditeur lors de la réponse: %checkbox%",
     "chatbot_manager.commands.runs": "exécuter",
     "chatbot_manager.commands.mentions": "mentionne",
@@ -125,6 +127,12 @@ export default {
     "chatbot_manager.example.command": "Découvrez casterlabs.co!",
     "chatbot_manager.example.shout": "Merci pour l'abonnement!",
     "chatbot_manager.example.timer": "J'adore Casterlabs!",
+    "chatbot_manager.settings.sender": "Envoyez des messages avec %dropdown% compte.",
+    "chatbot_manager.settings.sender.SYSTEM": "le @Casterlabs",
+    "chatbot_manager.settings.sender.CLIENT": "votre",
+    "chatbot_manager.settings.hide_commands_from_chat": "Masquer les commandes du chat: %checkbox%",
+    "chatbot_manager.settings.hide_timers_from_chat": "Masquer des cris du chat: %checkbox%",
+    "chatbot_manager.settings.hide_from_chatbots": "Masquer les comptes du chat:",
 
     "widget_manager": "Widgets",
     "dock_manager": "Quais",
