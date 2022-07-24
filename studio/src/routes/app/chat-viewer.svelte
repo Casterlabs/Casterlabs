@@ -18,7 +18,9 @@
     }
 
     function onChatSend({ detail: data }) {
-        Koi.sendMessage(data.message);
+        const { message, replyTarget } = data;
+
+        Koi.sendMessage(message, "CLIENT", replyTarget, true);
     }
 
     function onModAction({ detail: modAction }) {

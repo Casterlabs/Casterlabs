@@ -3,7 +3,6 @@ import EventHandler from "$lib/event-handler.mjs";
 const CLIENT_ID = "LmHG2ux992BxqQ7w9RJrfhkW";
 
 class KoiConn {
-
     constructor() {
         this.eventHandler = new EventHandler();
 
@@ -29,15 +28,7 @@ class KoiConn {
 
         // Get properties from Koi as they come in
         this.eventHandler.on("*", (type, event) => {
-            if ([
-                "CHAT",
-                "DONATION",
-                "META",
-                "CLEARCHAT",
-                "CHANNEL_POINTS",
-                "FOLLOW",
-                "SUBSCRIPTION",
-            ].includes(type.toUpperCase())) {
+            if (["CHAT", "DONATION", "META", "CLEARCHAT", "CHANNEL_POINTS", "FOLLOW", "SUBSCRIPTION"].includes(type.toUpperCase())) {
                 Object.freeze(event);
                 history.push(event);
             }
@@ -79,7 +70,7 @@ class KoiConn {
     }
 
     connect(token) {
-        if (this.ws && (this.ws.readyState != WebSocket.CLOSED)) {
+        if (this.ws && this.ws.readyState != WebSocket.CLOSED) {
             this.ws.close();
         } else {
             try {
@@ -89,15 +80,17 @@ class KoiConn {
 
                 this.ws.onerror = () => {
                     setTimeout(() => this.connect(token), 5000);
-                }
+                };
 
                 this.ws.onopen = () => {
                     this.emit("open");
 
-                    this.ws.send(JSON.stringify({
-                        type: "LOGIN",
-                        token: token
-                    }));
+                    this.ws.send(
+                        JSON.stringify({
+                            type: "LOGIN",
+                            token: token
+                        })
+                    );
                 };
 
                 this.ws.onclose = () => {
@@ -109,15 +102,15 @@ class KoiConn {
                     const json = JSON.parse(raw);
 
                     if (json.type == "KEEP_ALIVE") {
-                        this.ws.send(JSON.stringify({
-                            type: "KEEP_ALIVE"
-                        }));
+                        this.ws.send(
+                            JSON.stringify({
+                                type: "KEEP_ALIVE"
+                            })
+                        );
                     } else if (json.type == "NOTICE") {
                         // const notice = json.notice;
-
                         // console.debug("New notice:");
                         // console.debug(notice);
-
                         // CAFFEINATED.triggerBanner(notice.id, (element) => {
                         //     element.innerHTML = notice.message;
                         // }, notice.color);
@@ -141,7 +134,7 @@ class KoiConn {
                                 this.emit("event", catchupEvent);
                             }
                             return;
-                        } else if ((type === "DONATION") && (event.sender.platform === "CASTERLABS_SYSTEM")) {
+                        } else if (type === "DONATION" && event.sender.platform === "CASTERLABS_SYSTEM") {
                             const streamerPlatform = event.streamer.platform; // TODO MOVE AWAY FROM THIS
                             event.is_test = true;
 
@@ -168,11 +161,11 @@ class KoiConn {
 
                                 event.emotes["Party100"] = "https://d3aqoihi2n8ty8.cloudfront.net/actions/party/light/animated/100/4.gif";
                             }
-                        } else if ((type === "FOLLOW") && (event.follower.platform === "CASTERLABS_SYSTEM")) {
+                        } else if (type === "FOLLOW" && event.follower.platform === "CASTERLABS_SYSTEM") {
                             event.is_test = true;
-                        } else if ((type === "CHAT") && (event.sender.platform === "CASTERLABS_SYSTEM")) {
+                        } else if (type === "CHAT" && event.sender.platform === "CASTERLABS_SYSTEM") {
                             event.is_test = true;
-                        } else if ((type === "SUBSCRIPTION") && event.subscriber && (event.subscriber.platform === "CASTERLABS_SYSTEM")) {
+                        } else if (type === "SUBSCRIPTION" && event.subscriber && event.subscriber.platform === "CASTERLABS_SYSTEM") {
                             event.is_test = true;
                         }
 
@@ -207,50 +200,62 @@ class KoiConn {
                 reject: reject
             });
 
-            this.ws.send(JSON.stringify({
-                type: "CREDENTIALS"
-            }));
+            this.ws.send(
+                JSON.stringify({
+                    type: "CREDENTIALS"
+                })
+            );
         });
     }
 
     upvoteMessage(messageId) {
         if (this.isAlive()) {
-            this.ws.send(JSON.stringify({
-                type: "UPVOTE",
-                message_id: messageId
-            }));
+            this.ws.send(
+                JSON.stringify({
+                    type: "UPVOTE",
+                    message_id: messageId
+                })
+            );
         }
     }
 
     deleteMessage(messageId) {
         if (this.isAlive()) {
-            this.ws.send(JSON.stringify({
-                type: "DELETE",
-                message_id: messageId
-            }));
+            this.ws.send(
+                JSON.stringify({
+                    type: "DELETE",
+                    message_id: messageId
+                })
+            );
         }
     }
 
-    sendMessage(message, chatter = "CLIENT") {
+    sendMessage(message, chatter = "CLIENT", replyTarget = null, isUserGesture = true) {
         if (this.isAlive()) {
-            this.ws.send(JSON.stringify({
-                type: "CHAT",
-                message: message,
-                chatter: chatter
-            }));
+            this.ws.send(
+                JSON.stringify({
+                    type: "CHAT",
+                    message: message,
+                    chatter: chatter,
+                    replyTarget: replyTarget,
+                    isUserGesture: isUserGesture
+                })
+            );
         }
     }
 
     isAlive() {
-        return this.ws && (this.ws.readyState == WebSocket.OPEN);
+        return this.ws && this.ws.readyState == WebSocket.OPEN;
     }
 
     test(event) {
         if (this.isAlive()) {
-            this.ws.send(JSON.stringify({
-                type: "TEST",
-                eventType: event.toUpperCase()
-            }));
+            this.ws.send(
+                JSON.stringify({
+                    type: "TEST",
+                    eventType: event.toUpperCase()
+                })
+            );
         }
     }
 
@@ -259,7 +264,6 @@ class KoiConn {
             this.ws.close();
         }
     }
-
 }
 
 export default KoiConn;

@@ -180,7 +180,7 @@
     });
 
     function onChatSend({ detail: data }) {
-        kinoko.send({ type: "CHAT", message: data.message, platform: data.platform });
+        kinoko.send({ type: "CHAT", message: data.message, platform: data.platform, replyTarget: data.replyTarget, isUserGesture: true });
     }
 
     function onModAction({ detail: modAction }) {

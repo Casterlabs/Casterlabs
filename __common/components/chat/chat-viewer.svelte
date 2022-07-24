@@ -27,6 +27,7 @@
     let chatSendPlatform = "TWITCH";
     let chatSendPlatformOpen = false;
     let chatSendMessage = "";
+    let chatSendReplyTarget = null;
 
     let showCommandPalette = false;
     let selectedCommandIndex = 0;
@@ -285,11 +286,13 @@
             if (chatSendMessage.length > 0) {
                 dispatch("chatsend", {
                     platform: chatSendPlatform,
-                    message: chatSendMessage
+                    message: chatSendMessage,
+                    replyTarget: chatSendReplyTarget,
                 });
 
                 console.log("[ChatViewer]", "Sending chat message:", chatSendPlatform, ">", chatSendMessage);
                 chatSendMessage = "";
+                chatSendReplyTarget = null;
 
                 chatInput.blur();
             }
