@@ -47,8 +47,10 @@
     function onMeta(event) {
         const chatElement = chatHistory[event.meta_id];
 
-        chatElement.upvotes = event.upvotes;
-        chatElement.isDeleted = !event.is_visible;
+        if (chatElement) {
+            chatElement.upvotes = event.upvotes;
+            chatElement.isDeleted = !event.is_visible;
+        }
     }
 
     function savePreferences() {
