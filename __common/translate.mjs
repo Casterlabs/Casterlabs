@@ -127,8 +127,8 @@ export default function translate(locale, key, opts = {}, simpleResponse = true)
 
     if (locale == "en-Thorn") {
         result = result //
-            .replaceAll(/(?<![{\[%])Th(?![\w\s]*[}\}%])/g, "Þ") //
-            .replaceAll(/(?<![{\[%])th(?![\w\s]*[}\}%])/g, "þ"); //
+            .replaceAll(/(?![{\[%])Th(?![\w\s]*[}\}%])/g, "Þ") //
+            .replaceAll(/(?![{\[%])th(?![\w\s]*[}\}%])/g, "þ"); //
     }
 
     if (simpleResponse) {
