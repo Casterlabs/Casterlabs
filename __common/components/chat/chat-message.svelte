@@ -172,7 +172,7 @@
                     </a>
                 {/if}
 
-                {#if PLATFORMS_WITH_DELETE.includes(koiEvent.streamer.platform)}
+                {#if PLATFORMS_WITH_DELETE.includes(koiEvent.streamer.platform) && !isDeleted}
                     <a on:click={() => modAction("delete", koiEvent)} title="Delete Message">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
                             <polyline points="3 6 5 6 21 6" />
