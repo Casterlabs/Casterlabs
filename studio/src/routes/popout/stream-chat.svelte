@@ -78,7 +78,7 @@
 
             case "delete": {
                 if (["TWITCH", "BRIME", "TROVO"].includes(platform)) {
-                    Koi.deleteChat(platform, event.id);
+                    Koi.deleteChat(platform, event.id, true);
                 }
                 return;
             }

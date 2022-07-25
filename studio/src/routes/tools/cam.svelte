@@ -180,7 +180,11 @@
     });
 
     function onChatSend({ detail: data }) {
-        kinoko.send({ type: "CHAT", message: data.message, platform: data.platform, replyTarget: data.replyTarget, isUserGesture: true });
+        sendChat(data.message, data.platform, data.replyTarget, true);
+    }
+
+    function sendChat(message, platform, replyTarget = null, isUserGesture = true) {
+        kinoko.send({ type: "CHAT", message: message, platform: platform, replyTarget: replyTarget, isUserGesture: isUserGesture });
     }
 
     function onModAction({ detail: modAction }) {
@@ -193,12 +197,12 @@
             case "ban": {
                 switch (platform) {
                     case "TWITCH": {
-                        kinoko.send({ type: "CHAT", message: `/ban ${event.sender.username}`, platform });
+                        sendChat(`/ban ${event.sender.username}`, platform);
                         return;
                     }
 
                     case "TROVO": {
-                        kinoko.send({ type: "CHAT", message: `/ban ${event.sender.username}`, platform });
+                        sendChat(`/ban ${event.sender.username}`, platform);
                         return;
                     }
 
@@ -212,12 +216,12 @@
                 // We timeout for 10 minutes
                 switch (platform) {
                     case "TWITCH": {
-                        kinoko.send({ type: "CHAT", message: `/timeout ${event.sender.username} 600`, platform });
+                        sendChat(`/timeout ${event.sender.username} 600`, platform);
                         return;
                     }
 
                     case "TROVO": {
-                        kinoko.send({ type: "CHAT", message: `/ban ${event.sender.username} 600`, platform });
+                        sendChat(`/ban ${event.sender.username} 600`, platform);
                         return;
                     }
 
@@ -244,17 +248,17 @@
             case "raid": {
                 switch (platform) {
                     case "TWITCH": {
-                        kinoko.send({ type: "CHAT", message: `/raid ${event.sender.username}`, platform });
+                        sendChat(`/raid ${event.sender.username}`, platform);
                         return;
                     }
 
                     case "CAFFEINE": {
-                        kinoko.send({ type: "CHAT", message: `/afterparty ${event.sender.username}`, platform });
+                        sendChat(`/afterparty ${event.sender.username}`, platform);
                         return;
                     }
 
                     case "TROVO": {
-                        kinoko.send({ type: "CHAT", message: `/host ${event.sender.username}`, platform });
+                        sendChat(`/host ${event.sender.username}`, platform);
                         return;
                     }
 
@@ -375,18 +379,7 @@
 {#if settingsDialogOpen}
     <div id="settings" class="box">
         <a id="settings-close" on:click={() => (settingsDialogOpen = false)}>
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-x"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -454,23 +447,9 @@
                     <video bind:this={videoPreviewElement} id="video-preview" playsinline muted />
 
                     <button id="settings-opener" class="button" on:click={() => (settingsDialogOpen = !settingsDialogOpen)}>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-settings"
-                            style="display: block;"
-                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings" style="display: block;">
                             <circle cx="12" cy="12" r="3" />
-                            <path
-                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
-                            />
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                         </svg>
                     </button>
                 </Aspect16by9>
