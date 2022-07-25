@@ -117,6 +117,8 @@
         messageHtml = escapeHtml(koiEvent.message);
         sender = koiEvent.sender;
         isMessageFromSelf = sender.UPID == koiEvent.streamer.UPID;
+        highlight = koiEvent.is_highlighted;
+        isDeleted = !koiEvent.is_visible;
 
         for (const [name, image] of Object.entries(koiEvent.emotes)) {
             messageHtml = messageHtml.split(name).join(`<img class="inline-image" title="${name}" src="${image}" />`);

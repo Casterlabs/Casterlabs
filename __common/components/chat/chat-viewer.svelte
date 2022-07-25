@@ -45,7 +45,7 @@
     let showViewersList = false;
 
     function onMeta(event) {
-        const chatElement = chatHistory[event.id];
+        const chatElement = chatHistory[event.meta_id];
 
         chatElement.upvotes = event.upvotes;
         chatElement.isDeleted = !event.is_visible;
@@ -129,10 +129,10 @@
                 }
             });
 
-            if (event.id) {
+            if (event.meta_id) {
                 // This event is editable in some way, shape, or form.
                 // (so, we must keep track of it)
-                chatHistory[event.id] = message;
+                chatHistory[event.meta_id] = message;
             }
 
             chatbox.appendChild(elem);
