@@ -7,7 +7,6 @@
 
     import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
     import Aspect16by9 from "$lib/components/aspect-ratio/Aspect16by9.svelte";
-    import ChatViewer from "$lib/components/chat/chat-viewer.svelte";
 
     const console = createConsole("Cam");
 
@@ -25,10 +24,6 @@
     let display = "LOADING";
     let videoDevices = [];
     let audioDevices = [];
-
-    let koiAuth = {};
-
-    let viewerElement;
 
     let peer;
     let callerId;
@@ -115,25 +110,10 @@
         // console.debug(videoDevices);
         // console.debug(audioDevices);
 
-        let hasReceivedHistory = false;
-
         kinoko.on("message", ({ message }) => {
-            if (message.type == "KOI_AUTH") {
-                koiAuth = {};
-
-                for (const platform of message.platforms) {
-                    koiAuth[platform] = {};
-                }
-
-                viewerElement.onAuthUpdate({ koiAuth });
-            } else if (message.type == "CALLER_ID") {
+            if (message.type == "CALLER_ID") {
                 callerId = message.id;
                 reconnect();
-            } else if (message.type == "KOI_EVENT") {
-                viewerElement.processEvent(message.event);
-            } else if (message.type == "KOI_HISTORY" && !hasReceivedHistory) {
-                hasReceivedHistory = true;
-                message.history.forEach(viewerElement.processEvent);
             }
         });
 
@@ -178,101 +158,6 @@
     onDestroy(() => {
         kinoko.disconnect();
     });
-
-    function onChatSend({ detail: data }) {
-        sendChat(data.message, data.platform, data.replyTarget, true);
-    }
-
-    function sendChat(message, platform, replyTarget = null, isUserGesture = true) {
-        kinoko.send({ type: "CHAT", message: message, platform: platform, replyTarget: replyTarget, isUserGesture: isUserGesture });
-    }
-
-    function onModAction({ detail: modAction }) {
-        const { type, event } = modAction;
-        const platform = event.streamer.platform;
-
-        console.log("[StreamChat]", `onModAction(${type}, ${platform})`);
-
-        switch (type) {
-            case "ban": {
-                switch (platform) {
-                    case "TWITCH": {
-                        sendChat(`/ban ${event.sender.username}`, platform);
-                        return;
-                    }
-
-                    case "TROVO": {
-                        sendChat(`/ban ${event.sender.username}`, platform);
-                        return;
-                    }
-
-                    default: {
-                        return;
-                    }
-                }
-            }
-
-            case "timeout": {
-                // We timeout for 10 minutes
-                switch (platform) {
-                    case "TWITCH": {
-                        sendChat(`/timeout ${event.sender.username} 600`, platform);
-                        return;
-                    }
-
-                    case "TROVO": {
-                        sendChat(`/ban ${event.sender.username} 600`, platform);
-                        return;
-                    }
-
-                    default: {
-                        return;
-                    }
-                }
-            }
-
-            case "delete": {
-                if (["TWITCH", "BRIME", "TROVO"].includes(platform)) {
-                    kinoko.send({ type: "DELETE", messageId: event.id, platform });
-                }
-                return;
-            }
-
-            case "upvote": {
-                if (platform == "CAFFEINE") {
-                    kinoko.send({ type: "UPVOTE", messageId: event.id, platform });
-                }
-                return;
-            }
-
-            case "raid": {
-                switch (platform) {
-                    case "TWITCH": {
-                        sendChat(`/raid ${event.sender.username}`, platform);
-                        return;
-                    }
-
-                    case "CAFFEINE": {
-                        sendChat(`/afterparty ${event.sender.username}`, platform);
-                        return;
-                    }
-
-                    case "TROVO": {
-                        sendChat(`/host ${event.sender.username}`, platform);
-                        return;
-                    }
-
-                    default: {
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
-    function onSavePreferences({ detail: data }) {
-        localStorage.setItem("cl_studio:chat_viewer:preferences", JSON.stringify(data));
-    }
 
     const RESOLUTIONS = {
         "720p30": {
@@ -371,6 +256,12 @@
     }
 </script>
 
+<svelte:head>
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" />
+    <link rel="stylesheet" href="/css/bulma.min.css" />
+</svelte:head>
+
 {#if settingsDialogOpen}
     <div id="background-cover" on:click={() => (settingsDialogOpen = false)} />
 {/if}
@@ -429,7 +320,7 @@
     {#if display != "STREAM"}
         <br />
         <div class="casterlabs-wordmark">
-            <img class="light-show" src="/img/wordmark/casterlabs/black.svg" alt="Casterlabs Studio Logo" />
+            <img class="light-show" src="/img/wordmark/casterlabs/white.svg" alt="Casterlabs Studio Logo" />
         </div>
 
         <br />
@@ -441,37 +332,16 @@
             <LoadingSpinner />
         </div>
     {:else if display == "STREAM"}
-        <div id="stream-contents">
-            <div class="box video-preview-container">
-                <Aspect16by9>
-                    <video bind:this={videoPreviewElement} id="video-preview" playsinline muted />
+        <Aspect16by9>
+            <video bind:this={videoPreviewElement} id="video-preview" playsinline muted />
 
-                    <button id="settings-opener" class="button" on:click={() => (settingsDialogOpen = !settingsDialogOpen)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings" style="display: block;">
-                            <circle cx="12" cy="12" r="3" />
-                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                        </svg>
-                    </button>
-                </Aspect16by9>
-            </div>
-
-            <div id="chat-container">
-                <ChatViewer
-                    bind:this={viewerElement}
-                    on:chatsend={onChatSend}
-                    on:modaction={onModAction}
-                    on:savepreferences={onSavePreferences}
-                    on:mount={() => {
-                        const prefs = localStorage.getItem("cl_studio:chat_viewer:preferences");
-                        if (prefs) {
-                            viewerElement.loadConfig(JSON.parse(prefs));
-                        }
-
-                        viewerElement.onAuthUpdate({ koiAuth });
-                    }}
-                />
-            </div>
-        </div>
+            <button id="settings-opener" class="button" on:click={() => (settingsDialogOpen = !settingsDialogOpen)}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings" style="display: block;">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+            </button>
+        </Aspect16by9>
     {:else if display == "ERROR_CANNOT_CONNECT"}
         <h1 class="title is-4">Could not establish a connection with Caffeinated.</h1>
         <h2 class="subtitle is-6">Make sure you correctly scanned the QR code in Caffeinated, and make sure the widget is visible in OBS.</h2>
@@ -492,32 +362,9 @@
     {/if}
 </section>
 
-<svelte:head>
-    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" />
-    <link rel="stylesheet" href="/css/bulma.min.css" />
-</svelte:head>
-
 <style>
-    #stream-contents {
-        width: 100%;
-        max-width: 640px;
-        margin: auto;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        align-content: stretch;
-        align-items: stretch;
-    }
-
-    #chat-container {
-        position: relative;
-        order: 0;
-        flex: 1 1 auto;
-        align-self: auto;
-        text-align: left;
+    :global(body) {
+        background-color: black;
     }
 
     #background-cover {
@@ -557,16 +404,6 @@
         padding: 10px;
         color: black;
         z-index: 250;
-    }
-
-    .video-preview-container {
-        margin: 15px;
-        margin-bottom: 0;
-        padding: 0;
-        overflow: hidden;
-        order: 0;
-        flex: 0 0 auto;
-        align-self: auto;
     }
 
     #video-preview {
