@@ -1,9 +1,9 @@
 <svelte:options accessors />
 
 <script>
-    import EmojiText from "../EmojiText.svelte";
     import User from "./user.svelte";
 
+    import { onMount } from "svelte";
     import translate from "../../translate.mjs";
     import App from "../../app.mjs";
 
@@ -113,22 +113,12 @@
     } else if (koiEvent.event_type == "CLEARCHAT") {
         highlight = true;
         messageHtml = translate(App.get("language"), "chat.message.cleared");
-    } else if (["CHAT", "DONATION", "PLATFORM_MESSAGE"].includes(koiEvent.event_type) /* Normal chat messages */) {
-        messageHtml = escapeHtml(koiEvent.message);
+    } else if (["RICH_MESSAGE", "PLATFORM_MESSAGE"].includes(koiEvent.event_type) /* Normal chat messages */) {
+        messageHtml = koiEvent.html;
         sender = koiEvent.sender;
         isMessageFromSelf = sender.UPID == koiEvent.streamer.UPID;
         highlight = koiEvent.is_highlighted;
         isDeleted = !koiEvent.is_visible;
-
-        for (const [name, image] of Object.entries(koiEvent.emotes)) {
-            messageHtml = messageHtml.split(name).join(`<img class="inline-image" title="${name}" src="${image}" />`);
-        }
-
-        for (const pattern of koiEvent.links) {
-            const link = pattern.includes("://") ? pattern : "https://" + pattern;
-
-            messageHtml = messageHtml.split(pattern).join(`<a href="${link}" rel="external">${pattern}</a>`);
-        }
 
         if (koiEvent.donations) {
             // Caffeine Props & Trovo Spells don't appear in chat like Twitch Cheers do.
@@ -203,9 +193,7 @@
         {/if}
 
         <span>
-            <EmojiText>
-                {@html messageHtml}
-            </EmojiText>
+            {@html messageHtml}
         </span>{#if upvotes > 0}
             <sup class="upvote-counter">
                 {#if upvotes < 10}

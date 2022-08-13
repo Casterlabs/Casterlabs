@@ -10,7 +10,7 @@
 
     const dispatch = createEventDispatcher();
 
-    const DISPLAYABLE_EVENTS = ["FOLLOW", "CHAT", "DONATION", "SUBSCRIPTION", "VIEWER_JOIN", "VIEWER_LEAVE", "RAID", "CHANNEL_POINTS", "CLEARCHAT", "PLATFORM_MESSAGE"];
+    const DISPLAYABLE_EVENTS = ["FOLLOW", "RICH_MESSAGE", "SUBSCRIPTION", "VIEWER_JOIN", "VIEWER_LEAVE", "RAID", "CHANNEL_POINTS", "CLEARCHAT", "PLATFORM_MESSAGE"];
 
     let chatHistory = {};
     let isMultiPlatform = false;
@@ -289,7 +289,7 @@
                 dispatch("chatsend", {
                     platform: chatSendPlatform,
                     message: chatSendMessage,
-                    replyTarget: chatSendReplyTarget,
+                    replyTarget: chatSendReplyTarget
                 });
 
                 console.log("[ChatViewer]", "Sending chat message:", chatSendPlatform, ">", chatSendMessage);
