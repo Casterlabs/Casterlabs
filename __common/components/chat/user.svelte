@@ -25,6 +25,7 @@
 
 <style>
     .inline-image {
+        width: 1.3em;
         height: 1.3em;
         vertical-align: text-bottom;
         image-rendering: pixelated;
