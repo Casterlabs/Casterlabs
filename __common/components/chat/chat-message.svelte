@@ -7,8 +7,8 @@
     import translate from "../../translate.mjs";
     import App from "../../app.mjs";
 
-    const PLATFORMS_WITH_BAN = ["TWITCH", "TROVO"];
-    const PLATFORMS_WITH_TIMEOUT = ["TWITCH", "TROVO"];
+    const PLATFORMS_WITH_BAN = ["TWITCH", "TROVO", "BRIME"];
+    const PLATFORMS_WITH_TIMEOUT = ["TWITCH", "TROVO", "BRIME"];
     const PLATFORMS_WITH_DELETE = ["TWITCH", "BRIME", "TROVO" /*"YOUTUBE"*/];
     const PLATFORMS_WITH_UPVOTE = ["CAFFEINE"];
     const PLATFORMS_WITH_RAID = ["CAFFEINE", "TWITCH", "TROVO"];
