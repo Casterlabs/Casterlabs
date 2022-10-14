@@ -11,6 +11,7 @@
     import GlimeshButton from "../../components/platforms/signin-buttons/Glimesh.svelte";
     import BrimeButton from "../../components/platforms/signin-buttons/Brime.svelte";
     import YouTubeButton from "../../components/platforms/signin-buttons/YouTube.svelte";
+    import DLiveButton from "../../components/platforms/signin-buttons/DLive.svelte";
     import PairingCodeButton from "../../components/platforms/signin-buttons/PairingCode.svelte";
 
     let loginState = "loading";
@@ -48,6 +49,7 @@
             <GlimeshButton />
             <BrimeButton />
             <YouTubeButton />
+            <DLiveButton />
             <br />
             <PairingCodeButton />
             <br />
