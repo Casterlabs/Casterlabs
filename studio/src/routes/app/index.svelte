@@ -12,6 +12,7 @@
     import BrimeButton from "../../components/platforms/signin-buttons/Brime.svelte";
     import YouTubeButton from "../../components/platforms/signin-buttons/YouTube.svelte";
     import DLiveButton from "../../components/platforms/signin-buttons/DLive.svelte";
+    import ThetaButton from "../../components/platforms/signin-buttons/Theta.svelte";
     import PairingCodeButton from "../../components/platforms/signin-buttons/PairingCode.svelte";
 
     let loginState = "loading";
@@ -50,6 +51,7 @@
             <BrimeButton />
             <YouTubeButton />
             <DLiveButton />
+            <ThetaButton />
             <br />
             <PairingCodeButton />
             <br />
