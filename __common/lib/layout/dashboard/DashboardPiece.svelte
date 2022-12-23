@@ -3,6 +3,7 @@
 	import WelcomeWagon from '$lib/layout/dashboard/WelcomeWagon.svelte';
 	import ResizableGrid from '../ResizableGrid.svelte';
 	import SlimSelectMenu from '$lib/ui/SlimSelectMenu.svelte';
+	import Chat from '../../../components/Chat.svelte';
 
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
