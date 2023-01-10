@@ -81,8 +81,4 @@
     <a href="/intrx">
         IntRX
     </a>
-    &nbsp;&bull;&nbsp;
-    <a href="/clio">
-        CLIO
-    </a>
 </p>
