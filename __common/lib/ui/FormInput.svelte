@@ -59,7 +59,7 @@
 					width="full"
 					bind:value
 					on:value={onInput}
-					options={(options || []).reduce((arr, i) => ({ ...arr, [i]: i }), {})}
+					options={options.reduce((arr, i) => ({ ...arr, [i]: i }), {})}
 				/>
 			{:else if type == 'password'}
 				<SlimPassword bind:value on:value={onInput} />
