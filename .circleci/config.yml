@@ -9,30 +9,18 @@ jobs:
     steps:
       - checkout
 
+      # Build and produce the artifacts.
       - run:
           name: Build Caffeinated
           command: cd caffeinated && bash build.sh && mkdir dist/artifacts
 
-      # Produce the Windows Artifact
-      - run:
-          name: Compress the Windows-amd64 Artifact
-          command: cd caffeinated/dist/Windows-amd64 && zip -r ../artifacts/Windows-amd64.zip * && cd -
+      # Upload the artifacts to Circle.
       - store_artifacts:
           path: caffeinated/dist/artifacts/Windows-amd64.zip
           destination: Windows-amd64.zip
-
-      # Produce the macOS Artifact
-      - run:
-          name: Compress the macOS-amd64 Artifact
-          command: cd caffeinated/dist/macOS-amd64 && zip -r ../artifacts/macOS-amd64.zip * && cd -
       - store_artifacts:
           path: caffeinated/dist/artifacts/macOS-amd64.zip
           destination: macOS-amd64.zip
-
-      # Produce the Linux Artifact
-      - run:
-          name: Compress the Linux-amd64 Artifact
-          command: cd caffeinated/dist/Linux-amd64 && zip -r ../artifacts/Linux-amd64.zip * && cd -
       - store_artifacts:
           path: caffeinated/dist/artifacts/Linux-amd64.zip
           destination: Linux-amd64.zip
