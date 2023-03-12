@@ -14,7 +14,18 @@ jobs:
           name: Build Caffeinated
           command: cd caffeinated && bash build.sh && mkdir dist/artifacts
 
-      # Upload the artifacts to Circle.
+      # Upload the slim/nojre artifacts to Circle.
+      - store_artifacts:
+          path: caffeinated/dist/artifacts/Windows-amd64-nojre.zip
+          destination: Windows-amd64-nojre.zip
+      - store_artifacts:
+          path: caffeinated/dist/artifacts/macOS-amd64-nojre.zip
+          destination: macOS-amd64-nojre.zip
+      - store_artifacts:
+          path: caffeinated/dist/artifacts/Linux-amd64-nojre.zip
+          destination: Linux-amd64-nojre.zip
+
+      # Upload the regular artifacts to Circle.
       - store_artifacts:
           path: caffeinated/dist/artifacts/Windows-amd64.zip
           destination: Windows-amd64.zip
