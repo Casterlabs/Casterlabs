@@ -4,11 +4,11 @@ jobs:
   build-caffeinated:
     docker:
       - image: cimg/openjdk:11.0-node # We need JDK 11 and NodeJS.
-    resource_class: medium            # `small` is just *barely* enough, so we spec up a tier. 
+    resource_class: medium # `small` is just *barely* enough, so we spec up a tier.
 
     steps:
       - checkout
-      
+
       - run:
           name: Build Caffeinated
           command: cd caffeinated && bash build.sh && mkdir dist/artifacts
@@ -43,48 +43,35 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      
+
+      # Build and produce the artifacts.
       - run:
           name: Build Caffeinated Updater
-          command: cd caffeinated/updater && bash build.sh && mkdir dist/artifacts
+          command: cd caffeinated/updater && bash build.sh
 
-      # Produce the Windows Artifact
-      - run:
-          name: Compress the Windows-amd64 Artifact
-          command: cd caffeinated/updater/dist/windows && zip -r ../artifacts/Windows.zip * && cd -
+      # Upload the artifacts to Circle.
       - store_artifacts:
           path: caffeinated/updater/dist/artifacts/Windows.zip
           destination: Casterlabs-Caffeinated-Windows.zip
-
-      # Produce the macOS Artifact
-      - run:
-          name: Compress the macOS-amd64 Artifact
-          command: cd caffeinated/updater/dist/macos && tar -czvf ../artifacts/macOS.tar.gz * && cd -
       - store_artifacts:
           path: caffeinated/updater/dist/artifacts/macOS.tar.gz
           destination: Casterlabs-Caffeinated-macOS.tar.gz
-
-      # Produce the Linux Artifact
-      - run:
-          name: Compress the Linux-amd64 Artifact
-          command: cd caffeinated/updater/dist/linux && tar -czvf ../artifacts/Linux.tar.gz * && cd -
       - store_artifacts:
           path: caffeinated/updater/dist/artifacts/Linux.tar.gz
           destination: Casterlabs-Caffeinated-Linux.tar.gz
-
 
 workflows:
   build:
     jobs:
       - build-caffeinated:
           filters:
-              branches:
-                only:
-                  - alpha
-                  - beta
-                  - stable
+            branches:
+              only:
+                - alpha
+                - beta
+                - stable
       - build-caffeinated-updater:
           filters:
-              branches:
-                only:
-                  - updater-release
+            branches:
+              only:
+                - updater-release
