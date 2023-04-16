@@ -11,8 +11,14 @@ jobs:
 
       # Build and produce the artifacts.
       - run:
-          name: Build Caffeinated
-          command: cd caffeinated && bash build.sh
+          name: Compile Caffeinated
+          command: cd caffeinated && bash build.sh nodist
+      - run:
+          name: Build Caffeinated artifacts
+          command: cd caffeinated && bash build.sh nocompile
+      - run:
+          name: Deploy Caffeinated
+          command: cd caffeinated && java -jar deploy-helper/target/deploy-helper.jar
 
       # Upload the slim/nojre artifacts to Circle.
       - store_artifacts:
