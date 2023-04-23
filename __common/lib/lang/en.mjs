@@ -107,12 +107,28 @@ export default {
 	'page.chat_bot.commands': 'Commands',
 	'page.chat_bot.commands.type.COMMAND': 'runs',
 	'page.chat_bot.commands.type.CONTAINS': 'mentions',
+	'page.chat_bot.commands.type.SCRIPT': 'runs (script)',
 	'page.chat_bot.commands.format.COMMAND':
 		'When someone from %platform% %action% <b>!</b>%action_target%, send: %message%',
 	'page.chat_bot.commands.format.CONTAINS':
 		'When someone from %platform% %action% <b>[generic.quote.left]</b>%action_target%<b>[generic.quote.right]</b>, reply with: %message%',
+	'page.chat_bot.commands.format.SCRIPT':
+		'When someone from %platform% %action% <b>!</b>%action_target%, execute: %message%',
 	'page.chat_bot.commands.example': 'Checkout casterlabs.co!',
+	'page.chat_bot.commands.example.SCRIPT':
+		'[page.chat_bot.commands.example.SCRIPT.examples.shoutout.command]',
 	'sr.page.chat_bot.commands.add': 'Create another command',
+
+	'page.chat_bot.commands.example.SCRIPT.examples': 'Examples',
+	'page.chat_bot.commands.example.SCRIPT.examples.shoutout': 'shoutout',
+	'page.chat_bot.commands.example.SCRIPT.examples.shoutout.command':
+		'if (args.length == 0) {\n    Koi.sendChat(event.streamer.platform, `You must specify a streamer to shout out!`, "SYSTEM", event.id);\n} else {\n    Koi.sendChat(event.streamer.platform, `Everybody go check out @${args[0]}!`, "SYSTEM", null);\n}',
+	'page.chat_bot.commands.example.SCRIPT.examples.song': 'song',
+	'page.chat_bot.commands.example.SCRIPT.examples.song.command':
+		'if (Music.activePlayback) {\n    const title = Music.activePlayback.currentTrack.title;\n    const artists = Music.activePlayback.currentTrack.artists.join(", ");\n    Koi.sendChat(event.streamer.platform, `Now playing: ${title} by ${artists}`, "SYSTEM", event.id);\n} else {\n    Koi.sendChat(event.streamer.platform, `No song is playing.`, "SYSTEM", event.id);\n}',
+	'page.chat_bot.commands.example.SCRIPT.examples.where': 'where',
+	'page.chat_bot.commands.example.SCRIPT.examples.where.command':
+		'if (Music.activePlayback) {\n    const title = Music.activePlayback.currentTrack.title;\n    const artists = Music.activePlayback.currentTrack.artists.join(", ");\n    Koi.sendChat(event.streamer.platform, `Now playing: ${title} by ${artists}`, "SYSTEM", event.id);\n} else {\n    Koi.sendChat(event.streamer.platform, `No song is playing.`, "SYSTEM", event.id);\n}',
 
 	'page.chat_bot.shouts': 'Shouts',
 	'page.chat_bot.shouts.format': 'When someone from %platform% %action% say: %message%',
