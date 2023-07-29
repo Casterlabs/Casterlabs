@@ -1,5 +1,0 @@
-jdk:
-  - openjdk11
-install:
-  - cd caffeinated/app
-  - mvn install # Result is automatically copied to the m2 repo.

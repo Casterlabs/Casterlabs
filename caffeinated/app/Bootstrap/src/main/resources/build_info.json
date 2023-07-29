@@ -1,6 +1,0 @@
-{
-    "version": "${project.parent.version}",
-    "commit": "${git.commit.id.describe-short}",
-    "buildChannel": "${git.branch}",
-    "author": "Casterlabs"
-}
